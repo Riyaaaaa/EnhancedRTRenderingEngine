@@ -72,6 +72,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
@@ -147,13 +148,104 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Common.h" />
+    <ClInclude Include="D3D11\D3DX11Device.h" />
+    <ClInclude Include="D3D11\D3DX11Renderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
+    <ClInclude Include="Mesh\MeshBase.h" />
+    <ClInclude Include="Mesh\Primitive\Triangle.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Resource\Resource3DHandle.h" />
+    <ClInclude Include="Resource\ResourceHandle.h" />
+    <ClInclude Include="Resource\ResourceLoader.h" />
+    <ClInclude Include="SpiralLibrary\Algorithm\AlphaBeta.h" />
+    <ClInclude Include="SpiralLibrary\Algorithm\AlphaBetaNodeState.hpp" />
+    <ClInclude Include="SpiralLibrary\Algorithm\AStar.hpp" />
+    <ClInclude Include="SpiralLibrary\Algorithm\DiffManagedAlphaBeta.hpp" />
+    <ClInclude Include="SpiralLibrary\Any\Any.hpp" />
+    <ClInclude Include="SpiralLibrary\Cocos2d\CCUpdater.hpp" />
+    <ClInclude Include="SpiralLibrary\Cocos2d\GameManagerBase.hpp" />
+    <ClInclude Include="SpiralLibrary\Cocos2d\ModalLayer.hpp" />
+    <ClInclude Include="SpiralLibrary\Cocos2d\RegisterSingleTouchListener.hpp" />
+    <ClInclude Include="SpiralLibrary\Cocos2d\ScopedRef.hpp" />
+    <ClInclude Include="SpiralLibrary\Cocos2d\SwallowListener.hpp" />
+    <ClInclude Include="SpiralLibrary\Common\Alias.h" />
+    <ClInclude Include="SpiralLibrary\Common\Macro.h" />
+    <ClInclude Include="SpiralLibrary\Common\Math.hpp" />
+    <ClInclude Include="SpiralLibrary\Common\NoExpAssign.hpp" />
+    <ClInclude Include="SpiralLibrary\Common\Stream.hpp" />
+    <ClInclude Include="SpiralLibrary\Common\Timer.hpp" />
+    <ClInclude Include="SpiralLibrary\Concept\Concept.hpp" />
+    <ClInclude Include="SpiralLibrary\Container\Array.hpp" />
+    <ClInclude Include="SpiralLibrary\Container\MultiArray.hpp" />
+    <ClInclude Include="SpiralLibrary\Container\Pair.hpp" />
+    <ClInclude Include="SpiralLibrary\Function\DelayCall.hpp" />
+    <ClInclude Include="SpiralLibrary\Function\MaybeCall.hpp" />
+    <ClInclude Include="SpiralLibrary\Function\SignalSlots.hpp" />
+    <ClInclude Include="SpiralLibrary\GameSystem\AsyncTask.hpp" />
+    <ClInclude Include="SpiralLibrary\GameSystem\HFStateMachine.hpp" />
+    <ClInclude Include="SpiralLibrary\GameSystem\SingletonBase.hpp" />
+    <ClInclude Include="SpiralLibrary\GameSystem\StateInterface.hpp" />
+    <ClInclude Include="SpiralLibrary\GameSystem\StateMachineUtils.hpp" />
+    <ClInclude Include="SpiralLibrary\Iterator\Iterator.hpp" />
+    <ClInclude Include="SpiralLibrary\Memory\AddressOf.hpp" />
+    <ClInclude Include="SpiralLibrary\Memory\IntrusivePtr.hpp" />
+    <ClInclude Include="SpiralLibrary\Memory\MemoryUtils.hpp" />
+    <ClInclude Include="SpiralLibrary\Optional\Optional.hpp" />
+    <ClInclude Include="SpiralLibrary\Optional\OptionalExcept.hpp" />
+    <ClInclude Include="SpiralLibrary\Random\Random.hpp" />
+    <ClInclude Include="SpiralLibrary\Random\Sampling.hpp" />
+    <ClInclude Include="SpiralLibrary\String\Concat.hpp" />
+    <ClInclude Include="SpiralLibrary\String\Format.hpp" />
+    <ClInclude Include="SpiralLibrary\Structure\Index.hpp" />
+    <ClInclude Include="SpiralLibrary\Structure\MultiIndex.hpp" />
+    <ClInclude Include="SpiralLibrary\Structure\Range.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\AnyTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\ArrayUtilsTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\ConceptTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\DelayCallTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\LibSpiralTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\MaybeCallTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\MultiArray_and_MultiIndexTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\OptionalTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\OpTraitsTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\RandomTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\SignalSlotsTest.hpp" />
+    <ClInclude Include="SpiralLibrary\Test\StringTest.hpp" />
+    <ClInclude Include="SpiralLibrary\TypeTraits\Enabler.hpp" />
+    <ClInclude Include="SpiralLibrary\TypeTraits\Identity.hpp" />
+    <ClInclude Include="SpiralLibrary\TypeTraits\OperatorTraits.hpp" />
+    <ClInclude Include="SpiralLibrary\TypeTraits\StdTraitsAlias.hpp" />
+    <ClInclude Include="SpiralLibrary\TypeTraits\Tag.hpp" />
+    <ClInclude Include="SpiralLibrary\TypeTraits\TypeTraits.hpp" />
+    <ClInclude Include="SpiralLibrary\type_traits\Enabler.hpp" />
+    <ClInclude Include="SpiralLibrary\type_traits\Identity.hpp" />
+    <ClInclude Include="SpiralLibrary\type_traits\OperatorTraits.hpp" />
+    <ClInclude Include="SpiralLibrary\type_traits\StdTraitsAlias.hpp" />
+    <ClInclude Include="SpiralLibrary\type_traits\Tag.hpp" />
+    <ClInclude Include="SpiralLibrary\type_traits\TypeTraits.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\ArrayUtils.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\ClassAttribute.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\Forward.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\Hash.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\IndexSequence.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\Print.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\Protect.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\TupleUtils.hpp" />
+    <ClInclude Include="SpiralLibrary\Utility\ValueHolder.hpp" />
     <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Structure\Structure.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11\D3DX11Device.cpp" />
+    <ClCompile Include="D3D11\D3DX11Renderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
+    <ClCompile Include="Mesh\MeshBase.cpp" />
+    <ClCompile Include="Mesh\Primitive\Triangle.cpp" />
+    <ClCompile Include="Resource\Resource3DHandle.cpp" />
+    <ClCompile Include="Resource\ResourceHandle.cpp" />
+    <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

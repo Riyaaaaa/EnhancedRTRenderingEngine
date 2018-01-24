@@ -1,0 +1,8 @@
+﻿  ResourceLoader.cpp
+c:\users\a-ono\source\repos\enhancedrtrenderingengine\enhancedrtrenderingengine\resource\resourceloader.cpp(15): warning C4244: '初期化中': 'std::streamoff' から 'int' への変換です。データが失われる可能性があります。
+c:\users\a-ono\source\repos\enhancedrtrenderingengine\enhancedrtrenderingengine\resource\resourceloader.cpp(20): warning C4244: '初期化中': 'std::streamoff' から 'int' への変換です。データが失われる可能性があります。
+  ResourceHandle.cpp
+  Resource3DHandle.cpp
+  Triangle.cpp
+  コードを生成中...
+  EnhancedRTRenderingEngine.vcxproj -> C:\Users\a-ono\source\repos\EnhancedRTRenderingEngine\Debug\EnhancedRTRenderingEngine.exe
