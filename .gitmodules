@@ -1,0 +1,3 @@
+[submodule "EnhancedRTRenderingEngine/SpiralLibrary"]
+	path = EnhancedRTRenderingEngine/SpiralLibrary
+	url = https://github.com/Riyaaaaa/SpiralLibrary.git
