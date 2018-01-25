@@ -76,6 +76,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
+    <IncludePath>$(ProjectDir);$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -110,6 +111,9 @@
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.txt</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -149,12 +153,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
+    <ClInclude Include="Constant\RenderConfig.h" />
+    <ClInclude Include="D3D11\D3D11DrawElement.h" />
     <ClInclude Include="D3D11\D3DX11Device.h" />
     <ClInclude Include="D3D11\D3DX11Renderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
+    <ClInclude Include="FileManager.h" />
     <ClInclude Include="Mesh\MeshBase.h" />
     <ClInclude Include="Mesh\Primitive\Triangle.h" />
+    <ClInclude Include="RenderingContext.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="Resource\ResourceWeakHandle.h" />
     <ClInclude Include="Resource\Resource3DHandle.h" />
     <ClInclude Include="Resource\ResourceHandle.h" />
     <ClInclude Include="Resource\ResourceLoader.h" />
@@ -238,11 +247,16 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Common.cpp" />
+    <ClCompile Include="D3D11\D3D11DrawElement.cpp" />
     <ClCompile Include="D3D11\D3DX11Device.cpp" />
     <ClCompile Include="D3D11\D3DX11Renderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
+    <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Mesh\MeshBase.cpp" />
     <ClCompile Include="Mesh\Primitive\Triangle.cpp" />
+    <ClCompile Include="RenderingContext.cpp" />
+    <ClCompile Include="Resource\ResourceWeakHandle.cpp" />
     <ClCompile Include="Resource\Resource3DHandle.cpp" />
     <ClCompile Include="Resource\ResourceHandle.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />
@@ -259,6 +273,16 @@
   <ItemGroup>
     <Image Include="EnhancedRTRenderingEngine.ico" />
     <Image Include="small.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <FxCompile Include="Shader\PixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)%(Filename).cso</ObjectFileOutput>
+    </FxCompile>
+    <FxCompile Include="Shader\VertexShader.hlsl">
+      <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)%(Filename).cso</ObjectFileOutput>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
+    </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

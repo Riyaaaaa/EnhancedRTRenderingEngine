@@ -1,11 +1,14 @@
 #include "stdafx.h"
 #include "ResourceLoader.h"
+#include "FileManager.h"
+
+#include "Common.h"
 
 //#include <fbxsdk.h>  
 
 ResourceHandle ResourceLoader::LoadShader(std::string filename) {
 	std::ifstream ifs;
-	ifs.open(filename + ".cso", std::ios::in | std::ios::binary);
+	ifs.open(FileManager::getInstance()->MakeRelativePath(filename + ".cso"), std::ios::in | std::ios::binary);
 
 	if (!ifs.is_open()) {
 		return ResourceHandle{};

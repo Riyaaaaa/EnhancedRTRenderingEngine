@@ -16,12 +16,10 @@ public:
 	D3DX11Renderer();
 	~D3DX11Renderer();
 
-	void Initialize(const std::shared_ptr<D3DX11Device>& device, const std::array<Vertex3D, 3>& vData );
+	void Initialize(const std::shared_ptr<D3DX11Device>& device);
 
 	void render();
 protected:
 	std::shared_ptr<D3DX11Device> mDevice;
-
-	std::vector<ResourceHandle> mResourceQueue;
 };
 

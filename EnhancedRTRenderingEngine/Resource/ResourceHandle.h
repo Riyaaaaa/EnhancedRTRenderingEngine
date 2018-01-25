@@ -22,7 +22,8 @@ public:
 	ResourceHandle(ResourceHandle&& other) noexcept { 
 		*this = std::move(other); 
 	}
-	~ResourceHandle() {
+
+	virtual ~ResourceHandle() {
 		if (_ptr) {
 			delete _ptr;
 		}

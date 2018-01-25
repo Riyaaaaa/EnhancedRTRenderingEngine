@@ -25,23 +25,19 @@ bool D3DX11Device::Initialize(HWND hWnd)
 		return false;
 	}
 
-	//インターフェース取得
 	if (FAILED(hpDevice->QueryInterface(__uuidof(IDXGIDevice1), (void**)&hpDXGI))) {
 		return false;
 	}
 
-	//アダプター取得
 	if (FAILED(hpDXGI->GetAdapter(&hpAdapter))) {
 		return false;
 	}
 
-	//ファクトリー取得
 	hpAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&hpDXGIFactory);
 	if (hpDXGIFactory == NULL) {
 		return false;
 	}
 
-	//スワップチェイン作成
 	DXGI_SWAP_CHAIN_DESC hDXGISwapChainDesc;
 	hDXGISwapChainDesc.BufferDesc.Width = 1980;
 	hDXGISwapChainDesc.BufferDesc.Height = 1080;
@@ -62,7 +58,6 @@ bool D3DX11Device::Initialize(HWND hWnd)
 		return false;
 	}
 
-	//そのスワップチェインのバックバッファ取得
 	if (FAILED(hpDXGISwpChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&hpBackBuffer))) {
 		return false;
 	}
@@ -72,10 +67,8 @@ bool D3DX11Device::Initialize(HWND hWnd)
 		return false;
 	}
 
-	//更にその描画ターゲットをコンテキストに設定
 	hpDeviceContext->OMSetRenderTargets(1, &hpRenderTargetView, NULL);
 
-	//ビューポート設定
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
@@ -89,7 +82,6 @@ bool D3DX11Device::Initialize(HWND hWnd)
 }
 
 bool D3DX11Device::EnableFullScreen(HWND hWnd) {
-	//ALT+Enterでフルスクリーンを許可する
 	if (FAILED(hpDXGIFactory->MakeWindowAssociation(hWnd, 0))) {
 		return false;
 	}

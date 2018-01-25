@@ -1,16 +1,15 @@
 #pragma once
 
-#include "../Structure/Structure.h"
-#include <array>
+#include <vector>
 
-template<std::size_t VertNum>
+template<class VertType>
 class MeshBase
 {
 public:
 	MeshBase() {};
 	virtual ~MeshBase() {};
 
-	static constexpr std::size_t GetVertNum() { return VertNum; }
-	std::array<Vertex3D, VertNum> hVectorData;
+	std::vector<VertType> hVectorData;
+	std::size_t vertexCount;
 };
 

@@ -7,9 +7,7 @@ struct pixcelIn
 float4 main(pixcelIn IN) : SV_Target
 {
 	pixcelIn OUT;
+	OUT.col = IN.col;
 
-//ÉJÉâÅ[ÇÇªÇÃÇ‹Ç‹ï‘Ç∑
-OUT.col = IN.col;
-
-return OUT.col;
+	return OUT.col;
 }
