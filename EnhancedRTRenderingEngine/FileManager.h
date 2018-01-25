@@ -10,6 +10,7 @@ public:
 	FileManager();
 
 	std::string MakeRelativePath(std::string filename);
+	std::string MakeAssetPath(std::string filename);
 
 private:
 	std::string _projDir;

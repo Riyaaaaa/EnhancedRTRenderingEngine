@@ -14,3 +14,7 @@ FileManager::FileManager()
 std::string FileManager::MakeRelativePath(std::string filename) {
 	return _projDir + filename;
 }
+
+std::string FileManager::MakeAssetPath(std::string filename) {
+	return "Asset\\" + filename;
+}
