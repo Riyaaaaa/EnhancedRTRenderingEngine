@@ -159,6 +159,7 @@
     <ClInclude Include="D3D11\D3DX11Renderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
     <ClInclude Include="FileManager.h" />
+    <ClInclude Include="Scene\MeshObject.h" />
     <ClInclude Include="Mesh\MeshBase.h" />
     <ClInclude Include="Mesh\Primitive\Triangle.h" />
     <ClInclude Include="RenderingContext.h" />
@@ -167,6 +168,8 @@
     <ClInclude Include="Resource\Resource3DHandle.h" />
     <ClInclude Include="Resource\ResourceHandle.h" />
     <ClInclude Include="Resource\ResourceLoader.h" />
+    <ClInclude Include="Scene\Scene.h" />
+    <ClInclude Include="Scene\SceneObject.h" />
     <ClInclude Include="SpiralLibrary\Algorithm\AlphaBeta.h" />
     <ClInclude Include="SpiralLibrary\Algorithm\AlphaBetaNodeState.hpp" />
     <ClInclude Include="SpiralLibrary\Algorithm\AStar.hpp" />
@@ -245,6 +248,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structure\Structure.h" />
     <ClInclude Include="targetver.h" />
+    <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Common.cpp" />
@@ -253,6 +257,7 @@
     <ClCompile Include="D3D11\D3DX11Renderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
     <ClCompile Include="FileManager.cpp" />
+    <ClCompile Include="Scene\MeshObject.cpp" />
     <ClCompile Include="Mesh\MeshBase.cpp" />
     <ClCompile Include="Mesh\Primitive\Triangle.cpp" />
     <ClCompile Include="RenderingContext.cpp" />
@@ -260,12 +265,15 @@
     <ClCompile Include="Resource\Resource3DHandle.cpp" />
     <ClCompile Include="Resource\ResourceHandle.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />
+    <ClCompile Include="Scene\Scene.cpp" />
+    <ClCompile Include="Scene\SceneObject.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc" />
@@ -282,6 +290,7 @@
     <FxCompile Include="Shader\VertexShader.hlsl">
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)%(Filename).cso</ObjectFileOutput>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,7 +1,8 @@
+
 struct vertexIn
 {
-	float4 pos : POSITION;
-	float4 col : COLOR;
+	float4 pos : POSITION0;
+	float4 col : COLOR0;
 };
 
 struct vertexOut

@@ -3,13 +3,13 @@
 
 #include <d3d11.h>
 
-class D3DX11Device
+class D3DX11RenderView
 {
 public:
-	bool Initialize(HWND hWnd);
+	bool Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
 
-	D3DX11Device() {};
-	~D3DX11Device();
+	D3DX11RenderView() {};
+	~D3DX11RenderView();
 
 	bool EnableFullScreen(HWND hWnd);
 

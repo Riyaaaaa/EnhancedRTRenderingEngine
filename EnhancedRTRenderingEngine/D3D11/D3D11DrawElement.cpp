@@ -37,38 +37,38 @@ D3D11DrawElement<VertType>::D3D11DrawElement(RenderingContext context, MeshBase<
 }
 
 template<class VertType>
-void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11Device>& device) {
+void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& view) {
 	ID3D11Buffer* hpBuffer;
-	if (FAILED(device->hpDevice->CreateBuffer(&bufferDesc, &subResource, &hpBuffer))) {
+	if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, &hpBuffer))) {
 		return;
 	}
 
 	UINT hStrides = sizeof(VertType);
 	UINT hOffsets = 0;
 
-	device->hpDeviceContext->IASetVertexBuffers(0, 1, &hpBuffer, &hStrides, &hOffsets);
-	device->hpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	view->hpDeviceContext->IASetVertexBuffers(0, 1, &hpBuffer, &hStrides, &hOffsets);
+	view->hpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ID3D11InputLayout* hpInputLayout = NULL;
-	if (FAILED(device->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), &hpInputLayout))) {
+	if (FAILED(view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), &hpInputLayout))) {
 		return;
 	}
 
-	device->hpDeviceContext->IASetInputLayout(hpInputLayout);
+	view->hpDeviceContext->IASetInputLayout(hpInputLayout);
 
 	ID3D11VertexShader* hpVertexShader;
-	if (FAILED(device->hpDevice->CreateVertexShader(vShader.get(), vShader.size(), NULL, &hpVertexShader))) {
+	if (FAILED(view->hpDevice->CreateVertexShader(vShader.get(), vShader.size(), NULL, &hpVertexShader))) {
 		return;
 	}
-	device->hpDeviceContext->VSSetShader(hpVertexShader, NULL, 0);
+	view->hpDeviceContext->VSSetShader(hpVertexShader, NULL, 0);
 
 	ID3D11PixelShader* hpPixelShader;
-	if (FAILED(device->hpDevice->CreatePixelShader(pShader.get(), pShader.size(), NULL, &hpPixelShader))) {
+	if (FAILED(view->hpDevice->CreatePixelShader(pShader.get(), pShader.size(), NULL, &hpPixelShader))) {
 		return;
 	}
-	device->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
+	view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
 
-	device->hpDeviceContext->Draw(3, 0);
+	view->hpDeviceContext->Draw(3, 0);
 }
 
 template D3D11DrawElement<Vertex3D>;

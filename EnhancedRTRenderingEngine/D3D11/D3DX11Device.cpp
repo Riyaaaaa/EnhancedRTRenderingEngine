@@ -6,26 +6,12 @@
 #pragma comment(lib, "d3d11.lib")
 
 
-bool D3DX11Device::Initialize(HWND hWnd)
+bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
 {
-	HRESULT hr;
-	hr = D3D11CreateDevice(
-		NULL,
-		D3D_DRIVER_TYPE_HARDWARE,
-		NULL,
-		0,
-		NULL,
-		0,
-		D3D11_SDK_VERSION,
-		&hpDevice,
-		NULL,
-		&hpDeviceContext);
-	if FAILED(hr)
-	{
-		return false;
-	}
+	hpDevice = device;
+	hpDeviceContext = deviceContext;
 
-	if (FAILED(hpDevice->QueryInterface(__uuidof(IDXGIDevice1), (void**)&hpDXGI))) {
+	if (FAILED(device->QueryInterface(__uuidof(IDXGIDevice1), (void**)&hpDXGI))) {
 		return false;
 	}
 
@@ -54,7 +40,7 @@ bool D3DX11Device::Initialize(HWND hWnd)
 	hDXGISwapChainDesc.Windowed = TRUE;
 	hDXGISwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	hDXGISwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
-	if (FAILED(hpDXGIFactory->CreateSwapChain(hpDevice, &hDXGISwapChainDesc, &hpDXGISwpChain))) {
+	if (FAILED(hpDXGIFactory->CreateSwapChain(device, &hDXGISwapChainDesc, &hpDXGISwpChain))) {
 		return false;
 	}
 
@@ -62,8 +48,7 @@ bool D3DX11Device::Initialize(HWND hWnd)
 		return false;
 	}
 
-	//そのバックバッファから描画ターゲット生成
-	if (FAILED(hpDevice->CreateRenderTargetView(hpBackBuffer, NULL, &hpRenderTargetView))) {
+	if (FAILED(device->CreateRenderTargetView(hpBackBuffer, NULL, &hpRenderTargetView))) {
 		return false;
 	}
 
@@ -81,7 +66,7 @@ bool D3DX11Device::Initialize(HWND hWnd)
 	return true;
 }
 
-bool D3DX11Device::EnableFullScreen(HWND hWnd) {
+bool D3DX11RenderView::EnableFullScreen(HWND hWnd) {
 	if (FAILED(hpDXGIFactory->MakeWindowAssociation(hWnd, 0))) {
 		return false;
 	}
@@ -89,7 +74,7 @@ bool D3DX11Device::EnableFullScreen(HWND hWnd) {
 }
 
 
-D3DX11Device::~D3DX11Device()
+D3DX11RenderView::~D3DX11RenderView()
 {
 	SAFE_RELEASE(hpRenderTargetView);
 	SAFE_RELEASE(hpBackBuffer);
@@ -98,5 +83,4 @@ D3DX11Device::~D3DX11Device()
 	SAFE_RELEASE(hpAdapter);
 	SAFE_RELEASE(hpDXGI);
 	SAFE_RELEASE(hpDeviceContext);
-	SAFE_RELEASE(hpDevice);
 }

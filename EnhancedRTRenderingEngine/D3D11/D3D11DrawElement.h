@@ -14,7 +14,7 @@ class D3D11DrawElement
 {
 public:
 	D3D11DrawElement(RenderingContext context, MeshBase<VertType>* mesh);
-	void Draw(const std::shared_ptr<D3DX11Device>& device);
+	void Draw(const std::unique_ptr<D3DX11RenderView>& device);
 
 protected:
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;

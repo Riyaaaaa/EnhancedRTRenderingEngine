@@ -16,10 +16,12 @@ public:
 	D3DX11Renderer();
 	~D3DX11Renderer();
 
-	void Initialize(const std::shared_ptr<D3DX11Device>& device);
+	void Initialize(ID3D11Device* device, ID3D11DeviceContext* hpDeviceContext);
 
 	void render();
 protected:
-	std::shared_ptr<D3DX11Device> mDevice;
+	std::unique_ptr<D3DX11RenderView> mView;
+	ID3D11RasterizerState* mRasterizerState;
+	ID3D11RasterizerState* mDoubleSidedRasterizerState;
 };
 
