@@ -5,10 +5,10 @@
 struct png_info_def;
 
 // support png only
-class Texture2D : public ResourceHandle
+class Texture2D : public ResourceHandleImpl<Texture2D>
 {
 public:
-	using ResourceHandle::ResourceHandle;
+	using ResourceHandleImpl::ResourceHandleImpl;
 
 	Texture2D() {}
 	Texture2D(png_info_def* info, void* ptr, SIZE_T size);

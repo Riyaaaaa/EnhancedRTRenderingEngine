@@ -16,7 +16,14 @@
 
 ResourceHandle ResourceLoader::LoadShader(std::string filename) {
 	std::ifstream ifs;
-	ifs.open(FileManager::getInstance()->MakeRelativePath(filename + ".cso"), std::ios::in | std::ios::binary);
+	auto manager = FileManager::getInstance();
+	auto path = manager->MakeRelativePath(filename + ".cso");
+
+	if (manager->FileExists(path)) {
+		return manager->GetResourceHandleFromCache<ResourceHandle>(path);
+	}
+
+	ifs.open(path, std::ios::in | std::ios::binary);
 
 	if (!ifs.is_open()) {
 		return ResourceHandle{};
@@ -36,7 +43,7 @@ ResourceHandle ResourceLoader::LoadShader(std::string filename) {
 	ifs.read(buf, size);
 	ifs.close();
 
-	return ResourceHandle(buf, size);
+	return manager->CreateCachedResourceHandle<ResourceHandle>(path, buf, size);
 }
 
 int ResourceLoader::LoadTexture(std::string filename, Texture2D* outTex) {
@@ -45,7 +52,13 @@ int ResourceLoader::LoadTexture(std::string filename, Texture2D* outTex) {
 	png_infop PngInfo;
 	png_byte sig[4];
 
-	auto path = FileManager::getInstance()->MakeAssetPath("Texture\\" + filename + ".png");
+	auto manager = FileManager::getInstance();
+	auto path = manager->MakeAssetPath("Texture\\" + filename + ".png");
+
+	if (manager->FileExists(path)) {
+		 *outTex = manager->GetResourceHandleFromCache<Texture2D>(path);
+		 return 0;
+	}
 
 	FILE *fp;
 	fopen_s(&fp, path.c_str(), "rb");
@@ -117,7 +130,8 @@ int ResourceLoader::LoadTexture(std::string filename, Texture2D* outTex) {
 	}
 
 	png_read_end(Png, NULL);
-	*outTex = Texture2D{ PngInfo, (void*)buf, sizeof(buf) };
+
+	*outTex = manager->CreateCachedResourceHandle<Texture2D>(path, PngInfo, (void*)buf, sizeof(buf));
 
 	png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
 	fclose(fp);

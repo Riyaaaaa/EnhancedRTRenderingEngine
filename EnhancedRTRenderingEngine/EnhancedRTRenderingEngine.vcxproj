@@ -175,7 +175,6 @@
     <ClInclude Include="Mesh\Primitive\Triangle.h" />
     <ClInclude Include="RenderingContext.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="Resource\ResourceWeakHandle.h" />
     <ClInclude Include="Resource\Resource3DHandle.h" />
     <ClInclude Include="Resource\ResourceHandle.h" />
     <ClInclude Include="Resource\ResourceLoader.h" />
@@ -281,7 +280,6 @@
     <ClCompile Include="Scene\MeshObject.cpp" />
     <ClCompile Include="Mesh\MeshBase.cpp" />
     <ClCompile Include="Mesh\Primitive\Triangle.cpp" />
-    <ClCompile Include="Resource\ResourceWeakHandle.cpp" />
     <ClCompile Include="Resource\Resource3DHandle.cpp" />
     <ClCompile Include="Resource\ResourceHandle.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />

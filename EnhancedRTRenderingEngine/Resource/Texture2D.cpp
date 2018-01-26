@@ -6,7 +6,7 @@
 #include "libpng/pngstruct.h"
 #include "libpng/pnginfo.h"
 
-Texture2D::Texture2D(png_info_def* info, void* ptr, SIZE_T size) : ResourceHandle::ResourceHandle(ptr, size) {
+Texture2D::Texture2D(png_info_def* info, void* ptr, SIZE_T size) : ResourceHandleImpl::ResourceHandleImpl(ptr, size) {
 	width = info->width;
 	height = info->height;
 	channels = info->channels;
