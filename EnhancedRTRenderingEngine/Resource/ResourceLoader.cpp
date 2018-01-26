@@ -82,7 +82,6 @@ int ResourceLoader::LoadTexture(std::string filename, Texture2D* outTex) {
 	png_init_io(Png, fp);
 	png_set_sig_bytes(Png, 4);
 	png_read_info(Png, PngInfo);
-	png_set_bgr(Png);
 
 	w = PngInfo->width;
 	h = PngInfo->height; 
