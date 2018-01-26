@@ -34,3 +34,7 @@
 .vs/
 *.tlog
 *.log
+
+Debug/
+EnhancedRTRenderingEngine/x64/
+EnhancedRTRenderingEngine/Debug/
