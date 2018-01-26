@@ -29,7 +29,7 @@ void D3DX11Renderer::render() {
 		return;
 	}
 
-	RenderingContext context{ "MinVertexShader", "MinPixelShader", CreateVertexLayout<PrimitiveType::Type>(), VertexPrimitiveType::TRIANGLELIST };
+	RenderingContext context{ "VertexShader", "PixelShader", CreateVertexLayout<PrimitiveType::Type>(), VertexPrimitiveType::TRIANGLESTRIP };
 	D3D11DrawElement<PrimitiveType::Type> element(mView->hpDevice, context, t);
 
 	element.Draw(mView);

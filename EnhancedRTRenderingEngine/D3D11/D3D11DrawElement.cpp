@@ -66,8 +66,6 @@ D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, RenderingCont
 	primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
 
 	subResource.pSysMem = &mesh->hVectorData[0];
-	//subResource.SysMemPitch = 0;
-	//subResource.SysMemSlicePitch = 0;
 
 	vertexCount = mesh->vertexCount;
 	bufferDesc.ByteWidth = sizeof(VertType) * vertexCount;
@@ -75,7 +73,7 @@ D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, RenderingCont
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
-	//bufferDesc.StructureByteStride = sizeof(float);
+	bufferDesc.StructureByteStride = sizeof(float);
 
 	Texture2D resourceTex;
 	ResourceLoader::LoadTexture("test", &resourceTex);
@@ -96,8 +94,7 @@ void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& v
 	UINT hOffsets = 0;
 
 	view->hpDeviceContext->IASetVertexBuffers(0, 1, &hpBuffer, &hStrides, &hOffsets);
-	//view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
-	view->hpDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
 
 	ID3D11InputLayout* hpInputLayout = NULL;
 	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), &hpInputLayout);
