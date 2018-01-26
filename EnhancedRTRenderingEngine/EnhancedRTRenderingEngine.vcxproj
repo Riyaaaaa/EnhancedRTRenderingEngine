@@ -100,6 +100,9 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.txt</Command>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
@@ -156,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="D3D11\D3D11Texture.h" />
     <ClInclude Include="Scene\CameraObject.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
@@ -262,6 +266,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11\D3D11Texture.cpp" />
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3D11\D3D11DrawElement.cpp" />

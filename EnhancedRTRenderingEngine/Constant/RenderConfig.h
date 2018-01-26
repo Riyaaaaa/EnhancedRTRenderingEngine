@@ -2,7 +2,8 @@
 
 enum class VertexProperty {
 	FloatRGBA,
-	FloatRGB
+	FloatRGB,
+	FloatRG
 };
 
 enum class VertexPrimitiveType {

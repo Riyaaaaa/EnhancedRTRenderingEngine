@@ -118,10 +118,10 @@ int ResourceLoader::LoadTexture(std::string filename, Texture2D* outTex) {
 	}
 
 	png_read_end(Png, NULL);
+	*outTex = Texture2D{ PngInfo, (void*)buf, sizeof(buf) };
+
 	png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
 	fclose(fp);
-
-	*outTex = Texture2D{ (void*)buf, sizeof(buf) };
 
 	return 0;
 }

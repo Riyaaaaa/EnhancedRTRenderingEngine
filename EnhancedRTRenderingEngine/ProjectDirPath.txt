@@ -1,1 +1,1 @@
-C:\Users\a-ono\source\repos\EnhancedRTRenderingEngine\x64\Debug\ 
+C:\Users\a-ono\source\repos\EnhancedRTRenderingEngine\Debug\ 

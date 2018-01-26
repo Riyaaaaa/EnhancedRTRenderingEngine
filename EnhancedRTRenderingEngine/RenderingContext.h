@@ -3,12 +3,20 @@
 #include <string>
 #include <d3d11.h>
 
+#include <vector>
+
 #include "Constant/RenderConfig.h"
+
+struct VertexLayout {
+	const char* name;
+	VertexProperty vProperty;
+};
 
 struct RenderingContext
 {
 	std::string VSName, PSName;
-	VertexProperty vProperty;
+	std::vector<VertexLayout> layouts;
+
 	VertexPrimitiveType pTyppe;
 };
 

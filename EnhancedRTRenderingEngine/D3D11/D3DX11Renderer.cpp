@@ -34,7 +34,8 @@ void D3DX11Renderer::render() {
 		return;
 	}
 
-	RenderingContext context{ "VertexShader", "PixelShader", VertexProperty::FloatRGBA, VertexPrimitiveType::TRIANGLELIST };
+	std::vector<VertexLayout> layouts = {{"POSITION", VertexProperty::FloatRGB},{ "COLOR", VertexProperty::FloatRGBA },{ "TEXCOORD", VertexProperty::FloatRG } };
+	RenderingContext context{ "VertexShader", "PixelShader", layouts, VertexPrimitiveType::TRIANGLELIST };
 	D3D11DrawElement<Vertex3D> element(context, t);
 
 	element.Draw(mView);
