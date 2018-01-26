@@ -101,7 +101,7 @@
       <AdditionalDependencies>zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.txt</Command>
+      <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.env</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -119,7 +119,7 @@
       <AdditionalDependencies>zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.txt</Command>
+      <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.env</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">

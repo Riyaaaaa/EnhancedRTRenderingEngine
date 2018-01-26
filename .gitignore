@@ -35,6 +35,9 @@
 *.tlog
 *.log
 
+*.env
+
 Debug/
+x64/
 EnhancedRTRenderingEngine/x64/
 EnhancedRTRenderingEngine/Debug/

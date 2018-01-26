@@ -5,7 +5,7 @@
 
 FileManager::FileManager()
 {
-	std::ifstream ifs("ProjectDirPath.txt");
+	std::ifstream ifs("ProjectDirPath.env");
 	if (ifs.is_open()) {
 		std::getline(ifs, _projDir, ' ');
 	}
