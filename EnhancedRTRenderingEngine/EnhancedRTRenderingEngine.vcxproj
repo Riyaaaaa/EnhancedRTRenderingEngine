@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="D3D11\D3D11Texture.h" />
+    <ClInclude Include="Mesh\Primitive\Primitives.h" />
+    <ClInclude Include="Mesh\Primitive\Pentagon.h" />
     <ClInclude Include="Scene\CameraObject.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
@@ -254,6 +256,7 @@
     <ClInclude Include="SpiralLibrary\Utility\Protect.hpp" />
     <ClInclude Include="SpiralLibrary\Utility\TupleUtils.hpp" />
     <ClInclude Include="SpiralLibrary\Utility\ValueHolder.hpp" />
+    <ClInclude Include="Mesh\Primitive\Square.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structure\Structure.h" />
     <ClInclude Include="targetver.h" />
@@ -267,6 +270,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D11\D3D11Texture.cpp" />
+    <ClCompile Include="Mesh\Primitive\Pentagon.cpp" />
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3D11\D3D11DrawElement.cpp" />
@@ -277,13 +281,13 @@
     <ClCompile Include="Scene\MeshObject.cpp" />
     <ClCompile Include="Mesh\MeshBase.cpp" />
     <ClCompile Include="Mesh\Primitive\Triangle.cpp" />
-    <ClCompile Include="RenderingContext.cpp" />
     <ClCompile Include="Resource\ResourceWeakHandle.cpp" />
     <ClCompile Include="Resource\Resource3DHandle.cpp" />
     <ClCompile Include="Resource\ResourceHandle.cpp" />
     <ClCompile Include="Resource\ResourceLoader.cpp" />
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneObject.cpp" />
+    <ClCompile Include="Mesh\Primitive\Square.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -291,6 +295,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="Resource\Texture2D.cpp" />
+    <ClCompile Include="RenderingContext.cpp" />
     <ClCompile Include="WindowManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -301,6 +306,18 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\MinPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\MinVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\PixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)%(Filename).cso</ObjectFileOutput>

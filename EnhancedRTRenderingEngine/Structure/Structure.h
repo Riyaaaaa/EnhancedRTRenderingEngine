@@ -12,9 +12,15 @@ struct Color4B {
 	float r, g, b, a;
 };
 
+struct SimpleVertex {
+	float pos[3];	//x-y-z
+	float col[4];	//r-g-b-a
+};
+
 struct Vertex3D {
 	float pos[3];	//x-y-z
 	float col[4];	//r-g-b-a
+	float tex[2];	//x-y
 };
 
 struct Transform {

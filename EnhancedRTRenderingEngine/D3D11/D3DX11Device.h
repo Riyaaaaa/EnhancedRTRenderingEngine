@@ -23,5 +23,7 @@ public:
 	ID3D11Texture2D* hpBackBuffer = NULL;
 	ID3D11RenderTargetView *hpRenderTargetView = NULL;
 	IDXGISwapChain* hpDXGISwpChain = NULL;
+	ID3D11RasterizerState* mRasterizerState;
+	ID3D11RasterizerState* mDoubleSidedRasterizerState;
 };
 

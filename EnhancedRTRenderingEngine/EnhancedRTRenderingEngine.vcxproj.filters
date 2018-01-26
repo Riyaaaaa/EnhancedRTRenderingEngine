@@ -330,6 +330,15 @@
     <ClInclude Include="D3D11\D3D11Texture.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh\Primitive\Square.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Primitive\Primitives.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh\Primitive\Pentagon.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -368,9 +377,6 @@
     <ClCompile Include="D3D11\D3D11DrawElement.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="RenderingContext.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\ResourceWeakHandle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -395,6 +401,15 @@
     <ClCompile Include="D3D11\D3D11Texture.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Mesh\Primitive\Square.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\Primitive\Pentagon.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderingContext.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -412,5 +427,7 @@
   <ItemGroup>
     <FxCompile Include="Shader\VertexShader.hlsl" />
     <FxCompile Include="Shader\PixelShader.hlsl" />
+    <FxCompile Include="Shader\MinVertexShader.hlsl" />
+    <FxCompile Include="Shader\MinPixelShader.hlsl" />
   </ItemGroup>
 </Project>

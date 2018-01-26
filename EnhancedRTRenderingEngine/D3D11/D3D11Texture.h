@@ -23,9 +23,9 @@ public:
 		return &mView;
 	}
 
-	ID3D11SamplerState* GetSampler() const 
+	ID3D11SamplerState* const* GetSamplerRef()
 	{
-		return mSampler;
+		return &mSampler;
 	}
 
 	~D3D11Texture();

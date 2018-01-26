@@ -63,6 +63,12 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	vp.MaxDepth = 1.0f;
 	hpDeviceContext->RSSetViewports(1, &vp);
 
+	CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
+	device->CreateRasterizerState(&desc, &mRasterizerState);
+
+	desc.CullMode = D3D11_CULL_NONE;
+	device->CreateRasterizerState(&desc, &mDoubleSidedRasterizerState);
+
 	return true;
 }
 
@@ -83,4 +89,6 @@ D3DX11RenderView::~D3DX11RenderView()
 	SAFE_RELEASE(hpAdapter);
 	SAFE_RELEASE(hpDXGI);
 	SAFE_RELEASE(hpDeviceContext);
+	SAFE_RELEASE(mRasterizerState);
+	SAFE_RELEASE(mDoubleSidedRasterizerState);
 }

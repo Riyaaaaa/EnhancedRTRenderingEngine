@@ -25,6 +25,20 @@ DXGI_FORMAT CastToD3D11Formart<DXGI_FORMAT, VertexProperty>(VertexProperty prop)
 	}
 }
 
+template<>
+D3D_PRIMITIVE_TOPOLOGY CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY, VertexPrimitiveType>(VertexPrimitiveType prop) {
+	switch (prop)
+	{
+	case VertexPrimitiveType::TRIANGLELIST:
+		return D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+	case VertexPrimitiveType::TRIANGLESTRIP:
+		return D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
+		break;
+	default:
+		return D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_UNDEFINED;
+	}
+}
+
 UINT GetMemoryBlockSize(VertexProperty prop) {
 	switch (prop)
 	{
@@ -41,7 +55,7 @@ UINT GetMemoryBlockSize(VertexProperty prop) {
 }
 
 template<class VertType>
-D3D11DrawElement<VertType>::D3D11DrawElement(RenderingContext context, MeshBase<VertType>* mesh) {
+D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, RenderingContext context, MeshBase<VertType>* mesh) {
 
 	UINT memoryOffset = 0;
 	for (auto&& layout : context.layouts) {
@@ -49,16 +63,23 @@ D3D11DrawElement<VertType>::D3D11DrawElement(RenderingContext context, MeshBase<
 		memoryOffset += GetMemoryBlockSize(layout.vProperty);
 	}
 
-	bufferDesc.ByteWidth = sizeof(Vertex3D) * 3;
+	primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
+
+	subResource.pSysMem = &mesh->hVectorData[0];
+	//subResource.SysMemPitch = 0;
+	//subResource.SysMemSlicePitch = 0;
+
+	vertexCount = mesh->vertexCount;
+	bufferDesc.ByteWidth = sizeof(VertType) * vertexCount;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = sizeof(float);
+	//bufferDesc.StructureByteStride = sizeof(float);
 
-	subResource.pSysMem = &mesh->hVectorData[0];
-	subResource.SysMemPitch = 0;
-	subResource.SysMemSlicePitch = 0;
+	Texture2D resourceTex;
+	ResourceLoader::LoadTexture("test", &resourceTex);
+	tex.Initialize(device, resourceTex);
 
 	vShader = ResourceLoader::LoadShader(context.VSName);
 	pShader = ResourceLoader::LoadShader(context.PSName);
@@ -75,7 +96,8 @@ void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& v
 	UINT hOffsets = 0;
 
 	view->hpDeviceContext->IASetVertexBuffers(0, 1, &hpBuffer, &hStrides, &hOffsets);
-	view->hpDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+	//view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
+	view->hpDeviceContext->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY::D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	ID3D11InputLayout* hpInputLayout = NULL;
 	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), &hpInputLayout);
@@ -97,13 +119,11 @@ void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& v
 	}
 	view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
 
-	Texture2D resourceTex;
-	ResourceLoader::LoadTexture("test", &resourceTex);
-	D3D11Texture tex;
-	tex.Initialize(view->hpDevice, resourceTex);
 	view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceViewRef());
+	view->hpDeviceContext->PSSetSamplers(0, 1, tex.GetSamplerRef());
 
-	view->hpDeviceContext->Draw(3, 0);
+	view->hpDeviceContext->Draw(vertexCount, 0);
 }
 
 template D3D11DrawElement<Vertex3D>;
+template D3D11DrawElement<SimpleVertex>;

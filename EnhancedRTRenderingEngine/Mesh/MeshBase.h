@@ -6,6 +6,8 @@ template<class VertType>
 class MeshBase
 {
 public:
+	typedef VertType Type;
+
 	MeshBase() {};
 	virtual ~MeshBase() {};
 

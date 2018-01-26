@@ -21,7 +21,5 @@ public:
 	void render();
 protected:
 	std::unique_ptr<D3DX11RenderView> mView;
-	ID3D11RasterizerState* mRasterizerState;
-	ID3D11RasterizerState* mDoubleSidedRasterizerState;
 };
 
