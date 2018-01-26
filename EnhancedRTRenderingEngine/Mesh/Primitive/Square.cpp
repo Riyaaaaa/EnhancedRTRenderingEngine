@@ -1,9 +1,6 @@
 #include "stdafx.h"
 #include "Square.h"
 
-static const float      POLYGON_EDGE_LENGTH = 0.1f;
-static const float      POLYGON_DEPTH = 0.5f;
-
 Square::Square()
 {
 	hVectorData = std::vector<Vertex3D>{
