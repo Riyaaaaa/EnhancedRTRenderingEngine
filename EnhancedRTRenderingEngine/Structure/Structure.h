@@ -1,5 +1,7 @@
 #pragma once
 
+#include <DirectXMath.h>
+
 struct Vector3D {
 	float x, y, z;
 };
@@ -28,3 +30,11 @@ struct Transform {
 	Vector3D rotation;
 	Vector3D scale;
 };
+
+struct ConstantBuffer
+{
+	DirectX::XMMATRIX World;
+	DirectX::XMMATRIX View;
+	DirectX::XMMATRIX Projection;
+};
+

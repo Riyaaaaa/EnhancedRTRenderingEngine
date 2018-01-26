@@ -9,6 +9,7 @@
 #include "D3DX11Device.h"
 
 #include "../Resource/ResourceHandle.h"
+#include "../Scene/Scene.h"
 
 class D3DX11Renderer
 {
@@ -18,7 +19,7 @@ public:
 
 	void Initialize(ID3D11Device* device, ID3D11DeviceContext* hpDeviceContext);
 
-	void render();
+	void render(Scene* scene);
 protected:
 	std::unique_ptr<D3DX11RenderView> mView;
 };

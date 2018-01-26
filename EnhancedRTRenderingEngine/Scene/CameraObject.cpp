@@ -10,7 +10,6 @@ CameraObject::CameraObject()
 	hUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 }
 
-
 CameraObject::~CameraObject()
 {
 }
@@ -21,9 +20,13 @@ void CameraObject::SetProjParams(float fFOV, float fAspect, float fNearPlane, fl
 	m_fNearPlane = fNearPlane;
 	m_fFarPlane = fFarPlane;
 
-	m_mProj = XMMatrixPerspectiveFovLH(fFOV, fAspect, fNearPlane, fFarPlane);
+	mProj = XMMatrixPerspectiveFovLH(fFOV, fAspect, fNearPlane, fFarPlane);
 }
 
-XMMATRIX CameraObject::CreatePerspectiveProjection() {
+XMMATRIX CameraObject::GetViewProjection() {
 	return XMMatrixLookAtLH(hEye, hAt, hUp);
+}
+
+::XMMATRIX CameraObject::GetPerspectiveProjection() {
+	return mProj;
 }
