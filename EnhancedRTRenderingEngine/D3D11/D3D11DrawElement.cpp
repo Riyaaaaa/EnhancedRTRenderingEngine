@@ -5,6 +5,7 @@
 
 #include "Structure/Structure.h"
 #include "Resource/ResourceLoader.h"
+#include "Common.h"
 
 template<class T, class U = void>
 T CastToD3D11Formart(U prop);
@@ -52,6 +53,12 @@ UINT GetMemoryBlockSize(VertexProperty prop) {
 	default:
 		return 0;
 	}
+}
+
+template<class VertType>
+D3D11DrawElement<VertType>::~D3D11DrawElement() {
+	SAFE_RELEASE(transformBuffer);
+	SAFE_RELEASE(vertexBuffer);
 }
 
 template<class VertType>
