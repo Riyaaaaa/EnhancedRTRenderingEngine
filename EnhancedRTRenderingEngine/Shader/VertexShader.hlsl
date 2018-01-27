@@ -20,11 +20,17 @@ cbuffer ConstantBuffer : register(b0)
 	matrix Projection;
 }
 
+cbuffer ObjectBuffer : register(b1)
+{
+	matrix LocalTransMatrix;
+}
+
 vertexOut main(vertexIn IN)
 {
 	vertexOut OUT;
 
-	OUT.pos = mul(IN.pos, World);
+	OUT.pos = mul(IN.pos, LocalTransMatrix);
+	OUT.pos = mul(OUT.pos, World);
 	OUT.pos = mul(OUT.pos, View);
 	OUT.pos = mul(OUT.pos, Projection);
 	OUT.col = IN.col;

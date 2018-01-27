@@ -163,6 +163,7 @@
     <ClInclude Include="D3D11\D3D11Texture.h" />
     <ClInclude Include="Mesh\Primitive\Primitives.h" />
     <ClInclude Include="Mesh\Primitive\Pentagon.h" />
+    <ClInclude Include="Utility\SceneUtils.h" />
     <ClInclude Include="Scene\CameraObject.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
@@ -272,6 +273,7 @@
     <ClCompile Include="Mesh\SimpleModel\Box.cpp" />
     <ClCompile Include="D3D11\D3D11Texture.cpp" />
     <ClCompile Include="Mesh\Primitive\Pentagon.cpp" />
+    <ClCompile Include="Utility\SceneUtils.cpp" />
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3D11\D3D11DrawElement.cpp" />

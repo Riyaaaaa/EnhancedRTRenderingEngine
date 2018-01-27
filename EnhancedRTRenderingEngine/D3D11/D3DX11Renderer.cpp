@@ -6,10 +6,6 @@
 #include "Mesh/SimpleModel/Box.h"
 #include "WindowManager.h"
 
-typedef Box PrimitiveType;
-auto t = new PrimitiveType;
-auto t2 = new Square;
-
 D3DX11Renderer::D3DX11Renderer()
 {
 }
@@ -51,12 +47,13 @@ void D3DX11Renderer::render(Scene* scene) {
 	mView->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	mView->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
 
-	RenderingContext context{ "VertexShader", "PixelShader", CreateVertexLayout<PrimitiveType::Type>(), VertexPrimitiveType::TRIANGLESTRIP };
 	/*D3D11DrawElement<PrimitiveType::Type> element(mView->hpDevice, context, t);
 	element.Draw(mView);*/
 
-	D3D11DrawElement<Square::Type> element2(mView->hpDevice, context, t2);
-	element2.Draw(mView);
+	for (auto && object : scene->GetViewObjects()) {
+		D3D11DrawElement<Square::Type> element2(mView->hpDevice, &object);
+		element2.Draw(mView);
+	}
 	
 	mView->hpDXGISwpChain->Present(0, 0);
 }

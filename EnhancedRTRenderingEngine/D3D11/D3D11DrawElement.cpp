@@ -55,7 +55,9 @@ UINT GetMemoryBlockSize(VertexProperty prop) {
 }
 
 template<class VertType>
-D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, RenderingContext context, MeshBase<VertType>* mesh) {
+D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, MeshObject<VertType>* element) {
+	auto& context = element->GetContext();
+	_state = RenderingState::NONE;
 
 	UINT memoryOffset = 0;
 	for (auto&& layout : context.layouts) {
@@ -65,15 +67,12 @@ D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, RenderingCont
 
 	primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
 
-	subResource.pSysMem = &mesh->hVectorData[0];
-
-	vertexCount = mesh->vertexCount;
-	bufferDesc.ByteWidth = sizeof(VertType) * vertexCount;
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = 0;
-	bufferDesc.StructureByteStride = sizeof(float);
+	
+	
+	if (!SetBuffer(device, element)) {
+		_state = RenderingState::FAILED;
+		return;
+	}
 
 	Texture2D resourceTex;
 	ResourceLoader::LoadTexture("test", &resourceTex);
@@ -81,19 +80,52 @@ D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, RenderingCont
 
 	vShader = ResourceLoader::LoadShader(context.VSName);
 	pShader = ResourceLoader::LoadShader(context.PSName);
+
+	_state = RenderingState::RENDER_READIED;
+}
+
+template<class VertType>
+bool D3D11DrawElement<VertType>::SetBuffer(ID3D11Device* device, MeshObject<VertType>* element) {
+	D3D11_BUFFER_DESC bufferDesc;
+	D3D11_SUBRESOURCE_DATA subResource;
+
+	subResource.pSysMem = &(element->getMesh().hVectorData[0]);
+	vertexCount = element->getMesh().vertexCount;
+	bufferDesc.ByteWidth = sizeof(VertType) * vertexCount;
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+	bufferDesc.StructureByteStride = sizeof(float);
+
+	if (FAILED(device->CreateBuffer(&bufferDesc, &subResource, &vertexBuffer))) {
+		return false;
+	}
+
+	D3D11_SUBRESOURCE_DATA constantSubResource;
+	constantSubResource.pSysMem = element->GetMatrixRef();
+	//D3D11_BUFFER_DESC bufferDesc;
+	bufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+	bufferDesc.StructureByteStride = sizeof(float);
+	if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, &transformBuffer))) {
+		return false;
+	}
+
+	return true;
 }
 
 template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& view) {
-	ID3D11Buffer* hpBuffer;
-	if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, &hpBuffer))) {
-		return;
-	}
-
 	UINT hStrides = sizeof(VertType);
 	UINT hOffsets = 0;
 
-	view->hpDeviceContext->IASetVertexBuffers(0, 1, &hpBuffer, &hStrides, &hOffsets);
+	view->hpDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &hStrides, &hOffsets);
+	view->hpDeviceContext->VSSetConstantBuffers(1, 1, &transformBuffer);
+
 	view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
 
 	ID3D11InputLayout* hpInputLayout = NULL;

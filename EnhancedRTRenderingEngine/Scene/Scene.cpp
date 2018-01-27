@@ -3,6 +3,9 @@
 
 #include "Common.h"
 
+#include "Utility/SceneUtils.h"
+#include "Mesh/Primitive/Primitives.h"
+
 using namespace DirectX;
 
 Scene::Scene() {
@@ -18,6 +21,9 @@ Scene::Scene() {
 	auto camera = CameraObject();
 	camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 0.0001f, 1000.0f);
 	cameraObjects.push_back(camera);
+
+	//test code
+	viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
 
 	mainCameraIdx = 0;
 }

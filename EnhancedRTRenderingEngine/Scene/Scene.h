@@ -1,5 +1,6 @@
 #pragma once
 
+#include "MeshObject.h"
 #include "SceneObject.h"
 #include "CameraObject.h"
 
@@ -15,12 +16,13 @@ public:
 	DirectX::XMMATRIX GetWorldProjection();
 	DirectX::XMMATRIX GetViewProjection();
 
+	std::vector<MeshObject<Vertex3D>>& GetViewObjects() { return viewObjects; }
 
 private:
 	DirectX::XMMATRIX worldProjection;
 	int mainCameraIdx;
 
-	std::vector<SceneObject> viewObjects;
+	std::vector<MeshObject<Vertex3D>> viewObjects;
 	//std::vector<SceneObject> exertObjects;
 	std::vector<CameraObject> cameraObjects;
 
