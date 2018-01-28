@@ -5,6 +5,7 @@
 
 #include "Utility/SceneUtils.h"
 #include "Mesh/Primitive/Primitives.h"
+#include "Mesh/SimpleModel/Box.h"
 
 using namespace DirectX;
 
@@ -23,7 +24,8 @@ Scene::Scene() {
 	cameraObjects.push_back(camera);
 
 	//test code
-	viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
+	//viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
+	viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Box>());
 
 	mainCameraIdx = 0;
 }

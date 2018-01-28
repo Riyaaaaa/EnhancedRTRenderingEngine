@@ -40,6 +40,31 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	hDXGISwapChainDesc.Windowed = TRUE;
 	hDXGISwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	hDXGISwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+	ID3D11Texture2D* hpTexture2dDepth = NULL;
+	D3D11_TEXTURE2D_DESC hTexture2dDesc;
+	hTexture2dDesc.Width = hDXGISwapChainDesc.BufferDesc.Width;
+	hTexture2dDesc.Height = hDXGISwapChainDesc.BufferDesc.Height;
+	hTexture2dDesc.MipLevels = 1;
+	hTexture2dDesc.ArraySize = 1;
+	hTexture2dDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	hTexture2dDesc.SampleDesc = hDXGISwapChainDesc.SampleDesc;
+	hTexture2dDesc.Usage = D3D11_USAGE_DEFAULT;
+	hTexture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	hTexture2dDesc.CPUAccessFlags = 0;
+	hTexture2dDesc.MiscFlags = 0;
+	if (FAILED(hpDevice->CreateTexture2D(&hTexture2dDesc, NULL, &hpTexture2dDepth))) {
+		return false;
+	}
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC hDepthStencilViewDesc;
+	hDepthStencilViewDesc.Format = hTexture2dDesc.Format;
+	hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+	hDepthStencilViewDesc.Flags = 0;
+	if (FAILED(hpDevice->CreateDepthStencilView(hpTexture2dDepth, &hDepthStencilViewDesc, &hpDepthStencilView))) {
+		return false;
+	}
+
 	if (FAILED(hpDXGIFactory->CreateSwapChain(device, &hDXGISwapChainDesc, &hpDXGISwpChain))) {
 		return false;
 	}
@@ -52,7 +77,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 		return false;
 	}
 
-	hpDeviceContext->OMSetRenderTargets(1, &hpRenderTargetView, NULL);
+	hpDeviceContext->OMSetRenderTargets(1, &hpRenderTargetView, hpDepthStencilView);
 
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0;
@@ -68,6 +93,9 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 
 	desc.CullMode = D3D11_CULL_NONE;
 	device->CreateRasterizerState(&desc, &mDoubleSidedRasterizerState);
+
+	//hpDeviceContext->RSSetState(mRasterizerState);
+	hpDeviceContext->RSSetState(mDoubleSidedRasterizerState);
 
 	return true;
 }

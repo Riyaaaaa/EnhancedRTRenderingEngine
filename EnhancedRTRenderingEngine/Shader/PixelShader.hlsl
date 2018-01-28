@@ -11,7 +11,8 @@ SamplerState samLinear : register(s0);
 float4 main(pixcelIn IN) : SV_Target
 {
 	pixcelIn OUT;
-	//OUT.col = txDiffuse.Sample(samLinear, IN.tex);
-	OUT.col = float4(IN.tex, 0, 1);
+	OUT.col = txDiffuse.Sample(samLinear, IN.tex);
+	//OUT.col = float4(IN.tex, 0, 1);
+	//OUT.col = IN.col;
 	return OUT.col;
 }

@@ -27,6 +27,10 @@ void D3DX11Renderer::render(Scene* scene) {
 		return;
 	}
 
+	float ClearColor[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	mView->hpDeviceContext->ClearRenderTargetView(mView->hpRenderTargetView, ClearColor);
+	mView->hpDeviceContext->ClearDepthStencilView(mView->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
 	//constantバッファ生成
 	D3D11_BUFFER_DESC bufferDesc;
 	ID3D11Buffer* hpConstantBuffer = NULL;
