@@ -31,7 +31,7 @@ protected:
 	ID3D11Buffer* transformBuffer;
 	ID3D11Buffer* vertexBuffer;
 
-	ResourceHandle vShader, pShader;
+	ResourceHandle<> vShader, pShader;
 
 	RenderingState _state;
 };

@@ -11,7 +11,7 @@ class D3D11Texture
 	ID3D11SamplerState* mSampler;
 
 public:
-	bool Initialize(ID3D11Device* device, const Texture2D& tex);
+	bool Initialize(ID3D11Device* device, const ResourceHandle<Texture2D>& tex);
 
 	ID3D11ShaderResourceView* GetSubResourceView() const
 	{

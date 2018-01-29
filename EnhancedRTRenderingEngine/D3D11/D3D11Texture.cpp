@@ -4,11 +4,11 @@
 #include "Common.h"
 
 
-bool D3D11Texture::Initialize(ID3D11Device* device, const Texture2D& tex)
+bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture2D>& tex)
 {
 	D3D11_TEXTURE2D_DESC desc;
-	desc.Width = tex.Width();
-	desc.Height = tex.Height();
+	desc.Width = tex().Width();
+	desc.Height = tex().Height();
 	desc.MipLevels = 1;
 	desc.ArraySize = 1;
 	desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -20,8 +20,8 @@ bool D3D11Texture::Initialize(ID3D11Device* device, const Texture2D& tex)
 	desc.MiscFlags = 0;
 
 	D3D11_SUBRESOURCE_DATA initData;
-	initData.pSysMem = tex.get();
-	initData.SysMemPitch = tex.Stride();
+	initData.pSysMem = tex().get();
+	initData.SysMemPitch = tex().Stride();
 	//initData.SysMemSlicePitch = tex.Size();
 
 	auto hr = device->CreateTexture2D(&desc, &initData, &mTexture);

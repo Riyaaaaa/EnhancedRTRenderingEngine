@@ -7,6 +7,8 @@
 #include "Mesh/Primitive/Primitives.h"
 #include "Mesh/SimpleModel/Box.h"
 
+#include "Material/Material.h"
+
 using namespace DirectX;
 
 Scene::Scene() {
@@ -26,6 +28,9 @@ Scene::Scene() {
 	//test code
 	//viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
 	viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Box>());
+
+	Material material(MaterialParameters{"VertexShader", "PixelShader", "test"});
+	viewObjects[0].SetMaterial(material);
 
 	mainCameraIdx = 0;
 }

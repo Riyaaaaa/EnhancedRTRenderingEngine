@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Material\Material.h" />
+    <ClInclude Include="Material\MaterialParameters.h" />
     <ClInclude Include="Mesh\SimpleModel\Box.h" />
     <ClInclude Include="D3D11\D3D11Texture.h" />
     <ClInclude Include="Mesh\Primitive\Primitives.h" />
@@ -270,6 +272,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Material\Material.cpp" />
     <ClCompile Include="Mesh\SimpleModel\Box.cpp" />
     <ClCompile Include="D3D11\D3D11Texture.cpp" />
     <ClCompile Include="Mesh\Primitive\Pentagon.cpp" />

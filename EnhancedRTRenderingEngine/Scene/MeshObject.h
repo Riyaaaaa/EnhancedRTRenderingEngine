@@ -3,6 +3,7 @@
 #include "SceneObject.h"
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
+#include "Material/Material.h"
 #include "RenderingContext.h"
 
 template<class VertType>
@@ -15,7 +16,11 @@ public:
 	const MeshBase<VertType>& getMesh() { return _mesh; }
 	const RenderingContext& GetContext() { return _context;  }
 
+	void SetMaterial(const Material& material) { _material = material; }
+	const Material& GetMaterial() const { return _material; }
+
 protected:
+	Material _material;
 	RenderingContext _context;
 	MeshBase<VertType> _mesh;
 };

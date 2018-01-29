@@ -75,18 +75,15 @@ D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, MeshObject<Ve
 	primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
 
 	
-	
 	if (!SetBuffer(device, element)) {
 		_state = RenderingState::FAILED;
 		return;
 	}
 
-	Texture2D resourceTex;
-	ResourceLoader::LoadTexture("test", &resourceTex);
-	tex.Initialize(device, resourceTex);
+	tex.Initialize(device, element->GetMaterial().texture);
 
-	vShader = ResourceLoader::LoadShader(context.VSName);
-	pShader = ResourceLoader::LoadShader(context.PSName);
+	vShader = element->GetMaterial().vShader;
+	pShader = element->GetMaterial().pShader;
 
 	_state = RenderingState::RENDER_READIED;
 }
@@ -136,7 +133,7 @@ void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& v
 	view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
 
 	ID3D11InputLayout* hpInputLayout = NULL;
-	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), &hpInputLayout);
+	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), &hpInputLayout);
 	if (FAILED(err)) {
 		return;
 	}
@@ -144,13 +141,13 @@ void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& v
 	view->hpDeviceContext->IASetInputLayout(hpInputLayout);
 
 	ID3D11VertexShader* hpVertexShader;
-	if (FAILED(view->hpDevice->CreateVertexShader(vShader.get(), vShader.size(), NULL, &hpVertexShader))) {
+	if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, &hpVertexShader))) {
 		return;
 	}
 	view->hpDeviceContext->VSSetShader(hpVertexShader, NULL, 0);
 
 	ID3D11PixelShader* hpPixelShader;
-	if (FAILED(view->hpDevice->CreatePixelShader(pShader.get(), pShader.size(), NULL, &hpPixelShader))) {
+	if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, &hpPixelShader))) {
 		return;
 	}
 	view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);

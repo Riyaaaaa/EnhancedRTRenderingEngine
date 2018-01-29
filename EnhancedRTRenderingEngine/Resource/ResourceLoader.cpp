@@ -14,19 +14,19 @@
 
 //#include <fbxsdk.h>  
 
-ResourceHandle ResourceLoader::LoadShader(std::string filename) {
+ResourceHandle<> ResourceLoader::LoadShader(std::string filename) {
 	std::ifstream ifs;
 	auto manager = FileManager::getInstance();
 	auto path = manager->MakeRelativePath(filename + ".cso");
 
 	if (manager->FileExists(path)) {
-		return manager->GetResourceHandleFromCache<ResourceHandle>(path);
+		return manager->GetResourceHandleFromCache<ResourceEntity>(path);
 	}
 
 	ifs.open(path, std::ios::in | std::ios::binary);
 
 	if (!ifs.is_open()) {
-		return ResourceHandle{};
+		return ResourceHandle<>{};
 	}
 
 	ifs.seekg(0, std::fstream::end);
@@ -43,10 +43,10 @@ ResourceHandle ResourceLoader::LoadShader(std::string filename) {
 	ifs.read(buf, size);
 	ifs.close();
 
-	return manager->CreateCachedResourceHandle<ResourceHandle>(path, buf, size);
+	return manager->CreateCachedResourceHandle<ResourceEntity>(path, buf, size);
 }
 
-int ResourceLoader::LoadTexture(std::string filename, Texture2D* outTex) {
+int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex) {
 	int w, h, d;
 	png_structp Png;
 	png_infop PngInfo;
