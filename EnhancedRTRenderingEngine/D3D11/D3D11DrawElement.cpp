@@ -107,7 +107,8 @@ bool D3D11DrawElement<VertType>::SetBuffer(ID3D11Device* device, MeshObject<Vert
 	}
 
 	D3D11_SUBRESOURCE_DATA constantSubResource;
-	constantSubResource.pSysMem = element->GetMatrixRef();
+	auto mat = XMMatrixTranspose(element->GetMatrix());
+	constantSubResource.pSysMem = &mat;
 	//D3D11_BUFFER_DESC bufferDesc;
 	bufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;

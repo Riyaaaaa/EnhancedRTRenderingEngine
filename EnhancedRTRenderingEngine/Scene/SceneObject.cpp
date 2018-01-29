@@ -36,12 +36,12 @@ void SceneObject::SetScale(Vector3D scale) {
 	dirty = true;
 }
 
-XMMATRIX* SceneObject::GetMatrixRef() {
+const XMMATRIX& SceneObject::GetMatrix() {
 	if (dirty) {
 		matrix = XMMatrixMultiply(
-			XMMatrixMultiply(XMMatrixTranslation(transform.location.x, transform.location.x, transform.location.x),
+			XMMatrixMultiply(XMMatrixTranslation(transform.location.x, transform.location.y, transform.location.z),
 				XMMatrixRotationRollPitchYaw(transform.rotation.x, transform.rotation.y, transform.rotation.z)),
 			XMMatrixScaling(transform.scale.x, transform.scale.y, transform.scale.z));
 	}
-	return &matrix;
+	return matrix;
 }

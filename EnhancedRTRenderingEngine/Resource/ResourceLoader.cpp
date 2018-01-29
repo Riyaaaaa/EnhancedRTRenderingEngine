@@ -94,7 +94,9 @@ int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>*
 
 	png_init_io(Png, fp);
 	png_set_sig_bytes(Png, 4);
-	png_read_info(Png, PngInfo);
+	//png_read_info(Png, PngInfo);
+
+	png_read_png(Png, PngInfo, PNG_TRANSFORM_IDENTITY, NULL);
 
 	w = PngInfo->width;
 	h = PngInfo->height; 

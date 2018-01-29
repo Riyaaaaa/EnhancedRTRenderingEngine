@@ -10,7 +10,7 @@ public:
 	SceneObject();
 	~SceneObject();
 
-	DirectX::XMMATRIX* GetMatrixRef();
+	const DirectX::XMMATRIX& GetMatrix();
 
 	void SetTransform(Transform trans);
 	void SetRotation(Vector3D rot);

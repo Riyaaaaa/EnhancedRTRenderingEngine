@@ -26,11 +26,15 @@ Scene::Scene() {
 	cameraObjects.push_back(camera);
 
 	//test code
-	//viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
+	viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
 	viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Box>());
 
-	Material material(MaterialParameters{"VertexShader", "PixelShader", "test"});
+	viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
+	viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
+
+	Material material(MaterialParameters{"VertexShader", "PixelShader", "test2"});
 	viewObjects[0].SetMaterial(material);
+	viewObjects[1].SetMaterial(material);
 
 	mainCameraIdx = 0;
 }
