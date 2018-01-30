@@ -1,5 +1,9 @@
 #pragma once
-class PMDModel
+
+#include "Structure/Structure.h"
+#include "Resource/RowBinary.h"
+
+class PMDModel : public RowBinary
 {
 public:
 #pragma pack(push,1)
@@ -9,7 +13,7 @@ public:
 		unsigned char model_name[20];
 		unsigned char comment[256];
 	};
-	t_header header;
+	t_header* header;
 
 	unsigned long vert_count;
 	struct t_vertex {
@@ -26,7 +30,7 @@ public:
 	unsigned short *face_vert_index;
 #pragma pack(pop)
 
-	PMDModel();
-	~PMDModel();
+	PMDModel() {}
+	PMDModel(void* ptr, std::size_t size);
 };
 
