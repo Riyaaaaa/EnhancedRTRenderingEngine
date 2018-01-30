@@ -34,7 +34,9 @@ indexBuffer(nullptr) {
 		return;
 	}
 
-	tex.Initialize(device, element->GetMaterial().texture);
+	if (element->GetMaterial().texture().isValid()) {
+		tex.Initialize(device, element->GetMaterial().texture);
+	}
 
 	vShader = element->GetMaterial().vShader;
 	pShader = element->GetMaterial().pShader;
@@ -48,7 +50,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 	D3D11_SUBRESOURCE_DATA subResource;
 
 	subResource.pSysMem = &(element->GetMesh().GetVertexList()[0]);
-	vertexCount = element->GetMesh().GetVertexCount();
+	vertexCount = element->GetMesh().GetVertexList().size();
 	bufferDesc.ByteWidth = sizeof(VertType) * vertexCount;
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -75,7 +77,8 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 	}
 
 	if (element->GetMesh().HasIndexList()) {
-		bufferDesc.ByteWidth = sizeof(int) * element->GetMesh().GetIndexList().size();
+		vertexCount = element->GetMesh().GetIndexList().size();
+		bufferDesc.ByteWidth = sizeof(element->GetMesh().GetIndexList()[0]) * vertexCount;
 		bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 		bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 		bufferDesc.CPUAccessFlags = 0;
@@ -116,7 +119,9 @@ void D3D11DrawElement<VertType>::SetShader(const std::unique_ptr<D3DX11RenderVie
 	}
 	view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
 
-	view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceViewRef());
+	if (tex.IsAvalable()) {
+		view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceViewRef());
+	}
 	view->hpDeviceContext->PSSetSamplers(0, 1, tex.GetSamplerRef());
 }
 

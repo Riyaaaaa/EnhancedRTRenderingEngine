@@ -162,7 +162,7 @@ int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>*
 ResourceHandle<PMDModel> ResourceLoader::LoadPMDModel(std::string filename) {
 	std::ifstream ifs;
 	auto manager = FileManager::getInstance();
-	auto path = manager->MakeRelativePath("3DModel" + filename + ".pmd");
+	auto path = manager->MakeAssetPath("3DModel\\" + filename + ".pmd");
 
 	if (manager->FileExists(path)) {
 		return ResourceHandle<PMDModel>();

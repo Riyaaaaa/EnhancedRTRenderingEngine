@@ -28,7 +28,7 @@ void D3DX11Renderer::render(Scene* scene) {
 		return;
 	}
 
-	float ClearColor[] = { 0.0f, 0.0f, 1.0f, 1.0f };
+	float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
 	mView->hpDeviceContext->ClearRenderTargetView(mView->hpRenderTargetView, ClearColor);
 	mView->hpDeviceContext->ClearDepthStencilView(mView->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
@@ -53,7 +53,7 @@ void D3DX11Renderer::render(Scene* scene) {
 	mView->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
 
 	for (auto && object : scene->GetViewObjects()) {
-		D3D11DrawElement<Vertex3D>(mView->hpDevice, &object).Draw(mView);
+		D3D11DrawElement<Scene::VertType>(mView->hpDevice, &object).Draw(mView);
 	}
 	
 	mView->hpDXGISwpChain->Present(0, 0);

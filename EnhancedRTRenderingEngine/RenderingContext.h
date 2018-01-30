@@ -15,9 +15,7 @@ struct VertexLayout {
 
 struct RenderingContext
 {
-	std::string VSName, PSName;
 	std::vector<VertexLayout> layouts;
-
 	VertexPrimitiveType pType;
 };
 

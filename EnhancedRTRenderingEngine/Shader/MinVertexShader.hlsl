@@ -1,7 +1,7 @@
 
 struct vertexIn
 {
-	float4 pos : POSITION0;
+	float3 pos : POSITION0;
 	float4 col : COLOR0;
 };
 
@@ -15,7 +15,7 @@ vertexOut main(vertexIn IN)
 {
 	vertexOut OUT;
 
-	OUT.pos = IN.pos;
+	OUT.pos = float4(IN.pos, 1.0f);
 	OUT.col = IN.col;
 
 	return OUT;

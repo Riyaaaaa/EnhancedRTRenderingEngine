@@ -42,3 +42,5 @@ x64/
 EnhancedRTRenderingEngine/x64/
 EnhancedRTRenderingEngine/Debug/
 packages/
+
+nolicensed_*
