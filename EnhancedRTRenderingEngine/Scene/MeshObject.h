@@ -13,8 +13,8 @@ public:
 	MeshObject(MeshBase<VertType> mesh, RenderingContext context) : _mesh(mesh), _context(context) {}
 	~MeshObject() {}
 
-	const MeshBase<VertType>& getMesh() { return _mesh; }
-	const RenderingContext& GetContext() { return _context;  }
+	const MeshBase<VertType>& GetMesh() const { return _mesh; }
+	const RenderingContext& GetContext() const { return _context;  }
 
 	void SetMaterial(const Material& material) { _material = material; }
 	const Material& GetMaterial() const { return _material; }

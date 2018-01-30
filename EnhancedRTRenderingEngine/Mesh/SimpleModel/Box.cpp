@@ -4,7 +4,7 @@
 
 Box::Box()
 {
-	hVectorData = std::vector<Vertex3D>{
+	_vertexList = std::vector<Vertex3D>{
 		{ { 1.000000, 1.000000,-1.000000 },{ 0.0f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
 	{ { 1.000000,-1.000000,-1.000000 },{ 0.0f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
 	{ { -1.000000,-1.000000,-1.000000 },{ 0.0f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
@@ -48,7 +48,7 @@ Box::Box()
 	{ { -1.000000,-1.000000,-1.000000 },{ 0.0f,0.0f,0.0f,1.0f },{ 1.0f,1.0f } },
 	};
 
-	vertexCount = hVectorData.size();
+	_vertexCount = _vertexList.size();
 }
 
 

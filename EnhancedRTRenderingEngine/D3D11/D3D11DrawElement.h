@@ -17,10 +17,13 @@ public:
 	D3D11DrawElement(ID3D11Device* device, MeshObject<VertType>* element);
 	~D3D11DrawElement();
 
-	void Draw(const std::unique_ptr<D3DX11RenderView>& device);
+	virtual void Draw(const std::unique_ptr<D3DX11RenderView>& view);
 
 protected:
-	bool SetBuffer(ID3D11Device* device, MeshObject<VertType>* element);
+	virtual bool CreateBuffer(ID3D11Device* device, MeshObject<VertType>* element);
+	
+	virtual void SetBuffer(const std::unique_ptr<D3DX11RenderView>& view);
+	virtual void SetShader(const std::unique_ptr<D3DX11RenderView>& view);
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;
 	D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
@@ -30,6 +33,7 @@ protected:
 
 	ID3D11Buffer* transformBuffer;
 	ID3D11Buffer* vertexBuffer;
+	ID3D11Buffer* indexBuffer;
 
 	ResourceHandle<> vShader, pShader;
 

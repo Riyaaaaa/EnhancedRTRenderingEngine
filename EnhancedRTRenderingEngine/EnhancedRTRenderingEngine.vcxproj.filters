@@ -348,6 +348,9 @@
     <ClInclude Include="Material\MaterialParameters.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="D3D11\D3D11FormatUtils.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -445,5 +448,8 @@
     <FxCompile Include="Shader\MinVertexShader.hlsl" />
     <FxCompile Include="Shader\MinPixelShader.hlsl" />
     <FxCompile Include="Shader\UVColorShader.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
   </ItemGroup>
 </Project>
