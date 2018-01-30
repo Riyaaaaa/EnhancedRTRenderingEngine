@@ -444,5 +444,6 @@
     <FxCompile Include="Shader\PixelShader.hlsl" />
     <FxCompile Include="Shader\MinVertexShader.hlsl" />
     <FxCompile Include="Shader\MinPixelShader.hlsl" />
+    <FxCompile Include="Shader\UVColorShader.hlsl" />
   </ItemGroup>
 </Project>
