@@ -1,8 +1,8 @@
 #pragma once
 
-#include "d3d11.h"
-
 #include <utility>
+
+#include "RowBinary.h"
 
 class RefCounter {
 private:
@@ -91,44 +91,6 @@ public:
 template<class ResourceType>
 class ResourceHandleBase;
 
-class ResourceEntity {
-public:
-	ResourceEntity() : _ptr(nullptr), _size(0) {}
-	ResourceEntity(void* ptr, SIZE_T size) : _ptr(ptr), _size(size) {}
-	ResourceEntity& operator=(ResourceEntity&& other) noexcept {
-		if (this != &other) {
-			this->_ptr = other.get();
-			this->_size = other.size();
-
-			other._ptr = nullptr;
-		}
-		return *this;
-	}
-
-	ResourceEntity(ResourceEntity&& other) noexcept {
-		*this = std::move(other); 
-	}
-
-	virtual ~ResourceEntity() {};
-
-	const void* get() const { return _ptr; }
-	SIZE_T size() const { return _size; }
-	bool isValid() const { return _ptr != nullptr; }
-
-	void release() {
-		if (_ptr) {
-			delete _ptr;
-			_ptr = nullptr;
-		}
-	}
-
-	ResourceEntity & operator=(const ResourceEntity& src) = default;
-	ResourceEntity(const ResourceEntity&) = default;
-
-	SIZE_T _size;
-	const void* _ptr;
-};
-
 template<class ResourceType>
 class ResourceHandleBase {
 protected:
@@ -143,8 +105,15 @@ public:
 	virtual ~ResourceHandleBase() {};
 };
 
-template<class ResourceType = ResourceEntity, bool isResource = std::is_base_of<ResourceEntity, ResourceType>::value>
-class ResourceHandle : public ResourceHandleBase<ResourceType> {
+//template<class ResourceType = RowBinary, typename Attribute = typename ResourceType::ResourceAttribute>
+//class ResourceHandle;
+
+template<class ResourceType = RowBinary, bool Attribute = std::is_move_constructible_v<ResourceType> && std::is_move_assignable_v<ResourceType>>
+class ResourceHandle;
+
+
+template<class ResourceType>
+class ResourceHandle<ResourceType, true> : public ResourceHandleBase<ResourceType> {
 public:
 	ResourceHandle() {}
 	ResourceHandle(const ResourceType& resource) : ResourceHandleBase<ResourceType>(resource), _isOwner(true) {}
@@ -153,12 +122,20 @@ public:
 		this->_isOwner = false;
 	}
 
-	ResourceHandle& operator=(const ResourceHandle&) = default;
+	ResourceHandle& operator=(const ResourceHandle& rhs) {
+		if (this != &rhs) {
+			this->_resource = rhs._resource;
+			this->_isOwner = false;
+		}
+		return *this;
+	}
 
 	ResourceHandle& operator=(ResourceHandle&& other) noexcept {
 		if (this != &other) {
 			this->_isOwner = other._isOwner;
 			this->_resource = std::move(other._resource);
+
+			other._isOwner = false;
 		}
 		return *this;
 	}
@@ -169,7 +146,7 @@ public:
 
 	virtual ~ResourceHandle() override {
 		if (_isOwner) {
-			this->_resource.release();
+			this->_resource.Release();
 		}
 	}
 
@@ -177,8 +154,6 @@ private:
 	bool _isOwner;
 };
 
-template<class ResourceType>
-class ResourceHandle<ResourceType, false>;
 //
 //class ResourceSharedHandle : public ResourceEntity {
 //	using ResourceEntity::ResourceEntity;

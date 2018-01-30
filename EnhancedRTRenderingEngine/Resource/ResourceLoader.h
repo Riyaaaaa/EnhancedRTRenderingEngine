@@ -6,7 +6,7 @@
 
 namespace ResourceLoader
 {
-	ResourceHandle<> LoadShader(std::string filename);
+	ResourceHandle<RowBinary> LoadShader(std::string filename);
 	int LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex);
 	void LoadFBXModel(std::string filename);
 };
