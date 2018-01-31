@@ -3,6 +3,7 @@
 #include "MeshObject.h"
 #include "SceneObject.h"
 #include "CameraObject.h"
+#include "DirectionalLight.h"
 
 #include <DirectXMath.h>
 #include <vector>
@@ -10,7 +11,7 @@
 class Scene
 {
 public:
-	typedef Vertex3D VertType;
+	typedef PMDVertex VertType;
 
 	Scene();
 
@@ -19,6 +20,7 @@ public:
 	DirectX::XMMATRIX GetViewProjection();
 
 	std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
+	std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
 
 private:
 	DirectX::XMMATRIX worldProjection;
@@ -27,6 +29,7 @@ private:
 	std::vector<MeshObject<VertType>> viewObjects;
 	//std::vector<SceneObject> exertObjects;
 	std::vector<CameraObject> cameraObjects;
+	std::vector<DirectionalLight> directionalLights;
 
 	//std::vector<SceneObject> sceneObjects;
 };

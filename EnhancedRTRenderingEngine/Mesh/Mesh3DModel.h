@@ -4,7 +4,7 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
-class Mesh3DModel : public MeshBase<Vertex3D>
+class Mesh3DModel : public MeshBase<PMDVertex>
 {
 public:
 	Mesh3DModel(const PMDModel& model);

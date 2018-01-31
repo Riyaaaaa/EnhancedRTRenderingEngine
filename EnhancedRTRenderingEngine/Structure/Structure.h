@@ -25,6 +25,12 @@ struct Vertex3D {
 	float tex[2];	//x-y
 };
 
+struct PMDVertex {
+	float pos[3];	//x-y-z
+	float tex[2];	//x-y
+	float normal[3];
+};
+
 struct Transform {
 	Vector3D location;
 	Vector3D rotation;
@@ -36,5 +42,6 @@ struct ConstantBuffer
 	DirectX::XMMATRIX World;
 	DirectX::XMMATRIX View;
 	DirectX::XMMATRIX Projection;
+	Vector3D DirectionalLight;
 };
 

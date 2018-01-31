@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="D3D11\D3D11FormatUtils.h" />
+    <ClInclude Include="Scene\DirectionalLight.h" />
     <ClInclude Include="Material\Material.h" />
     <ClInclude Include="Material\MaterialParameters.h" />
     <ClInclude Include="Mesh\Mesh3DModel.h" />
@@ -277,6 +278,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\DirectionalLight.cpp" />
     <ClCompile Include="Material\Material.cpp" />
     <ClCompile Include="Mesh\Mesh3DModel.cpp" />
     <ClCompile Include="Mesh\SimpleModel\Box.cpp" />
@@ -318,6 +320,18 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\LightingPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\LightingVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\MinPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

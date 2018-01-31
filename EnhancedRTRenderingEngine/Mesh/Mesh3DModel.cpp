@@ -6,7 +6,7 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
 	_vertexList.resize(model.vert_count);
 
 	for (int i = 0; i < model.vert_count; i++) {
-		_vertexList[i] = Vertex3D{ {model.vertex[i].pos[0], model.vertex[i].pos[1], model.vertex[i].pos[2]}, {0.0,0.0,0.0,0.0}, {model.vertex[i].uv[0], model.vertex[i].uv[1]} };
+		_vertexList[i] = PMDVertex{ {model.vertex[i].pos[0], model.vertex[i].pos[1], model.vertex[i].pos[2]}, {model.vertex[i].uv[0], model.vertex[i].uv[1]},{ model.vertex[i].normal_vec[0], model.vertex[i].normal_vec[1], model.vertex[i].normal_vec[2] } };
 	}
 
 	_indexList.resize(model.face_vert_count);

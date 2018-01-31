@@ -19,8 +19,9 @@ Scene::Scene() {
 
 	XMMATRIX hRotate;
 	// test code
-	/*hRotate = XMMatrixRotationZ(D3DXToRadian(-45.0f));
+	hRotate = XMMatrixRotationX(D3DXToRadian(45.0f));
 	worldProjection = XMMatrixMultiply(worldProjection, hRotate);
+	/*
 	hRotate = XMMatrixRotationY(D3DXToRadian(-45.0f));
 	worldProjection = XMMatrixMultiply(worldProjection, hRotate);*/
 
@@ -35,13 +36,15 @@ Scene::Scene() {
 	//viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
 	//viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
 
-	Material material(MaterialParameters{"VertexShader", "PixelShader", "test3"});
+	Material material(MaterialParameters{"LightingVertexShader", "LightingPixelShader", "test3"});
 
 	auto model = ResourceLoader::LoadPMDModel("nolicensed_bokoboko");
 	viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
 	
 	viewObjects[0].SetMaterial(material);
 	//viewObjects[1].SetMaterial(material);
+
+	directionalLights.push_back(DirectionalLight(Vector3D{0.0, 0.5f, -1.0f}));
 
 	mainCameraIdx = 0;
 }

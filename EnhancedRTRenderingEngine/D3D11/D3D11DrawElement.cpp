@@ -154,3 +154,4 @@ void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& v
 
 template D3D11DrawElement<Vertex3D>;
 template D3D11DrawElement<SimpleVertex>;
+template D3D11DrawElement<PMDVertex>;

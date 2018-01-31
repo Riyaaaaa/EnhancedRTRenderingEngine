@@ -363,6 +363,9 @@
     <ClInclude Include="Mesh\Mesh3DModel.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\DirectionalLight.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -446,6 +449,9 @@
     <ClCompile Include="Mesh\Mesh3DModel.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\DirectionalLight.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -466,6 +472,8 @@
     <FxCompile Include="Shader\MinVertexShader.hlsl" />
     <FxCompile Include="Shader\MinPixelShader.hlsl" />
     <FxCompile Include="Shader\UVColorShader.hlsl" />
+    <FxCompile Include="Shader\LightingVertexShader.hlsl" />
+    <FxCompile Include="Shader\LightingPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
