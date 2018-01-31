@@ -52,7 +52,7 @@ protected:
 	std::unordered_map<std::string, ResourceHandle<HANDLE_TYPE>>& CacheMap();
 
 	template<>
-	std::unordered_map<std::string, ResourceHandle<RowBinary>>& CacheMap<RowBinary>() {
+	std::unordered_map<std::string, ResourceHandle<RawBinary>>& CacheMap<RawBinary>() {
 		return _resourceCache;
 	}
 
@@ -65,7 +65,7 @@ private:
 	int RID;
 	std::string _projDir;
 
-	std::unordered_map<std::string, ResourceHandle<RowBinary>> _resourceCache;
+	std::unordered_map<std::string, ResourceHandle<RawBinary>> _resourceCache;
 	std::unordered_map<std::string, ResourceHandle<Texture2D>> _textureCache;
 };
 

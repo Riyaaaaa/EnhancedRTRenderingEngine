@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "RowBinary.h"
+#include "RawBinary.h"
 
 class RefCounter {
 private:
@@ -105,10 +105,10 @@ public:
 	virtual ~ResourceHandleBase() {};
 };
 
-//template<class ResourceType = RowBinary, typename Attribute = typename ResourceType::ResourceAttribute>
+//template<class ResourceType = RawBinary, typename Attribute = typename ResourceType::ResourceAttribute>
 //class ResourceHandle;
 
-template<class ResourceType = RowBinary, bool Attribute = std::is_move_constructible_v<ResourceType> && std::is_move_assignable_v<ResourceType>>
+template<class ResourceType = RawBinary, bool Attribute = std::is_move_constructible_v<ResourceType> && std::is_move_assignable_v<ResourceType>>
 class ResourceHandle;
 
 

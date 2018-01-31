@@ -171,7 +171,7 @@
     <ClInclude Include="Mesh\Primitive\Pentagon.h" />
     <ClInclude Include="Resource\PMD\PMDModel.h" />
     <ClInclude Include="Resource\ResourceEntity.h" />
-    <ClInclude Include="Resource\RowBinary.h" />
+    <ClInclude Include="Resource\RawBinary.h" />
     <ClInclude Include="Utility\SceneUtils.h" />
     <ClInclude Include="Scene\CameraObject.h" />
     <ClInclude Include="Common.h" />

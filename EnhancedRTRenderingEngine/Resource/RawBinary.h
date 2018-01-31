@@ -3,12 +3,12 @@
 #include <utility>
 #include "ResourceEntity.h"
 
-class RowBinary : public ResourceEntity<RowBinary> {
+class RawBinary : public ResourceEntity<RawBinary> {
 public:
-	using ResourceEntity<RowBinary>::ResourceEntity;
+	using ResourceEntity<RawBinary>::ResourceEntity;
 
-	RowBinary() : _ptr(nullptr), _size(0) {}
-	RowBinary(void* ptr, std::size_t size) : _ptr(ptr), _size(size) {}
+	RawBinary() : _ptr(nullptr), _size(0) {}
+	RawBinary(void* ptr, std::size_t size) : _ptr(ptr), _size(size) {}
 
 
 	void Dispose() {

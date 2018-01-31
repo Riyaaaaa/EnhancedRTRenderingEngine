@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Structure/Structure.h"
-#include "Resource/RowBinary.h"
+#include "Resource/RawBinary.h"
 
-class PMDModel : public RowBinary
+class PMDModel : public RawBinary
 {
 public:
 #pragma pack(push,1)

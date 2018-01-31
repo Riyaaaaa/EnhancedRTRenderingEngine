@@ -32,19 +32,19 @@ std::tuple<char*, std::size_t> LoadBinary(std::ifstream& ifs) {
 
 //#include <fbxsdk.h>  
 
-ResourceHandle<RowBinary> ResourceLoader::LoadShader(std::string filename) {
+ResourceHandle<RawBinary> ResourceLoader::LoadShader(std::string filename) {
 	std::ifstream ifs;
 	auto manager = FileManager::getInstance();
 	auto path = manager->MakeRelativePath(filename + ".cso");
 
 	if (manager->FileExists(path)) {
-		return manager->GetResourceHandleFromCache<RowBinary>(path);
+		return manager->GetResourceHandleFromCache<RawBinary>(path);
 	}
 
 	ifs.open(path, std::ios::in | std::ios::binary);
 
 	if (!ifs.is_open()) {
-		return ResourceHandle<RowBinary>{};
+		return ResourceHandle<RawBinary>{};
 	}
 
 	char* buf;
@@ -52,7 +52,7 @@ ResourceHandle<RowBinary> ResourceLoader::LoadShader(std::string filename) {
 
 	std::tie(buf, size) = LoadBinary(ifs);
 
-	return manager->CreateCachedResourceHandle<RowBinary>(path, buf, size);
+	return manager->CreateCachedResourceHandle<RawBinary>(path, buf, size);
 }
 
 int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex) {

@@ -2,7 +2,7 @@
 #include "PMDModel.h"
 
 
-PMDModel::PMDModel(void* ptr, std::size_t size) : RowBinary(ptr, size)
+PMDModel::PMDModel(void* ptr, std::size_t size) : RawBinary(ptr, size)
 {
 	char* raw_byte = reinterpret_cast<char*>(ptr);
 	int offset = 0;
