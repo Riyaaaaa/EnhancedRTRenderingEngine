@@ -3,6 +3,7 @@
 #include "MeshObject.h"
 #include "SceneObject.h"
 #include "CameraObject.h"
+#include "PointLight.h"
 #include "DirectionalLight.h"
 
 #include <DirectXMath.h>
@@ -22,6 +23,8 @@ public:
 	std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
 	std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
 
+	std::vector<PointLightParameters> GetPointLightParams();
+
 private:
 	DirectX::XMMATRIX worldProjection;
 	int mainCameraIdx;
@@ -29,7 +32,9 @@ private:
 	std::vector<MeshObject<VertType>> viewObjects;
 	//std::vector<SceneObject> exertObjects;
 	std::vector<CameraObject> cameraObjects;
+
 	std::vector<DirectionalLight> directionalLights;
+	std::vector<PointLight> pointLights;
 
 	//std::vector<SceneObject> sceneObjects;
 };

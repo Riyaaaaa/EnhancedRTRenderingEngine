@@ -46,6 +46,12 @@ Scene::Scene() {
 
 	directionalLights.push_back(DirectionalLight(Vector3D{0.0, 0.5f, -1.0f}));
 
+	PointLight plight;
+	plight.SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+	plight.SetPoint(Vector3D{ 0.0, -1.0f, 0.0f });
+
+	pointLights.push_back(plight);
+
 	mainCameraIdx = 0;
 }
 
@@ -59,4 +65,14 @@ XMMATRIX Scene::GetWorldProjection() {
 
 DirectX::XMMATRIX Scene::GetViewProjection() {
 	return cameraObjects[mainCameraIdx].GetViewProjection();
+}
+
+std::vector<PointLightParameters> Scene::GetPointLightParams() {
+	std::vector<PointLightParameters> params;
+
+	for (auto && light : pointLights) {
+		params.push_back(PointLightParameters{light.GetPoint(), light.GetAttenuation()});
+	}
+
+	return params;
 }

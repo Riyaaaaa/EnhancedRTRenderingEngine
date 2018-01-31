@@ -49,7 +49,12 @@ void D3DX11Renderer::render(Scene* scene) {
 	hConstantBuffer.World = XMMatrixTranspose(scene->GetWorldProjection());
 	hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
 	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
+
+	// Only support one light.
+	// TODO: UNSAFE CODE!!! Light always requires
 	hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
+	hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
+	
 	mView->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	mView->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
 

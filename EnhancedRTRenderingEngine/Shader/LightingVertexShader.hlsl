@@ -17,7 +17,9 @@ cbuffer ConstantBuffer : register(b0)
 	matrix World;
 	matrix View;
 	matrix Projection;
-	float3 Light;
+	float3 DirectionalLight;
+	float3 PointLightPos;
+	float3 PointLightAtt;
 }
 
 cbuffer ObjectBuffer : register(b1)
@@ -29,7 +31,6 @@ vertexOut main(vertexIn IN)
 {
 	vertexOut OUT;
 	float3 nor;
-	float col;
 
 	float4 pos = float4(IN.pos, 1.0f);
 
@@ -41,8 +42,21 @@ vertexOut main(vertexIn IN)
 	nor = mul(float4(IN.nor, 1.0f), LocalTransMatrix).xyz;
 	nor = normalize(nor);
 
+	float3 dir;
+	float  len;
+	float  colD;
+	float  colA;
+	float  col;
+
+	dir = PointLightPos - pos.xyz;
+	len = length(dir);
+	dir = dir / len;
+	colD = saturate(dot(normalize(pos.xyz), dir));
+	colA = saturate(1.0f / (PointLightAtt.x + PointLightAtt.y * len + PointLightAtt.z * len * len));
+	col = colD * colA;
+
 	OUT.pos = pos;
-	OUT.col = saturate(dot(nor, Light)) * 0.5f + 0.5f;
+	OUT.col = (saturate(dot(nor, DirectionalLight)) * 0.5f + 0.5f) + col;
 
 	return OUT;
 }

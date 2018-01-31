@@ -37,11 +37,18 @@ struct Transform {
 	Vector3D scale;
 };
 
+struct PointLightParameters {
+	Vector3D pos;
+	// X: constant attenuation factor, Y:  linear attenuation factor, Z: quadratic attenuation factor
+	Vector3D attenuation;
+};
+
 struct ConstantBuffer
 {
 	DirectX::XMMATRIX World;
 	DirectX::XMMATRIX View;
 	DirectX::XMMATRIX Projection;
 	Vector3D DirectionalLight;
+	PointLightParameters PointLight;
 };
 
