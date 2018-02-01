@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="D3D11\D3D11ForwardRenderer.h" />
+    <ClInclude Include="D3D11\D3D11DepthRenderer.h" />
     <ClInclude Include="D3D11\D3D11FormatUtils.h" />
     <ClInclude Include="Scene\PointLight.h" />
     <ClInclude Include="Scene\DirectionalLight.h" />
@@ -177,8 +179,8 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
     <ClInclude Include="D3D11\D3D11DrawElement.h" />
-    <ClInclude Include="D3D11\D3DX11Device.h" />
-    <ClInclude Include="D3D11\D3DX11Renderer.h" />
+    <ClInclude Include="D3D11\D3DX11RenderView.h" />
+    <ClInclude Include="D3D11\D3D11BasePassRenderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Scene\MeshObject.h" />
@@ -279,6 +281,9 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11\D3D11FormatUtils.cpp" />
+    <ClCompile Include="D3D11\D3D11ForwardRenderer.cpp" />
+    <ClCompile Include="D3D11\D3D11DepthRenderer.cpp" />
     <ClCompile Include="Scene\PointLight.cpp" />
     <ClCompile Include="Scene\DirectionalLight.cpp" />
     <ClCompile Include="Material\Material.cpp" />
@@ -291,8 +296,8 @@
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3D11\D3D11DrawElement.cpp" />
-    <ClCompile Include="D3D11\D3DX11Device.cpp" />
-    <ClCompile Include="D3D11\D3DX11Renderer.cpp" />
+    <ClCompile Include="D3D11\D3DX11RenderView.cpp" />
+    <ClCompile Include="D3D11\D3D11BasePassRenderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Scene\MeshObject.cpp" />
@@ -322,6 +327,12 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="Shader\DepthVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="Shader\LightingPixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

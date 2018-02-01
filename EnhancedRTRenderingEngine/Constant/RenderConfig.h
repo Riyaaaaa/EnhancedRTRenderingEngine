@@ -16,3 +16,7 @@ enum class RenderingState {
 	FAILED,
 	RENDER_READIED
 };
+
+enum MSAAQualityType {
+	RAW_QUALITY
+};

@@ -98,7 +98,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 }
 
 template<class VertType>
-void D3D11DrawElement<VertType>::SetShader(const std::unique_ptr<D3DX11RenderView>& view) {
+void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view) {
 	ID3D11InputLayout* hpInputLayout = NULL;
 	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), &hpInputLayout);
 	if (FAILED(err)) {
@@ -126,7 +126,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::unique_ptr<D3DX11RenderVie
 }
 
 template<class VertType>
-void D3D11DrawElement<VertType>::SetBuffer(const std::unique_ptr<D3DX11RenderView>& view) {
+void D3D11DrawElement<VertType>::SetBuffer(const std::shared_ptr<D3DX11RenderView>& view) {
 	UINT hStrides = sizeof(VertType);
 	UINT hOffsets = 0;
 
@@ -140,7 +140,7 @@ void D3D11DrawElement<VertType>::SetBuffer(const std::unique_ptr<D3DX11RenderVie
 }
 
 template<class VertType>
-void D3D11DrawElement<VertType>::Draw(const std::unique_ptr<D3DX11RenderView>& view) {
+void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
 	this->SetBuffer(view);
 	this->SetShader(view);
 

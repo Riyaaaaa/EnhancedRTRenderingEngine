@@ -1,6 +1,7 @@
 #include "stdafx.h"
-#include "D3DX11Device.h"
+#include "D3DX11RenderView.h"
 
+#include "D3D11FormatUtils.h"
 #include "../Common.h"
 
 #pragma comment(lib, "d3d11.lib")
@@ -24,16 +25,18 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 		return false;
 	}
 
+	_renderSize = Size{ 1980 , 1080 };
+	_type = MSAAQualityType::RAW_QUALITY;
+
 	DXGI_SWAP_CHAIN_DESC hDXGISwapChainDesc;
-	hDXGISwapChainDesc.BufferDesc.Width = 1980;
-	hDXGISwapChainDesc.BufferDesc.Height = 1080;
+	hDXGISwapChainDesc.BufferDesc.Width = _renderSize.w;
+	hDXGISwapChainDesc.BufferDesc.Height = _renderSize.h;
 	hDXGISwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
 	hDXGISwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
 	hDXGISwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
 	hDXGISwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
 	hDXGISwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-	hDXGISwapChainDesc.SampleDesc.Count = 1;
-	hDXGISwapChainDesc.SampleDesc.Quality = 0;
+	hDXGISwapChainDesc.SampleDesc = CastToD3D11Formart<DXGI_SAMPLE_DESC>(_type);
 	hDXGISwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
 	hDXGISwapChainDesc.BufferCount = 1;
 	hDXGISwapChainDesc.OutputWindow = hWnd;

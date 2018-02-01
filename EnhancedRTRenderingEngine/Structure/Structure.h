@@ -2,6 +2,10 @@
 
 #include <DirectXMath.h>
 
+struct Size {
+	float w, h;
+};
+
 struct Vector3D {
 	float x, y, z;
 };
@@ -43,9 +47,14 @@ struct PointLightParameters {
 	Vector3D attenuation;
 };
 
+struct TransformBufferParam
+{
+	DirectX::XMMATRIX View;
+	DirectX::XMMATRIX Projection;
+};
+
 struct ConstantBuffer
 {
-	DirectX::XMMATRIX World;
 	DirectX::XMMATRIX View;
 	DirectX::XMMATRIX Projection;
 	Vector3D DirectionalLight;

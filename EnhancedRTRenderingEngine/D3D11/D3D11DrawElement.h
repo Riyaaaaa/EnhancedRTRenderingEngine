@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "D3DX11Device.h"
+#include "D3DX11RenderView.h"
 #include "D3D11Texture.h"
 #include "Scene/MeshObject.h"
 #include "Resource/ResourceHandle.h"
@@ -17,13 +17,13 @@ public:
 	D3D11DrawElement(ID3D11Device* device, MeshObject<VertType>* element);
 	~D3D11DrawElement();
 
-	virtual void Draw(const std::unique_ptr<D3DX11RenderView>& view);
+	virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 
 protected:
 	virtual bool CreateBuffer(ID3D11Device* device, MeshObject<VertType>* element);
 	
-	virtual void SetBuffer(const std::unique_ptr<D3DX11RenderView>& view);
-	virtual void SetShader(const std::unique_ptr<D3DX11RenderView>& view);
+	virtual void SetBuffer(const std::shared_ptr<D3DX11RenderView>& view);
+	virtual void SetShader(const std::shared_ptr<D3DX11RenderView>& view);
 
 	std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;
 	D3D_PRIMITIVE_TOPOLOGY primitiveTopology;

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "D3DX11Renderer.h"
+#include "D3D11BasePassRenderer.h"
 #include "D3D11DrawElement.h"
 
 #include "../Resource/ResourceLoader.h"
@@ -7,30 +7,23 @@
 #include "Mesh/SimpleModel/Box.h"
 #include "WindowManager.h"
 
-D3DX11Renderer::D3DX11Renderer()
+D3D11BasePassRenderer::D3D11BasePassRenderer()
 {
 }
 
 
-D3DX11Renderer::~D3DX11Renderer()
+D3D11BasePassRenderer::~D3D11BasePassRenderer()
 {
 }
 
-void D3DX11Renderer::Initialize(ID3D11Device* device, ID3D11DeviceContext* hpDeviceContext) {
-	// require deveice input layout initialization
-
-	mView = std::make_unique<D3DX11RenderView>();
-	mView->Initialize(WindowManager::getInstance()->getActiveWindow(), device, hpDeviceContext);
-}
-
-void D3DX11Renderer::render(Scene* scene) {
-	if (!mView) {
+void D3D11BasePassRenderer::render(const std::shared_ptr<D3DX11RenderView>& view, Scene* scene) {
+	if (!view) {
 		return;
 	}
 
 	float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-	mView->hpDeviceContext->ClearRenderTargetView(mView->hpRenderTargetView, ClearColor);
-	mView->hpDeviceContext->ClearDepthStencilView(mView->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	view->hpDeviceContext->ClearRenderTargetView(view->hpRenderTargetView, ClearColor);
+	view->hpDeviceContext->ClearDepthStencilView(view->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	//constantバッファ生成
 	D3D11_BUFFER_DESC bufferDesc;
@@ -41,12 +34,11 @@ void D3DX11Renderer::render(Scene* scene) {
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = sizeof(float);
-	if (FAILED(mView->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
+	if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
 		return;
 	}
 
 	ConstantBuffer hConstantBuffer;
-	hConstantBuffer.World = XMMatrixTranspose(scene->GetWorldProjection());
 	hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
 	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
 
@@ -55,12 +47,12 @@ void D3DX11Renderer::render(Scene* scene) {
 	hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
 	hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
 	
-	mView->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
-	mView->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
+	view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
+	view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
 
 	for (auto && object : scene->GetViewObjects()) {
-		D3D11DrawElement<Scene::VertType>(mView->hpDevice, &object).Draw(mView);
+		D3D11DrawElement<Scene::VertType>(view->hpDevice, &object).Draw(view);
 	}
 	
-	mView->hpDXGISwpChain->Present(0, 0);
+	view->hpDXGISwpChain->Present(0, 0);
 }
