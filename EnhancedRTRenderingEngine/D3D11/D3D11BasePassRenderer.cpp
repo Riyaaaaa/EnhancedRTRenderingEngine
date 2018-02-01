@@ -25,7 +25,6 @@ void D3D11BasePassRenderer::render(const std::shared_ptr<D3DX11RenderView>& view
 	view->hpDeviceContext->ClearRenderTargetView(view->hpRenderTargetView, ClearColor);
 	view->hpDeviceContext->ClearDepthStencilView(view->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-	//constantバッファ生成
 	D3D11_BUFFER_DESC bufferDesc;
 	ID3D11Buffer* hpConstantBuffer = NULL;
 	bufferDesc.ByteWidth = sizeof(ConstantBuffer);
