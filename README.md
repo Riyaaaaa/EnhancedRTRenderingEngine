@@ -1,5 +1,7 @@
 # EnhancedRTRenderingEngine
 
+DirectX11 based real time 3D rendering engine
+
 requirement
 
 [ThirdParty/libpng]
