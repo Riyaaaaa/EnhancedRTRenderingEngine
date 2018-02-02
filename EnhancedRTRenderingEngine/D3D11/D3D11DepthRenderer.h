@@ -15,7 +15,6 @@ public:
 
 
 protected:
-	ID3D11DepthStencilView * lightDepthView;
 	std::shared_ptr<D3DX11RenderView> _view;
 };
 

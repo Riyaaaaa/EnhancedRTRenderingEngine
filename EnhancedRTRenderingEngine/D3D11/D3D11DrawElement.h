@@ -9,13 +9,17 @@
 #include "Scene/MeshObject.h"
 #include "Resource/ResourceHandle.h"
 #include "RenderingContext.h"
+#include "Constant/RenderTag.h"
 
 template<class VertType>
 class D3D11DrawElement
 {
 public:
-	D3D11DrawElement(ID3D11Device* device, MeshObject<VertType>* element);
+	D3D11DrawElement() {}
 	~D3D11DrawElement();
+
+	void Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::OpaqueRender);
+	void Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::DepthRender);
 
 	virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 

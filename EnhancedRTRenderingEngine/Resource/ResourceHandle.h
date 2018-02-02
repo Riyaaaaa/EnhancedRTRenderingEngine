@@ -3,6 +3,7 @@
 #include <utility>
 
 #include "RawBinary.h"
+#include "SpiralLibrary/Optional/Optional.hpp"
 
 class RefCounter {
 private:
@@ -94,13 +95,13 @@ class ResourceHandleBase;
 template<class ResourceType>
 class ResourceHandleBase {
 protected:
-	ResourceType _resource;
+	libspiral::Optional<ResourceType> _resource;
 
 public:
 	ResourceHandleBase() {}
 	ResourceHandleBase(const ResourceType& resource) : _resource(resource) {}
-	ResourceType& operator()() { return _resource; }
-	const ResourceType& operator()() const { return _resource; }
+	ResourceType& operator()() { return *_resource; }
+	const ResourceType& operator()() const { return *_resource; }
 
 	virtual ~ResourceHandleBase() {};
 };
@@ -135,6 +136,7 @@ public:
 			this->_isOwner = other._isOwner;
 			this->_resource = std::move(other._resource);
 
+			other._resource.reset();
 			other._isOwner = false;
 		}
 		return *this;
@@ -144,9 +146,14 @@ public:
 		*this = std::move(other);
 	}
 
+	bool HasResource() {
+		return static_cast<bool> (this->_resource);
+	}
+
 	virtual ~ResourceHandle() override {
 		if (_isOwner) {
-			this->_resource.Release();
+			this->_resource->Release();
+			this->_resource.reset();
 		}
 	}
 

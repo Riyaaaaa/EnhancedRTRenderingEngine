@@ -38,7 +38,7 @@ Scene::Scene() {
 
 	Material material(MaterialParameters{"LightingVertexShader", "LightingPixelShader", "test3"});
 
-	auto model = ResourceLoader::LoadPMDModel("nolicensed_bokoboko");
+	auto model = ResourceLoader::LoadPMDModel("nolicensed");
 	viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
 	
 	viewObjects[0].SetMaterial(material);

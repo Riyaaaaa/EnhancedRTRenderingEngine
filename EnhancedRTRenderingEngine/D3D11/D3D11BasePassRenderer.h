@@ -4,6 +4,7 @@
 
 #include <memory>
 
+#include "D3D11Texture.h"
 #include "D3DX11RenderView.h"
 #include "../Scene/Scene.h"
 
@@ -13,7 +14,11 @@ public:
 	D3D11BasePassRenderer();
 	~D3D11BasePassRenderer();
 
-	void render(const std::shared_ptr<D3DX11RenderView>& view, Scene* scene);
-	bool Initialize(const std::shared_ptr<D3DX11RenderView>& view) { return true; }
+	void render(Scene* scene);
+	bool Initialize(const std::shared_ptr<D3DX11RenderView>& view);
+
+protected:
+	std::shared_ptr<D3DX11RenderView> _view;
+	D3D11Texture shadowMap;
 };
 

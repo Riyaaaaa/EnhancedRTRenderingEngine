@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Constant\RenderTag.h" />
     <ClInclude Include="D3D11\D3D11ForwardRenderer.h" />
     <ClInclude Include="D3D11\D3D11DepthRenderer.h" />
     <ClInclude Include="D3D11\D3D11FormatUtils.h" />

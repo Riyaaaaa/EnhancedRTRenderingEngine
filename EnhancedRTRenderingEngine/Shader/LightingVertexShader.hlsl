@@ -10,6 +10,7 @@ struct vertexOut
 {
 	float4 pos : SV_POSITION;
 	float4 col : COLOR;
+	float2 tex : TEXCOORD0;
 };
 
 cbuffer ConstantBuffer : register(b0)
@@ -55,6 +56,7 @@ vertexOut main(vertexIn IN)
 
 	OUT.pos = pos;
 	OUT.col = (saturate(dot(nor, DirectionalLight)) * 0.5f + 0.5f) + col;
+	OUT.tex = pos.xy;
 
 	return OUT;
 }

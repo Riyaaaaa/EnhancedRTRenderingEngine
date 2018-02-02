@@ -15,6 +15,7 @@ public:
 		return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
 	}
 	bool Initialize(ID3D11Device* device, const ResourceHandle<Texture2D>& tex);
+	bool Initialize(ID3D11Device* device, ID3D11Texture2D* tex);
 
 	ID3D11ShaderResourceView* GetSubResourceView() const
 	{

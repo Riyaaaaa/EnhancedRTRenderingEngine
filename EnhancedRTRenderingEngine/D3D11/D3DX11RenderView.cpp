@@ -44,7 +44,6 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	hDXGISwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
 	hDXGISwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
-	ID3D11Texture2D* hpTexture2dDepth = NULL;
 	D3D11_TEXTURE2D_DESC hTexture2dDesc;
 	hTexture2dDesc.Width = hDXGISwapChainDesc.BufferDesc.Width;
 	hTexture2dDesc.Height = hDXGISwapChainDesc.BufferDesc.Height;
@@ -79,8 +78,6 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	if (FAILED(device->CreateRenderTargetView(hpBackBuffer, NULL, &hpRenderTargetView))) {
 		return false;
 	}
-
-	hpDeviceContext->OMSetRenderTargets(1, &hpRenderTargetView, hpDepthStencilView);
 
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0;

@@ -5,6 +5,8 @@
 #include "../Resource/ResourceLoader.h"
 #include "Mesh/Primitive/Primitives.h"
 #include "Mesh/SimpleModel/Box.h"
+
+#include "Constant/RenderTag.h"
 #include "WindowManager.h"
 
 D3D11BasePassRenderer::D3D11BasePassRenderer()
@@ -16,14 +18,23 @@ D3D11BasePassRenderer::~D3D11BasePassRenderer()
 {
 }
 
-void D3D11BasePassRenderer::render(const std::shared_ptr<D3DX11RenderView>& view, Scene* scene) {
-	if (!view) {
+bool D3D11BasePassRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& view) {
+	_view = view;
+
+	shadowMap.Initialize(view->hpDevice, view->hpTexture2dDepth);
+	return true; 
+}
+
+void D3D11BasePassRenderer::render(Scene* scene) {
+	if (!_view) {
 		return;
 	}
 
+	_view->hpDeviceContext->OMSetRenderTargets(1, &_view->hpRenderTargetView, _view->hpDepthStencilView);
+
 	float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-	view->hpDeviceContext->ClearRenderTargetView(view->hpRenderTargetView, ClearColor);
-	view->hpDeviceContext->ClearDepthStencilView(view->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView, ClearColor);
+	_view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	D3D11_BUFFER_DESC bufferDesc;
 	ID3D11Buffer* hpConstantBuffer = NULL;
@@ -33,7 +44,7 @@ void D3D11BasePassRenderer::render(const std::shared_ptr<D3DX11RenderView>& view
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = sizeof(float);
-	if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
+	if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
 		return;
 	}
 
@@ -46,12 +57,15 @@ void D3D11BasePassRenderer::render(const std::shared_ptr<D3DX11RenderView>& view
 	hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
 	hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
 	
-	view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
-	view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
+	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
+	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
+	_view->hpDeviceContext->PSSetShaderResources(3, 1, shadowMap.GetSubResourceViewRef());
 
 	for (auto && object : scene->GetViewObjects()) {
-		D3D11DrawElement<Scene::VertType>(view->hpDevice, &object).Draw(view);
+		D3D11DrawElement<Scene::VertType> element;
+		element.Initialize(_view->hpDevice, &object, OpaqueRenderTag);
+		element.Draw(_view);
 	}
 	
-	view->hpDXGISwpChain->Present(0, 0);
+	_view->hpDXGISwpChain->Present(0, 0);
 }

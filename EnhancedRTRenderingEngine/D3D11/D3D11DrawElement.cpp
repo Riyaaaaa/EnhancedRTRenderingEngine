@@ -6,6 +6,7 @@
 
 #include "Structure/Structure.h"
 #include "Resource/ResourceLoader.h"
+#include "Constant/RenderTag.h"
 #include "Common.h"
 
 template<class VertType>
@@ -15,8 +16,7 @@ D3D11DrawElement<VertType>::~D3D11DrawElement() {
 }
 
 template<class VertType>
-D3D11DrawElement<VertType>::D3D11DrawElement(ID3D11Device* device, MeshObject<VertType>* element):
-indexBuffer(nullptr) {
+void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::OpaqueRender) {
 	auto& context = element->GetContext();
 	_state = RenderingState::NONE;
 
@@ -28,7 +28,6 @@ indexBuffer(nullptr) {
 
 	primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
 
-	
 	if (!CreateBuffer(device, element)) {
 		_state = RenderingState::FAILED;
 		return;
@@ -40,6 +39,28 @@ indexBuffer(nullptr) {
 
 	vShader = element->GetMaterial().vShader;
 	pShader = element->GetMaterial().pShader;
+
+	_state = RenderingState::RENDER_READIED;
+}
+
+
+template<class VertType>
+void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::DepthRender) {
+	auto& context = element->GetContext();
+	_state = RenderingState::NONE;
+
+	inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "POSITION", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+	inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "TEXCOORD", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+	inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "NORMAL", 0, DXGI_FORMAT::DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+
+	primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
+
+	if (!CreateBuffer(device, element)) {
+		_state = RenderingState::FAILED;
+		return;
+	}
+
+	vShader = ResourceLoader::LoadShader("DepthVertexShader");
 
 	_state = RenderingState::RENDER_READIED;
 }
@@ -113,11 +134,16 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
 	}
 	view->hpDeviceContext->VSSetShader(hpVertexShader, NULL, 0);
 
-	ID3D11PixelShader* hpPixelShader;
-	if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, &hpPixelShader))) {
-		return;
+	if (pShader.HasResource()) {
+		ID3D11PixelShader* hpPixelShader;
+		if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, &hpPixelShader))) {
+			return;
+		}
+		view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
 	}
-	view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
+	else {
+		view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
+	}
 
 	if (tex.IsAvalable()) {
 		view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceViewRef());
