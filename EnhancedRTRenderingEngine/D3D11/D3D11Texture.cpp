@@ -70,15 +70,17 @@ bool D3D11Texture::Initialize(ID3D11Device* device, ID3D11Texture2D* tex) {
 	mTexture = tex;
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
-	SRVDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	SRVDesc.Format = DXGI_FORMAT_R16_UNORM;
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	auto hr = device->CreateShaderResourceView(mTexture, &SRVDesc, &mView);
+	auto hr = device->CreateShaderResourceView(tex, &SRVDesc, &mView);
 	if (FAILED(hr))
 	{
 		return false;
 	}
+	
+	mTexture = tex;
 
 	D3D11_SAMPLER_DESC samplerDesc;
 	samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;

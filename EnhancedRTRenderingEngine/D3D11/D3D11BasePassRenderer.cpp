@@ -20,8 +20,6 @@ D3D11BasePassRenderer::~D3D11BasePassRenderer()
 
 bool D3D11BasePassRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& view) {
 	_view = view;
-
-	shadowMap.Initialize(view->hpDevice, view->hpTexture2dDepth);
 	return true; 
 }
 
@@ -59,7 +57,7 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	
 	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
-	_view->hpDeviceContext->PSSetShaderResources(3, 1, shadowMap.GetSubResourceViewRef());
+	_view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV());
 
 	for (auto && object : scene->GetViewObjects()) {
 		D3D11DrawElement<Scene::VertType> element;
@@ -67,5 +65,8 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 		element.Draw(_view);
 	}
 	
+	ID3D11ShaderResourceView*   pNullSRV = nullptr;
+	_view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
+	_view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
 	_view->hpDXGISwpChain->Present(0, 0);
 }

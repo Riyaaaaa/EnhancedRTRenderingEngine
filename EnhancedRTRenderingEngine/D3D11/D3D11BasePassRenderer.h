@@ -19,6 +19,5 @@ public:
 
 protected:
 	std::shared_ptr<D3DX11RenderView> _view;
-	D3D11Texture shadowMap;
 };
 

@@ -3,6 +3,7 @@
 
 #include <d3d11.h>
 
+#include "D3D11DepthStencilTarget.h"
 #include "Constant/RenderConfig.h"
 #include "Structure/Structure.h"
 
@@ -33,6 +34,8 @@ public:
 	ID3D11DepthStencilView* hpDepthStencilView = NULL;
 	ID3D11RasterizerState* mRasterizerState;
 	ID3D11RasterizerState* mDoubleSidedRasterizerState;
+
+	D3D11DepthStencilTarget hpShadowMapTarget;
 
 private:
 	MSAAQualityType _type;

@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\RenderTag.h" />
+    <ClInclude Include="D3D11\D3D11DepthStencilTarget.h" />
     <ClInclude Include="D3D11\D3D11ForwardRenderer.h" />
     <ClInclude Include="D3D11\D3D11DepthRenderer.h" />
     <ClInclude Include="D3D11\D3D11FormatUtils.h" />
@@ -282,6 +283,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11\D3D11DepthStencilTarget.cpp" />
     <ClCompile Include="D3D11\D3D11FormatUtils.cpp" />
     <ClCompile Include="D3D11\D3D11ForwardRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11DepthRenderer.cpp" />

@@ -12,5 +12,5 @@ float4 main(pixcelIn IN) : SV_Target
 {
 	pixcelIn OUT;
 	OUT.col = ShadowMap.Sample(samLinear, IN.tex);
-	return float4(OUT.col.z, OUT.col.z, OUT.col.z, OUT.col.z);
+	return OUT.col;
 }

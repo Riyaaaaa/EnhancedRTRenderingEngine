@@ -14,10 +14,8 @@ bool D3D11DepthRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& vie
 
 void D3D11DepthRenderer::render(Scene* scene)
 {
-	_view->hpDeviceContext->OMSetRenderTargets(0, nullptr, _view->hpDepthStencilView);
-
-	float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-	_view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_view->hpDeviceContext->OMSetRenderTargets(0, nullptr, _view->hpShadowMapTarget.GetDepthStencilView());
+	_view->hpDeviceContext->ClearDepthStencilView(_view->hpShadowMapTarget.GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	D3D11_BUFFER_DESC bufferDesc;
 	ID3D11Buffer* hpConstantBuffer = NULL;

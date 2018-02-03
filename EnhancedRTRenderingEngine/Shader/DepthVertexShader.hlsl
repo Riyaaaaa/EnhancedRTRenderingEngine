@@ -33,6 +33,7 @@ vertexOut main(vertexIn IN)
 	pos = mul(pos, Projection);
 
 	OUT.pos = pos;
+	OUT.pos = float4(0.0f,0.0f,0.0f,1.0f);
 
 	return OUT;
 }
