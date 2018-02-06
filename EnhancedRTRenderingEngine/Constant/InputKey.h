@@ -1,6 +1,15 @@
 #pragma once
 
 enum class InputKey {
+	None,
 	Up,
-	Down
+	Down,
+	LMOUSE,
+	RMOUSE
+};
+
+enum class InputEvent {
+	PRESS,
+	RELEASE,
+	DRAG
 };

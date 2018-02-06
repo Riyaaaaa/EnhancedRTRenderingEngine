@@ -12,6 +12,7 @@ class FileManager : public libspiral::SingletonBase<FileManager>
 {
 public:
 	FileManager();
+	~FileManager();
 
 	std::string MakeRelativePath(std::string filename);
 	std::string MakeAssetPath(std::string filename);

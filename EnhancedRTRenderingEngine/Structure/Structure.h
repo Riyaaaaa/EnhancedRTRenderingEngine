@@ -12,6 +12,79 @@ struct Vector3D {
 
 struct Vector2D {
 	float x, y;
+
+	Vector2D()
+		: x(0.0f), y(0.0f)
+	{}
+
+	Vector2D(float xx, float yy)
+		: x(xx), y(yy)
+	{}
+
+	  float distance(const Vector2D& v) const {
+		return sqrtf(powf(v.x - this->x, 2) + powf(v.y - this->y, 2));
+	}
+
+	  Vector2D operator+(const Vector2D& v) const {
+		return Vector2D(x + v.x, y + v.y);
+	}
+
+	  Vector2D operator-(const Vector2D &v) const {
+		return Vector2D(this->x - v.x, this->y - v.y);
+	}
+
+	  Vector2D operator-() const {
+		return Vector2D(-this->x, -this->y);
+	}
+
+	  Vector2D operator*(float s) const {
+		return Vector2D(this->x * s, this->y * s);
+	}
+
+	  Vector2D operator/(float s) const {
+		return Vector2D(this->x / s, this->y / s);
+	}
+
+	  bool operator<(const Vector2D& v) const {
+		return (x == v.x) ? y < v.y : x < v.x;
+	}
+
+	  bool operator>(const Vector2D& v) const {
+		return (x == v.x) ? y > v.y : x > v.x;
+	}
+
+	  bool operator==(const Vector2D& v) const {
+		return x == v.x && y == v.y;
+	}
+
+	  bool operator!=(const Vector2D& v) const {
+		return x != v.x || y != v.y;
+	}
+
+	  Vector2D& operator-=(const Vector2D& v) {
+		this->x -= v.x;
+		this->y -= v.y;
+		return *this;
+	}
+
+	  Vector2D& operator+=(const Vector2D& v) {
+		this->x = this->x + v.x;
+		this->y = this->y + v.y;
+
+		return *this;
+	}
+
+	  Vector2D& operator*=(float s) {
+		this->x *= s;
+		this->y *= s;
+		return *this;
+	}
+
+	  Vector2D& operator/=(float s) {
+		this->x /= s;
+		this->y /= s;
+		return *this;
+	}
 };
 
 struct Color4B {

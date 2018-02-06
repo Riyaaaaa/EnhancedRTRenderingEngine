@@ -1,33 +1,56 @@
 #include "stdafx.h"
+#include "Windowsx.h"
 #include "WindowManager.h"
+#include "Common.h"
 
-#include "SpiralLibrary/Function/MaybeCall.hpp"
+#include <iostream>
 
 using namespace libspiral;
 
 bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
 	switch (uMsg) {
-	case WM_LBUTTONDOWN:
-	case WM_LBUTTONUP:
-	case WM_LBUTTONDBLCLK:
-	case  WM_MBUTTONDOWN:
-	case WM_MBUTTONUP:
-	case  WM_MBUTTONDBLCLK:
-	case WM_RBUTTONDOWN:
-	case  WM_RBUTTONUP:
-	case WM_RBUTTONDBLCLK:
-	case  WM_XBUTTONDOWN:
-	case  WM_XBUTTONUP:
-	case WM_XBUTTONDBLCLK:
-	case  WM_MOUSEWHEEL:
+	case WM_LBUTTONDOWN: {
+		Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam) };
+		ERTREDebug(_T("pos: %f"), oldClickedPos.x);
+		if (oldClickedPos.x != -1) {
+			DispathDragEvent(InputKey::LMOUSE, oldClickedPos - pos);
+		}
+		handleKey = InputKey::LMOUSE;
+		oldClickedPos = pos;
+	}
 		break;
-
+	case WM_MOUSEMOVE: {
+		if (handleKey != InputKey::None) {
+			Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam) };
+			DispathDragEvent(handleKey, oldClickedPos - pos);
+			oldClickedPos = pos;
+		}
+	}
+		break;
+	case WM_LBUTTONUP:
+		handleKey = InputKey::None;
+		oldClickedPos = Vector2D{ -1, -1 };
+		break;
+	case WM_RBUTTONDOWN: {
+		Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam),  (float)GET_Y_LPARAM(lParam) };
+		if (oldClickedPos.x != -1) {
+			DispathDragEvent(InputKey::RMOUSE, oldClickedPos - pos );
+		}
+		handleKey = InputKey::RMOUSE;
+		oldClickedPos = pos;
+		break;
+	}
+		break;
+	case WM_RBUTTONUP:
+		handleKey = InputKey::None;
+		oldClickedPos = Vector2D{ -1, -1 };
+		break;
 	case WM_CHAR:
 		if (L'e' == (wchar_t)wParam) {
-			DispatchInputEvent(InputKey::Up);
+			DispatchInputEvent(InputEvent::PRESS, InputKey::Up);
 		}
 		else if (L'q' == (wchar_t)wParam){
-			DispatchInputEvent(InputKey::Down);
+			DispatchInputEvent(InputEvent::PRESS, InputKey::Down);
 		}
 		return true;
 	}
@@ -35,12 +58,38 @@ bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam
 	return false;
 }
 
-void WindowManager::RegisterListener(std::string key, const std::function<void(InputKey key)>& listener) {
+void WindowManager::RegisterPressListener(std::string key, const std::function<void(InputKey key)>& listener) {
 	pressedKeyListeners.insert(std::make_pair(key, listener));
 }
 
-void WindowManager::DispatchInputEvent(InputKey key) {
-	for (auto && listener : pressedKeyListeners) {
-		listener.second(key);
+void WindowManager::RegisterReleaseListener(std::string key, const std::function<void(InputKey key)>& listener) {
+	releasedKeyListeners.insert(std::make_pair(key, listener));
+}
+
+void WindowManager::RegisterDragListener(std::string key, const std::function<void(Vector2D Delta, InputKey key)>& listener) {
+	dragListeners.insert(std::make_pair(key, listener));
+}
+
+void WindowManager::DispatchInputEvent(InputEvent e, InputKey key) {
+	switch (e)
+	{
+	case InputEvent::PRESS:
+		for (auto && listener : pressedKeyListeners) {
+			listener.second(key);
+		}
+		break;
+	case InputEvent::RELEASE:
+		for (auto && listener : releasedKeyListeners) {
+			listener.second(key);
+		}
+		break;
+	default:
+		break;
+	}
+}
+
+void WindowManager::DispathDragEvent(InputKey key, Vector2D Delta) {
+	for (auto && listener : dragListeners) {
+		listener.second(Delta, key);
 	}
 }

@@ -13,6 +13,11 @@ FileManager::FileManager()
 	RID = 0;
 }
 
+FileManager::~FileManager() {
+	_textureCache.clear();
+	_resourceCache.clear();
+}
+
 std::string FileManager::MakeRelativePath(std::string filename) {
 	return _projDir + filename;
 }

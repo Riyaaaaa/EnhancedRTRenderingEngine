@@ -11,6 +11,8 @@
 
 template<class VertType>
 D3D11DrawElement<VertType>::~D3D11DrawElement() {
+	SAFE_RELEASE(hpVertexShader);
+	SAFE_RELEASE(hpPixelShader);
 	SAFE_RELEASE(transformBuffer);
 	SAFE_RELEASE(vertexBuffer);
 	SAFE_RELEASE(indexBuffer);
@@ -129,14 +131,12 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
 
 	view->hpDeviceContext->IASetInputLayout(hpInputLayout);
 
-	ID3D11VertexShader* hpVertexShader;
 	if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, &hpVertexShader))) {
 		return;
 	}
 	view->hpDeviceContext->VSSetShader(hpVertexShader, NULL, 0);
 
 	if (pShader.HasResource()) {
-		ID3D11PixelShader* hpPixelShader;
 		if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, &hpPixelShader))) {
 			return;
 		}

@@ -35,6 +35,8 @@ protected:
 	D3D11Texture tex;
 	SIZE_T vertexCount;
 
+	ID3D11VertexShader* hpVertexShader;
+	ID3D11PixelShader* hpPixelShader;
 	ID3D11Buffer* transformBuffer;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;
