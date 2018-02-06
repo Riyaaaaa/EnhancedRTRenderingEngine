@@ -51,13 +51,18 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
 
 	// Only support one light.
-	// TODO: UNSAFE CODE!!! Light always requires
-	hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
-	hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
+	
+	if (!scene->GetDirectionalLights().empty()) {
+		hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
+	}
+	if (!scene->GetPointLightParams().empty()) {
+		hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
+	}
 	
 	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
 	_view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV());
+	_view->hpDeviceContext->PSSetConstantBuffers(0, 1, &hpConstantBuffer);
 
 	for (auto && object : scene->GetViewObjects()) {
 		D3D11DrawElement<Scene::VertType> element;

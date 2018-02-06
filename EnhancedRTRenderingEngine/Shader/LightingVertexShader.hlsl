@@ -9,7 +9,9 @@ struct vertexIn
 struct vertexOut
 {
 	float4 pos : SV_POSITION;
-	float4 col : COLOR;
+	float4 posw : POSITION0;
+	float4 norw : NORMAL0;
+	float4 col : COLOR0;
 	float2 tex : TEXCOORD0;
 };
 
@@ -34,28 +36,16 @@ vertexOut main(vertexIn IN)
 
 	float4 pos = float4(IN.pos, 1.0f);
 
-	pos = mul(pos, World);
-	pos = mul(pos, View);
+	OUT.posw = mul(pos, World);
+	pos = mul(OUT.posw, View);
 	pos = mul(pos, Projection);
 
 	nor = mul(float4(IN.nor, 1.0f), World).xyz;
 	nor = normalize(nor);
 
-	float3 dir;
-	float  len;
-	float  colD;
-	float  colA;
-	float  col;
-
-	dir = PointLightPos - pos.xyz;
-	len = length(dir);
-	dir = dir / len;
-	colD = saturate(dot(normalize(pos.xyz), dir));
-	colA = saturate(1.0f / (PointLightAtt.x + PointLightAtt.y * len + PointLightAtt.z * len * len));
-	col = colD * colA;
-
 	OUT.pos = pos;
-	OUT.col = (saturate(dot(nor, DirectionalLight)) * 0.5f + 0.5f) + col;
+	OUT.norw = float4(nor, 1.0f);
+	OUT.col = saturate(dot(nor, -DirectionalLight)) * 0.5f + 0.5f;
 	OUT.tex = pos.xy;
 
 	return OUT;

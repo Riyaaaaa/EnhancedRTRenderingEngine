@@ -82,8 +82,8 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	D3D11_VIEWPORT vp;
 	vp.TopLeftX = 0;
 	vp.TopLeftY = 0;
-	vp.Width = 800;
-	vp.Height = 600;
+	vp.Width = _renderSize.w;
+	vp.Height = _renderSize.h;
 	vp.MinDepth = 0.0f;
 	vp.MaxDepth = 1.0f;
 	hpDeviceContext->RSSetViewports(1, &vp);

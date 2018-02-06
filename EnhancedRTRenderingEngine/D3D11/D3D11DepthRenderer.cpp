@@ -36,7 +36,7 @@ void D3D11DepthRenderer::render(Scene* scene)
 		return;
 	}
 	auto lDir = dLights[0].GetDirection();
-	DirectX::XMVECTOR pos = XMVectorSet(0.0f, 1000, 0.0f, 0.0f);
+	DirectX::XMVECTOR pos = XMVectorSet(0.0f, 10.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
 	DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 	static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(

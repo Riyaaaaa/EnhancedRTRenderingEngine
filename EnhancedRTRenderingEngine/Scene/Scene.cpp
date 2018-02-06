@@ -44,11 +44,11 @@ Scene::Scene() {
 	viewObjects[0].SetMaterial(material);
 	//viewObjects[1].SetMaterial(material);
 
-	directionalLights.push_back(DirectionalLight(Vector3D{0.0, 0.5f, -1.0f}));
+	//directionalLights.push_back(DirectionalLight(Vector3D{0.0, 0.0f, 0.0f}));
 
 	PointLight plight;
 	plight.SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-	plight.SetPoint(Vector3D{ 0.0, -1.0f, 0.0f });
+	plight.SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
 
 	pointLights.push_back(plight);
 
