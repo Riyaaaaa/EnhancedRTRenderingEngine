@@ -5,6 +5,7 @@
 #include "CameraObject.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
+#include "CameraController.h"
 
 #include <DirectXMath.h>
 #include <vector>
@@ -35,6 +36,8 @@ private:
 
 	std::vector<DirectionalLight> directionalLights;
 	std::vector<PointLight> pointLights;
+
+	std::unique_ptr<CameraController> _controller;
 
 	//std::vector<SceneObject> sceneObjects;
 };

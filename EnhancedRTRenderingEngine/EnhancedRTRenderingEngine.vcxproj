@@ -159,6 +159,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="Scene\CameraController.h" />
     <ClInclude Include="Constant\RenderTag.h" />
     <ClInclude Include="D3D11\D3D11DepthStencilTarget.h" />
     <ClInclude Include="D3D11\D3D11ForwardRenderer.h" />
@@ -283,6 +285,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\CameraController.cpp" />
     <ClCompile Include="D3D11\D3D11DepthStencilTarget.cpp" />
     <ClCompile Include="D3D11\D3D11FormatUtils.cpp" />
     <ClCompile Include="D3D11\D3D11ForwardRenderer.cpp" />

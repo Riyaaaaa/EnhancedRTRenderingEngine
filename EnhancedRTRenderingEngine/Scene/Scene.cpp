@@ -53,6 +53,8 @@ Scene::Scene() {
 	pointLights.push_back(plight);
 
 	mainCameraIdx = 0;
+
+	_controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 }
 
 XMMATRIX Scene::GetPerspectiveProjection() {
