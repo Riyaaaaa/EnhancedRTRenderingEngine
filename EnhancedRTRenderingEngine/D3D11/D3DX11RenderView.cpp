@@ -89,6 +89,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	hpDeviceContext->RSSetViewports(1, &vp);
 
 	CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
+	//desc.FillMode = D3D11_FILL_WIREFRAME;
 	device->CreateRasterizerState(&desc, &mRasterizerState);
 
 	desc.CullMode = D3D11_CULL_NONE;

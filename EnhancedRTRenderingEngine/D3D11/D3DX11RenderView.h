@@ -22,18 +22,18 @@ public:
 
 //protected:
 public:
-	ID3D11Device * hpDevice = NULL;
-	ID3D11DeviceContext* hpDeviceContext = NULL;
-	IDXGIDevice1* hpDXGI = NULL;
-	IDXGIAdapter* hpAdapter = NULL;
-	IDXGIFactory* hpDXGIFactory = NULL;
-	ID3D11Texture2D* hpBackBuffer = NULL;
-	ID3D11RenderTargetView *hpRenderTargetView = NULL;
-	IDXGISwapChain* hpDXGISwpChain = NULL;
-	ID3D11Texture2D* hpTexture2dDepth = NULL;
-	ID3D11DepthStencilView* hpDepthStencilView = NULL;
-	ID3D11RasterizerState* mRasterizerState;
-	ID3D11RasterizerState* mDoubleSidedRasterizerState;
+	ID3D11Device * hpDevice = nullptr;
+	ID3D11DeviceContext* hpDeviceContext = nullptr;
+	IDXGIDevice1* hpDXGI = nullptr;
+	IDXGIAdapter* hpAdapter = nullptr;
+	IDXGIFactory* hpDXGIFactory = nullptr;
+	ID3D11Texture2D* hpBackBuffer = nullptr;
+	ID3D11RenderTargetView *hpRenderTargetView = nullptr;
+	IDXGISwapChain* hpDXGISwpChain = nullptr;
+	ID3D11Texture2D* hpTexture2dDepth = nullptr;
+	ID3D11DepthStencilView* hpDepthStencilView = nullptr;
+	ID3D11RasterizerState* mRasterizerState = nullptr;
+	ID3D11RasterizerState* mDoubleSidedRasterizerState = nullptr;
 
 	D3D11DepthStencilTarget hpShadowMapTarget;
 

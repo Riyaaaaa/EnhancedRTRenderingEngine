@@ -39,9 +39,14 @@ void D3D11DepthRenderer::render(Scene* scene)
 	DirectX::XMVECTOR pos = XMVectorSet(0.0f, 1000, 0.0f, 0.0f);
 	DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
 	DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	hConstantBuffer.View = XMMatrixLookToLH(pos, dir, hUp);
+	static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(
+		0.5f, 0.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 0.0f,
+		0.0f, 0.0f, 1.0f, 0.0f,
+		0.5f, 0.5f, 0.0f, 1.0f);
 
-	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
+	hConstantBuffer.View = XMMatrixMultiply(XMMatrixLookToLH(pos, dir, hUp), SHADOW_BIAS);
+	hConstantBuffer.Projection = scene->GetPerspectiveProjection();
 
 	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);

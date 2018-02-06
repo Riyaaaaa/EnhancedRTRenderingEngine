@@ -11,6 +11,7 @@ SamplerState samLinear : register(s0);
 float4 main(pixcelIn IN) : SV_Target
 {
 	pixcelIn OUT;
+	//OUT.col = IN.col;
 	OUT.col = ShadowMap.Sample(samLinear, IN.tex);
-	return OUT.col;
+	return float4(OUT.col.xxx, 1.0f);
 }

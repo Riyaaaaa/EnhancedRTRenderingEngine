@@ -13,6 +13,7 @@ template<class VertType>
 D3D11DrawElement<VertType>::~D3D11DrawElement() {
 	SAFE_RELEASE(transformBuffer);
 	SAFE_RELEASE(vertexBuffer);
+	SAFE_RELEASE(indexBuffer);
 }
 
 template<class VertType>
