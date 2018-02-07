@@ -48,8 +48,8 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	}
 
 	ConstantBuffer hConstantBuffer;
-	hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
-	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
+	hConstantBuffer.View = scene->GetViewProjection();
+	hConstantBuffer.Projection = scene->GetPerspectiveProjection();
 	hConstantBuffer.Shadow = scene->GetDirectionalLightViewProjection();
 
 	// Only support one light.

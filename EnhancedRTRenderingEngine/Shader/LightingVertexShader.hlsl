@@ -54,7 +54,7 @@ vertexOut main(vertexIn IN)
 	OUT.norw = float4(nor, 1.0f);
 	OUT.col = saturate(dot(nor, -DirectionalLight.xyz)) * 0.5f + 0.5f;
 	OUT.tex = pos.xy;
-	OUT.shadowCoord = mul(Shadow, OUT.posw);
+	OUT.shadowCoord = mul(mul(OUT.posw, Shadow), Projection);
 
 	return OUT;
 }

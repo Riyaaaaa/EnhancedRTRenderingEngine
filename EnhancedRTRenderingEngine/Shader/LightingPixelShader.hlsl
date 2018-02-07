@@ -40,6 +40,6 @@ dir = dir / len;
 colD = saturate(dot(IN.norw.xyz, dir));
 colA = saturate(1.0f / (PLightParam.att.x + PLightParam.att.y * len + PLightParam.att.z * len * len));
 col = colD * colA + IN.col.xyz;
-//col = ShadowMap.Sample(samLinear, IN.shadowCoord);
+col = ShadowMap.Sample(samLinear, IN.shadowCoord);
 return float4(col, 1.0f);
 }
