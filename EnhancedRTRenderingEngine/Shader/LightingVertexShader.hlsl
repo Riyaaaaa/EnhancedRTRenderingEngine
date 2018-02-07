@@ -13,6 +13,7 @@ struct vertexOut
 	float4 norw : NORMAL0;
 	float4 col : COLOR0;
 	float2 tex : TEXCOORD0;
+	float2 shadowCoord : SHADOW_COORD;
 };
 
 struct PointLightParam
@@ -25,6 +26,7 @@ cbuffer ConstantBuffer : register(b0)
 {
 	matrix View;
 	matrix Projection;
+	matrix Shadow;
 	float4 DirectionalLight;
 	PointLightParam PLightParam;
 }
@@ -50,8 +52,9 @@ vertexOut main(vertexIn IN)
 
 	OUT.pos = pos;
 	OUT.norw = float4(nor, 1.0f);
-	OUT.col = saturate(dot(nor, -DirectionalLight)) * 0.5f + 0.5f;
+	OUT.col = saturate(dot(nor, -DirectionalLight.xyz)) * 0.5f + 0.5f;
 	OUT.tex = pos.xy;
+	OUT.shadowCoord = mul(Shadow, OUT.posw);
 
 	return OUT;
 }

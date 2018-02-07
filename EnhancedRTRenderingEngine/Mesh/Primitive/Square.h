@@ -7,5 +7,10 @@ class Square : public MeshBase<Vertex3D>
 {
 public:
 	Square();
-	~Square();
+};
+
+class SquarePMD : public MeshBase<PMDVertex>
+{
+public:
+	SquarePMD();
 };

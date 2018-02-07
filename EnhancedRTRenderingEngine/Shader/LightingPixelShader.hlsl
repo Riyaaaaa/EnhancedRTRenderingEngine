@@ -5,6 +5,7 @@ struct pixcelIn
 	float4 norw : NORMAL0;
 	float4 col : COLOR0;
 	float2 tex : TEXCOORD0;
+	float2 shadowCoord : SHADOW_COORD;
 };
 
 Texture2D ShadowMap : register(t1);
@@ -12,23 +13,21 @@ SamplerState samLinear : register(s0);
 
 struct PointLightParam
 {
-	float3 pos;
-	float3 att;
+	float4 pos;
+	float4 att;
 };
 
 cbuffer ConstantBuffer : register(b0)
 {
 	matrix View;
 	matrix Projection;
-	float3 DirectionalLight;
+	matrix Shadow;
+	float4 DirectionalLight;
 	PointLightParam PLightParam;
 }
 
 float4 main(pixcelIn IN) : SV_Target
 {
-	pixcelIn OUT;
-	//OUT.col = IN.col;
-
 float3 dir;
 float  len;
 float  colD;
@@ -41,7 +40,6 @@ dir = dir / len;
 colD = saturate(dot(IN.norw.xyz, dir));
 colA = saturate(1.0f / (PLightParam.att.x + PLightParam.att.y * len + PLightParam.att.z * len * len));
 col = colD * colA + IN.col.xyz;
-
-	//OUT.col = ShadowMap.Sample(samLinear, IN.tex);
+//col = ShadowMap.Sample(samLinear, IN.shadowCoord);
 return float4(col, 1.0f);
 }

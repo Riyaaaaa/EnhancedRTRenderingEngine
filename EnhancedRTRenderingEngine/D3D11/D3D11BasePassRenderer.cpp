@@ -50,14 +50,21 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	ConstantBuffer hConstantBuffer;
 	hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
 	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
+	hConstantBuffer.Shadow = scene->GetDirectionalLightViewProjection();
 
 	// Only support one light.
-	
 	if (!scene->GetDirectionalLights().empty()) {
 		hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
 	}
+	else {
+		hConstantBuffer.DirectionalLight = Vector4D::Zero();
+	}
 	if (!scene->GetPointLightParams().empty()) {
 		hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
+	}
+	else {
+		hConstantBuffer.PointLight.pos = Vector4D::Zero();
+		hConstantBuffer.PointLight.attenuation = Vector4D::Zero();
 	}
 	
 	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);

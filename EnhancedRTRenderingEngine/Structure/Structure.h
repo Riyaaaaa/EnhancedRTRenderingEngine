@@ -12,8 +12,11 @@ struct Vector3D {
 
 struct Vector4D {
 	Vector4D() {}
-	Vector4D(const Vector3D vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1.0f) {}
+	constexpr Vector4D(float x, float y, float z) : x(x), y(y), z(z), w(1.0f) {}
+	constexpr Vector4D(const Vector3D vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1.0f) {}
 	float x, y, z, w;
+
+	static constexpr Vector4D Zero() { return Vector4D(0.0f, 0.0f, 0.0f); }
 };
 
 struct Vector2D {
@@ -136,6 +139,7 @@ struct ConstantBuffer
 {
 	DirectX::XMMATRIX View;
 	DirectX::XMMATRIX Projection;
+	DirectX::XMMATRIX Shadow;
 	Vector4D DirectionalLight;
 	PointLightParameters PointLight;
 };
