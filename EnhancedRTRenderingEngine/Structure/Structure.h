@@ -10,6 +10,12 @@ struct Vector3D {
 	float x, y, z;
 };
 
+struct Vector4D {
+	Vector4D() {}
+	Vector4D(const Vector3D vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1.0f) {}
+	float x, y, z, w;
+};
+
 struct Vector2D {
 	float x, y;
 
@@ -115,9 +121,9 @@ struct Transform {
 };
 
 struct PointLightParameters {
-	Vector3D pos;
+	Vector4D pos;
 	// X: constant attenuation factor, Y:  linear attenuation factor, Z: quadratic attenuation factor
-	Vector3D attenuation;
+	Vector4D attenuation;
 };
 
 struct TransformBufferParam
@@ -130,7 +136,7 @@ struct ConstantBuffer
 {
 	DirectX::XMMATRIX View;
 	DirectX::XMMATRIX Projection;
-	Vector3D DirectionalLight;
+	Vector4D DirectionalLight;
 	PointLightParameters PointLight;
 };
 

@@ -8,6 +8,7 @@
 
 #include "Constant/RenderTag.h"
 #include "WindowManager.h"
+#include "Common.h"
 
 D3D11BasePassRenderer::D3D11BasePassRenderer()
 {
@@ -61,8 +62,8 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	
 	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
-	_view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV());
 	_view->hpDeviceContext->PSSetConstantBuffers(0, 1, &hpConstantBuffer);
+	_view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV());
 
 	for (auto && object : scene->GetViewObjects()) {
 		D3D11DrawElement<Scene::VertType> element;
@@ -74,4 +75,6 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	_view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
 	_view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
 	_view->hpDXGISwpChain->Present(0, 0);
+
+	SAFE_RELEASE(hpConstantBuffer);
 }

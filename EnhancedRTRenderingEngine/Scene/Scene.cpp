@@ -40,15 +40,16 @@ Scene::Scene() {
 
 	auto model = ResourceLoader::LoadPMDModel("nolicensed");
 	viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+	viewObjects[0].SetLocation(Vector3D{ 0.0f, 0.0f, 0.0f });
 	
 	viewObjects[0].SetMaterial(material);
 	//viewObjects[1].SetMaterial(material);
 
-	//directionalLights.push_back(DirectionalLight(Vector3D{0.0, 0.0f, 0.0f}));
+	directionalLights.push_back(DirectionalLight(Vector3D{0.0, 0.0f, -1.0f}));
 
 	PointLight plight;
 	plight.SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-	plight.SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
+	plight.SetPoint(Vector3D{ 0.0, 3.0f, -3.0f });
 
 	pointLights.push_back(plight);
 

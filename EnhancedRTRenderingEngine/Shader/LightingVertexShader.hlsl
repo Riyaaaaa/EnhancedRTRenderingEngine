@@ -15,13 +15,18 @@ struct vertexOut
 	float2 tex : TEXCOORD0;
 };
 
+struct PointLightParam
+{
+	float4 pos;
+	float4 att;
+};
+
 cbuffer ConstantBuffer : register(b0)
 {
 	matrix View;
 	matrix Projection;
-	float3 DirectionalLight;
-	float3 PointLightPos;
-	float3 PointLightAtt;
+	float4 DirectionalLight;
+	PointLightParam PLightParam;
 }
 
 cbuffer ObjectBuffer : register(b1)

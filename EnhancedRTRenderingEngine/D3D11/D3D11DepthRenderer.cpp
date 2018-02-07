@@ -5,6 +5,8 @@
 
 #include "Constant/RenderTag.h"
 
+#include "Common.h"
+
 using namespace DirectX;
 
 bool D3D11DepthRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& view) {
@@ -56,4 +58,6 @@ void D3D11DepthRenderer::render(Scene* scene)
 		element.Initialize(_view->hpDevice, &object, DepthRenderTag);
 		element.Draw(_view);
 	}
+
+	SAFE_RELEASE(hpConstantBuffer);
 }
