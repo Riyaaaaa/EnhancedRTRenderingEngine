@@ -12,15 +12,12 @@ bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam
 	case WM_LBUTTONDOWN: {
 		Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam) };
 		ERTREDebug(_T("pos: %f"), oldClickedPos.x);
-		if (oldClickedPos.x != -1) {
-			DispathDragEvent(InputKey::LMOUSE, oldClickedPos - pos);
-		}
 		handleKey = InputKey::LMOUSE;
 		oldClickedPos = pos;
 	}
 		break;
 	case WM_MOUSEMOVE: {
-		if (handleKey != InputKey::None) {
+		if (handleKey != InputKey::None && oldClickedPos.x != -1) {
 			Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam) };
 			DispathDragEvent(handleKey, oldClickedPos - pos);
 			oldClickedPos = pos;
@@ -33,9 +30,6 @@ bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam
 		break;
 	case WM_RBUTTONDOWN: {
 		Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam),  (float)GET_Y_LPARAM(lParam) };
-		if (oldClickedPos.x != -1) {
-			DispathDragEvent(InputKey::RMOUSE, oldClickedPos - pos );
-		}
 		handleKey = InputKey::RMOUSE;
 		oldClickedPos = pos;
 		break;
@@ -51,6 +45,18 @@ bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam
 		}
 		else if (L'q' == (wchar_t)wParam){
 			DispatchInputEvent(InputEvent::PRESS, InputKey::Down);
+		}
+		else if (L'w' == (wchar_t)wParam) {
+			DispatchInputEvent(InputEvent::PRESS, InputKey::Forward);
+		}
+		else if (L's' == (wchar_t)wParam) {
+			DispatchInputEvent(InputEvent::PRESS, InputKey::Backward);
+		}
+		else if (L'a' == (wchar_t)wParam) {
+			DispatchInputEvent(InputEvent::PRESS, InputKey::Left);
+		}
+		else if (L'd' == (wchar_t)wParam) {
+			DispatchInputEvent(InputEvent::PRESS, InputKey::Right);
 		}
 		return true;
 	}

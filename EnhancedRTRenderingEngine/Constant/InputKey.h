@@ -5,7 +5,11 @@ enum class InputKey {
 	Up,
 	Down,
 	LMOUSE,
-	RMOUSE
+	RMOUSE,
+	Forward,
+	Backward,
+	Right,
+	Left
 };
 
 enum class InputEvent {
