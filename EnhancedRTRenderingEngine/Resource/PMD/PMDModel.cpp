@@ -21,4 +21,10 @@ PMDModel::PMDModel(void* ptr, std::size_t size) : RawBinary(ptr, size)
 
 	face_vert_index = reinterpret_cast<decltype(face_vert_index)> (raw_byte + offset);
 	offset += sizeof(face_vert_index) * face_vert_count;
+
+	material_count = *(decltype(material_count)*)(raw_byte + offset);
+	offset += sizeof(material_count);
+
+	materials = reinterpret_cast<t_material*>(raw_byte + offset);
+	offset += sizeof(t_material) * material_count;
 }
