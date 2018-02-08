@@ -10,7 +10,7 @@ D3D11Texture::D3D11Texture() :
 }
 
 
-bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture2D>& tex)
+bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const ResourceHandle<Texture2D>& tex)
 {
 	D3D11_TEXTURE2D_DESC desc;
 	desc.Width = tex().Width();
@@ -31,7 +31,7 @@ bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture
 	initData.SysMemPitch = tex().Stride();
 	//initData.SysMemSlicePitch = tex.Size();
 
-	auto hr = device->CreateTexture2D(&desc, &initData, &mTexture);
+	auto hr = device->CreateTexture2D(&desc, &initData, mTexture.ToCreator());
 	if (FAILED(hr)) {
 		return false;
 	}
@@ -41,7 +41,7 @@ bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	hr = device->CreateShaderResourceView(mTexture, &SRVDesc, &mView);
+	hr = device->CreateShaderResourceView(mTexture.Get(), &SRVDesc, mView.ToCreator());
 	if (FAILED(hr))
 	{
 		return false;
@@ -63,7 +63,7 @@ bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	// Create the texture sampler state.
-	hr = device->CreateSamplerState(&samplerDesc, &mSampler);
+	hr = device->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
 	if (FAILED(hr))
 	{
 		return false;
@@ -72,7 +72,7 @@ bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture
 	return true;
 }
 
-bool D3D11Texture::Initialize(ID3D11Device* device, ID3D11Texture2D* tex) {
+bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2D> tex) {
 	mTexture = tex;
 
 	D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
@@ -80,7 +80,7 @@ bool D3D11Texture::Initialize(ID3D11Device* device, ID3D11Texture2D* tex) {
 	SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
 	SRVDesc.Texture2D.MipLevels = 1;
 
-	auto hr = device->CreateShaderResourceView(tex, &SRVDesc, &mView);
+	auto hr = device->CreateShaderResourceView(tex.Get(), &SRVDesc, mView.ToCreator());
 	if (FAILED(hr))
 	{
 		return false;
@@ -104,17 +104,11 @@ bool D3D11Texture::Initialize(ID3D11Device* device, ID3D11Texture2D* tex) {
 	samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
 	// Create the texture sampler state.
-	hr = device->CreateSamplerState(&samplerDesc, &mSampler);
+	hr = device->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
 	if (FAILED(hr))
 	{
 		return false;
 	}
 
 	return true;
-}
-
-D3D11Texture::~D3D11Texture() {
-	SAFE_RELEASE(mTexture);
-	SAFE_RELEASE(mView);
-	SAFE_RELEASE(mSampler);
 }

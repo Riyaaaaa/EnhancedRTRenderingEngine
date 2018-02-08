@@ -7,20 +7,20 @@
 #pragma comment(lib, "d3d11.lib")
 
 
-bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext)
+bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 {
 	hpDevice = device;
 	hpDeviceContext = deviceContext;
 
-	if (FAILED(device->QueryInterface(__uuidof(IDXGIDevice1), (void**)&hpDXGI))) {
+	if (FAILED(device->QueryInterface(__uuidof(IDXGIDevice1), (void**)hpDXGI.ToCreator()))) {
 		return false;
 	}
 
-	if (FAILED(hpDXGI->GetAdapter(&hpAdapter))) {
+	if (FAILED(hpDXGI->GetAdapter(hpAdapter.ToCreator()))) {
 		return false;
 	}
 
-	hpAdapter->GetParent(__uuidof(IDXGIFactory), (void**)&hpDXGIFactory);
+	hpAdapter->GetParent(__uuidof(IDXGIFactory), (void**)hpDXGIFactory.ToCreator());
 	if (hpDXGIFactory == NULL) {
 		return false;
 	}
@@ -55,7 +55,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	hTexture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	hTexture2dDesc.CPUAccessFlags = 0;
 	hTexture2dDesc.MiscFlags = 0;
-	if (FAILED(hpDevice->CreateTexture2D(&hTexture2dDesc, NULL, &hpTexture2dDepth))) {
+	if (FAILED(hpDevice->CreateTexture2D(&hTexture2dDesc, NULL, hpTexture2dDepth.ToCreator()))) {
 		return false;
 	}
 
@@ -63,19 +63,19 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 	hDepthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	hDepthStencilViewDesc.Flags = 0;
-	if (FAILED(hpDevice->CreateDepthStencilView(hpTexture2dDepth, &hDepthStencilViewDesc, &hpDepthStencilView))) {
+	if (FAILED(hpDevice->CreateDepthStencilView(hpTexture2dDepth.Get(), &hDepthStencilViewDesc, hpDepthStencilView.ToCreator()))) {
 		return false;
 	}
 
-	if (FAILED(hpDXGIFactory->CreateSwapChain(device, &hDXGISwapChainDesc, &hpDXGISwpChain))) {
+	if (FAILED(hpDXGIFactory->CreateSwapChain(device.Get(), &hDXGISwapChainDesc, hpDXGISwpChain.ToCreator()))) {
 		return false;
 	}
 
-	if (FAILED(hpDXGISwpChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)&hpBackBuffer))) {
+	if (FAILED(hpDXGISwpChain->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)hpBackBuffer.ToCreator()))) {
 		return false;
 	}
 
-	if (FAILED(device->CreateRenderTargetView(hpBackBuffer, NULL, &hpRenderTargetView))) {
+	if (FAILED(device->CreateRenderTargetView(hpBackBuffer.Get(), NULL, hpRenderTargetView.ToCreator()))) {
 		return false;
 	}
 
@@ -90,13 +90,13 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 
 	CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
 	//desc.FillMode = D3D11_FILL_WIREFRAME;
-	device->CreateRasterizerState(&desc, &mRasterizerState);
+	device->CreateRasterizerState(&desc, mRasterizerState.ToCreator());
 
 	desc.CullMode = D3D11_CULL_NONE;
-	device->CreateRasterizerState(&desc, &mDoubleSidedRasterizerState);
+	device->CreateRasterizerState(&desc, mDoubleSidedRasterizerState.ToCreator());
 
-	hpDeviceContext->RSSetState(mRasterizerState);
-	//hpDeviceContext->RSSetState(mDoubleSidedRasterizerState);
+	hpDeviceContext->RSSetState(mRasterizerState.Get());
+	//hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());
 	
 	hpShadowMapTarget.Initialize(device, hpDeviceContext);
 
@@ -108,20 +108,4 @@ bool D3DX11RenderView::EnableFullScreen(HWND hWnd) {
 		return false;
 	}
 	return true;
-}
-
-
-D3DX11RenderView::~D3DX11RenderView()
-{
-	SAFE_RELEASE(hpRenderTargetView);
-	SAFE_RELEASE(hpBackBuffer);
-	SAFE_RELEASE(hpDXGISwpChain);
-	SAFE_RELEASE(hpDXGIFactory);
-	SAFE_RELEASE(hpAdapter);
-	SAFE_RELEASE(hpDXGI);
-	SAFE_RELEASE(mRasterizerState);
-	SAFE_RELEASE(mDoubleSidedRasterizerState);
-	SAFE_RELEASE(hpTexture2dDepth);
-	SAFE_RELEASE(hpDepthStencilView);
-	SAFE_RELEASE(hpDeviceContext);
 }

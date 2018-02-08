@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="D3D11\ComPtr.h" />
     <ClInclude Include="Scene\CameraController.h" />
     <ClInclude Include="Constant\RenderTag.h" />
     <ClInclude Include="D3D11\D3D11DepthStencilTarget.h" />

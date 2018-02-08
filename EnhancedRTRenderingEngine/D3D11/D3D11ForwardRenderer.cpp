@@ -3,7 +3,6 @@
 
 #include "WindowManager.h"
 
-
 D3D11ForwardRenderer::D3D11ForwardRenderer()
 {
 }
@@ -13,7 +12,7 @@ D3D11ForwardRenderer::~D3D11ForwardRenderer()
 {
 }
 
-void D3D11ForwardRenderer::Initialize(ID3D11Device* device, ID3D11DeviceContext* hpDeviceContext) {
+void D3D11ForwardRenderer::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext) {
 	mView = std::make_shared<D3DX11RenderView>();
 	mView->Initialize(WindowManager::getInstance()->GetActiveWindow(), device, hpDeviceContext);
 

@@ -10,10 +10,9 @@
 class D3DX11RenderView
 {
 public:
-	bool Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceContext* deviceContext);
+	bool Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
 
 	D3DX11RenderView() {};
-	~D3DX11RenderView();
 
 	bool EnableFullScreen(HWND hWnd);
 
@@ -22,18 +21,18 @@ public:
 
 //protected:
 public:
-	ID3D11Device * hpDevice = nullptr;
-	ID3D11DeviceContext* hpDeviceContext = nullptr;
-	IDXGIDevice1* hpDXGI = nullptr;
-	IDXGIAdapter* hpAdapter = nullptr;
-	IDXGIFactory* hpDXGIFactory = nullptr;
-	ID3D11Texture2D* hpBackBuffer = nullptr;
-	ID3D11RenderTargetView *hpRenderTargetView = nullptr;
-	IDXGISwapChain* hpDXGISwpChain = nullptr;
-	ID3D11Texture2D* hpTexture2dDepth = nullptr;
-	ID3D11DepthStencilView* hpDepthStencilView = nullptr;
-	ID3D11RasterizerState* mRasterizerState = nullptr;
-	ID3D11RasterizerState* mDoubleSidedRasterizerState = nullptr;
+	ComPtr<ID3D11Device> hpDevice;
+	ComPtr<ID3D11DeviceContext> hpDeviceContext;
+	ComPtr<IDXGIDevice1> hpDXGI;
+	ComPtr<IDXGIAdapter> hpAdapter;
+	ComPtr<IDXGIFactory> hpDXGIFactory;
+	ComPtr<ID3D11Texture2D> hpBackBuffer;
+	ComPtr<ID3D11RenderTargetView> hpRenderTargetView;
+	ComPtr<IDXGISwapChain> hpDXGISwpChain;
+	ComPtr<ID3D11Texture2D> hpTexture2dDepth;
+	ComPtr<ID3D11DepthStencilView> hpDepthStencilView;
+	ComPtr<ID3D11RasterizerState> mRasterizerState;
+	ComPtr<ID3D11RasterizerState> mDoubleSidedRasterizerState;
 
 	D3D11DepthStencilTarget hpShadowMapTarget;
 

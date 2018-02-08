@@ -9,13 +9,7 @@ D3D11DepthStencilTarget::D3D11DepthStencilTarget():
 {
 }
 
-
-D3D11DepthStencilTarget::~D3D11DepthStencilTarget()
-{
-	SAFE_RELEASE(_depthStencilView);
-}
-
-bool D3D11DepthStencilTarget::Initialize(ID3D11Device* device, ID3D11DeviceContext* hpDeviceContext) {
+bool D3D11DepthStencilTarget::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext) {
 	D3D11_TEXTURE2D_DESC hTexture2dDesc;
 	//todo: use window mgr
 	hTexture2dDesc.Width = 1980;
@@ -28,7 +22,7 @@ bool D3D11DepthStencilTarget::Initialize(ID3D11Device* device, ID3D11DeviceConte
 	hTexture2dDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
 	hTexture2dDesc.CPUAccessFlags = 0;
 	hTexture2dDesc.MiscFlags = 0;
-	if (FAILED(device->CreateTexture2D(&hTexture2dDesc, NULL, &_depthTexture))) {
+	if (FAILED(device->CreateTexture2D(&hTexture2dDesc, NULL, _depthTexture.ToCreator()))) {
 		return false;
 	}
 
@@ -36,7 +30,7 @@ bool D3D11DepthStencilTarget::Initialize(ID3D11Device* device, ID3D11DeviceConte
 	hDepthStencilViewDesc.Format = DXGI_FORMAT_D16_UNORM;
 	hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
 	hDepthStencilViewDesc.Flags = 0;
-	if (FAILED(device->CreateDepthStencilView(_depthTexture, &hDepthStencilViewDesc, &_depthStencilView))) {
+	if (FAILED(device->CreateDepthStencilView(_depthTexture.Get(), &hDepthStencilViewDesc, _depthStencilView.ToCreator()))) {
 		return false;
 	}
 

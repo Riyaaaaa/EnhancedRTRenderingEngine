@@ -10,7 +10,7 @@
 #include "Common.h"
 
 template<class VertType>
-void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::OpaqueRender) {
+void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::OpaqueRender) {
 	auto& context = element->GetContext();
 	_state = RenderingState::NONE;
 
@@ -39,7 +39,7 @@ void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<Ver
 
 
 template<class VertType>
-void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::DepthRender) {
+void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::DepthRender) {
 	auto& context = element->GetContext();
 	_state = RenderingState::NONE;
 
@@ -60,7 +60,7 @@ void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<Ver
 }
 
 template<class VertType>
-bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<VertType>* element) {
+bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element) {
 	D3D11_BUFFER_DESC bufferDesc;
 	D3D11_SUBRESOURCE_DATA subResource;
 
@@ -73,7 +73,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = sizeof(float);
 
-	if (FAILED(device->CreateBuffer(&bufferDesc, &subResource, &vertexBuffer))) {
+	if (FAILED(device->CreateBuffer(&bufferDesc, &subResource, vertexBuffer.ToCreator()))) {
 		return false;
 	}
 
@@ -87,7 +87,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = sizeof(float);
-	if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, &transformBuffer))) {
+	if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, transformBuffer.ToCreator()))) {
 		return false;
 	}
 
@@ -104,7 +104,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 		subResource.SysMemPitch = 0;
 		subResource.SysMemSlicePitch = 0;
 
-		if (FAILED(device->CreateBuffer(&bufferDesc, &subResource, &indexBuffer))) {
+		if (FAILED(device->CreateBuffer(&bufferDesc, &subResource, indexBuffer.ToCreator()))) {
 			return false;
 		}
 	}
@@ -114,32 +114,32 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 
 template<class VertType>
 void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view) {
-	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), &hpInputLayout);
+	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), hpInputLayout.ToCreator());
 	if (FAILED(err)) {
 		return;
 	}
 
-	view->hpDeviceContext->IASetInputLayout(hpInputLayout);
+	view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
 
-	if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, &hpVertexShader))) {
+	if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, hpVertexShader.ToCreator()))) {
 		return;
 	}
-	view->hpDeviceContext->VSSetShader(hpVertexShader, NULL, 0);
+	view->hpDeviceContext->VSSetShader(hpVertexShader.Get(), NULL, 0);
 
 	if (pShader.HasResource()) {
-		if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, &hpPixelShader))) {
+		if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, hpPixelShader.ToCreator()))) {
 			return;
 		}
-		view->hpDeviceContext->PSSetShader(hpPixelShader, NULL, 0);
+		view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
 	}
 	else {
 		view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
 	}
 
 	if (tex.IsAvalable()) {
-		view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceViewRef());
+		view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceView().Ref());
 	}
-	view->hpDeviceContext->PSSetSamplers(0, 1, tex.GetSamplerRef());
+	view->hpDeviceContext->PSSetSamplers(0, 1, tex.GetSampler().Ref());
 }
 
 template<class VertType>
@@ -147,12 +147,12 @@ void D3D11DrawElement<VertType>::SetBuffer(const std::shared_ptr<D3DX11RenderVie
 	UINT hStrides = sizeof(VertType);
 	UINT hOffsets = 0;
 
-	view->hpDeviceContext->IASetVertexBuffers(0, 1, &vertexBuffer, &hStrides, &hOffsets);
-	view->hpDeviceContext->VSSetConstantBuffers(1, 1, &transformBuffer);
+	view->hpDeviceContext->IASetVertexBuffers(0, 1, vertexBuffer.Ref(), &hStrides, &hOffsets);
+	view->hpDeviceContext->VSSetConstantBuffers(1, 1, transformBuffer.Ref());
 	view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
 
-	if (indexBuffer) {
-		view->hpDeviceContext->IASetIndexBuffer(indexBuffer, DXGI_FORMAT_R16_UINT, 0);
+	if (indexBuffer.Get()) {
+		view->hpDeviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
 	}
 }
 
@@ -161,22 +161,12 @@ void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& v
 	this->SetBuffer(view);
 	this->SetShader(view);
 
-	if (indexBuffer) {
+	if (indexBuffer.Get()) {
 		view->hpDeviceContext->DrawIndexed(vertexCount, 0, 0);
 	}
 	else {
 		view->hpDeviceContext->Draw(vertexCount, 0);
 	}
-}
-
-template<class VertType>
-D3D11DrawElement<VertType>::~D3D11DrawElement() {
-	SAFE_RELEASE(hpVertexShader);
-	SAFE_RELEASE(hpPixelShader);
-	SAFE_RELEASE(transformBuffer);
-	SAFE_RELEASE(vertexBuffer);
-	SAFE_RELEASE(indexBuffer);
-	SAFE_RELEASE(hpInputLayout);
 }
 
 template D3D11DrawElement<Vertex3D>;

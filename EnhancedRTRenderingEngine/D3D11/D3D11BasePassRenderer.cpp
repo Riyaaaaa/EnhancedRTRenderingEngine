@@ -31,21 +31,21 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 		return;
 	}
 
-	_view->hpDeviceContext->OMSetRenderTargets(1, &_view->hpRenderTargetView, _view->hpDepthStencilView);
+	_view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), _view->hpDepthStencilView.Get());
 
 	float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-	_view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView, ClearColor);
-	_view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+	_view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView.Get(), ClearColor);
+	_view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	D3D11_BUFFER_DESC bufferDesc;
-	ID3D11Buffer* hpConstantBuffer = NULL;
+	ComPtr<ID3D11Buffer> hpConstantBuffer = NULL;
 	bufferDesc.ByteWidth = sizeof(ConstantBuffer);
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
 	bufferDesc.StructureByteStride = sizeof(float);
-	if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
+	if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, hpConstantBuffer.ToCreator()))) {
 		return;
 	}
 
@@ -69,10 +69,10 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 		hConstantBuffer.PointLight.attenuation = Vector4D::Zero();
 	}
 	
-	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
-	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
-	_view->hpDeviceContext->PSSetConstantBuffers(0, 1, &hpConstantBuffer);
-	_view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV());
+	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
+	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
+	_view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
+	_view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV().Ref());
 
 	for (auto && object : scene->GetViewObjects()) {
 		D3D11DrawElement<Scene::VertType> element;
@@ -84,6 +84,4 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	_view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
 	_view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
 	_view->hpDXGISwpChain->Present(0, 0);
-
-	SAFE_RELEASE(hpConstantBuffer);
 }
