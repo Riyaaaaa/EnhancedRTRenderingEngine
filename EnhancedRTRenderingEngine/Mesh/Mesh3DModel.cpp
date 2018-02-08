@@ -13,6 +13,23 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
 	for (int i = 0; i < model.face_vert_count; i++) {
 		_indexList[i] = model.face_vert_index[i];
 	}
+	
+	int cnt_idx = 0;
+	for (int i = 0; i < model.material_count; i++) {
+		for (int j = 0; j < model.face_vert_count; j++) {
+			int idx = model.face_vert_index[cnt_idx];
+			cnt_idx++;
+
+			_vertexList[i].col[0] = model.materials[i].diffuse_color[0];
+			_vertexList[i].col[1] = model.materials[i].diffuse_color[1];
+			_vertexList[i].col[2] = model.materials[i].diffuse_color[2];
+			_vertexList[i].col[0] = model.materials[i].alpha;
+		}
+
+		std::string filename = model.materials[i].texture_file_name;
+
+		//todo: bmp‘Î‰ž
+	}
 
 	_vertexCount = model.face_vert_count;
 }

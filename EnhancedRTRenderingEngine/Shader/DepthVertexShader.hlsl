@@ -4,6 +4,7 @@ struct vertexIn
 	float3 pos : POSITION0;
 	float2 tex : TEXCOORD0;
 	float3 nor : NORMAL0;
+	float4 col : COLOR0;
 };
 
 struct vertexOut

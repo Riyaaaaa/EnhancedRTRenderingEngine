@@ -13,5 +13,5 @@ std::vector<VertexLayout> CreateVertexLayout<SimpleVertex>() {
 
 template<>
 std::vector<VertexLayout> CreateVertexLayout<PMDVertex>() {
-	return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB }, { "TEXCOORD", VertexProperty::FloatRG }, { "NORMAL", VertexProperty::FloatRGB }  };
+	return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB }, { "TEXCOORD", VertexProperty::FloatRG }, { "NORMAL", VertexProperty::FloatRGB }, { "COLOR", VertexProperty::FloatRGBA } };
 }

@@ -115,6 +115,7 @@ struct PMDVertex {
 	float pos[3];	//x-y-z
 	float tex[2];	//x-y
 	float normal[3];
+	float col[4];
 };
 
 struct Transform {

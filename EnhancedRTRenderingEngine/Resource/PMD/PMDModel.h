@@ -27,7 +27,7 @@ public:
 	t_vertex *vertex;
 
 	unsigned long face_vert_count;
-	unsigned short *face_vert_index;
+	unsigned short* face_vert_index;
 
 	struct t_material {
 		float diffuse_color[3];
