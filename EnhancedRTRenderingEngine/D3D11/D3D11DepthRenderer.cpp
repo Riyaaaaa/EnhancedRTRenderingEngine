@@ -33,8 +33,8 @@ void D3D11DepthRenderer::render(Scene* scene)
 
 	TransformBufferParam hConstantBuffer;
 
-	hConstantBuffer.View = scene->GetDirectionalLightViewProjection();
-	hConstantBuffer.Projection = scene->GetPerspectiveProjection();
+	hConstantBuffer.View = XMMatrixTranspose(scene->GetDirectionalLightViewProjection());
+	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
 
 	_view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
 	_view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);

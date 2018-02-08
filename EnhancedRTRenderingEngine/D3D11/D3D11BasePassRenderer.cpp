@@ -10,6 +10,8 @@
 #include "WindowManager.h"
 #include "Common.h"
 
+using namespace DirectX;
+
 D3D11BasePassRenderer::D3D11BasePassRenderer()
 {
 }
@@ -48,9 +50,9 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	}
 
 	ConstantBuffer hConstantBuffer;
-	hConstantBuffer.View = scene->GetViewProjection();
-	hConstantBuffer.Projection = scene->GetPerspectiveProjection();
-	hConstantBuffer.Shadow = scene->GetDirectionalLightViewProjection();
+	hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
+	hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
+	hConstantBuffer.Shadow = XMMatrixTranspose(scene->GetDirectionalLightViewProjection());
 
 	// Only support one light.
 	if (!scene->GetDirectionalLights().empty()) {

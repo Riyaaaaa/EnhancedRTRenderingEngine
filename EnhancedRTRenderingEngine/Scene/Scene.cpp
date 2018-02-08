@@ -26,7 +26,7 @@ Scene::Scene() {
 	worldProjection = XMMatrixMultiply(worldProjection, hRotate);*/
 
 	auto camera = CameraObject();
-	camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 0.0001f, 1000.0f);
+	camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 1.0f, 1000.0f);
 	cameraObjects.push_back(camera);
 
 	//test code
@@ -63,7 +63,7 @@ Scene::Scene() {
 }
 
 XMMATRIX Scene::GetPerspectiveProjection() {
-	return XMMatrixTranspose(cameraObjects[mainCameraIdx].GetPerspectiveProjection());
+	return cameraObjects[mainCameraIdx].GetPerspectiveProjection();
 }
 
 XMMATRIX Scene::GetWorldProjection() {
@@ -71,7 +71,7 @@ XMMATRIX Scene::GetWorldProjection() {
 }
 
 DirectX::XMMATRIX Scene::GetViewProjection() {
-	return XMMatrixTranspose(cameraObjects[mainCameraIdx].GetViewProjection());
+	return cameraObjects[mainCameraIdx].GetViewProjection();
 }
 
 DirectX::XMMATRIX Scene::GetDirectionalLightViewProjection() {
@@ -80,16 +80,16 @@ DirectX::XMMATRIX Scene::GetDirectionalLightViewProjection() {
 		return DirectX::XMMATRIX();
 	}
 	auto lDir = dLights[0].GetDirection();
-	DirectX::XMVECTOR pos = XMVectorSet(0.0f, 100.0f, 0.0f, 0.0f);
+	DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, 0.0f, 0.0f);
 	DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
-	DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-	static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(
+	DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+	/*static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(
 		0.5f, 0.0f, 0.0f, 0.0f,
 		0.0f, -0.5f, 0.0f, 0.0f,
 		0.0f, 0.0f, 1.0f, 0.0f,
-		0.5f, 0.5f, 0.0f, 1.0f);
+		0.5f, 0.5f, 0.0f, 1.0f);*/
 
-	return XMMatrixMultiply(XMMatrixTranspose(XMMatrixLookToLH(pos, dir, hUp)), SHADOW_BIAS);
+	return XMMatrixLookToLH(pos, dir, hUp);
 }
 
 std::vector<PointLightParameters> Scene::GetPointLightParams() {

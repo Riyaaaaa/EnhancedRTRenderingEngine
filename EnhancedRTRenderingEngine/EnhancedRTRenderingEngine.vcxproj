@@ -178,6 +178,7 @@
     <ClInclude Include="Resource\PMD\PMDModel.h" />
     <ClInclude Include="Resource\ResourceEntity.h" />
     <ClInclude Include="Resource\RawBinary.h" />
+    <ClInclude Include="TransformUtils.h" />
     <ClInclude Include="Utility\SceneUtils.h" />
     <ClInclude Include="Scene\CameraObject.h" />
     <ClInclude Include="Common.h" />
@@ -298,6 +299,7 @@
     <ClCompile Include="D3D11\D3D11Texture.cpp" />
     <ClCompile Include="Mesh\Primitive\Pentagon.cpp" />
     <ClCompile Include="Resource\PMD\PMDModel.cpp" />
+    <ClCompile Include="TransformUtils.cpp" />
     <ClCompile Include="Utility\SceneUtils.cpp" />
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />

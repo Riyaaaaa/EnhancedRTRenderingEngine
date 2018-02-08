@@ -31,9 +31,7 @@ vertexOut main(vertexIn IN)
 	pos = mul(pos, World);
 	pos = mul(pos, View);
 	pos = mul(pos, Projection);
-
 	OUT.pos = pos;
-	OUT.pos = float4(pos.x, pos.y, 0.0f, 1.0f);
 
 	return OUT;
 }

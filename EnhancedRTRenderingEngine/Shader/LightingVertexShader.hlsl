@@ -13,7 +13,7 @@ struct vertexOut
 	float4 norw : NORMAL0;
 	float4 col : COLOR0;
 	float2 tex : TEXCOORD0;
-	float2 shadowCoord : SHADOW_COORD;
+	float4 shadowCoord : SHADOW_COORD;
 };
 
 struct PointLightParam
@@ -53,7 +53,7 @@ vertexOut main(vertexIn IN)
 	OUT.pos = pos;
 	OUT.norw = float4(nor, 1.0f);
 	OUT.col = saturate(dot(nor, -DirectionalLight.xyz)) * 0.5f + 0.5f;
-	OUT.tex = pos.xy;
+	OUT.tex = IN.tex;
 	OUT.shadowCoord = mul(mul(OUT.posw, Shadow), Projection);
 
 	return OUT;
