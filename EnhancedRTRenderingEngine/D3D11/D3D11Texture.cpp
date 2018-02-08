@@ -3,6 +3,12 @@
 
 #include "Common.h"
 
+D3D11Texture::D3D11Texture() :
+	mTexture(nullptr),
+	mView(nullptr),
+	mSampler(nullptr){
+}
+
 
 bool D3D11Texture::Initialize(ID3D11Device* device, const ResourceHandle<Texture2D>& tex)
 {

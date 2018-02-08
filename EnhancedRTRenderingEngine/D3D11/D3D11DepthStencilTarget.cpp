@@ -1,14 +1,18 @@
 #include "stdafx.h"
 #include "D3D11DepthStencilTarget.h"
+#include "Common.h"
 
 
-D3D11DepthStencilTarget::D3D11DepthStencilTarget()
+D3D11DepthStencilTarget::D3D11DepthStencilTarget():
+	_depthTexture(nullptr),
+	_depthStencilView(nullptr)
 {
 }
 
 
 D3D11DepthStencilTarget::~D3D11DepthStencilTarget()
 {
+	SAFE_RELEASE(_depthStencilView);
 }
 
 bool D3D11DepthStencilTarget::Initialize(ID3D11Device* device, ID3D11DeviceContext* hpDeviceContext) {

@@ -10,15 +10,6 @@
 #include "Common.h"
 
 template<class VertType>
-D3D11DrawElement<VertType>::~D3D11DrawElement() {
-	SAFE_RELEASE(hpVertexShader);
-	SAFE_RELEASE(hpPixelShader);
-	SAFE_RELEASE(transformBuffer);
-	SAFE_RELEASE(vertexBuffer);
-	SAFE_RELEASE(indexBuffer);
-}
-
-template<class VertType>
 void D3D11DrawElement<VertType>::Initialize(ID3D11Device* device, MeshObject<VertType>* element, RenderTag::OpaqueRender) {
 	auto& context = element->GetContext();
 	_state = RenderingState::NONE;
@@ -123,7 +114,6 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ID3D11Device* device, MeshObject<V
 
 template<class VertType>
 void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view) {
-	ID3D11InputLayout* hpInputLayout = NULL;
 	auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), &hpInputLayout);
 	if (FAILED(err)) {
 		return;
@@ -177,6 +167,16 @@ void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& v
 	else {
 		view->hpDeviceContext->Draw(vertexCount, 0);
 	}
+}
+
+template<class VertType>
+D3D11DrawElement<VertType>::~D3D11DrawElement() {
+	SAFE_RELEASE(hpVertexShader);
+	SAFE_RELEASE(hpPixelShader);
+	SAFE_RELEASE(transformBuffer);
+	SAFE_RELEASE(vertexBuffer);
+	SAFE_RELEASE(indexBuffer);
+	SAFE_RELEASE(hpInputLayout);
 }
 
 template D3D11DrawElement<Vertex3D>;

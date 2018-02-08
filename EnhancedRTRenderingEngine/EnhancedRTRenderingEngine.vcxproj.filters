@@ -252,9 +252,6 @@
     <ClInclude Include="SpiralLibrary\Utility\ValueHolder.hpp">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Resource\Resource3DHandle.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Resource\ResourceHandle.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -396,9 +393,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="EnhancedRTRenderingEngine.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Resource\Resource3DHandle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Resource\ResourceHandle.cpp">

@@ -97,7 +97,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ID3D11Device* device, ID3D11DeviceC
 
 	hpDeviceContext->RSSetState(mRasterizerState);
 	//hpDeviceContext->RSSetState(mDoubleSidedRasterizerState);
-
+	
 	hpShadowMapTarget.Initialize(device, hpDeviceContext);
 
 	return true;
@@ -119,7 +119,9 @@ D3DX11RenderView::~D3DX11RenderView()
 	SAFE_RELEASE(hpDXGIFactory);
 	SAFE_RELEASE(hpAdapter);
 	SAFE_RELEASE(hpDXGI);
-	SAFE_RELEASE(hpDeviceContext);
 	SAFE_RELEASE(mRasterizerState);
 	SAFE_RELEASE(mDoubleSidedRasterizerState);
+	SAFE_RELEASE(hpTexture2dDepth);
+	SAFE_RELEASE(hpDepthStencilView);
+	SAFE_RELEASE(hpDeviceContext);
 }

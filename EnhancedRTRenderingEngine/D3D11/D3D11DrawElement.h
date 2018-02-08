@@ -37,6 +37,7 @@ protected:
 
 	ID3D11VertexShader* hpVertexShader;
 	ID3D11PixelShader* hpPixelShader;
+	ID3D11InputLayout* hpInputLayout;
 	ID3D11Buffer* transformBuffer;
 	ID3D11Buffer* vertexBuffer;
 	ID3D11Buffer* indexBuffer;

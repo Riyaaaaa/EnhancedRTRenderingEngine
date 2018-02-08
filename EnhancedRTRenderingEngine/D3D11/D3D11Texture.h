@@ -11,6 +11,8 @@ class D3D11Texture
 	ID3D11SamplerState* mSampler;
 
 public:
+	D3D11Texture();
+
 	bool IsAvalable() {
 		return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
 	}
