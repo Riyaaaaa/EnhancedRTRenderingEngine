@@ -3,6 +3,11 @@
 
 MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const PMDModel& model) {
     RenderingContext context{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLELIST };
-    MeshObject<typename Mesh3DModel::Type> mesh(new Mesh3DModel(model), context);
+    
+    auto* mesh3D = new Mesh3DModel(model);
+
+    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D, context);
+    mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
+    
     return mesh;
 }

@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "Mesh3DModel.h"
 
+#include "Resource/ResourceLoader.h"
+
 Mesh3DModel::Mesh3DModel(const PMDModel& model)
 {
     _vertexList.resize(model.vert_count);
@@ -36,6 +38,22 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
     }
 
     _vertexCount = model.face_vert_count;
+}
+
+std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
+    std::vector<Material> materials(_drawTargetNum);
+
+    for (int i = 0; i < _drawTargetNum; i++) {
+        Material material;
+        material.pShader = ResourceLoader::LoadShader("LightingPixelShader");
+        material.vShader = ResourceLoader::LoadShader("LightingVertexShader");
+        ResourceLoader::LoadBMP(_materialTextures[i], &material.texture);
+        material.specular = _speculars[i];
+
+        materials[i] = material;
+    }
+
+    return materials;
 }
 
 
