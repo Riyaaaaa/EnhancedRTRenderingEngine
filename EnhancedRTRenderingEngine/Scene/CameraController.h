@@ -7,14 +7,14 @@
 class CameraController
 {
 public:
-	CameraController(CameraObject* camera);
+    CameraController(CameraObject* camera);
 
-	void ControllCamera(InputKey key);
-	void ControllCamera(Vector2D Delta, InputKey key);
+    void ControllCamera(InputKey key);
+    void ControllCamera(Vector2D Delta, InputKey key);
 
-	~CameraController();
+    ~CameraController();
 
 protected:
-	CameraObject* _camera;
+    CameraObject* _camera;
 };
 

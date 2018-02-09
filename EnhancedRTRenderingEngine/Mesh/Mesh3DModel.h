@@ -7,7 +7,7 @@
 class Mesh3DModel : public MeshBase<PMDVertex>
 {
 public:
-	Mesh3DModel(const PMDModel& model);
-	~Mesh3DModel();
+    Mesh3DModel(const PMDModel& model);
+    ~Mesh3DModel();
 };
 

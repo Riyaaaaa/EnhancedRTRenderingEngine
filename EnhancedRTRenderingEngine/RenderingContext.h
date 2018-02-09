@@ -9,14 +9,14 @@
 #include "Structure/Structure.h"
 
 struct VertexLayout {
-	const char* name;
-	VertexProperty vProperty;
+    const char* name;
+    VertexProperty vProperty;
 };
 
 struct RenderingContext
 {
-	std::vector<VertexLayout> layouts;
-	VertexPrimitiveType pType;
+    std::vector<VertexLayout> layouts;
+    VertexPrimitiveType pType;
 };
 
 template<class VertType>

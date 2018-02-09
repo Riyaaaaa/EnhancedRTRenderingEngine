@@ -1,8 +1,8 @@
 #pragma once
 
 namespace RenderTag {
-	struct OpaqueRender {};
-	struct DepthRender {};
+    struct OpaqueRender {};
+    struct DepthRender {};
 }
 
 #define OpaqueRenderTag RenderTag::OpaqueRender{}

@@ -7,19 +7,19 @@
 class SceneObject
 {
 public:
-	SceneObject();
-	~SceneObject();
+    SceneObject();
+    ~SceneObject();
 
-	const DirectX::XMMATRIX& GetMatrix();
+    const DirectX::XMMATRIX& GetMatrix();
 
-	void SetTransform(Transform trans);
-	void SetRotation(Vector3D rot);
-	void SetLocation(Vector3D lot);
-	void SetScale(Vector3D scale);
+    void SetTransform(Transform trans);
+    void SetRotation(Vector3D rot);
+    void SetLocation(Vector3D lot);
+    void SetScale(Vector3D scale);
 
 protected:
-	bool dirty;
-	DirectX::XMMATRIX matrix;
-	Transform transform;
+    bool dirty;
+    DirectX::XMMATRIX matrix;
+    Transform transform;
 };
 

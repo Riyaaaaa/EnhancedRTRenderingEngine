@@ -10,18 +10,18 @@ template<class VertType>
 class MeshObject : public SceneObject
 {
 public:
-	MeshObject(MeshBase<VertType> mesh, RenderingContext context) : _mesh(mesh), _context(context) {}
-	~MeshObject() {}
+    MeshObject(MeshBase<VertType> mesh, RenderingContext context) : _mesh(mesh), _context(context) {}
+    ~MeshObject() {}
 
-	const MeshBase<VertType>& GetMesh() const { return _mesh; }
-	const RenderingContext& GetContext() const { return _context;  }
+    const MeshBase<VertType>& GetMesh() const { return _mesh; }
+    const RenderingContext& GetContext() const { return _context;  }
 
-	void SetMaterial(const Material& material) { _material = material; }
-	const Material& GetMaterial() const { return _material; }
+    void SetMaterial(const Material& material) { _material = material; }
+    const Material& GetMaterial() const { return _material; }
 
 protected:
-	Material _material;
-	RenderingContext _context;
-	MeshBase<VertType> _mesh;
+    Material _material;
+    RenderingContext _context;
+    MeshBase<VertType> _mesh;
 };
 

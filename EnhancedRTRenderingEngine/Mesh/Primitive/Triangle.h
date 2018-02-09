@@ -6,7 +6,7 @@
 class Triangle : public MeshBase<Vertex3D>
 {
 public:
-	Triangle();
-	~Triangle();
+    Triangle();
+    ~Triangle();
 };
 

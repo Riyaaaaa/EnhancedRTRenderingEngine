@@ -16,17 +16,17 @@ class D3D11ForwardRenderer
 {
 public:
 
-	void Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext);
+    void Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext);
 
-	D3D11ForwardRenderer();
-	~D3D11ForwardRenderer();
+    D3D11ForwardRenderer();
+    ~D3D11ForwardRenderer();
 
-	void render(Scene* scene);
+    void render(Scene* scene);
 
 protected:
-	std::shared_ptr<D3DX11RenderView> mView;
+    std::shared_ptr<D3DX11RenderView> mView;
 
-	D3D11DepthRenderer depthRenderer;
-	D3D11BasePassRenderer bassPassRenderer;
+    D3D11DepthRenderer depthRenderer;
+    D3D11BasePassRenderer bassPassRenderer;
 };
 

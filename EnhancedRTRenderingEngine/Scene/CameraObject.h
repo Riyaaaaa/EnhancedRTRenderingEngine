@@ -5,24 +5,24 @@
 class CameraObject
 {
 public:
-	CameraObject();
-	~CameraObject();
+    CameraObject();
+    ~CameraObject();
 
-	DirectX::XMVECTOR hEye;
-	DirectX::XMVECTOR hAt;
-	DirectX::XMVECTOR hUp;
+    DirectX::XMVECTOR hEye;
+    DirectX::XMVECTOR hAt;
+    DirectX::XMVECTOR hUp;
 
-	void SetProjParams(float fFOV, float fAspect, float fNearPlane, float fFarPlane);
+    void SetProjParams(float fFOV, float fAspect, float fNearPlane, float fFarPlane);
 
-	DirectX::XMMATRIX GetViewProjection();
-	DirectX::XMMATRIX GetPerspectiveProjection();
+    DirectX::XMMATRIX GetViewProjection();
+    DirectX::XMMATRIX GetPerspectiveProjection();
 
-	float m_fFOV;                 // Field of view
-	float m_fAspect;              // Aspect ratio
-	float m_fNearPlane;           // Near plane
-	float m_fFarPlane;            // Far plane
+    float m_fFOV;                 // Field of view
+    float m_fAspect;              // Aspect ratio
+    float m_fNearPlane;           // Near plane
+    float m_fFarPlane;            // Far plane
 
-	DirectX::XMMATRIX mView;              // View matrix 
-	DirectX::XMMATRIX mProj;              // Projection matrix
+    DirectX::XMMATRIX mView;              // View matrix 
+    DirectX::XMMATRIX mProj;              // Projection matrix
 };
 

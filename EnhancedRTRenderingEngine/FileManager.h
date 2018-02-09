@@ -11,62 +11,62 @@
 class FileManager : public libspiral::SingletonBase<FileManager>
 {
 public:
-	FileManager();
-	~FileManager();
+    FileManager();
+    ~FileManager();
 
-	std::string MakeRelativePath(std::string filename);
-	std::string MakeAssetPath(std::string filename);
+    std::string MakeRelativePath(std::string filename);
+    std::string MakeAssetPath(std::string filename);
 
-	bool FileExists(std::string key);
+    bool FileExists(std::string key);
 
-	template<class HANDLE_TYPE>
-	ResourceHandle<HANDLE_TYPE> GetResourceHandleFromCache(std::string key) {
-		auto it = CacheMap<HANDLE_TYPE>().find(key);
-		if (it != CacheMap<HANDLE_TYPE>().end()) {
-			return it->second;
-		}
+    template<class HANDLE_TYPE>
+    ResourceHandle<HANDLE_TYPE> GetResourceHandleFromCache(std::string key) {
+        auto it = CacheMap<HANDLE_TYPE>().find(key);
+        if (it != CacheMap<HANDLE_TYPE>().end()) {
+            return it->second;
+        }
 
-		return ResourceHandle<HANDLE_TYPE>();
-	}
+        return ResourceHandle<HANDLE_TYPE>();
+    }
 
-	template<class HANDLE_TYPE, class... Args>
-	ResourceHandle<HANDLE_TYPE> CreateCachedResourceHandle(std::string key, Args&&... args) {
-		auto it = CacheMap<HANDLE_TYPE>().find(key);
-		if (it != CacheMap<HANDLE_TYPE>().end()) {
-			return it->second;
-		}
+    template<class HANDLE_TYPE, class... Args>
+    ResourceHandle<HANDLE_TYPE> CreateCachedResourceHandle(std::string key, Args&&... args) {
+        auto it = CacheMap<HANDLE_TYPE>().find(key);
+        if (it != CacheMap<HANDLE_TYPE>().end()) {
+            return it->second;
+        }
 
-		AddCache<HANDLE_TYPE>(key, std::forward<Args>(args)...);
+        AddCache<HANDLE_TYPE>(key, std::forward<Args>(args)...);
 
-		return CacheMap<HANDLE_TYPE>()[key];
-	}
+        return CacheMap<HANDLE_TYPE>()[key];
+    }
 
-	template<class HANDLE_TYPE, class... Args>
-	void AddCache(std::string key, Args&&... args) {
-		CacheMap<HANDLE_TYPE>().insert(std::make_pair(key, ResourceHandle<HANDLE_TYPE>(HANDLE_TYPE{ std::forward<Args>(args)... })));
-	}
+    template<class HANDLE_TYPE, class... Args>
+    void AddCache(std::string key, Args&&... args) {
+        CacheMap<HANDLE_TYPE>().insert(std::make_pair(key, ResourceHandle<HANDLE_TYPE>(HANDLE_TYPE{ std::forward<Args>(args)... })));
+    }
 
-	void purgeCacheAll();
+    void purgeCacheAll();
 
 protected:
-	template<class HANDLE_TYPE>
-	std::unordered_map<std::string, ResourceHandle<HANDLE_TYPE>>& CacheMap();
+    template<class HANDLE_TYPE>
+    std::unordered_map<std::string, ResourceHandle<HANDLE_TYPE>>& CacheMap();
 
-	template<>
-	std::unordered_map<std::string, ResourceHandle<RawBinary>>& CacheMap<RawBinary>() {
-		return _resourceCache;
-	}
+    template<>
+    std::unordered_map<std::string, ResourceHandle<RawBinary>>& CacheMap<RawBinary>() {
+        return _resourceCache;
+    }
 
-	template<>
-	std::unordered_map<std::string, ResourceHandle<Texture2D>>& CacheMap<Texture2D>() {
-		return _textureCache;
-	}
+    template<>
+    std::unordered_map<std::string, ResourceHandle<Texture2D>>& CacheMap<Texture2D>() {
+        return _textureCache;
+    }
 
 private:
-	int RID;
-	std::string _projDir;
+    int RID;
+    std::string _projDir;
 
-	std::unordered_map<std::string, ResourceHandle<RawBinary>> _resourceCache;
-	std::unordered_map<std::string, ResourceHandle<Texture2D>> _textureCache;
+    std::unordered_map<std::string, ResourceHandle<RawBinary>> _resourceCache;
+    std::unordered_map<std::string, ResourceHandle<Texture2D>> _textureCache;
 };
 

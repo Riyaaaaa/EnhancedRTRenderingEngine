@@ -6,7 +6,7 @@
 class Pentagon : public MeshBase<Vertex3D>
 {
 public:
-	Pentagon();
-	~Pentagon();
+    Pentagon();
+    ~Pentagon();
 };
 

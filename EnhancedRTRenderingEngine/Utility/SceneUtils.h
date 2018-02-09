@@ -9,12 +9,12 @@
 #include <vector>
 
 namespace SceneUtils {
-	template<class PrimitiveType>
-	MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject() {
-		RenderingContext context{ CreateVertexLayout < typename PrimitiveType::Type > (), VertexPrimitiveType::TRIANGLESTRIP };
-		MeshObject<PrimitiveType::Type> mesh(PrimitiveType{}, context);
-		return mesh;
-	}
+    template<class PrimitiveType>
+    MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject() {
+        RenderingContext context{ CreateVertexLayout < typename PrimitiveType::Type > (), VertexPrimitiveType::TRIANGLESTRIP };
+        MeshObject<PrimitiveType::Type> mesh(PrimitiveType{}, context);
+        return mesh;
+    }
 
-	MeshObject<typename Mesh3DModel::Type> CreateMesh3DModelObject(const PMDModel& model);
+    MeshObject<typename Mesh3DModel::Type> CreateMesh3DModelObject(const PMDModel& model);
 }

@@ -11,10 +11,10 @@
 class D3D11DepthRenderer
 {
 public:
-	bool Initialize(const std::shared_ptr<D3DX11RenderView>& view);
-	void render(Scene* scene);
+    bool Initialize(const std::shared_ptr<D3DX11RenderView>& view);
+    void render(Scene* scene);
 
 protected:
-	std::shared_ptr<D3DX11RenderView> _view;
+    std::shared_ptr<D3DX11RenderView> _view;
 };
 

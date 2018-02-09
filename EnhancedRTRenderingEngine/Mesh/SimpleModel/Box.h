@@ -5,6 +5,6 @@
 class Box : public MeshBase<Vertex3D>
 {
 public:
-	Box();
-	~Box();
+    Box();
+    ~Box();
 };

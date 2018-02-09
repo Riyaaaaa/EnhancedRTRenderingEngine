@@ -13,34 +13,34 @@
 class Scene
 {
 public:
-	typedef PMDVertex VertType;
+    typedef PMDVertex VertType;
 
-	Scene();
+    Scene();
 
-	DirectX::XMMATRIX GetPerspectiveProjection();
-	DirectX::XMMATRIX GetWorldProjection();
-	DirectX::XMMATRIX GetViewProjection();
+    DirectX::XMMATRIX GetPerspectiveProjection();
+    DirectX::XMMATRIX GetWorldProjection();
+    DirectX::XMMATRIX GetViewProjection();
 
-	std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
-	std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
+    std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
+    std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
 
-	DirectX::XMMATRIX GetDirectionalLightViewProjection();
+    DirectX::XMMATRIX GetDirectionalLightViewProjection();
 
-	std::vector<PointLightParameters> GetPointLightParams();
+    std::vector<PointLightParameters> GetPointLightParams();
 
 private:
-	DirectX::XMMATRIX worldProjection;
-	int mainCameraIdx;
+    DirectX::XMMATRIX worldProjection;
+    int mainCameraIdx;
 
-	std::vector<MeshObject<VertType>> viewObjects;
-	//std::vector<SceneObject> exertObjects;
-	std::vector<CameraObject> cameraObjects;
+    std::vector<MeshObject<VertType>> viewObjects;
+    //std::vector<SceneObject> exertObjects;
+    std::vector<CameraObject> cameraObjects;
 
-	std::vector<DirectionalLight> directionalLights;
-	std::vector<PointLight> pointLights;
+    std::vector<DirectionalLight> directionalLights;
+    std::vector<PointLight> pointLights;
 
-	std::unique_ptr<CameraController> _controller;
+    std::unique_ptr<CameraController> _controller;
 
-	//std::vector<SceneObject> sceneObjects;
+    //std::vector<SceneObject> sceneObjects;
 };
 

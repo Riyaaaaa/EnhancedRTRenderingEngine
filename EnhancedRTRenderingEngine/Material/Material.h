@@ -8,11 +8,11 @@
 class Material
 {
 public:
-	Material() {}
-	explicit Material(const MaterialParameters& param);
-	~Material();
+    Material() {}
+    explicit Material(const MaterialParameters& param);
+    ~Material();
 
-	ResourceHandle<> vShader, pShader;
-	ResourceHandle<Texture2D> texture;
+    ResourceHandle<> vShader, pShader;
+    ResourceHandle<Texture2D> texture;
 };
 

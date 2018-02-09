@@ -1,22 +1,22 @@
 #pragma once
 
 enum class VertexProperty {
-	FloatRGBA,
-	FloatRGB,
-	FloatRG
+    FloatRGBA,
+    FloatRGB,
+    FloatRG
 };
 
 enum class VertexPrimitiveType {
-	TRIANGLELIST,
-	TRIANGLESTRIP
+    TRIANGLELIST,
+    TRIANGLESTRIP
 };
 
 enum class RenderingState {
-	NONE,
-	FAILED,
-	RENDER_READIED
+    NONE,
+    FAILED,
+    RENDER_READIED
 };
 
 enum MSAAQualityType {
-	RAW_QUALITY
+    RAW_QUALITY
 };

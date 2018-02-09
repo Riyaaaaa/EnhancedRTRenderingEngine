@@ -1,11 +1,11 @@
 struct pixcelIn
 {
-	float4 pos : SV_POSITION;
-	float4 posw : POSITION0;
-	float4 norw : NORMAL0;
-	float4 col : COLOR0;
-	float2 tex : TEXCOORD0;
-	float4 shadowCoord : SHADOW_COORD;
+    float4 pos : SV_POSITION;
+    float4 posw : POSITION0;
+    float4 norw : NORMAL0;
+    float4 col : COLOR0;
+    float2 tex : TEXCOORD0;
+    float4 shadowCoord : SHADOW_COORD;
 };
 
 Texture2D ShadowMap : register(t1);
@@ -13,17 +13,17 @@ SamplerState samLinear : register(s0);
 
 struct PointLightParam
 {
-	float4 pos;
-	float4 att;
+    float4 pos;
+    float4 att;
 };
 
 cbuffer ConstantBuffer : register(b0)
 {
-	matrix View;
-	matrix Projection;
-	matrix Shadow;
-	float4 DirectionalLight;
-	PointLightParam PLightParam;
+    matrix View;
+    matrix Projection;
+    matrix Shadow;
+    float4 DirectionalLight;
+    PointLightParam PLightParam;
 }
 
 float4 main(pixcelIn IN) : SV_Target
@@ -46,7 +46,7 @@ float2 stex = float2((1.0f + IN.shadowCoord.x * w) * 0.5f, (1.0f - IN.shadowCoor
 float depth = ShadowMap.Sample(samLinear, stex.xy).x;
 
 if (IN.shadowCoord.z * w > depth + 0.0005f) {
-	col = col * 0.5f;
+    col = col * 0.5f;
 }
 
 //float threshold = ShadowMap.SampleCmpLevelZero(ShadowMap, IN.shadowCoord.xy, IN.shadowCoord.z)
