@@ -27,12 +27,15 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
         return;
     }
 
-    if (element->GetMaterial().texture().isValid()) {
-        tex.Initialize(device, element->GetMaterial().texture);
-    }
+    drawMesh = element;
 
-    vShader = element->GetMaterial().vShader;
-    pShader = element->GetMaterial().pShader;
+    textures.resize(drawMesh->GetMesh()->GetDrawTargetNum());
+    for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
+        auto& material = drawMesh->GetMaterials()[i];
+        if (material.texture().isValid()) {
+            textures[i].Initialize(device, material.texture);
+        }
+    }
 
     _state = RenderingState::RENDER_READIED;
 }
@@ -56,9 +59,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
         return;
     }
 
-    vShader = ResourceLoader::LoadShader("DepthVertexShader");
-
-    _state = RenderingState::RENDER_READIED;
+    _state = RenderingState::WRITE_DEPTH;
 }
 
 template<class VertType>
@@ -66,8 +67,8 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
     D3D11_BUFFER_DESC bufferDesc;
     D3D11_SUBRESOURCE_DATA subResource;
 
-    subResource.pSysMem = &(element->GetMesh().GetVertexList()[0]);
-    vertexCount = element->GetMesh().GetVertexList().size();
+    subResource.pSysMem = &(element->GetMesh()->GetVertexList()[0]);
+    vertexCount = element->GetMesh()->GetVertexList().size();
     bufferDesc.ByteWidth = sizeof(VertType) * vertexCount;
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -93,16 +94,16 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
         return false;
     }
 
-    if (element->GetMesh().HasIndexList()) {
-        vertexCount = element->GetMesh().GetIndexList().size();
-        bufferDesc.ByteWidth = sizeof(element->GetMesh().GetIndexList()[0]) * vertexCount;
+    if (element->GetMesh()->HasIndexList()) {
+        vertexCount = element->GetMesh()->GetIndexList().size();
+        bufferDesc.ByteWidth = sizeof(element->GetMesh()->GetIndexList()[0]) * vertexCount;
         bufferDesc.Usage = D3D11_USAGE_DEFAULT;
         bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
         bufferDesc.CPUAccessFlags = 0;
         bufferDesc.MiscFlags = 0;
         bufferDesc.StructureByteStride = sizeof(unsigned short);
 
-        subResource.pSysMem = &element->GetMesh().GetIndexList()[0];
+        subResource.pSysMem = &element->GetMesh()->GetIndexList()[0];
         subResource.SysMemPitch = 0;
         subResource.SysMemSlicePitch = 0;
 
@@ -115,7 +116,20 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
 }
 
 template<class VertType>
-void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view) {
+void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex) {
+   
+
+    ResourceHandle<> vShader, pShader;
+    
+    if (_state == RenderingState::WRITE_DEPTH){
+        vShader = ResourceLoader::LoadShader("DepthVertexShader");
+    }
+    else {
+        auto material = drawMesh->GetMaterials()[drawIndex];
+        vShader = material.vShader;
+        pShader = material.pShader;
+    }
+    
     auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), hpInputLayout.ToCreator());
     if (FAILED(err)) {
         return;
@@ -138,10 +152,10 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
     }
 
-    if (tex.IsAvalable()) {
-        view->hpDeviceContext->PSSetShaderResources(0, 1, tex.GetSubResourceView().Ref());
+    if (textures[drawIndex].IsAvalable()) {
+        view->hpDeviceContext->PSSetShaderResources(0, 1, textures[drawIndex].GetSubResourceView().Ref());
     }
-    view->hpDeviceContext->PSSetSamplers(0, 1, tex.GetSampler().Ref());
+    view->hpDeviceContext->PSSetSamplers(0, 1, textures[drawIndex].GetSampler().Ref());
 }
 
 template<class VertType>
@@ -161,13 +175,20 @@ void D3D11DrawElement<VertType>::SetBuffer(const std::shared_ptr<D3DX11RenderVie
 template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
     this->SetBuffer(view);
-    this->SetShader(view);
 
-    if (indexBuffer.Get()) {
-        view->hpDeviceContext->DrawIndexed(vertexCount, 0, 0);
-    }
-    else {
-        view->hpDeviceContext->Draw(vertexCount, 0);
+    for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
+        int index = 0;
+        this->SetShader(view, i);
+        if (indexBuffer.Get()) {
+            view->hpDeviceContext->DrawIndexed(drawMesh->GetMesh()->GetDrawTargetIndexes()[i], index, 0);
+        }
+        else {
+            view->hpDeviceContext->Draw(drawMesh->GetMesh()->GetDrawTargetIndexes()[i], index);
+        }
+
+        index += drawMesh->GetMesh()->GetDrawTargetIndexes()[i];
+        // DEBUG:
+        // Check index < vertexCount;
     }
 }
 

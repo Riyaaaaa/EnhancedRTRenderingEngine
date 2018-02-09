@@ -12,6 +12,7 @@ public:
     explicit Material(const MaterialParameters& param);
     ~Material();
 
+    float specular;
     ResourceHandle<> vShader, pShader;
     ResourceHandle<Texture2D> texture;
 };

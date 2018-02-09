@@ -15,8 +15,12 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
     }
     
     int cnt_idx = 0;
+    _materialTextures.resize(model.material_count);
+    _speculars.resize(model.material_count);
+    _drawTargetIndexes.resize(model.material_count);
+    _drawTargetNum = model.material_count;
     for (int i = 0; i < model.material_count; i++) {
-        for (int j = 0; j < model.face_vert_count; j++) {
+        for (int j = 0; j < model.materials[i].face_vert_count; j++) {
             int idx = model.face_vert_index[cnt_idx];
             cnt_idx++;
 
@@ -26,9 +30,9 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
             _vertexList[idx].col[3] = model.materials[i].alpha;
         }
 
-        std::string filename = model.materials[i].texture_file_name;
-
-        //todo: bmp‘Î‰ž
+        _drawTargetIndexes[i] = model.materials[i].face_vert_count;
+        _materialTextures[i] = model.materials[i].texture_file_name;
+        _speculars[i] = Vector3D{ model.materials[i].specular_color[0],model.materials[i].specular_color[1],model.materials[i].specular_color[2] };
     }
 
     _vertexCount = model.face_vert_count;

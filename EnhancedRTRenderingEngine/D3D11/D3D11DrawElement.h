@@ -26,12 +26,16 @@ protected:
     virtual bool CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element);
     
     virtual void SetBuffer(const std::shared_ptr<D3DX11RenderView>& view);
-    virtual void SetShader(const std::shared_ptr<D3DX11RenderView>& view);
+    virtual void SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex);
 
     std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
-    D3D11Texture tex;
+    std::vector<D3D11Texture> textures;
+
+    // TODO: Support smart pointer
+    MeshObject<VertType>* drawMesh;
+
     SIZE_T vertexCount;
 
     ComPtr<ID3D11VertexShader> hpVertexShader;
@@ -40,8 +44,6 @@ protected:
     ComPtr<ID3D11Buffer> transformBuffer;
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;
-
-    ResourceHandle<> vShader, pShader;
 
     RenderingState _state;
 };

@@ -13,6 +13,7 @@ Pentagon::Pentagon()
     };
 
     _vertexCount = _vertexList.size();
+    _drawTargetIndexes.push_back(_vertexList.size());
 }
 
 

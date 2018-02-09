@@ -46,8 +46,7 @@ Scene::Scene() {
     viewObjects[1].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects[1].SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
     viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
-    viewObjects[0].SetMaterial(material);
-    viewObjects[1].SetMaterial(material);
+    viewObjects[1].SetMaterial(std::vector<Material>{material});
 
     directionalLights.push_back(DirectionalLight(Vector3D{0.0, -1.0f, 0.0f}));
 

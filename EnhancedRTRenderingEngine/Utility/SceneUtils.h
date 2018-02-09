@@ -12,7 +12,7 @@ namespace SceneUtils {
     template<class PrimitiveType>
     MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject() {
         RenderingContext context{ CreateVertexLayout < typename PrimitiveType::Type > (), VertexPrimitiveType::TRIANGLESTRIP };
-        MeshObject<PrimitiveType::Type> mesh(PrimitiveType{}, context);
+        MeshObject<PrimitiveType::Type> mesh(new PrimitiveType{}, context);
         return mesh;
     }
 

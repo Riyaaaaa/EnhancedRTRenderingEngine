@@ -14,6 +14,7 @@ enum class VertexPrimitiveType {
 enum class RenderingState {
     NONE,
     FAILED,
+    WRITE_DEPTH,
     RENDER_READIED
 };
 
