@@ -14,14 +14,14 @@
 
 std::tuple<char*, std::size_t> LoadBinary(std::ifstream& ifs) {
     ifs.seekg(0, std::fstream::end);
-    int eofPos = ifs.tellg();
+    std::streamoff eofPos = ifs.tellg();
 
     ifs.clear();
     ifs.seekg(0, std::fstream::beg);
 
-    int begPos = ifs.tellg();
+    std::streamoff begPos = ifs.tellg();
 
-    std::size_t size = eofPos - begPos;
+    std::size_t size = static_cast<std::size_t>(eofPos - begPos);
 
     char* buf = new char[size];
     ifs.read(buf, size);
@@ -130,9 +130,9 @@ int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>*
         break;
     case PNG_COLOR_TYPE_RGB: {
         png_bytepp rows = png_get_rows(Png, PngInfo);
-        for (int y = 0; y < PngInfo->height; y++) {
+        for (unsigned int  y = 0; y < PngInfo->height; y++) {
             auto* row = rows[y];
-            for (int x = 0; x < PngInfo->width; x++) {
+            for (unsigned int  x = 0; x < PngInfo->width; x++) {
                 memcpy(buf + y * w * 4 + (x * 4), row + x * 3, sizeof(png_byte) * 3);
                 *(buf + y * w * 4 + (x * 4) + 3) = 0xff;
             }
@@ -141,9 +141,9 @@ int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>*
     }
     case PNG_COLOR_TYPE_RGB_ALPHA: {
         png_bytepp rows = png_get_rows(Png, PngInfo);
-        for (int y = 0; y < PngInfo->height; y++) {
+        for (unsigned int  y = 0; y < PngInfo->height; y++) {
             auto* row = rows[y];
-            for (int x = 0; x < PngInfo->width; x++) {
+            for (unsigned int  x = 0; x < PngInfo->width; x++) {
                 memcpy(buf + y * w * 4 + (x * 4), row + x * 4, sizeof(png_byte) * 4);
             }
         }
@@ -207,20 +207,12 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
         return -1;
     }
 
-    ifs.seekg(0, std::fstream::end);
-    int eofPos = ifs.tellg();
-
-    ifs.clear();
-
-    ifs.seekg(0, std::fstream::beg);
-    int begPos = ifs.tellg();
-
     ifs.seekg(14, std::fstream::beg);
     
     int headerSize;
     ifs.read(reinterpret_cast<char*>(&headerSize), 4);
 
-    int w, h;
+    unsigned int w, h;
     short bit_depth;
     if (headerSize == 12) {
         // BITMAPCOREHEADER FORMAT
@@ -254,15 +246,15 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
     ifs.read(rows, w * h * bit_depth / 8 * 4);
 
     if (bit_depth == 24) {
-        for (int y = 0; y < h; y++) {
+        for (unsigned int y = 0; y < h; y++) {
             auto row = rows[y];
-            for (int x = 0; x < w; x++) {
+            for (unsigned int x = 0; x < w; x++) {
                 memcpy(buf + y * w * 4 + (x * 4), &row + x * 4, sizeof(png_byte) * 4);
             }
         }
     }
 
-    *outTex = manager->CreateCachedResourceHandle<Texture2D>(path, w, h, 4, (void*)buf, sizeof(buf));
+    *outTex = manager->CreateCachedResourceHandle<Texture2D>(path, w, h, 4u, (void*)buf, sizeof(buf));
 
     ifs.close();
 
