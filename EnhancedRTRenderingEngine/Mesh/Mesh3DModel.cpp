@@ -20,10 +20,10 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
 			int idx = model.face_vert_index[cnt_idx];
 			cnt_idx++;
 
-			_vertexList[i].col[0] = model.materials[i].diffuse_color[0];
-			_vertexList[i].col[1] = model.materials[i].diffuse_color[1];
-			_vertexList[i].col[2] = model.materials[i].diffuse_color[2];
-			_vertexList[i].col[0] = model.materials[i].alpha;
+			_vertexList[idx].col[0] = model.materials[i].diffuse_color[0];
+			_vertexList[idx].col[1] = model.materials[i].diffuse_color[1];
+			_vertexList[idx].col[2] = model.materials[i].diffuse_color[2];
+			_vertexList[idx].col[3] = model.materials[i].alpha;
 		}
 
 		std::string filename = model.materials[i].texture_file_name;
