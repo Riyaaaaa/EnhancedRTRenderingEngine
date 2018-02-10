@@ -112,12 +112,12 @@ public:
 template<class ResourceType = RawBinary, bool Attribute = std::is_move_constructible_v<ResourceType> && std::is_move_assignable_v<ResourceType>>
 class ResourceHandle;
 
-
 template<class ResourceType>
 class ResourceHandle<ResourceType, true> : public ResourceHandleBase<ResourceType> {
 public:
+	int _uid;
     ResourceHandle() {}
-    ResourceHandle(const ResourceType& resource) : ResourceHandleBase<ResourceType>(resource), _isOwner(true) {}
+	ResourceHandle(const ResourceType& resource) : ResourceHandleBase<ResourceType>(resource), _isOwner(true) {}
     ResourceHandle(const ResourceHandle& src) {
         this->_resource = src._resource;
         this->_isOwner = false;
@@ -151,7 +151,7 @@ public:
     }
 
     virtual ~ResourceHandle() override {
-        if (_isOwner) {
+        if (_isOwner && this->_resource) {
             this->_resource->Release();
             this->_resource.reset();
         }
