@@ -5,7 +5,9 @@
 
 Material::Material(const MaterialParameters& param)
 {
-    ResourceLoader::LoadTexture(param.textureName, &texture);
+	if (param.textureName != "") {
+		ResourceLoader::LoadTexture(param.textureName, &texture);
+	}
     vShader = ResourceLoader::LoadShader(param.vsName);
     pShader = ResourceLoader::LoadShader(param.psName);
 }

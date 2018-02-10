@@ -390,6 +390,9 @@
     <ClInclude Include="D3D11\ComPtr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Shader\BasePassCommon.hlsl">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -515,8 +518,9 @@
     <FxCompile Include="Shader\MinPixelShader.hlsl" />
     <FxCompile Include="Shader\UVColorShader.hlsl" />
     <FxCompile Include="Shader\LightingVertexShader.hlsl" />
-    <FxCompile Include="Shader\LightingPixelShader.hlsl" />
     <FxCompile Include="Shader\DepthVertexShader.hlsl" />
+    <FxCompile Include="Shader\LightingPSVetexColor.hlsl" />
+    <FxCompile Include="Shader\LightingPSTextureColor.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

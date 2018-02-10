@@ -179,6 +179,7 @@
     <ClInclude Include="Resource\PMD\PMDModel.h" />
     <ClInclude Include="Resource\ResourceEntity.h" />
     <ClInclude Include="Resource\RawBinary.h" />
+    <ClInclude Include="Shader\BasePassCommon.hlsl" />
     <ClInclude Include="TransformUtils.h" />
     <ClInclude Include="Utility\SceneUtils.h" />
     <ClInclude Include="Scene\CameraObject.h" />
@@ -340,7 +341,13 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\LightingPixelShader.hlsl">
+    <FxCompile Include="Shader\LightingPSTextureColor.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\LightingPSVetexColor.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

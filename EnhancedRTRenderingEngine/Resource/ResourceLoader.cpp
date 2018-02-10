@@ -195,7 +195,7 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
     std::ifstream ifs;
 
     auto manager = FileManager::getInstance();
-    auto path = manager->MakeAssetPath("Texture\\" + filename + ".bmp");
+    auto path = manager->MakeAssetPath("Texture\\" + filename);
 
     if (manager->FileExists(path)) {
         *outTex = manager->GetResourceHandleFromCache<Texture2D>(path);

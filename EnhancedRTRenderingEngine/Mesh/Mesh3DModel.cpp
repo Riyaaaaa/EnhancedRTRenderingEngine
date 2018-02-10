@@ -44,16 +44,16 @@ std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
     std::vector<Material> materials(_drawTargetNum);
 
     for (int i = 0; i < _drawTargetNum; i++) {
-        Material material;
-        material.pShader = ResourceLoader::LoadShader("LightingPixelShader");
-        material.vShader = ResourceLoader::LoadShader("LightingVertexShader");
+		materials[i].vShader = ResourceLoader::LoadShader("LightingVertexShader");
 
 		if (_materialTextures[i] != "") {
-			ResourceLoader::LoadBMP(_materialTextures[i], &material.texture);
-			material.specular = _speculars[i];
+			materials[i].pShader = ResourceLoader::LoadShader("LightingPSTextureColor");
+			ResourceLoader::LoadBMP(_materialTextures[i], &materials[i].texture);
+			materials[i].specular = _speculars[i];
 		}
-
-        materials[i] = material;
+		else {
+			materials[i].pShader = ResourceLoader::LoadShader("LightingPSVertexColor");
+		}
     }
 
     return materials;
