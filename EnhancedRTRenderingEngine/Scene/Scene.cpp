@@ -48,7 +48,7 @@ Scene::Scene() {
     viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
     viewObjects[1].SetMaterial(std::vector<Material>{material});
 
-    directionalLights.push_back(DirectionalLight(Vector3D{0.0, -1.0f, 0.0f}));
+    directionalLights.push_back(DirectionalLight(Vector3D{0.0, -1.0f, 0.4f}));
 
     PointLight plight;
     plight.SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
@@ -79,9 +79,9 @@ DirectX::XMMATRIX Scene::GetDirectionalLightViewProjection() {
         return DirectX::XMMATRIX();
     }
     auto lDir = dLights[0].GetDirection();
-    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, 0.0f, 0.0f);
+    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, -20.0f, 0.0f);
     DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
-    DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+    DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.4f, 1.0f, 0.0f);
     /*static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(
         0.5f, 0.0f, 0.0f, 0.0f,
         0.0f, -0.5f, 0.0f, 0.0f,

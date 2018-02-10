@@ -232,13 +232,13 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
             return -2; // not support bit depth
         }
 
-        int comptype;
+        int comptype, data_size;
         ifs.read(reinterpret_cast<char*>(&comptype), 4);
         if (comptype != 0) {
             return -2; // not support compression bmp
         }
-
-        ifs.seekg(20, std::fstream::cur);
+		ifs.read(reinterpret_cast<char*>(&data_size), 4);
+        ifs.seekg(16, std::fstream::cur);
     }
 
     char* buf = new char[w * h * 24]; // R8G8B8A8
@@ -247,9 +247,10 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
 
     if (bit_depth == 24) {
         for (unsigned int y = 0; y < h; y++) {
-            auto row = rows[y];
+            auto row = rows + y * w * 3;
             for (unsigned int x = 0; x < w; x++) {
-                memcpy(buf + y * w * 4 + (x * 4), &row + x * 4, sizeof(png_byte) * 4);
+				memcpy(buf + y * w * 4 + (x * 4), row + x * 3, sizeof(char) * 3);
+				*(buf + y * w * 4 + (x * 4) + 3) = 0xff;
             }
         }
     }
