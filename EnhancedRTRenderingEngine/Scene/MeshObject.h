@@ -10,12 +10,9 @@ template<class VertType>
 class MeshObject : public SceneObject
 {
 public:
-    MeshObject(MeshBase<VertType>* mesh, RenderingContext context) : _mesh(mesh), _context(context) {}
-    ~MeshObject() {
-        delete _mesh;
-    }
+    MeshObject(const std::shared_ptr<MeshBase<VertType>>& mesh, RenderingContext context) : _mesh(mesh), _context(context) {}
 
-    const MeshBase<VertType>* GetMesh() const { return _mesh; }
+    const std::shared_ptr<MeshBase<VertType>>& GetMesh() const { return _mesh; }
     const RenderingContext& GetContext() const { return _context;  }
 
     void SetMaterial(const std::vector<Material>& materials) { _materials = materials; }
@@ -24,6 +21,6 @@ public:
 protected:
     std::vector<Material> _materials;
     RenderingContext _context;
-    MeshBase<VertType>* _mesh;
+    std::shared_ptr<MeshBase<VertType>> _mesh;
 };
 

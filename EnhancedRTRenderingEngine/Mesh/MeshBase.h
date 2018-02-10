@@ -8,7 +8,7 @@ class MeshBase
 public:
     typedef VertType Type;
 
-    MeshBase() : _drawTargetNum(1), _drawTargetIndexes({0}) {};
+    MeshBase() : _drawTargetNum(1), _drawTargetIndexes() {};
     virtual ~MeshBase() {};
 
     const std::vector<VertType>& GetVertexList() const { return _vertexList; }

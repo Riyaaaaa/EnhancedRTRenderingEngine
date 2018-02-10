@@ -47,8 +47,11 @@ std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
         Material material;
         material.pShader = ResourceLoader::LoadShader("LightingPixelShader");
         material.vShader = ResourceLoader::LoadShader("LightingVertexShader");
-        ResourceLoader::LoadBMP(_materialTextures[i], &material.texture);
-        material.specular = _speculars[i];
+
+		if (_materialTextures[i] != "") {
+			ResourceLoader::LoadBMP(_materialTextures[i], &material.texture);
+			material.specular = _speculars[i];
+		}
 
         materials[i] = material;
     }

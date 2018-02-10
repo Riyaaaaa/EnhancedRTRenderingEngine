@@ -32,7 +32,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     textures.resize(drawMesh->GetMesh()->GetDrawTargetNum());
     for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
-        if (material.texture().isValid()) {
+        if (material.texture.HasResource() && material.texture().isValid()) {
             textures[i].Initialize(device, material.texture);
         }
     }
@@ -59,6 +59,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
         return;
     }
 
+	drawMesh = element;
     _state = RenderingState::WRITE_DEPTH;
 }
 
@@ -117,8 +118,6 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
 
 template<class VertType>
 void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex) {
-   
-
     ResourceHandle<> vShader, pShader;
     
     if (_state == RenderingState::WRITE_DEPTH){
@@ -147,15 +146,14 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
             return;
         }
         view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
+		if (textures[drawIndex].IsAvalable()) {
+			view->hpDeviceContext->PSSetShaderResources(0, 1, textures[drawIndex].GetSubResourceView().Ref());
+			view->hpDeviceContext->PSSetSamplers(0, 1, textures[drawIndex].GetSampler().Ref());
+		}
     }
     else {
         view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
     }
-
-    if (textures[drawIndex].IsAvalable()) {
-        view->hpDeviceContext->PSSetShaderResources(0, 1, textures[drawIndex].GetSubResourceView().Ref());
-    }
-    view->hpDeviceContext->PSSetSamplers(0, 1, textures[drawIndex].GetSampler().Ref());
 }
 
 template<class VertType>
@@ -175,9 +173,8 @@ void D3D11DrawElement<VertType>::SetBuffer(const std::shared_ptr<D3DX11RenderVie
 template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
     this->SetBuffer(view);
-
+	int index = 0;
     for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
-        int index = 0;
         this->SetShader(view, i);
         if (indexBuffer.Get()) {
             view->hpDeviceContext->DrawIndexed(drawMesh->GetMesh()->GetDrawTargetIndexes()[i], index, 0);

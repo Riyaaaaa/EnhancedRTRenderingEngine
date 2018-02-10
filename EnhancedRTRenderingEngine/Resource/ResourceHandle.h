@@ -146,7 +146,7 @@ public:
         *this = std::move(other);
     }
 
-    bool HasResource() {
+    bool HasResource() const {
         return static_cast<bool> (this->_resource);
     }
 
