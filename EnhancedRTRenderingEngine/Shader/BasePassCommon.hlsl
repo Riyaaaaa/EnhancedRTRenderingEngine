@@ -1,4 +1,3 @@
-#pragma once
 
 struct pixcelIn
 {
@@ -27,6 +26,7 @@ cbuffer ConstantBuffer : register(b0)
 	matrix Shadow;
 	float4 DirectionalLight;
 	PointLightParam PLightParam;
+	float4 Eye;
 }
 
 float Lighting(float3 posw, float3 norw) {
@@ -53,4 +53,9 @@ void Shadowing(float4 shadowCoord, inout float3 col) {
 	if (shadowCoord.z * w > depth + 0.0005f) {
 		col = col * 0.5f;
 	}
+}
+
+float Specular(float4 lightDir, float4 posw, float4 norw, float4 eye) {
+	float3 H = normalize(normalize(lightDir.xyz) + normalize(eye.xyz - posw.xyz));
+	return dot(norw.xyz, H);
 }

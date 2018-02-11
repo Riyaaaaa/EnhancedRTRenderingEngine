@@ -28,6 +28,8 @@ public:
 
     std::vector<PointLightParameters> GetPointLightParams();
 
+	DirectX::XMVECTOR GetEyePoint();
+
 private:
     DirectX::XMMATRIX worldProjection;
     int mainCameraIdx;

@@ -100,3 +100,7 @@ std::vector<PointLightParameters> Scene::GetPointLightParams() {
 
     return params;
 }
+
+DirectX::XMVECTOR Scene::GetEyePoint() {
+	return cameraObjects[mainCameraIdx].hEye;
+}

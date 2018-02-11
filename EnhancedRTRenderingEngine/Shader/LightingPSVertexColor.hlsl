@@ -2,7 +2,9 @@
 
 float4 main(pixcelIn IN) : SV_Target
 {
-float3 col = Lighting(IN.posw, IN.norw) + IN.col.xyz;
+float3 col = IN.col.xyz + Lighting(IN.posw, IN.norw);
+float spCol = Specular(DirectionalLight, IN.posw, IN.norw, Eye);
+col += float3(spCol, spCol, spCol);
 Shadowing(IN.shadowCoord, col);
 
 //float threshold = ShadowMap.SampleCmpLevelZero(ShadowMap, IN.shadowCoord.xy, IN.shadowCoord.z)

@@ -143,5 +143,6 @@ struct ConstantBuffer
     DirectX::XMMATRIX Shadow;
     Vector4D DirectionalLight;
     PointLightParameters PointLight;
+	DirectX::XMVECTOR Eye;
 };
 
