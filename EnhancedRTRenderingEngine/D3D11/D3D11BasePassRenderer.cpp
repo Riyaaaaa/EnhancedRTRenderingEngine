@@ -83,7 +83,11 @@ void D3D11BasePassRenderer::render(Scene* scene) {
     }
     
     ID3D11ShaderResourceView*   pNullSRV = nullptr;
+    ID3D11SamplerState*         pNullSmp = nullptr;
+    _view->hpDeviceContext->PSSetSamplers(0, 1, &pNullSmp);
     _view->hpDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
+    _view->hpDeviceContext->PSSetSamplers(1, 1, &pNullSmp);
+    _view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
     _view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
     _view->hpDXGISwpChain->Present(0, 0);
 }
