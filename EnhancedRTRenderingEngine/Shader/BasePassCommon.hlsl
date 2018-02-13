@@ -40,10 +40,15 @@ float Lighting(float3 posw, float3 norw) {
 	dir = PLightParam.pos.xyz - posw.xyz;
 	len = length(dir);
 	dir = dir / len;
-	colD = saturate(dot(norw.xyz, dir));
+	
+    // point light
+    colD = saturate(dot(norw.xyz, dir));
 	colA = saturate(1.0f / (PLightParam.att.x + PLightParam.att.y * len + PLightParam.att.z * len * len));
+    
+    //directional light
+    float colB = saturate(dot(norw, -DirectionalLight.xyz);
 
-	return colD * colA;
+	return saturate(colD * colA + colB);
 }
 
 void Shadowing(float4 shadowCoord, inout float3 col) {
