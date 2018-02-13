@@ -11,6 +11,8 @@
 #include "libpng/pngstruct.h"
 #include "libpng/pnginfo.h"
 
+#include <regex>
+
 
 std::tuple<char*, std::size_t> LoadBinary(std::ifstream& ifs) {
     ifs.seekg(0, std::fstream::end);
@@ -56,6 +58,26 @@ ResourceHandle<RawBinary> ResourceLoader::LoadShader(std::string filename) {
 }
 
 int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex) {
+    std::regex re(R"(.+\.(\w+))");
+    std::cmatch match;
+    std::string ex;
+
+    if (std::regex_match(filename.c_str(), match, re)) {
+        ex = match.str(1);
+    }
+    else {
+        return -1;
+    }
+
+    if (ex == "png") {
+        return LoadPNG(filename, outTex);
+    }
+    else if (ex == "bmp") {
+        return LoadBMP(filename, outTex);
+    }
+}
+
+int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* outTex) {
     int w, h, d;
     png_structp Png;
     png_infop PngInfo;

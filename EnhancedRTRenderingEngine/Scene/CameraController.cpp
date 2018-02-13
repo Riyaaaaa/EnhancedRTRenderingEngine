@@ -57,10 +57,10 @@ void CameraController::ControllCamera(InputKey key) {
 void CameraController::ControllCamera(Vector2D Delta, InputKey key) {
     switch (key) {
     case InputKey::LMOUSE:
-        _camera->hAt += XMVectorSet(Delta.x / 100, Delta.y / 100, 0.0f, 0.0f);
+        _camera->hAt += XMVectorSet(Delta.x / 20, Delta.y / 20, 0.0f, 0.0f);
         break;
     case InputKey::RMOUSE:
-        _camera->hAt += XMVectorSet(Delta.x / 100, Delta.y / 100, 0.0f, 0.0f);
+        _camera->hAt += XMVectorSet(Delta.x / 20, Delta.y / 20, 0.0f, 0.0f);
         break;
     }
 }
