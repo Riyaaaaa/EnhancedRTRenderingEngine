@@ -1,6 +1,8 @@
 #define EPSILON 1e-6
 #define PI 3.14159265359
 
+#define LIGHT_MAX 4
+
 struct pixcelIn
 {
 	float4 pos : SV_POSITION;
@@ -25,30 +27,33 @@ cbuffer ConstantBuffer : register(b0)
 	matrix View;
 	matrix Projection;
 	matrix Shadow;
-	float4 DirectionalLight;
-	PointLightParam PLightParam;
+	float4 DirectionalLights[LIGHT_MAX];
+	PointLightParam PLightParams[LIGHT_MAX];
+    float numDirectionalLights;
+    float numPointLights;
 	float4 Eye;
 }
 
-float Lighting(float3 posw, float3 norw) {
+float PointLighting(PointLightParam param, float3 posw, float3 norw) {
 	float3 dir;
 	float  len;
 	float  colD;
 	float  colA;
 	float3  col;
 
-	dir = PLightParam.pos.xyz - posw.xyz;
+	dir = param.pos.xyz - posw.xyz;
 	len = length(dir);
 	dir = dir / len;
 	
     // point light
     colD = saturate(dot(norw.xyz, dir));
-	colA = saturate(1.0f / (PLightParam.att.x + PLightParam.att.y * len + PLightParam.att.z * len * len));
-    
-    //directional light
-    float colB = saturate(dot(norw, -DirectionalLight.xyz);
+	colA = saturate(1.0f / (param.att.x + param.att.y * len + param.att.z * len * len));
 
-	return saturate(colD * colA + colB);
+	return saturate(colD * colA);
+}
+
+float DirectionalLighting(float3 Direction, float3 nor) {
+    return saturate(dot(nor, -Direction));
 }
 
 void Shadowing(float4 shadowCoord, inout float3 col) {
@@ -63,7 +68,7 @@ void Shadowing(float4 shadowCoord, inout float3 col) {
 
 
 // Frensel equations approximated by Schlick
-float3 FrenselEquations(float3 reflectionCoef, float3 H, float V) {
+float3 FrenselEquations(float3 reflectionCoef, float3 H, float3 V) {
     return (reflectionCoef + (1.0f - reflectionCoef) * pow(1.0 - saturate(dot(V, H)), 5.0));
 }
 
@@ -71,7 +76,7 @@ float3 FrenselEquations(float3 reflectionCoef, float3 H, float V) {
 // Microfacet distribution function
 // GGX(Throwbridge-Reiz) model
 // DGGX(h) = Éø^2 / ÉŒ((nÅEh)^2(Éø^2 - 1) + 1)^2 
-float MicrofacetDistFunc(float roughness, float3 dotNH) {
+float MicrofacetDistFunc(float roughness, float dotNH) {
     float rough2 = roughness * roughness;
     float d = dotNH * dotNH * (rough2 - 1.0f) + 1.0f;
     return  rough2 / (PI * d * d);

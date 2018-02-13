@@ -1,5 +1,7 @@
 #pragma once
 
+constexpr int LIGHT_MAX = 4;
+
 enum class VertexProperty {
     FloatRGBA,
     FloatRGB,

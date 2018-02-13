@@ -56,18 +56,20 @@ void D3D11BasePassRenderer::render(Scene* scene) {
 	hConstantBuffer.Eye = scene->GetEyePoint();
 
     // Only support one light.
-    if (!scene->GetDirectionalLights().empty()) {
-        hConstantBuffer.DirectionalLight = scene->GetDirectionalLights()[0].GetDirection();
+    hConstantBuffer.numDirecitonalLights = scene->GetDirectionalLights().size();
+    for (int i = 0; i < LIGHT_MAX; i++) {
+        if (i >= hConstantBuffer.numDirecitonalLights) {
+            break;
+        }
+        hConstantBuffer.DirectionalLight[i] = scene->GetDirectionalLights()[0].GetDirection();
     }
-    else {
-        hConstantBuffer.DirectionalLight = Vector4D::Zero();
-    }
-    if (!scene->GetPointLightParams().empty()) {
-        hConstantBuffer.PointLight = scene->GetPointLightParams()[0];
-    }
-    else {
-        hConstantBuffer.PointLight.pos = Vector4D::Zero();
-        hConstantBuffer.PointLight.attenuation = Vector4D::Zero();
+
+    hConstantBuffer.numPointLights = scene->GetPointLightParams().size();
+    for (int i = 0; i < LIGHT_MAX; i++) {
+        if (i >= hConstantBuffer.numPointLights) {
+            break;
+        }
+        hConstantBuffer.PointLight[i] = scene->GetPointLightParams()[0];
     }
     
     _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);

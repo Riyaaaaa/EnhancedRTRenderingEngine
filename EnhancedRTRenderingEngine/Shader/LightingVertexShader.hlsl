@@ -28,8 +28,11 @@ cbuffer ConstantBuffer : register(b0)
     matrix View;
     matrix Projection;
     matrix Shadow;
-    float4 DirectionalLight;
-    PointLightParam PLightParam;
+    float4 DirectionalLight[4];
+    PointLightParam PLightParam[4];
+    float numDirectionalLights;
+    float numPointLights;
+    float4 Eye;
 }
 
 cbuffer ObjectBuffer : register(b1)

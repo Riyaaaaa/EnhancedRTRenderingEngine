@@ -75,6 +75,8 @@ int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>*
     else if (ex == "bmp") {
         return LoadBMP(filename, outTex);
     }
+
+    return -1;
 }
 
 int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* outTex) {

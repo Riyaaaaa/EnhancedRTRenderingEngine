@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 
+#include "Constant/RenderConfig.h"
+
 struct Size {
     float w, h;
 };
@@ -141,8 +143,10 @@ struct ConstantBuffer
     DirectX::XMMATRIX View;
     DirectX::XMMATRIX Projection;
     DirectX::XMMATRIX Shadow;
-    Vector4D DirectionalLight;
-    PointLightParameters PointLight;
+    Vector4D DirectionalLight[LIGHT_MAX];
+    PointLightParameters PointLight[LIGHT_MAX];
+    float numDirecitonalLights;
+    float numPointLights;
 	DirectX::XMVECTOR Eye;
 };
 
