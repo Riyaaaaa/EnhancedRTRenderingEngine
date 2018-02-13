@@ -84,8 +84,8 @@ float GeometryAttenuationFactor(float a, float dotNV, float dotNL) {
 
 float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float specular, float roughness) {
     float3 N = norw.xyz;
-    float3 V = eye.xyz - posw.xyz;
-    float3 L = lightDir.xyz;
+    float3 V = normalize(eye.xyz - posw.xyz);
+    float3 L = normalize(-lightDir.xyz);
 
     float dotNL = saturate(dot(N, L));
     float dotNV = saturate(dot(N, V));
