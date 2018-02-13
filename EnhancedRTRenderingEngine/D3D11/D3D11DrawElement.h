@@ -42,6 +42,7 @@ protected:
     ComPtr<ID3D11PixelShader> hpPixelShader;
     ComPtr<ID3D11InputLayout> hpInputLayout;
     ComPtr<ID3D11Buffer> transformBuffer;
+    ComPtr<ID3D11Buffer> materialBuffer;
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;
 

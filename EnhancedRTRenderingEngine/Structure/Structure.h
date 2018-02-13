@@ -150,3 +150,10 @@ struct ConstantBuffer
 	DirectX::XMVECTOR Eye;
 };
 
+__declspec(align(16))
+struct MaterialBuffer
+{
+    float metallic;
+    float roughness;
+};
+

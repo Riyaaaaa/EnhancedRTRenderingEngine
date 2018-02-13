@@ -37,6 +37,18 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
         }
     }
 
+    D3D11_BUFFER_DESC bufferDesc;
+    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+    bufferDesc.CPUAccessFlags = 0;
+    bufferDesc.MiscFlags = 0;
+    bufferDesc.StructureByteStride = sizeof(float);
+    bufferDesc.ByteWidth = sizeof(MaterialBuffer);
+    if(FAILED(device->CreateBuffer(&bufferDesc, nullptr, materialBuffer.ToCreator()))) {
+        _state = RenderingState::FAILED;
+        return;
+    }
+
     _state = RenderingState::RENDER_READIED;
 }
 
@@ -84,13 +96,14 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
     D3D11_SUBRESOURCE_DATA constantSubResource;
     auto mat = XMMatrixTranspose(element->GetMatrix());
     constantSubResource.pSysMem = &mat;
-    //D3D11_BUFFER_DESC bufferDesc;
-    bufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
+
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.CPUAccessFlags = 0;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = sizeof(float);
+
+    bufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
     if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, transformBuffer.ToCreator()))) {
         return false;
     }
@@ -119,7 +132,8 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
 template<class VertType>
 void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex) {
     ResourceHandle<> vShader, pShader;
-    
+    MaterialBuffer materialParams;
+
     if (_state == RenderingState::WRITE_DEPTH){
         vShader = ResourceLoader::LoadShader("DepthVertexShader");
     }
@@ -127,6 +141,8 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         auto material = drawMesh->GetMaterials()[drawIndex];
         vShader = material.vShader;
         pShader = material.pShader;
+        materialParams.metallic = material.metallic;
+        materialParams.roughness = material.roughness;
     }
     
     auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), hpInputLayout.ToCreator());
@@ -146,6 +162,8 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
             return;
         }
         view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
+        view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
+        view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
 		if (textures[drawIndex].IsAvalable()) {
 			view->hpDeviceContext->PSSetShaderResources(1, 1, textures[drawIndex].GetSubResourceView().Ref());
 			view->hpDeviceContext->PSSetSamplers(1, 1, textures[drawIndex].GetSampler().Ref());

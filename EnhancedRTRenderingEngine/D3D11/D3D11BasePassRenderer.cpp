@@ -38,14 +38,20 @@ void D3D11BasePassRenderer::render(Scene* scene) {
     _view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     D3D11_BUFFER_DESC bufferDesc;
-    ComPtr<ID3D11Buffer> hpConstantBuffer = NULL;
-    bufferDesc.ByteWidth = sizeof(ConstantBuffer);
+    ComPtr<ID3D11Buffer> hpConstantBuffer = nullptr, hpMaterialBuffer = nullptr;
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.CPUAccessFlags = 0;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = sizeof(float);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, hpConstantBuffer.ToCreator()))) {
+
+    bufferDesc.ByteWidth = sizeof(ConstantBuffer);
+    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, nullptr, hpConstantBuffer.ToCreator()))) {
+        return;
+    }
+
+    bufferDesc.ByteWidth = sizeof(MaterialBuffer);
+    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, nullptr, hpMaterialBuffer.ToCreator()))) {
         return;
     }
 

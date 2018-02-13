@@ -3,4 +3,5 @@
 struct MaterialParameters {
     const char *vsName = nullptr, *psName = nullptr;
     const char *textureName = nullptr;
+    float roughness, metallic;
 };

@@ -123,7 +123,7 @@ public:
     }
 
     // コピーコンストラクタ(NULL代入用)
-    ComPtr(const int nullval)
+    ComPtr(std::nullptr_t nullval)
     {
         m_ppInterface = new T*;    // ポインタ格納領域を新規確保
         *m_ppInterface = m_NullPtr;

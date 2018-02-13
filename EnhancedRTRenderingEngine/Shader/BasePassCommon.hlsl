@@ -22,6 +22,12 @@ struct PointLightParam
 	float4 att;
 };
 
+struct MaterialParameters
+{
+    float metallic;
+    float roughness;
+};
+
 cbuffer ConstantBuffer : register(b0)
 {
 	matrix View;
@@ -32,6 +38,11 @@ cbuffer ConstantBuffer : register(b0)
     float numDirectionalLights;
     float numPointLights;
 	float4 Eye;
+}
+
+cbuffer MaterialBuffer : register(b1)
+{
+    MaterialParameters materialParameters;
 }
 
 float PointLighting(PointLightParam param, float3 posw, float3 norw) {
@@ -53,7 +64,7 @@ float PointLighting(PointLightParam param, float3 posw, float3 norw) {
 }
 
 float DirectionalLighting(float3 Direction, float3 nor) {
-    return saturate(dot(nor, -Direction));
+    return saturate(dot(nor, -Direction)) * 0.5f;
 }
 
 void Shadowing(float4 shadowCoord, inout float3 col) {
@@ -92,7 +103,7 @@ float GeometryAttenuationFactor(float a, float dotNV, float dotNL) {
 }
 
 
-float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float specular, float roughness) {
+float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float3 specular, float roughness) {
     float3 N = norw.xyz;
     float3 V = normalize(eye.xyz - posw.xyz);
     float3 L = normalize(-lightDir.xyz);

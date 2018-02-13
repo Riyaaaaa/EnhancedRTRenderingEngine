@@ -12,6 +12,7 @@ public:
     explicit Material(const MaterialParameters& param);
     ~Material();
 
+    float roughness, metallic;
     Vector3D specular;
     ResourceHandle<> vShader, pShader;
     ResourceHandle<Texture2D> texture;
