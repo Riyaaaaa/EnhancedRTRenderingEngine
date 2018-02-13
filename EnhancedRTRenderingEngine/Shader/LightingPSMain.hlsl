@@ -1,6 +1,6 @@
 #include "BasePassCommon.hlsl"
 
-float4 main(pixcelIn IN) : SV_Target
+float4 ps_main(pixcelIn IN) : SV_Target
 {
     float3 emissive = IN.col.xyz;
     float3 diffuse = 0.0f;

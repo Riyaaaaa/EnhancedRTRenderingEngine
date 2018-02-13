@@ -520,7 +520,7 @@
     <FxCompile Include="Shader\LightingVertexShader.hlsl" />
     <FxCompile Include="Shader\DepthVertexShader.hlsl" />
     <FxCompile Include="Shader\LightingPSTextureColor.hlsl" />
-    <FxCompile Include="Shader\LightingPSVertexColor.hlsl" />
+    <FxCompile Include="Shader\LightingPSMain.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

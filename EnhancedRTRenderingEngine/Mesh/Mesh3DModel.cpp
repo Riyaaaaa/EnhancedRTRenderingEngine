@@ -52,7 +52,7 @@ std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
 			materials[i].specular = _speculars[i];
 		}
 		else {
-			materials[i].pShader = ResourceLoader::LoadShader("LightingPSVertexColor");
+			materials[i].pShader = ResourceLoader::LoadShader("LightingPSMain");
 		}
     }
 
