@@ -1,3 +1,5 @@
+#define EPSILON 1e-6
+#define PI 3.14159265359
 
 struct pixcelIn
 {
@@ -9,9 +11,8 @@ struct pixcelIn
 	float4 shadowCoord : SHADOW_COORD;
 };
 
-Texture2D TextureMap : register(t0);
-Texture2D ShadowMap : register(t1);
-SamplerState samLinear : register(s0);
+Texture2D ShadowMap : register(t0);
+SamplerState ShadowSampler : register(s0);
 
 struct PointLightParam
 {
@@ -48,14 +49,54 @@ float Lighting(float3 posw, float3 norw) {
 void Shadowing(float4 shadowCoord, inout float3 col) {
 	float w = 1.0f / shadowCoord.w;
 	float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
-	float depth = ShadowMap.Sample(samLinear, stex.xy).x;
+	float depth = ShadowMap.Sample(ShadowSampler, stex.xy).x;
 
 	if (shadowCoord.z * w > depth + 0.0005f) {
 		col = col * 0.5f;
 	}
 }
 
-float Specular(float4 lightDir, float4 posw, float4 norw, float4 eye) {
-	float3 H = normalize(normalize(lightDir.xyz) + normalize(eye.xyz - posw.xyz));
-	return dot(norw.xyz, H);
+
+// Frensel equations approximated by Schlick
+float3 FrenselEquations(float3 reflectionCoef, float3 H, float V) {
+    return (reflectionCoef + (1.0f - reflectionCoef) * pow(1.0 - saturate(dot(V, H)), 5.0));
+}
+
+
+// Microfacet distribution function
+// GGX(Throwbridge-Reiz) model
+// DGGX(h) = Éø^2 / ÉŒ((nÅEh)^2(Éø^2 - 1) + 1)^2 
+float MicrofacetDistFunc(float roughness, float3 dotNH) {
+    float rough2 = roughness * roughness;
+    float d = dotNH * dotNH * (rough2 - 1.0f) + 1.0f;
+    return  rough2 / (PI * d * d);
+}
+
+// The geometrical attenuation factor
+// Smith model
+float GeometryAttenuationFactor(float a, float dotNV, float dotNL) {
+    float k = a * a * 0.5 + EPSILON;
+    float gl = dotNL / (dotNL * (1.0f - k) + k);
+    float gv = dotNV / (dotNV * (1.0f - k) + k);
+    return gl * gv;
+}
+
+
+float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float specular, float roughness) {
+    float3 N = norw.xyz;
+    float3 V = eye.xyz - posw.xyz;
+    float3 L = lightDir.xyz;
+
+    float dotNL = saturate(dot(N, L));
+    float dotNV = saturate(dot(N, V));
+    float3 H = normalize(L + V); // half vector
+    float dotNH = saturate(dot(N, H));
+    float dotVH = saturate(dot(V, H));
+    float dotLV = saturate(dot(L, V));
+    float a = roughness * roughness;
+    
+    float D = MicrofacetDistFunc(a, dotNH);
+    float G = GeometryAttenuationFactor(a, dotNV, dotNL);
+    float F = FrenselEquations(specular, H, V);
+    return (F * G * D) / (4.0 * dotNL * dotNV + EPSILON);
 }

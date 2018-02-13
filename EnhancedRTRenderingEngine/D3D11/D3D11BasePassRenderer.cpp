@@ -73,7 +73,8 @@ void D3D11BasePassRenderer::render(Scene* scene) {
     _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
     _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
-    _view->hpDeviceContext->PSSetShaderResources(1, 1, _view->hpShadowMapTarget.GetSRV().Ref());
+    _view->hpDeviceContext->PSSetShaderResources(0, 1, _view->hpShadowMapTarget.GetSRV().Ref());
+    _view->hpDeviceContext->PSSetSamplers(0, 1, _view->hpShadowMapTarget.GetSampler().Ref());
 
     for (auto && object : scene->GetViewObjects()) {
         D3D11DrawElement<Scene::VertType> element;
@@ -82,7 +83,7 @@ void D3D11BasePassRenderer::render(Scene* scene) {
     }
     
     ID3D11ShaderResourceView*   pNullSRV = nullptr;
-    _view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
+    _view->hpDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
     _view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
     _view->hpDXGISwpChain->Present(0, 0);
 }
