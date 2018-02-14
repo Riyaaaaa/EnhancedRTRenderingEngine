@@ -5,5 +5,5 @@
 
 namespace StringParser
 {
-    int ParseXFile(std::ifstream ifs, DXModel* model);
+    int ParseXFile(std::ifstream& ifs, DXModel* model);
 }

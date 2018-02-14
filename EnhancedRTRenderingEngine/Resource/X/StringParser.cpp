@@ -37,7 +37,7 @@ FUSION_ADAPT_STRUCT_AUTO(
 template<typename Iterator>
 struct XHeaderGrammar : public qi::grammar<Iterator, DXModel::XHeader()> {
     XHeaderGrammar() : XHeaderGrammar::base_type(expr) {
-        auto file_format_rules = qi::lit("txt") | qi::lit("bin") | qi::lit("tzip") | qi::lit("bzip");
+        auto file_format_rules = ascii::string("txt") | ascii::string("bin") | ascii::string("tzip") | ascii::string("bzip");
         /*auto convert_to_enum = [](std::string _1) {
             std::string format = std::string(_1.begin(), _1.end());
             if (format == "txt") {
@@ -88,7 +88,7 @@ struct NextDataIdentifierGrammar : public qi::grammar<Iterator, std::string()> {
     qi::rule<Iterator, std::string()> templateParser;
 };
 
-int StringParser::ParseXFile(std::ifstream ifs, DXModel* model) {
+int StringParser::ParseXFile(std::ifstream& ifs, DXModel* model) {
     std::string buffer((std::istreambuf_iterator<char>(ifs)),  std::istreambuf_iterator<char>());
     
     auto itr = buffer.begin(), end = buffer.end();
