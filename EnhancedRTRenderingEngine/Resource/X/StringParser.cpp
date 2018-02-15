@@ -97,9 +97,9 @@ struct XTemplateGrammar : public qi::grammar<Iterator, DXModel::XTemplate()> {
             >> +prop >> qi::omit[*(qi::char_ - qi::lit('}'))] >> qi::lit('}');
 
         // PROPERTY RULE
-        prop = -qi::lit("array") >> *qi::lit(' ') >> +(qi::char_ - qi::lit(' ')) >> +qi::lit(' ') >> +(
+        prop = &qi::alpha >> -qi::lit("array") >> *qi::lit(' ') >> +(qi::char_ - qi::lit(' ')) >> +qi::lit(' ') >> +(
                     qi::char_ - (qi::space | qi::lit(';') | qi::lit('['))
-                ) >> *qi::lit(' ') >> ((qi::lit('[') >> qi::int_ >> qi::lit(']')) | qi::attr(1)) >> *qi::lit(' ') >> qi::lit(';') >> qi::omit[*qi::space];
+                ) >> *qi::lit(' ') >> ((qi::lit('[') >> qi::int_ >> qi::lit(']')) | qi::attr(1)) >> qi::omit[*(qi::char_ - qi::lit(';'))] >> qi::lit(';') >> qi::omit[*qi::space];
     }
 
     qi::rule<Iterator, DXModel::XTemplate()> expr;
@@ -176,7 +176,11 @@ void parseMeshBody(std::string::const_iterator itr, const std::string::const_ite
     qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
     qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, model->mesh.nVertices);
     qi::phrase_parse(itr, end, (qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';')) % ',' >> qi::lit(';') , qi::space, model->mesh.vertices);
-    
+	qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, model->mesh.nFaces);
+
+	qi::phrase_parse(itr, end, (qi::omit[qi::int_] >> qi::lit(';') >> qi::int_ % ',' >> qi::lit(';')) % ',' >> qi::lit(';'), qi::space, model->mesh.faces);
+	qi::phrase_parse(itr, end, qi::lit(';'), qi::space);
+
     ExecAllCommandCurrentBody(itr, end, model);
 }
 

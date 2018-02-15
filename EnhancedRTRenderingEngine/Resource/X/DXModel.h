@@ -90,7 +90,7 @@ public:
         DWORD nVertices;
         std::vector<Vector3D> vertices;
         DWORD nFaces;
-        std::vector<Vector3D> faces;
+        std::vector<std::vector<int>> faces;
 
         // optional data elements
         MeshTextureCoords meshTextureCoords;
