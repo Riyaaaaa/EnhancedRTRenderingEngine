@@ -34,28 +34,23 @@ FUSION_ADAPT_STRUCT_AUTO(
     (floatSize)
 )
 
+struct FileFormatSymbol_ : public qi::symbols<char, DXModel::FileFormat> {
+    FileFormatSymbol_()
+    {
+        add ("txt", DXModel::FileFormat::TEXT)
+            ("bin", DXModel::FileFormat::BINARY)
+            ("tzip", DXModel::FileFormat::TZIP)
+            ("bzip", DXModel::FileFormat::BZIP);
+    }
+} FileFormatSymbol;
+
 template<typename Iterator>
 struct XHeaderGrammar : public qi::grammar<Iterator, DXModel::XHeader()> {
     XHeaderGrammar() : XHeaderGrammar::base_type(expr) {
-        auto file_format_rules = ascii::string("txt") | ascii::string("bin") | ascii::string("tzip") | ascii::string("bzip");
-        /*auto convert_to_enum = [](std::string _1) {
-            std::string format = std::string(_1.begin(), _1.end());
-            if (format == "txt") {
-                return DXModel::FileFormat::TEXT;
-            }
-            else if (format == "bin") {
-                return DXModel::FileFormat::BINARY;
-            }
-            else if (format == "tzip") {
-                return DXModel::FileFormat::TZIP;
-            }
-            else if (format == "bzip") {
-                return DXModel::FileFormat::BZIP;
-            }
-        };*/
+        //auto file_format_rules = ascii::string("txt") | ascii::string("bin") | ascii::string("tzip") | ascii::string("bzip");
         expr = +(qi::char_ - qi::lit(' '))
-            >> qi::lit(' ') >> +(qi::char_ - (file_format_rules | qi::lit(' ')))
-            >> file_format_rules >> qi::lit(' ')
+            >> qi::lit(' ') >> +(qi::char_ - (FileFormatSymbol | qi::lit(' ')))
+            >> FileFormatSymbol >> qi::lit(' ')
             >> qi::int_
             >> qi::omit[*qi::space];
 
@@ -66,9 +61,9 @@ struct XHeaderGrammar : public qi::grammar<Iterator, DXModel::XHeader()> {
 template <typename Iterator>
 struct XTemplateGrammar : public qi::grammar<Iterator, DXModel::XTemplate()> {
     XTemplateGrammar() : XTemplateGrammar::base_type(expr) {
-        expr = qi::lit("template") >> *qi::lit(' ') >> +(qi::char_ - (qi::lit('{') | qi::space)) >> qi::omit[*qi::space] >> qi::lit('{') >> qi::omit[*qi::space]
+        expr = qi::omit[*qi::space] >> qi::lit("template") >> *qi::lit(' ') >> +(qi::char_ - (qi::lit('{') | qi::space)) >> qi::omit[*qi::space] >> qi::lit('{') >> qi::omit[*qi::space]
             >> qi::lit('<') >> *qi::lit(' ') >> +(qi::char_ - (qi::lit('>') | qi::space)) >> *qi::lit(' ') >> qi::lit('>') >> qi::omit[*qi::space]
-            >> +(+(qi::char_ - qi::lit(' ')) >> +qi::lit(' ') >> +(qi::char_ - (qi::space | qi::lit(';'))) >> *qi::lit(' ') >> qi::lit(';')) >> qi::omit[*qi::space]
+            >> +(+(qi::char_ - qi::lit(' ')) >> +qi::lit(' ') >> +(qi::char_ - (qi::space | qi::lit(';'))) >> *qi::lit(' ') >> qi::lit(';') >> qi::omit[*qi::space])
             >> qi::lit('}');
     }
 
@@ -100,9 +95,8 @@ int StringParser::ParseXFile(std::ifstream& ifs, DXModel* model) {
 
     {
         XTemplateGrammar<std::string::iterator> parser;
-        DXModel::XTemplate xtemplate;
-
         while (true) {
+            DXModel::XTemplate xtemplate;
             bool r = qi::parse(itr, end, parser, xtemplate);
             if (r) {
                 model->templates.push_back(xtemplate);

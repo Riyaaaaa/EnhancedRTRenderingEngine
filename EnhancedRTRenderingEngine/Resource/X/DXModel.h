@@ -16,7 +16,7 @@ public:
     struct XHeader {
         std::string magic;
         std::string version;
-        std::string format;
+        FileFormat format;
         int floatSize;
     };
     XHeader header;
