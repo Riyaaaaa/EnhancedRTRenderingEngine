@@ -175,9 +175,10 @@ void parseMaterial(std::string::const_iterator itr, const std::string::const_ite
 void parseMeshBody(std::string::const_iterator itr, const std::string::const_iterator end, DXModel* model) {
     qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
     qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, model->mesh.nVertices);
+	model->mesh.vertices.reserve(model->mesh.nVertices);
     qi::phrase_parse(itr, end, (qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';')) % ',' >> qi::lit(';') , qi::space, model->mesh.vertices);
 	qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, model->mesh.nFaces);
-
+	model->mesh.faces.reserve(model->mesh.nFaces);
 	qi::phrase_parse(itr, end, (qi::omit[qi::int_] >> qi::lit(';') >> qi::int_ % ',' >> qi::lit(';')) % ',' >> qi::lit(';'), qi::space, model->mesh.faces);
 	qi::phrase_parse(itr, end, qi::lit(';'), qi::space);
 
