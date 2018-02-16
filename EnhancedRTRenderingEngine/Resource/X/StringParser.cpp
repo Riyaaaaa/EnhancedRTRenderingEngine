@@ -154,9 +154,8 @@ int StringParser::ParseXFile(std::ifstream& ifs, DXModel* model) {
         }
     }
 
-    {
-        while(ParseDataCommand(itr, end, model));
-    }
+    RootParser bodyParser;
+    bodyParser.Parse(itr, end, model);
 
     return 0;
 }
