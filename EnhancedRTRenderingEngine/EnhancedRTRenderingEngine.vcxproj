@@ -294,6 +294,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Resource\X\DXModel.cpp" />
+    <ClCompile Include="Resource\X\DXParserNodes.cpp" />
     <ClCompile Include="Resource\X\StringParser.cpp" />
     <ClCompile Include="Scene\CameraController.cpp" />
     <ClCompile Include="D3D11\D3D11DepthStencilTarget.cpp" />

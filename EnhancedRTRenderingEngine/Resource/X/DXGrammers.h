@@ -9,27 +9,28 @@
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-struct FileFormatSymbol_ : public qi::symbols<char, DXModel::FileFormat> {
-    FileFormatSymbol_()
+struct FileFormatSymbol : public qi::symbols<char, DXModel::FileFormat> {
+    FileFormatSymbol()
     {
         add("txt", DXModel::FileFormat::TEXT)
             ("bin", DXModel::FileFormat::BINARY)
             ("tzip", DXModel::FileFormat::TZIP)
             ("bzip", DXModel::FileFormat::BZIP);
     }
-} FileFormatSymbol;
+};
 
 template<typename Iterator>
 struct XHeaderGrammar : public qi::grammar<Iterator, DXModel::XHeader()> {
     XHeaderGrammar() : XHeaderGrammar::base_type(expr) {
         //auto file_format_rules = ascii::string("txt") | ascii::string("bin") | ascii::string("tzip") | ascii::string("bzip");
         expr = +(qi::char_ - qi::lit(' '))
-            >> qi::lit(' ') >> +(qi::char_ - (FileFormatSymbol | qi::lit(' ')))
-            >> FileFormatSymbol >> qi::lit(' ')
+            >> qi::lit(' ') >> +(qi::char_ - (format | qi::lit(' ')))
+            >> format >> qi::lit(' ')
             >> qi::int_
             >> qi::omit[*qi::space];
 
     }
+    FileFormatSymbol format;
     qi::rule<Iterator, DXModel::XHeader()> expr;
 };
 
@@ -54,10 +55,10 @@ struct XTemplateGrammar : public qi::grammar<Iterator, DXModel::XTemplate()> {
 };
 
 template <typename Iterator>
-struct NextDataIdentifierGrammar : public qi::grammar<Iterator, std::string()> {
-    NextDataIdentifierGrammar(const std::vector<DXModel::XTemplate>& xtemplates) : NextDataIdentifierGrammar::base_type(expr) {
-        for (auto && xtemplate : xtemplates) {
-            templateParser.add(xtemplate.TemplateName);
+struct NextDataIdentifier : public qi::grammar<Iterator, std::string()> {
+    NextDataIdentifier(const std::vector<std::string>& identifiers) : NextDataIdentifier::base_type(expr) {
+        for (auto && identifier : identifiers) {
+            templateParser.add(identifier);
         }
 
         expr = qi::omit[*(qi::char_ - templateParser)] >> qi::raw[templateParser];

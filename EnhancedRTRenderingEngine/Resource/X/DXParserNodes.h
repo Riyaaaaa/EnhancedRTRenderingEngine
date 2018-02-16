@@ -1,7 +1,10 @@
 #pragma once
 
+#include "Common.h"
 #include "DXParseCommon.h"
 #include "DXGrammers.h"
+
+#include <unordered_map>
 
 #include <boost/spirit/include/qi.hpp>
 #include <boost/spirit/include/phoenix.hpp>
@@ -12,35 +15,21 @@
 namespace qi = boost::spirit::qi;
 namespace ascii = boost::spirit::ascii;
 
-template <typename Iterator>
-struct NextDataIdentifier : public qi::grammar<Iterator, std::string()> {
-    NextDataIdentifier(const std::vector<std::string>& identifiers) : NextDataIdentifier::base_type(expr) {
-        for (auto && identifier : identifiers) {
-            templateParser.add(identifier);
-        }
+struct DXRootParser;
 
-        expr = qi::omit[*(qi::char_ - templateParser)] >> qi::raw[templateParser];
-    }
-    qi::rule<Iterator, std::string()> expr;
-    qi::symbols<> templateParser;
-};
+#define DECLARE_NODE(name) template<class Tag> \
+struct name; \
+struct Tag##name;
 
-struct RootParser;
 
-template<class Parent>
-struct MeshParser;
+DECLARE_NODE(MeshParser);
+DECLARE_NODE(MeshTextureCoordsParser);
+DECLARE_NODE(MaterialParser);
+DECLARE_NODE(MaterialListParser);
+DECLARE_NODE(MeshVertexColorParser);
 
-template<class Parent>
-struct MeshTextureCoordsParser;
-
-template<class Parent>
-struct MaterialParser;
-
-template<class Parent>
-struct MaterialListParser;
-
-template<class Parent>
-struct MeshVertexColorParser;
+struct DXRootParser;
+struct TagDXRootParser;
 
 template<class Arg>
 struct VisitorBase : boost::static_visitor<void> {
@@ -112,7 +101,7 @@ struct ParserBase<> {
 };
 
 template<>
-struct MaterialParser<MaterialListParser<MeshParser<RootParser>>> : ParserBase<> {
+struct MaterialParser<TagMaterialListParser> : ParserBase<> {
     static constexpr auto Identifier = "Material";
     void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, std::vector<DXModel::Material>& materials) {
         DXModel::Material material;
@@ -129,11 +118,11 @@ struct MaterialParser<MaterialListParser<MeshParser<RootParser>>> : ParserBase<>
 };
 
 template<>
-struct MaterialListParser<MeshParser<RootParser>> : ParserBase<MaterialParser<MaterialListParser<MeshParser<RootParser>>>> {
+struct MaterialListParser<TagMeshParser> : ParserBase<MaterialParser<TagMaterialListParser>> {
     static constexpr auto Identifier = "MeshMaterialList";
     struct Visitor : VisitorBase<DXModel::MeshMaterialList> {
         using VisitorBase<DXModel::MeshMaterialList>::VisitorBase;
-        void operator()(MaterialParser<MaterialListParser<MeshParser<RootParser>>> parser) const {
+        void operator()(MaterialParser<TagMaterialListParser> parser) const {
             parser.Parse(_itr, end, _1.materials);
         }
     };
@@ -150,7 +139,7 @@ struct MaterialListParser<MeshParser<RootParser>> : ParserBase<MaterialParser<Ma
 };
 
 template<>
-struct MeshTextureCoordsParser<MeshParser<RootParser>> : ParserBase<> {
+struct MeshTextureCoordsParser<TagMeshParser> : ParserBase<> {
     static constexpr auto Identifier = "MeshTextureCoords";
     void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, DXModel::MeshTextureCoords& meshTextureCoords) {
         qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
@@ -162,7 +151,7 @@ struct MeshTextureCoordsParser<MeshParser<RootParser>> : ParserBase<> {
 };
 
 template<>
-struct MeshVertexColorParser<MeshParser<RootParser>> : ParserBase<> {
+struct MeshVertexColorParser<TagMeshParser> : ParserBase<> {
     static constexpr auto Identifier = "MeshVertexColors";
     void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, DXModel::MeshVertexColors& meshVertexColors) {
         qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
@@ -174,19 +163,19 @@ struct MeshVertexColorParser<MeshParser<RootParser>> : ParserBase<> {
 };
 
 template<>
-struct MeshParser<RootParser> : 
-    ParserBase<MeshTextureCoordsParser<MeshParser<RootParser>>, MeshVertexColorParser<MeshParser<RootParser>>, MaterialListParser<MeshParser<RootParser>>> {
+struct MeshParser<TagDXRootParser> : 
+    ParserBase<MeshTextureCoordsParser<TagMeshParser>, MeshVertexColorParser<TagMeshParser>, MaterialListParser<TagMeshParser>> {
 
     static constexpr auto Identifier = "Mesh";
     struct Visitor : VisitorBase<DXModel::Mesh> {
         using VisitorBase<DXModel::Mesh>::VisitorBase;
-        void operator()(MeshTextureCoordsParser<MeshParser<RootParser>> parser) const {
+        void operator()(MeshTextureCoordsParser<TagMeshParser> parser) const {
             parser.Parse(_itr, end, _1.meshTextureCoords);
         }
-        void operator()(MeshVertexColorParser<MeshParser<RootParser>> parser) const {
+        void operator()(MeshVertexColorParser<TagMeshParser> parser) const {
             parser.Parse(_itr, end, _1.meshVertexColors);
         }
-        void operator()(MaterialListParser<MeshParser<RootParser>> parser) const {
+        void operator()(MaterialListParser<TagMeshParser> parser) const {
             parser.Parse(_itr, end, _1.meshMaterialList);
         }
     };
@@ -205,15 +194,34 @@ struct MeshParser<RootParser> :
     }
 };
 
-struct RootParser : ParserBase<MeshParser<RootParser>> {
+struct DXRootParser : ParserBase<MeshParser<TagDXRootParser>> {
     struct Visitor : VisitorBase<DXModel*> {
         using VisitorBase<DXModel*>::VisitorBase;
-        void operator()(MeshParser<RootParser> parser) const {
+        void operator()(MeshParser<TagDXRootParser> parser) const {
             parser.Parse(_itr, end, _1->mesh);
         }
     };
 
     void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, DXModel* model) {
+        {
+            XHeaderGrammar<std::string::const_iterator> parser;
+            qi::parse(itr, end, parser, model->header);
+        }
+
+        {
+            XTemplateGrammar<std::string::const_iterator> parser;
+            while (true) {
+                DXModel::XTemplate xtemplate;
+                bool r = qi::parse(itr, end, parser, xtemplate);
+                if (r) {
+                    model->templates.push_back(xtemplate);
+                }
+
+                if (!r || itr == end) {
+                    break;
+                }
+            }
+        }
         ParseOptionalBody(itr, end, Visitor(itr, end, model));
     }
 };
