@@ -57,10 +57,28 @@ struct VisitorBase : boost::static_visitor<void> {
 template<class... VisitNodes>
 struct ParserBase {
     typedef boost::variant<VisitNodes...> VisitNodesT;
-    const std::unordered_map<std::string, VisitNodesT> VisitMap = {
+
+    // Compiler bug
+    /*const std::unordered_map<std::string, VisitNodesT> VisitMap = {
         std::make_pair(VisitNodes::Identifier, VisitNodes{})...
-        //std::make_pair("", VisitNodes{})...
-    };
+    };*/
+
+
+    /////////// substitute codes. fuck. ////////////
+    std::unordered_map<std::string, VisitNodesT> VisitMap;
+    template<class T, class... Args>
+    void pushNode(const T& t, Args&&... args) {
+        VisitMap[t.Identifier] = t;
+        pushNode(std::forward<Args>(args)...);
+    }
+    template<class T>
+    void pushNode(const T& t) {
+        VisitMap[t.Identifier] = t;
+    }
+    ParserBase() {
+        pushNode(VisitNodes{}...);
+    }
+    /////////// ---------------------- ////////////
 
     template<class Visitor>
     void ParseOptionalBody
@@ -68,14 +86,18 @@ struct ParserBase {
         std::vector<std::string> keys(VisitMap.size());
         std::transform(VisitMap.begin(), VisitMap.end(), keys.begin(), [](const auto& pair) { return pair.first; });
         NextDataIdentifier<std::string::const_iterator> nextIdentifier(keys);
-        std::string templateIdentifier;
-
         while (true) {
+            std::string templateIdentifier;
             if (qi::parse(itr, end, nextIdentifier, templateIdentifier)) {
                 boost::apply_visitor(visitor, VisitMap.at(templateIdentifier));
             }
+            else {
+                // skip body
+                ERTREDebug(L"Found not undefined template identifier: %hs\n", templateIdentifier.c_str());
+                qi::phrase_parse(itr, end, *(qi::char_ - qi::lit('}')) >> qi::lit('}'), qi::space);
+            }
             bool isEnd = qi::phrase_parse(itr, end, qi::lit('}'), qi::space);
-            if (isEnd) {
+            if (isEnd || itr == end) {
                 break;
             }
         }
@@ -108,7 +130,7 @@ struct MaterialParser<MaterialListParser<MeshParser<RootParser>>> : ParserBase<>
 
 template<>
 struct MaterialListParser<MeshParser<RootParser>> : ParserBase<MaterialParser<MaterialListParser<MeshParser<RootParser>>>> {
-    static constexpr auto Identifier = "Mesh";
+    static constexpr auto Identifier = "MeshMaterialList";
     struct Visitor : VisitorBase<DXModel::MeshMaterialList> {
         using VisitorBase<DXModel::MeshMaterialList>::VisitorBase;
         void operator()(MaterialParser<MaterialListParser<MeshParser<RootParser>>> parser) const {
