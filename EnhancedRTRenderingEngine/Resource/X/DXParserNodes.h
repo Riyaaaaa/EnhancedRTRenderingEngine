@@ -105,13 +105,8 @@ struct MaterialParser<TagMaterialListParser> : ParserBase<> {
     static constexpr auto Identifier = "Material";
     void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, std::vector<DXModel::Material>& materials) {
         DXModel::Material material;
-        qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
-        qi::phrase_parse(itr, end, qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(";;"), qi::space, material.faceColor);
-        qi::phrase_parse(itr, end, qi::float_ >> qi::lit(';'), qi::space, material.power);
-        qi::phrase_parse(itr, end, qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(";;"), qi::space, material.specularColor);
-        qi::phrase_parse(itr, end, qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(";;"), qi::space, material.emissiveColor);
-        TextureFileNameGrammer<std::remove_reference_t<decltype(itr)>> parser;
-        qi::phrase_parse(itr, end, parser, qi::space, material.textureFileName);
+        MaterialGrammar<std::string::const_iterator> grammar;
+        qi::phrase_parse(itr, end, grammar, qi::space, material);
         materials.push_back(material);
         ParseOptionalBody(itr, end);
     }
@@ -156,7 +151,7 @@ struct MeshVertexColorParser<TagMeshParser> : ParserBase<> {
     void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, DXModel::MeshVertexColors& meshVertexColors) {
         qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
         qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, meshVertexColors.nVertexColors);
-        qi::phrase_parse(itr, end, qi::omit[qi::int_] >> qi::lit(';') >> (qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';')) % ',' >> qi::lit(';'), qi::space, meshVertexColors.vertexColors);
+        qi::phrase_parse(itr, end, (qi::omit[qi::int_] >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';')) % ',' >> qi::lit(';'), qi::space, meshVertexColors.vertexColors);
         qi::phrase_parse(itr, end, qi::lit(';'), qi::space);
         ParseOptionalBody(itr, end);
     }

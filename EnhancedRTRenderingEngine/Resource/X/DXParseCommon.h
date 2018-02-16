@@ -52,3 +52,12 @@ FUSION_ADAPT_STRUCT_AUTO(
     (z)
     (w)
 )
+
+FUSION_ADAPT_STRUCT_AUTO(
+    DXModel::Material,
+    (faceColor)
+    (power)
+    (specularColor)
+    (emissiveColor)
+    (textureFileName)
+)

@@ -78,3 +78,23 @@ struct TextureFileNameGrammer : public qi::grammar<Iterator, std::string(), qi::
 
     qi::rule<Iterator, std::string(), qi::space_type> expr;
 };
+
+template <typename Iterator>
+struct MaterialGrammar : public qi::grammar<Iterator, DXModel::Material(), qi::space_type> {
+    MaterialGrammar() : MaterialGrammar::base_type(expr)
+    {
+        expr %= qi::lit('{') >> faceColorExpr >> powerExpr >> specularColorExpr >> emissiveColorExpr >> textureExpr;
+        faceColorExpr %= qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(";;");
+        powerExpr %= qi::float_ >> qi::lit(';');
+        specularColorExpr %= qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(";;");
+        emissiveColorExpr %= qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(";;");
+    }
+
+    qi::rule<Iterator, DXModel::Material(), qi::space_type> expr;
+    qi::rule<Iterator, Vector4D(), qi::space_type> faceColorExpr;
+    qi::rule<Iterator, float(), qi::space_type> powerExpr;
+    qi::rule<Iterator, Vector3D(), qi::space_type> specularColorExpr;
+    qi::rule<Iterator, Vector3D(), qi::space_type> emissiveColorExpr;
+    TextureFileNameGrammer<Iterator> textureExpr;
+};
+

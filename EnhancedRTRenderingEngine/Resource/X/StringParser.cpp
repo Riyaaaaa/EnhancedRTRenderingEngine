@@ -9,8 +9,8 @@ int StringParser::ParseXFile(std::ifstream& ifs, DXModel* model) {
     std::string buffer((std::istreambuf_iterator<char>(ifs)),  std::istreambuf_iterator<char>());
     
     auto itr = buffer.begin(), end = buffer.end();
-    DXRootParser bodyParser;
-    bodyParser.Parse(itr, end, model);
+    DXRootParser XFileParser;
+    XFileParser.Parse(itr, end, model);
 
     return 0;
 }
