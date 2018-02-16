@@ -44,7 +44,6 @@ public:
     };
 
     struct MeshTextureCoords {
-        std::string UID;
         DWORD nTextureCoords;
         std::vector<Vector2D> textureCoords;
     };
@@ -61,14 +60,9 @@ public:
         std::vector<MeshFace> meshFaces;
     };
 
-    struct IndexedColor {
-        DWORD index;
-        Vector4D indexColor;
-    };
-
     struct MeshVertexColors {
         DWORD nVertexColors;
-        std::vector<IndexedColor> vertexColors;
+        std::vector<Vector4D> vertexColors;
     };
 
     struct Material {
@@ -84,7 +78,7 @@ public:
         DWORD nFaceIndexes;
         std::vector<DWORD> faceIndexes;
         std::vector<DXModel::Material> materials;
-    } meshMaterialList;
+    };
 
     struct Mesh {
         DWORD nVertices;
@@ -95,7 +89,7 @@ public:
         // optional data elements
         MeshTextureCoords meshTextureCoords;
         MeshNormals meshNormals;
-        MeshVertexColors meshVetexColors;
+        MeshVertexColors meshVertexColors;
         MeshMaterialList meshMaterialList;
     } mesh;
 };
