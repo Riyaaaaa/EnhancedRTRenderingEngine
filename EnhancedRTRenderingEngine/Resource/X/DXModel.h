@@ -61,7 +61,7 @@ public:
         DWORD nNormals;
         std::vector<Vector3D> normals;
         DWORD nFaceNormals;
-        std::vector<MeshFace> meshFaces;
+        std::vector<MeshFace> faceNormals;
     };
 
     struct MeshVertexColors {
@@ -96,5 +96,7 @@ public:
         MeshVertexColors meshVertexColors;
         MeshMaterialList meshMaterialList;
     } mesh;
+
+    void CalcVertexNormals();
 };
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+#include <cmath>
 
 #include "Constant/RenderConfig.h"
 
@@ -10,6 +11,28 @@ struct Size {
 
 struct Vector3D {
     float x, y, z;
+
+    Vector3D operator-(const Vector3D &v) const {
+        return Vector3D{this->x - v.x, this->y - v.y, this->z - v.z};
+    }
+
+    Vector3D& operator+=(const Vector3D& v) {
+        this->x = this->x + v.x;
+        this->y = this->y + v.y;
+        this->z = this->z + v.z;
+        return *this;
+    }
+
+    float Length() const {
+        return std::sqrtf(std::powf(x, 3) + std::powf(y, 3) + std::powf(z, 3));
+    }
+
+    void Normalize() {
+        float l = this->Length();
+        this->x /= l;
+        this->y /= l;
+        this->z /= l;
+    }
 };
 
 struct Vector4D {

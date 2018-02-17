@@ -191,6 +191,9 @@ ResourceHandle<DXModel> ResourceLoader::LoadDXModel(std::string filename) {
 
     ResourceHandle<DXModel> handle(DXModel{});
     StringParser::ParseXFile(ifs, handle.Get());
+    if (handle().mesh.meshNormals.normals.empty()) {
+        handle().CalcVertexNormals();
+    }
 
     return handle;
 }
