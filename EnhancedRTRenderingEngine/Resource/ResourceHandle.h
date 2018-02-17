@@ -115,9 +115,9 @@ class ResourceHandle;
 template<class ResourceType>
 class ResourceHandle<ResourceType, true> : public ResourceHandleBase<ResourceType> {
 public:
-	int _uid;
+    int _uid;
     ResourceHandle() {}
-	ResourceHandle(const ResourceType& resource) : ResourceHandleBase<ResourceType>(resource), _isOwner(true) {}
+    ResourceHandle(const ResourceType& resource) : ResourceHandleBase<ResourceType>(resource), _isOwner(true) {}
     ResourceHandle(const ResourceHandle& src) {
         this->_resource = src._resource;
         this->_isOwner = false;

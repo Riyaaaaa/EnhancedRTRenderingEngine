@@ -71,7 +71,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
         return;
     }
 
-	drawMesh = element;
+    drawMesh = element;
     _state = RenderingState::WRITE_DEPTH;
 }
 
@@ -164,10 +164,10 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
         view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
         view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
-		if (textures[drawIndex].IsAvalable()) {
-			view->hpDeviceContext->PSSetShaderResources(1, 1, textures[drawIndex].GetSubResourceView().Ref());
-			view->hpDeviceContext->PSSetSamplers(1, 1, textures[drawIndex].GetSampler().Ref());
-		}
+        if (textures[drawIndex].IsAvalable()) {
+            view->hpDeviceContext->PSSetShaderResources(1, 1, textures[drawIndex].GetSubResourceView().Ref());
+            view->hpDeviceContext->PSSetSamplers(1, 1, textures[drawIndex].GetSampler().Ref());
+        }
     }
     else {
         view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
@@ -191,7 +191,7 @@ void D3D11DrawElement<VertType>::SetBuffer(const std::shared_ptr<D3DX11RenderVie
 template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
     this->SetBuffer(view);
-	int index = 0;
+    int index = 0;
     for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
         this->SetShader(view, i);
         if (indexBuffer.Get()) {

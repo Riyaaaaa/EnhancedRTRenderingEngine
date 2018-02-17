@@ -261,7 +261,7 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
         if (comptype != 0) {
             return -2; // not support compression bmp
         }
-		ifs.read(reinterpret_cast<char*>(&data_size), 4);
+        ifs.read(reinterpret_cast<char*>(&data_size), 4);
         ifs.seekg(16, std::fstream::cur);
     }
 
@@ -273,8 +273,8 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
         for (unsigned int y = 0; y < h; y++) {
             auto row = rows + y * w * 3;
             for (unsigned int x = 0; x < w; x++) {
-				memcpy(buf + y * w * 4 + (x * 4), row + x * 3, sizeof(char) * 3);
-				*(buf + y * w * 4 + (x * 4) + 3) = 0xff;
+                memcpy(buf + y * w * 4 + (x * 4), row + x * 3, sizeof(char) * 3);
+                *(buf + y * w * 4 + (x * 4) + 3) = 0xff;
             }
         }
     }

@@ -5,12 +5,12 @@
 
 struct pixcelIn
 {
-	float4 pos : SV_POSITION;
-	float4 posw : POSITION0;
-	float4 norw : NORMAL0;
-	float4 col : COLOR0;
-	float2 tex : TEXCOORD0;
-	float4 shadowCoord : SHADOW_COORD;
+    float4 pos : SV_POSITION;
+    float4 posw : POSITION0;
+    float4 norw : NORMAL0;
+    float4 col : COLOR0;
+    float2 tex : TEXCOORD0;
+    float4 shadowCoord : SHADOW_COORD;
 };
 
 Texture2D ShadowMap : register(t0);
@@ -18,8 +18,8 @@ SamplerState ShadowSampler : register(s0);
 
 struct PointLightParam
 {
-	float4 pos;
-	float4 att;
+    float4 pos;
+    float4 att;
 };
 
 struct MaterialParameters
@@ -30,14 +30,14 @@ struct MaterialParameters
 
 cbuffer ConstantBuffer : register(b0)
 {
-	matrix View;
-	matrix Projection;
-	matrix Shadow;
-	float4 DirectionalLights[LIGHT_MAX];
-	PointLightParam PLightParams[LIGHT_MAX];
+    matrix View;
+    matrix Projection;
+    matrix Shadow;
+    float4 DirectionalLights[LIGHT_MAX];
+    PointLightParam PLightParams[LIGHT_MAX];
     float numDirectionalLights;
     float numPointLights;
-	float4 Eye;
+    float4 Eye;
 }
 
 cbuffer MaterialBuffer : register(b1)
@@ -46,21 +46,21 @@ cbuffer MaterialBuffer : register(b1)
 }
 
 float PointLighting(PointLightParam param, float3 posw, float3 norw) {
-	float3 dir;
-	float  len;
-	float  colD;
-	float  colA;
-	float3  col;
+    float3 dir;
+    float  len;
+    float  colD;
+    float  colA;
+    float3  col;
 
-	dir = param.pos.xyz - posw.xyz;
-	len = length(dir);
-	dir = dir / len;
-	
+    dir = param.pos.xyz - posw.xyz;
+    len = length(dir);
+    dir = dir / len;
+    
     // point light
     colD = saturate(dot(norw.xyz, dir));
-	colA = saturate(1.0f / (param.att.x + param.att.y * len + param.att.z * len * len));
+    colA = saturate(1.0f / (param.att.x + param.att.y * len + param.att.z * len * len));
 
-	return saturate(colD * colA);
+    return saturate(colD * colA);
 }
 
 float DirectionalLighting(float3 Direction, float3 nor) {
@@ -68,13 +68,13 @@ float DirectionalLighting(float3 Direction, float3 nor) {
 }
 
 void Shadowing(float4 shadowCoord, inout float3 col) {
-	float w = 1.0f / shadowCoord.w;
-	float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
-	float depth = ShadowMap.Sample(ShadowSampler, stex.xy).x;
+    float w = 1.0f / shadowCoord.w;
+    float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
+    float depth = ShadowMap.Sample(ShadowSampler, stex.xy).x;
 
-	if (shadowCoord.z * w > depth + 0.0005f) {
-		col = col * 0.5f;
-	}
+    if (shadowCoord.z * w > depth + 0.0005f) {
+        col = col * 0.5f;
+    }
 }
 
 

@@ -43,92 +43,92 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
 }
 
 Mesh3DModel::Mesh3DModel(const DXModel& model) {
-	auto& mesh = model.mesh;
-	_vertexList.resize(mesh.nVertices);
+    auto& mesh = model.mesh;
+    _vertexList.resize(mesh.nVertices);
 
-	// Vertex data into one bundle
-	for (std::size_t  i = 0; i < mesh.nVertices; i++) {
-		_vertexList[i] = PMDVertex{
-			{ mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z },
-			{ mesh.meshTextureCoords.textureCoords[i].x, mesh.meshTextureCoords.textureCoords[i].y },
-			{ mesh.meshNormals.normals[i].x, mesh.meshNormals.normals[i].y, mesh.meshNormals.normals[i].z },
-		    { 0.0f, 0.0f, 0.0f, 0.0f }
-		};
-	}
+    // Vertex data into one bundle
+    for (std::size_t  i = 0; i < mesh.nVertices; i++) {
+        _vertexList[i] = PMDVertex{
+            { mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z },
+            { mesh.meshTextureCoords.textureCoords[i].x, mesh.meshTextureCoords.textureCoords[i].y },
+            { mesh.meshNormals.normals[i].x, mesh.meshNormals.normals[i].y, mesh.meshNormals.normals[i].z },
+            { 0.0f, 0.0f, 0.0f, 0.0f }
+        };
+    }
 
-	// Sort by material indexes
-	std::vector<std::pair<int, std::size_t>> indexedArr(mesh.meshMaterialList.nFaceIndexes);
-	for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
-		indexedArr[i] = std::make_pair(mesh.meshMaterialList.faceIndexes[i], i);
-	}
-	std::sort(indexedArr.begin(), indexedArr.end());
+    // Sort by material indexes
+    std::vector<std::pair<int, std::size_t>> indexedArr(mesh.meshMaterialList.nFaceIndexes);
+    for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
+        indexedArr[i] = std::make_pair(mesh.meshMaterialList.faceIndexes[i], i);
+    }
+    std::sort(indexedArr.begin(), indexedArr.end());
 
-	// Expand face indexes and make index list 
-	_indexList.resize(mesh.nFaces);
-	for (std::size_t  i = 0; i < mesh.nFaces; i++) {
-		int index = indexedArr[i].second;
-		for (std::size_t j = 0; j < mesh.faces.size(); i++) {
-			_indexList[i] = mesh.faces[index][j];
-		}
-	}
+    // Expand face indexes and make index list 
+    _indexList.resize(mesh.nFaces);
+    for (std::size_t  i = 0; i < mesh.nFaces; i++) {
+        int index = indexedArr[i].second;
+        for (std::size_t j = 0; j < mesh.faces.size(); i++) {
+            _indexList[i] = mesh.faces[index][j];
+        }
+    }
 
-	int cnt_idx = 0;
-	_materialTextures.resize(mesh.meshMaterialList.nMaterials);
-	_speculars.resize(mesh.meshMaterialList.nMaterials);
-	_drawTargetIndexes.resize(mesh.meshMaterialList.nMaterials);
-	_drawTargetNum = mesh.meshMaterialList.nMaterials;
+    int cnt_idx = 0;
+    _materialTextures.resize(mesh.meshMaterialList.nMaterials);
+    _speculars.resize(mesh.meshMaterialList.nMaterials);
+    _drawTargetIndexes.resize(mesh.meshMaterialList.nMaterials);
+    _drawTargetNum = mesh.meshMaterialList.nMaterials;
 
-	for (auto && elem : indexedArr) {
-		_drawTargetIndexes[elem.first] += mesh.faces[elem.second].size();
-	}
+    for (auto && elem : indexedArr) {
+        _drawTargetIndexes[elem.first] += mesh.faces[elem.second].size();
+    }
 
-	// Set vertex color from face color
-	int matIdx = 0; int faceCount = 0;
-	for (std::size_t  i = 0; i < mesh.meshMaterialList.nFaceIndexes; i++) {
-		int idx = mesh.meshMaterialList.faceIndexes[i];
-		faceCount++;
+    // Set vertex color from face color
+    int matIdx = 0; int faceCount = 0;
+    for (std::size_t  i = 0; i < mesh.meshMaterialList.nFaceIndexes; i++) {
+        int idx = mesh.meshMaterialList.faceIndexes[i];
+        faceCount++;
 
-		for (std::size_t  j = 0; j < mesh.faces[idx].size(); j++) {
-			_vertexList[mesh.faces[idx][j]].col[0] = mesh.meshMaterialList.materials[matIdx].faceColor.x;
-			_vertexList[mesh.faces[idx][j]].col[1] = mesh.meshMaterialList.materials[matIdx].faceColor.y;
-			_vertexList[mesh.faces[idx][j]].col[2] = mesh.meshMaterialList.materials[matIdx].faceColor.z;
-			_vertexList[mesh.faces[idx][j]].col[3] = mesh.meshMaterialList.materials[matIdx].faceColor.w;
-		}
+        for (std::size_t  j = 0; j < mesh.faces[idx].size(); j++) {
+            _vertexList[mesh.faces[idx][j]].col[0] = mesh.meshMaterialList.materials[matIdx].faceColor.x;
+            _vertexList[mesh.faces[idx][j]].col[1] = mesh.meshMaterialList.materials[matIdx].faceColor.y;
+            _vertexList[mesh.faces[idx][j]].col[2] = mesh.meshMaterialList.materials[matIdx].faceColor.z;
+            _vertexList[mesh.faces[idx][j]].col[3] = mesh.meshMaterialList.materials[matIdx].faceColor.w;
+        }
 
-		if (_drawTargetIndexes[matIdx] == faceCount) {
-			matIdx++;
-			faceCount = 0;
-		}
-	}
+        if (_drawTargetIndexes[matIdx] == faceCount) {
+            matIdx++;
+            faceCount = 0;
+        }
+    }
 
-	for (std::size_t  i = 0; i < mesh.meshMaterialList.nMaterials; i++) {
-		_materialTextures[i] = mesh.meshMaterialList.materials[i].textureFileName;
-		_speculars[i] = Vector3D{ 
-			mesh.meshMaterialList.materials[i].specularColor.x, 
-			mesh.meshMaterialList.materials[i].specularColor.y, 
-			mesh.meshMaterialList.materials[i].specularColor.z
-		};
-	}
+    for (std::size_t  i = 0; i < mesh.meshMaterialList.nMaterials; i++) {
+        _materialTextures[i] = mesh.meshMaterialList.materials[i].textureFileName;
+        _speculars[i] = Vector3D{ 
+            mesh.meshMaterialList.materials[i].specularColor.x, 
+            mesh.meshMaterialList.materials[i].specularColor.y, 
+            mesh.meshMaterialList.materials[i].specularColor.z
+        };
+    }
 
-	_vertexCount = _indexList.size();
+    _vertexCount = _indexList.size();
 }
 
 std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
     std::vector<Material> materials(_drawTargetNum);
 
     for (int i = 0; i < _drawTargetNum; i++) {
-		materials[i].vShader = ResourceLoader::LoadShader("LightingVertexShader");
+        materials[i].vShader = ResourceLoader::LoadShader("LightingVertexShader");
 
-		if (_materialTextures[i] != "") {
-			materials[i].pShader = ResourceLoader::LoadShader("LightingPSTextureColor");
-			ResourceLoader::LoadTexture(_materialTextures[i], &materials[i].texture);
-			materials[i].specular = _speculars[i];
+        if (_materialTextures[i] != "") {
+            materials[i].pShader = ResourceLoader::LoadShader("LightingPSTextureColor");
+            ResourceLoader::LoadTexture(_materialTextures[i], &materials[i].texture);
+            materials[i].specular = _speculars[i];
             materials[i].metallic = 0.5f;
             materials[i].roughness = 0.2f;
-		}
-		else {
-			materials[i].pShader = ResourceLoader::LoadShader("LightingPSMain");
-		}
+        }
+        else {
+            materials[i].pShader = ResourceLoader::LoadShader("LightingPSMain");
+        }
     }
 
     return materials;

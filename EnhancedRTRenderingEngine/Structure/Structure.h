@@ -147,7 +147,7 @@ struct ConstantBuffer
     PointLightParameters PointLight[LIGHT_MAX];
     float numDirecitonalLights;
     float numPointLights;
-	DirectX::XMVECTOR Eye;
+    DirectX::XMVECTOR Eye;
 };
 
 __declspec(align(16))

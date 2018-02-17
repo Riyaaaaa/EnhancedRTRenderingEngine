@@ -38,7 +38,7 @@ Scene::Scene() {
 
     Material material(MaterialParameters{"LightingVertexShader", "LightingPSMain", "", 0.2f, 0.5f});
 
-    auto model = ResourceLoader::LoadPMDModel("nolicensed");
+    auto model = ResourceLoader::LoadPMDModel("nolicensed2");
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
 
@@ -102,5 +102,5 @@ std::vector<PointLightParameters> Scene::GetPointLightParams() {
 }
 
 DirectX::XMVECTOR Scene::GetEyePoint() {
-	return cameraObjects[mainCameraIdx].hEye;
+    return cameraObjects[mainCameraIdx].hEye;
 }
