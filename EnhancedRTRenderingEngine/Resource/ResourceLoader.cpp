@@ -3,10 +3,10 @@
 #include "FileManager.h"
 
 #include "Common.h"
-
 #include "WindowManager.h"
+#include "Utility/StringUtils.h"
+#include "X/StringParser.h"
 
-#include "libpng/png.h"
 #include "libpng/png.h"
 #include "libpng/pngstruct.h"
 #include "libpng/pnginfo.h"
@@ -58,16 +58,7 @@ ResourceHandle<RawBinary> ResourceLoader::LoadShader(std::string filename) {
 }
 
 int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex) {
-    std::regex re(R"(.+\.(\w+))");
-    std::cmatch match;
-    std::string ex;
-
-    if (std::regex_match(filename.c_str(), match, re)) {
-        ex = match.str(1);
-    }
-    else {
-        return -1;
-    }
+    auto ex = StringUtils::GetExtension(filename);
 
     if (ex == "png") {
         return LoadPNG(filename, outTex);
@@ -181,6 +172,27 @@ int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* out
     fclose(fp);
 
     return 0;
+}
+
+ResourceHandle<DXModel> ResourceLoader::LoadDXModel(std::string filename) {
+    std::ifstream ifs;
+    auto manager = FileManager::getInstance();
+    auto path = manager->MakeAssetPath("3DModel\\" + filename + ".x");
+
+    if (manager->FileExists(path)) {
+        return ResourceHandle<DXModel>();
+    }
+
+    ifs.open(path, std::ios::in);
+
+    if (!ifs.is_open()) {
+        return ResourceHandle<DXModel>{};
+    }
+
+    ResourceHandle<DXModel> handle(DXModel{});
+    StringParser::ParseXFile(ifs, handle.Get());
+
+    return handle;
 }
 
 ResourceHandle<PMDModel> ResourceLoader::LoadPMDModel(std::string filename) {

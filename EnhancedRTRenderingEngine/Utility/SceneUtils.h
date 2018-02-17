@@ -17,4 +17,5 @@ namespace SceneUtils {
     }
 
     MeshObject<typename Mesh3DModel::Type> CreateMesh3DModelObject(const PMDModel& model);
+    MeshObject<typename Mesh3DModel::Type> CreateMesh3DModelObject(const DXModel& model);
 }

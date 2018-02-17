@@ -3,11 +3,15 @@
 #include <string>
 #include <vector>
 
+#include "Resource/ResourceEntity.h"
 #include "Structure/Structure.h"
 
-class DXModel
+class DXModel : ResourceEntity<DXModel>
 {
 public:
+    void Dispose() { }
+    void Release() { }
+
     enum class FileFormat {
         TEXT,
         BINARY,

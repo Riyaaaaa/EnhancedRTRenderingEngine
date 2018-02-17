@@ -38,7 +38,9 @@ Scene::Scene() {
 
     Material material(MaterialParameters{"LightingVertexShader", "LightingPSMain", "", 0.2f, 0.5f});
 
-    auto model = ResourceLoader::LoadPMDModel("nolicensed2");
+    //auto model = ResourceLoader::LoadPMDModel("nolicensed2");
+    //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    auto model = ResourceLoader::LoadDXModel("nolicensed2");
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
 

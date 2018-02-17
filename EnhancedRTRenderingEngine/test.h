@@ -1,6 +1,6 @@
 #pragma once
 
-#define HAS_UNIT_TEST
+//#define HAS_UNIT_TEST
 
 #ifdef HAS_UNIT_TEST
 

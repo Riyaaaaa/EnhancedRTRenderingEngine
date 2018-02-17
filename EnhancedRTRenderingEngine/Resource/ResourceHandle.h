@@ -100,8 +100,10 @@ protected:
 public:
     ResourceHandleBase() {}
     ResourceHandleBase(const ResourceType& resource) : _resource(resource) {}
+
     ResourceType& operator()() { return *_resource; }
     const ResourceType& operator()() const { return *_resource; }
+    ResourceType* Get() { return &_resource; }
 
     virtual ~ResourceHandleBase() {};
 };

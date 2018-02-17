@@ -166,6 +166,7 @@
     <ClInclude Include="Resource\X\DXParseCommon.h" />
     <ClInclude Include="Resource\X\DXParserNodes.h" />
     <ClInclude Include="Resource\X\StringParser.h" />
+    <ClInclude Include="Utility\StringUtils.h" />
     <ClInclude Include="test.h" />
     <ClInclude Include="Scene\CameraController.h" />
     <ClInclude Include="Constant\RenderTag.h" />
@@ -309,6 +310,7 @@
     <ClCompile Include="D3D11\D3D11Texture.cpp" />
     <ClCompile Include="Mesh\Primitive\Pentagon.cpp" />
     <ClCompile Include="Resource\PMD\PMDModel.cpp" />
+    <ClCompile Include="Utility\StringUtils.cpp" />
     <ClCompile Include="TransformUtils.cpp" />
     <ClCompile Include="Utility\SceneUtils.cpp" />
     <ClCompile Include="Scene\CameraObject.cpp" />
