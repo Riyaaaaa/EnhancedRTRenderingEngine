@@ -161,7 +161,10 @@
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="D3D11\ComPtr.h" />
+    <ClInclude Include="Resource\X\DXGrammers.h" />
     <ClInclude Include="Resource\X\DXModel.h" />
+    <ClInclude Include="Resource\X\DXParseCommon.h" />
+    <ClInclude Include="Resource\X\DXParserNodes.h" />
     <ClInclude Include="Resource\X\StringParser.h" />
     <ClInclude Include="test.h" />
     <ClInclude Include="Scene\CameraController.h" />
@@ -291,6 +294,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Resource\X\DXModel.cpp" />
+    <ClCompile Include="Resource\X\DXParserNodes.cpp" />
     <ClCompile Include="Resource\X\StringParser.cpp" />
     <ClCompile Include="Scene\CameraController.cpp" />
     <ClCompile Include="D3D11\D3D11DepthStencilTarget.cpp" />
