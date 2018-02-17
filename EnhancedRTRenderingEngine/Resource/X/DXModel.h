@@ -44,7 +44,6 @@ public:
     };
 
     struct MeshTextureCoords {
-        std::string UID;
         DWORD nTextureCoords;
         std::vector<Vector2D> textureCoords;
     };
