@@ -64,11 +64,11 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     std::sort(indexedArr.begin(), indexedArr.end());
 
     // Expand face indexes and make index list 
-    _indexList.resize(mesh.nFaces);
+    _indexList.reserve(mesh.nFaces * 3);
     for (std::size_t  i = 0; i < mesh.nFaces; i++) {
         int index = indexedArr[i].second;
-        for (std::size_t j = 0; j < mesh.faces.size(); i++) {
-            _indexList[i] = mesh.faces[index][j];
+        for (std::size_t j = 0; j < mesh.faces[index].size(); j++) {
+            _indexList.push_back(mesh.faces[index][j]);
         }
     }
 

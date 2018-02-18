@@ -24,7 +24,7 @@ struct Vector3D {
     }
 
     float Length() const {
-        return std::sqrtf(std::powf(x, 3) + std::powf(y, 3) + std::powf(z, 3));
+        return std::sqrtf(std::powf(x, 2) + std::powf(y, 2) + std::powf(z, 2));
     }
 
     void Normalize() {
