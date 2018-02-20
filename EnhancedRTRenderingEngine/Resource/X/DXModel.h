@@ -13,6 +13,7 @@ public:
     void Release() { }
 
     enum class FileFormat {
+        NONE,
         TEXT,
         BINARY,
         TZIP,

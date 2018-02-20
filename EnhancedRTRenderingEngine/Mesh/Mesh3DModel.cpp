@@ -21,8 +21,8 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
     int cnt_idx = 0;
     _materialTextures.resize(model.material_count);
     _speculars.resize(model.material_count);
-    _drawTargetIndexes.resize(model.material_count);
-    _drawTargetNum = model.material_count;
+    _drawFacesMap.resize(model.material_count);
+    _materialNum = model.material_count;
     for (std::size_t  i = 0; i < model.material_count; i++) {
         for (std::size_t  j = 0; j < model.materials[i].face_vert_count; j++) {
             int idx = model.face_vert_index[cnt_idx];
@@ -34,7 +34,7 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
             _vertexList[idx].col[3] = model.materials[i].alpha;
         }
 
-        _drawTargetIndexes[i] = model.materials[i].face_vert_count;
+        _drawFacesMap[i] = std::make_pair(model.materials[i].face_vert_count, i);
         _materialTextures[i] = model.materials[i].texture_file_name;
         _speculars[i] = Vector3D{ model.materials[i].specular_color[0],model.materials[i].specular_color[1],model.materials[i].specular_color[2] };
     }
@@ -56,48 +56,32 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
         };
     }
 
-    // Sort by material indexes
-    std::vector<std::pair<int, std::size_t>> indexedArr(mesh.meshMaterialList.nFaceIndexes);
-    for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
-        indexedArr[i] = std::make_pair(mesh.meshMaterialList.faceIndexes[i], i);
-    }
-    std::sort(indexedArr.begin(), indexedArr.end());
-
     // Expand face indexes and make index list 
     _indexList.reserve(mesh.nFaces * 3);
     for (std::size_t  i = 0; i < mesh.nFaces; i++) {
-        int index = indexedArr[i].second;
-        for (std::size_t j = 0; j < mesh.faces[index].size(); j++) {
-            _indexList.push_back(mesh.faces[index][j]);
+        for (std::size_t j = 0; j < mesh.faces[i].size(); j++) {
+            _indexList.push_back(mesh.faces[i][j]);
         }
     }
 
     int cnt_idx = 0;
     _materialTextures.resize(mesh.meshMaterialList.nMaterials);
     _speculars.resize(mesh.meshMaterialList.nMaterials);
-    _drawTargetIndexes.resize(mesh.meshMaterialList.nMaterials);
-    _drawTargetNum = mesh.meshMaterialList.nMaterials;
+    _drawFacesMap.resize(mesh.meshMaterialList.nFaceIndexes);
+    _materialNum = mesh.meshMaterialList.nMaterials;
 
-    for (auto && elem : indexedArr) {
-        _drawTargetIndexes[elem.first] += mesh.faces[elem.second].size();
+    for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
+        _drawFacesMap[i] = std::make_pair(mesh.faces[i].size(), mesh.meshMaterialList.faceIndexes[i]);
     }
 
     // Set vertex color from face color
-    int matIdx = 0; int faceCount = 0;
     for (std::size_t  i = 0; i < mesh.meshMaterialList.nFaceIndexes; i++) {
-        int idx = mesh.meshMaterialList.faceIndexes[i];
-        faceCount++;
-
-        for (std::size_t  j = 0; j < mesh.faces[idx].size(); j++) {
-            _vertexList[mesh.faces[idx][j]].col[0] = mesh.meshMaterialList.materials[matIdx].faceColor.x;
-            _vertexList[mesh.faces[idx][j]].col[1] = mesh.meshMaterialList.materials[matIdx].faceColor.y;
-            _vertexList[mesh.faces[idx][j]].col[2] = mesh.meshMaterialList.materials[matIdx].faceColor.z;
-            _vertexList[mesh.faces[idx][j]].col[3] = mesh.meshMaterialList.materials[matIdx].faceColor.w;
-        }
-
-        if (_drawTargetIndexes[matIdx] == faceCount) {
-            matIdx++;
-            faceCount = 0;
+        int matIdx = _drawFacesMap[i].second;
+        for (std::size_t  j = 0; j < mesh.faces[i].size(); j++) {
+            _vertexList[mesh.faces[i][j]].col[0] = mesh.meshMaterialList.materials[matIdx].faceColor.x;
+            _vertexList[mesh.faces[i][j]].col[1] = mesh.meshMaterialList.materials[matIdx].faceColor.y;
+            _vertexList[mesh.faces[i][j]].col[2] = mesh.meshMaterialList.materials[matIdx].faceColor.z;
+            _vertexList[mesh.faces[i][j]].col[3] = mesh.meshMaterialList.materials[matIdx].faceColor.w;
         }
     }
 
@@ -114,9 +98,9 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
 }
 
 std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
-    std::vector<Material> materials(_drawTargetNum);
+    std::vector<Material> materials(_materialNum);
 
-    for (int i = 0; i < _drawTargetNum; i++) {
+    for (int i = 0; i < _materialNum; i++) {
         materials[i].vShader = ResourceLoader::LoadShader("LightingVertexShader");
 
         if (_materialTextures[i] != "") {

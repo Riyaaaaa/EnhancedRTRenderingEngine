@@ -45,7 +45,7 @@ Scene::Scene() {
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
 
     viewObjects[0].SetLocation(Vector3D{ 0.0f, 0.0f, 0.0f });
-    viewObjects[0].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
+    //viewObjects[0].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects[1].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects[1].SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
     viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });

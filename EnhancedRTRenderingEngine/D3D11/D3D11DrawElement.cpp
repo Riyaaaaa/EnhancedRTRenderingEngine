@@ -29,8 +29,8 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
 
     drawMesh = element;
 
-    textures.resize(drawMesh->GetMesh()->GetDrawTargetNum());
-    for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
+    textures.resize(drawMesh->GetMesh()->GetMaterialNum());
+    for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         if (material.texture.HasResource() && material.texture().isValid()) {
             textures[i].Initialize(device, material.texture);
@@ -191,17 +191,21 @@ void D3D11DrawElement<VertType>::SetBuffer(const std::shared_ptr<D3DX11RenderVie
 template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
     this->SetBuffer(view);
-    int index = 0;
+    int index = 0, matIdx = -1;
     for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
-        this->SetShader(view, i);
+        if (matIdx != drawMesh->GetMesh()->GetDrawFacesMap()[i].second) {
+            matIdx = drawMesh->GetMesh()->GetDrawFacesMap()[i].second;
+            this->SetShader(view, matIdx);
+        }
+        
         if (indexBuffer.Get()) {
-            view->hpDeviceContext->DrawIndexed(drawMesh->GetMesh()->GetDrawTargetIndexes()[i], index, 0);
+            view->hpDeviceContext->DrawIndexed(drawMesh->GetMesh()->GetDrawFacesMap()[i].first, index, 0);
         }
         else {
-            view->hpDeviceContext->Draw(drawMesh->GetMesh()->GetDrawTargetIndexes()[i], index);
+            view->hpDeviceContext->Draw(drawMesh->GetMesh()->GetDrawFacesMap()[i].first, index);
         }
 
-        index += drawMesh->GetMesh()->GetDrawTargetIndexes()[i];
+        index += drawMesh->GetMesh()->GetDrawFacesMap()[i].first;
         // DEBUG:
         // Check index < vertexCount;
     }

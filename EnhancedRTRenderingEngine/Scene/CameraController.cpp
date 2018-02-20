@@ -58,10 +58,10 @@ void CameraController::ControllCamera(Vector2D Delta, InputKey key) {
     switch (key) {
     case InputKey::LMOUSE:
     case InputKey::RMOUSE:
+        auto yAxis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
         auto axis = XMVector3Normalize(XMVector3Cross(_camera->hEye, _camera->hUp));
         XMVECTOR qt_xz = XMQuaternionRotationAxis(axis, XMConvertToRadians(Delta.y / 5.0f));
-        axis = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
-        XMVECTOR qt_y = XMQuaternionRotationAxis(axis, XMConvertToRadians(Delta.x / 5.0f));
+        XMVECTOR qt_y = XMQuaternionRotationAxis(yAxis, XMConvertToRadians(Delta.x / 5.0f));
         XMVECTOR qt = XMQuaternionMultiply(qt_xz, qt_y);
 
         _camera->hEye = XMVector3Rotate(_camera->hEye, qt);

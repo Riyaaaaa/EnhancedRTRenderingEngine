@@ -14,7 +14,7 @@ Square::Square()
         0, 1, 2, 1, 3, 2
     };
 
-    _drawTargetIndexes.push_back(_indexList.size());
+    _drawFacesMap.push_back(std::make_pair(_indexList.size(), 0));
     _vertexCount = _indexList.size();
 }
 
@@ -30,6 +30,6 @@ SquarePMD::SquarePMD() {
         0, 1, 2, 1, 3, 2
     };
 
-    _drawTargetIndexes.push_back(_indexList.size());
+    _drawFacesMap.push_back(std::make_pair(_indexList.size(), 0));
     _vertexCount = _indexList.size();
 }

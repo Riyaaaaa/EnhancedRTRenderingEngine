@@ -6,7 +6,7 @@ using namespace DirectX;
 CameraObject::CameraObject()
 {
     hEye = XMVectorSet(0.0f, 10.0f, -30.0f, 0.0f);
-    hAt = XMVectorSet(0.0f, 10.0f, 0.0f, 0.0f);
+    hAt = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
     hUp = XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f);
 }
 

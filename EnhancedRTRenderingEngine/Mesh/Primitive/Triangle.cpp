@@ -11,7 +11,7 @@ Triangle::Triangle()
     };
 
     _vertexCount = _vertexList.size();
-    _drawTargetIndexes.push_back(_vertexList.size());
+    _drawFacesMap.push_back(std::make_pair(_vertexList.size(), 0));
 }
 
 
