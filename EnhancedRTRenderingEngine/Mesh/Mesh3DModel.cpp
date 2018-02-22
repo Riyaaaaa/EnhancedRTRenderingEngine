@@ -73,6 +73,9 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
         _drawFacesMap[i] = std::make_pair(mesh.faces[i].size(), mesh.meshMaterialList.faceIndexes[i]);
     }
+    std::sort(_drawFacesMap.begin(), _drawFacesMap.end(), [](const std::pair<int, int>& lhs, const std::pair<int, int>& rhs) {
+        return lhs.second != rhs.second ? lhs.second < rhs.second : lhs.first < rhs.first;
+    });
 
     // Set vertex color from face color
     for (std::size_t  i = 0; i < mesh.meshMaterialList.nFaceIndexes; i++) {
