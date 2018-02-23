@@ -64,7 +64,7 @@ float PointLighting(PointLightParam param, float3 posw, float3 norw) {
 }
 
 float DirectionalLighting(float3 Direction, float3 nor) {
-    return saturate(dot(nor, -Direction)) * 0.5f;
+    return saturate(dot(nor, -Direction));
 }
 
 void Shadowing(float4 shadowCoord, inout float3 col) {

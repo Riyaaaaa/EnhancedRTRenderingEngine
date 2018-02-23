@@ -13,7 +13,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numDirectionalLights) break;
-        diffuse += albedo * DirectionalLighting(DirectionalLights[i].xyz, IN.norw.xyz);
+        diffuse += albedo * DirectionalLighting(DirectionalLights[i].xyz, IN.norw.xyz) * (1.0f / PI) ;
         specular += SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
     }
 
