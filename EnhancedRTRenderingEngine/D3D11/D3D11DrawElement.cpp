@@ -193,19 +193,19 @@ void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& v
     this->SetBuffer(view);
     int index = 0, matIdx = -1;
     for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
-        if (matIdx != drawMesh->GetMesh()->GetDrawFacesMap()[i].second) {
-            matIdx = drawMesh->GetMesh()->GetDrawFacesMap()[i].second;
+        if (matIdx != drawMesh->GetMesh()->GetDrawFacesMap()[i].materialIdx) {
+            matIdx = drawMesh->GetMesh()->GetDrawFacesMap()[i].materialIdx;
             this->SetShader(view, matIdx);
         }
         
         if (indexBuffer.Get()) {
-            view->hpDeviceContext->DrawIndexed(drawMesh->GetMesh()->GetDrawFacesMap()[i].first, index, 0);
+            view->hpDeviceContext->DrawIndexed(drawMesh->GetMesh()->GetDrawFacesMap()[i].faceNumVerts, index, 0);
         }
         else {
-            view->hpDeviceContext->Draw(drawMesh->GetMesh()->GetDrawFacesMap()[i].first, index);
+            view->hpDeviceContext->Draw(drawMesh->GetMesh()->GetDrawFacesMap()[i].faceNumVerts, index);
         }
 
-        index += drawMesh->GetMesh()->GetDrawFacesMap()[i].first;
+        index += drawMesh->GetMesh()->GetDrawFacesMap()[i].faceNumVerts;
         // DEBUG:
         // Check index < vertexCount;
     }

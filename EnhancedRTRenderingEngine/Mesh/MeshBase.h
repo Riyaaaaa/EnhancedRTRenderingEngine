@@ -2,6 +2,12 @@
 
 #include <vector>
 
+struct Face {
+    std::size_t faceIdx;
+    std::size_t faceNumVerts;
+    std::size_t materialIdx;
+};
+
 template<class VertType>
 class MeshBase
 {
@@ -19,12 +25,12 @@ public:
 
     int GetMaterialNum() const { return _materialNum; }
     std::size_t GetDrawTargetNum() const { return _drawFacesMap.size(); }
-    const std::vector<std::pair<int, int>>& GetDrawFacesMap() const { return _drawFacesMap; }
+    const std::vector<Face>& GetDrawFacesMap() const { return _drawFacesMap; }
 
 protected:
     int _materialNum;
     // face index / material index
-    std::vector<std::pair<int, int>> _drawFacesMap;
+    std::vector<Face> _drawFacesMap;
     std::vector<VertType> _vertexList;
     std::vector<uint16_t> _indexList;
     std::size_t _vertexCount;

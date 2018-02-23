@@ -49,7 +49,7 @@ Box::Box()
     };
 
     _vertexCount = _vertexList.size();
-    _drawFacesMap.push_back(std::make_pair(_vertexList.size(), 0));
+    _drawFacesMap.push_back(Face{ 0, _vertexList.size(), 0 });
 }
 
 
