@@ -44,10 +44,6 @@ public:
 
     std::vector<XTemplate> templates;
 
-    struct MeshFaceWraps {
-        // UNUSED
-    };
-
     struct MeshTextureCoords {
         DWORD nTextureCoords;
         std::vector<Vector2D> textureCoords;

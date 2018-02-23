@@ -63,7 +63,15 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     _materialNum = mesh.meshMaterialList.nMaterials;
 
     for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
-        _drawFacesMap[i] = Face{ i, mesh.faces[i].size(), mesh.meshMaterialList.faceIndexes[i] };
+        std::size_t primitiveVerts = mesh.faces[i].size();
+        if (primitiveVerts == 4) {
+            // TRIANGLE STRIP DRAW
+            _drawFacesMap[i] = Face{ i, 6 , mesh.meshMaterialList.faceIndexes[i] };
+        }
+        else {
+            _drawFacesMap[i] = Face{ i, primitiveVerts , mesh.meshMaterialList.faceIndexes[i] };
+        }
+        
     }
 
     std::sort(_drawFacesMap.begin(), _drawFacesMap.end(), [](const Face& lhs, const Face& rhs) {
@@ -73,8 +81,18 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     // Expand face indexes and make index list 
     _indexList.reserve(mesh.nFaces * 3);
     for (std::size_t i = 0; i < mesh.nFaces; i++) {
-        for (std::size_t j = 0; j < _drawFacesMap[i].faceNumVerts; j++) {
-            _indexList.push_back(mesh.faces[_drawFacesMap[i].faceIdx][j]);
+        auto& face = mesh.faces[_drawFacesMap[i].faceIdx];
+        auto primitiveVerts = face.size();
+        std::vector<int> visitVerts;
+        if (primitiveVerts == 4) {
+            visitVerts = {face[0], face[1], face[2], face[0], face[2], face[3]};
+        }
+        else {
+            visitVerts = face;
+        }
+
+        for (int index : visitVerts) {
+            _indexList.push_back(index);
         }
     }
 

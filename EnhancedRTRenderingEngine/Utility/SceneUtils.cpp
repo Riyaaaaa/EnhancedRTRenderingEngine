@@ -12,7 +12,7 @@ MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const
 }
 
 MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
-    RenderingContext context{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLESTRIP };
+    RenderingContext context{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLELIST };
 
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
     MeshObject<typename Mesh3DModel::Type> mesh(mesh3D, context);
