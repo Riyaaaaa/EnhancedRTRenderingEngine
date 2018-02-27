@@ -116,6 +116,21 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
         };
     }
 
+    int oldMatIdx = -1;
+    std::size_t indexCount = 0;
+    std::vector<Face> dist;
+    for (int i = 0; i < _drawFacesMap.size(); i++) {
+        if (oldMatIdx != _drawFacesMap[i].materialIdx) {
+            if (oldMatIdx != -1) {
+                dist.push_back(Face{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
+            }
+            oldMatIdx = _drawFacesMap[i].materialIdx;
+            indexCount = 0;
+        }
+        indexCount += _drawFacesMap[i].faceNumVerts;
+    }
+    _drawFacesMap.swap(dist);
+
     _vertexCount = _indexList.size();
 }
 
