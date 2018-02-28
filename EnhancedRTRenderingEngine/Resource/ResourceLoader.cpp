@@ -76,7 +76,7 @@ int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* out
     png_infop PngInfo;
 
     auto manager = FileManager::getInstance();
-    auto path = manager->MakeAssetPath("Texture\\" + filename + ".png");
+    auto path = manager->MakeAssetPath("Texture\\" + filename);
 
     if (manager->FileExists(path)) {
          *outTex = manager->GetResourceHandleFromCache<Texture2D>(path);
@@ -167,6 +167,7 @@ int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* out
     }
 
     *outTex = manager->CreateCachedResourceHandle<Texture2D>(path, PngInfo, (void*)buf, sizeof(buf));
+    (*outTex)().SetTextureName(path);
 
     png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
     fclose(fp);
@@ -295,6 +296,7 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
     }
 
     *outTex = manager->CreateCachedResourceHandle<Texture2D>(path, w, h, 4u, (void*)buf, sizeof(buf));
+    (*outTex)().SetTextureName(path);
 
     ifs.close();
 

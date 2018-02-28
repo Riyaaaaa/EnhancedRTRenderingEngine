@@ -3,7 +3,7 @@
 #include <utility>
 
 #include "RawBinary.h"
-#include "SpiralLibrary/Optional/Optional.hpp"
+#include "boost/optional.hpp"
 
 class RefCounter {
 private:
@@ -95,7 +95,7 @@ class ResourceHandleBase;
 template<class ResourceType>
 class ResourceHandleBase {
 protected:
-    libspiral::Optional<ResourceType> _resource;
+   boost::optional<ResourceType> _resource;
 
 public:
     ResourceHandleBase() {}
@@ -103,7 +103,7 @@ public:
 
     ResourceType& operator()() { return *_resource; }
     const ResourceType& operator()() const { return *_resource; }
-    ResourceType* Get() { return &_resource; }
+    ResourceType* Get() { return &_resource.get(); }
 
     virtual ~ResourceHandleBase() {};
 };

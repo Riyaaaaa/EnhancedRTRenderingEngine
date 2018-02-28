@@ -36,7 +36,7 @@ Scene::Scene() {
     //viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
     //viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
 
-    Material material(MaterialParameters{"LightingVertexShader", "LightingPSMain", "", 0.2f, 0.5f});
+    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "test3.png", 0.2f, 0.5f});
 
     //auto model = ResourceLoader::LoadPMDModel("nolicensed2");
     //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));

@@ -6,6 +6,8 @@
 #include "Material/Material.h"
 #include "RenderingContext.h"
 
+#include <memory>
+
 template<class VertType>
 class MeshObject : public SceneObject
 {

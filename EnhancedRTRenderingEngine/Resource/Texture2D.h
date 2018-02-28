@@ -18,7 +18,10 @@ public:
     std::size_t Channels() const { return stride; }
     std::size_t Stride() const { return channels; }
 
+    void SetTextureName(std::string name) { textureName = name; }
+
 protected:
     std::size_t width, height, channels, stride;
+    std::string textureName;
 };
 
