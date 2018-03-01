@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="Scene\CubeTexture.h" />
     <ClInclude Include="D3D11\D3D11Scene.h" />
     <ClInclude Include="D3D11\ComPtr.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
@@ -297,6 +298,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\CubeTexture.cpp" />
     <ClCompile Include="D3D11\D3D11Scene.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />

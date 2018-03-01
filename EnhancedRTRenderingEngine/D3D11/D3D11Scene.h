@@ -14,8 +14,12 @@ public:
     D3D11DepthStencilTarget& GetDirectionalShadow(int index) {
         return _directionalShadows[index];
     }
+    D3D11DepthStencilTarget& GetPointShadow(int index) {
+        return _pointShadows[index];
+    }
 protected:
     Scene * _scene;
     std::vector<D3D11DepthStencilTarget> _directionalShadows;
+    std::vector<D3D11DepthStencilTarget> _pointShadows;
 };
 

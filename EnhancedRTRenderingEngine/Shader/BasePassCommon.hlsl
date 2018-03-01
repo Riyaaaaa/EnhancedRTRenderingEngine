@@ -13,7 +13,8 @@ struct pixcelIn
     float4 shadowCoord : SHADOW_COORD;
 };
 
-Texture2D ShadowMap : register(t0);
+Texture2D DirectionalShadowMap : register(t0);
+Texture2D PointShadowMap : register(t1);
 SamplerState ShadowSampler : register(s0);
 
 struct PointLightParam
@@ -70,13 +71,12 @@ float DirectionalLighting(float3 Direction, float3 nor) {
 void Shadowing(float4 shadowCoord, inout float3 col) {
     float w = 1.0f / shadowCoord.w;
     float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
-    float depth = ShadowMap.Sample(ShadowSampler, stex.xy).x;
+    float depth = DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x;
 
     if (shadowCoord.z * w > depth + 0.0005f) {
         col = col * 0.5f;
     }
 }
-
 
 // Frensel equations approximated by Schlick
 float3 FrenselEquations(float3 reflectionCoef, float3 H, float3 V) {

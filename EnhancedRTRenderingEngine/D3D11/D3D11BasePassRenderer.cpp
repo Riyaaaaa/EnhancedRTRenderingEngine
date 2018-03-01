@@ -84,8 +84,12 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
     _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
+    // todo: support multi lights
     _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSRV().Ref());
     _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSRV().Ref());
+    _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+
 
     for (auto && object : scene->GetViewObjects()) {
         D3D11DrawElement<Scene::VertType> element;

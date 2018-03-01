@@ -3,7 +3,9 @@
 
 #include "Constant/RenderConfig.h"
 
-D3D11Scene::D3D11Scene() : _directionalShadows(LIGHT_MAX)
+D3D11Scene::D3D11Scene() : 
+    _directionalShadows(LIGHT_MAX),
+    _pointShadows(LIGHT_MAX)
 {
 }
 

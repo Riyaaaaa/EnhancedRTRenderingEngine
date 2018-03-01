@@ -58,11 +58,9 @@ Scene::Scene() {
 
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.4f});
 
-    PointLight plight;
-    plight.SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-    plight.SetPoint(Vector3D{ 0.0, 3.0f, -3.0f });
-
-    pointLights.push_back(plight);
+    pointLights.emplace_back(PointLight{});
+    pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+    pointLights[0].SetPoint(Vector3D{ 0.0, 3.0f, -3.0f });
 
     mainCameraIdx = 0;
 

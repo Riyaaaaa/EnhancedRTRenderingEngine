@@ -26,6 +26,7 @@ public:
 
     DirectX::XMMATRIX GetDirectionalLightViewProjection();
 
+    std::vector<PointLight>& GetPointLights() { return pointLights; }
     std::vector<PointLightParameters> GetPointLightParams();
 
     DirectX::XMVECTOR GetEyePoint();
