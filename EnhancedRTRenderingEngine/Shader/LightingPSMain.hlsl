@@ -10,6 +10,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 diffuse = 0.0f;
     float3 specular = 0.0f;
 
+    // direct lighting
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numDirectionalLights) break;

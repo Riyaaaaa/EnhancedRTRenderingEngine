@@ -16,11 +16,15 @@ D3D11Texture::D3D11Texture() :
 
 bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const Texture2D& tex, TextureParam param)
 {
+    return Initialize(device, std::vector<Texture2D>{tex}, param);
+}
+
+bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Texture2D>& textures, TextureParam param) {
     D3D11_TEXTURE2D_DESC desc;
-    desc.Width = tex.Width();
-    desc.Height = tex.Height();
+    desc.Width = textures[0].Width();
+    desc.Height = textures[0].Height();
     desc.MipLevels = 1;
-    desc.ArraySize = 1;
+    desc.ArraySize = textures.size();
     desc.Format = CastToD3D11Format<DXGI_FORMAT>(param.format);
     desc.SampleDesc.Count = 1;
     desc.SampleDesc.Quality = 0;
@@ -29,12 +33,15 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const Texture2D& tex,
     desc.CPUAccessFlags = 0;
     desc.MiscFlags = 0;
 
-    D3D11_SUBRESOURCE_DATA initData;
-    initData.pSysMem = tex.get();
-    initData.SysMemPitch = tex.Stride();
-    //initData.SysMemSlicePitch = tex.Size();
+    std::vector<D3D11_SUBRESOURCE_DATA> initData(textures.size());
 
-    auto hr = device->CreateTexture2D(&desc, &initData, mTexture.ToCreator());
+    for (std::size_t i = 0; i < textures.size(); i++) {
+        initData[i].pSysMem = textures[i].get();
+        initData[i].SysMemPitch = textures[i].Stride();
+        //initData.SysMemSlicePitch = tex.Size();
+    }
+
+    auto hr = device->CreateTexture2D(&desc, &initData[0], mTexture.ToCreator());
     if (FAILED(hr)) {
         return false;
     }
@@ -42,7 +49,8 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const Texture2D& tex,
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
     SRVDesc.Format = GetShaderResourceFormat(desc.Format);
     SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    SRVDesc.Texture2D.MipLevels = 1;
+    SRVDesc.Texture2DArray.MipLevels = 1;
+    SRVDesc.Texture2DArray.ArraySize = textures.size();
 
     hr = device->CreateShaderResourceView(mTexture.Get(), &SRVDesc, mView.ToCreator());
     if (FAILED(hr))

@@ -18,6 +18,7 @@ public:
         return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
     }
     bool Initialize(ComPtr<ID3D11Device> device, const Texture2D& tex, TextureParam param);
+    bool Initialize(ComPtr<ID3D11Device> device, const std::vector<Texture2D>& textures, TextureParam param);
     bool Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2D> tex);
 
     const ComPtr<ID3D11Texture2D>& GetTexture() const
