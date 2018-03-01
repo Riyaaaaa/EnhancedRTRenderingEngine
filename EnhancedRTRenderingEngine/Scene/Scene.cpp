@@ -4,6 +4,8 @@
 #include "Common.h"
 
 #include "Utility/SceneUtils.h"
+#include "Utility/TextureUtils.h"
+
 #include "Mesh/Primitive/Primitives.h"
 #include "Mesh/SimpleModel/Box.h"
 #include "Mesh/Mesh3DModel.h"
@@ -36,7 +38,10 @@ Scene::Scene() {
     //viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
     //viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
 
-    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "test3.png", 0.2f, 0.5f});
+    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "", 0.2f, 0.5f},
+        TextureUtils::CreateColorPalletTexture(64, 64));
+    std::vector<Material> materials;
+    materials.emplace_back(std::move(material));
 
     //auto model = ResourceLoader::LoadPMDModel("nolicensed2");
     //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
@@ -49,7 +54,7 @@ Scene::Scene() {
     viewObjects[1].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects[1].SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
     viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
-    viewObjects[1].SetMaterial(std::vector<Material>{material});
+    viewObjects[1].SetMaterial(std::move(materials));
 
     directionalLights.push_back(DirectionalLight(Vector3D{0.0, -1.0f, 0.4f}));
 

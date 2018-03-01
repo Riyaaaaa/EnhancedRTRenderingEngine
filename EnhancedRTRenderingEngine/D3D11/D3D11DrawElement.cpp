@@ -138,7 +138,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         vShader = ResourceLoader::LoadShader("DepthVertexShader");
     }
     else {
-        auto material = drawMesh->GetMaterials()[drawIndex];
+        auto& material = drawMesh->GetMaterials()[drawIndex];
         vShader = material.vShader;
         pShader = material.pShader;
         materialParams.metallic = material.metallic;

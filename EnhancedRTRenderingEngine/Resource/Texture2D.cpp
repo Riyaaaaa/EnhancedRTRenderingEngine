@@ -17,4 +17,5 @@ Texture2D::Texture2D(std::size_t width, std::size_t height, std::size_t channels
     width(width),
     height(height),
     channels(channels),
+    stride(width * channels),
     RawBinary(ptr, size) {}

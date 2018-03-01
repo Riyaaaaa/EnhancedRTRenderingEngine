@@ -15,8 +15,8 @@ public:
 
     std::size_t Width() const { return width; }
     std::size_t Height() const { return height; }
-    std::size_t Channels() const { return stride; }
-    std::size_t Stride() const { return channels; }
+    std::size_t Channels() const { return channels; }
+    std::size_t Stride() const { return stride; }
 
     void SetTextureName(std::string name) { textureName = name; }
 

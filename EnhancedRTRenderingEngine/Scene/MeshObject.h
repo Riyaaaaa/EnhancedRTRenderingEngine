@@ -17,7 +17,10 @@ public:
     const std::shared_ptr<MeshBase<VertType>>& GetMesh() const { return _mesh; }
     const RenderingContext& GetContext() const { return _context;  }
 
-    void SetMaterial(const std::vector<Material>& materials) { _materials = materials; }
+    void SetMaterial(std::vector<Material>&& materials) {
+        _materials.swap(materials);
+    }
+
     const std::vector<Material>& GetMaterials() const { return _materials; }
 
 protected:
