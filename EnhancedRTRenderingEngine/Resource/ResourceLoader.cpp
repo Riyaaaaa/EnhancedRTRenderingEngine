@@ -289,7 +289,10 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
         for (unsigned int y = 0; y < h; y++) {
             auto row = rows + y * w * 3;
             for (unsigned int x = 0; x < w; x++) {
-                memcpy(buf + y * w * 4 + (x * 4), row + x * 3, sizeof(char) * 3);
+                // BGR -> RGBA
+                memcpy(buf + y * w * 4 + (x * 4), row + x * 3 + 2, sizeof(char));
+                memcpy(buf + y * w * 4 + (x * 4) + 1, row + x * 3 + 1, sizeof(char));
+                memcpy(buf + y * w * 4 + (x * 4) + 2, row + x * 3, sizeof(char));
                 *(buf + y * w * 4 + (x * 4) + 3) = 0xff;
             }
         }
