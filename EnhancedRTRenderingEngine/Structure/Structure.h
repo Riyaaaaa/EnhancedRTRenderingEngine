@@ -166,6 +166,8 @@ struct ConstantBuffer
     DirectX::XMMATRIX View;
     DirectX::XMMATRIX Projection;
     DirectX::XMMATRIX Shadow;
+    DirectX::XMMATRIX PointLightView[LIGHT_MAX][6];
+    DirectX::XMMATRIX PointLightProjection[LIGHT_MAX];
     Vector4D DirectionalLight[LIGHT_MAX];
     PointLightParameters PointLight[LIGHT_MAX];
     float numDirecitonalLights;

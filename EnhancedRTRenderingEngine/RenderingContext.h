@@ -25,6 +25,7 @@ std::vector<VertexLayout> CreateVertexLayout();
 struct TextureParam {
     TextureFormat format;
     unsigned int usage;
+    TextureType type = TextureType::Texture2D;
     // ...add as neecesary
 };
 

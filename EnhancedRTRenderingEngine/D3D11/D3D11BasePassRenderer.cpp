@@ -77,6 +77,9 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
         if (i >= hConstantBuffer.numPointLights) {
             break;
         }
+        auto& pLight = scene->GetPointLights()[i];
+        hConstantBuffer.PointLightProjection[i] = pLight.GetShadowPerspectiveMatrix();
+        memcpy(hConstantBuffer.PointLightView[i], pLight.GetViewMatrixes(), sizeof(XMMATRIX) * 6);
         hConstantBuffer.PointLight[i] = scene->GetPointLightParams()[i];
     }
     
@@ -85,10 +88,11 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
     // todo: support multi lights
-    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSRV().Ref());
+    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
     _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
-    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSRV().Ref());
-    _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    
+    _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
+    _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
 
 
     for (auto && object : scene->GetViewObjects()) {

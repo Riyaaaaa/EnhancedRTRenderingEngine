@@ -14,7 +14,7 @@ struct pixcelIn
 };
 
 Texture2D DirectionalShadowMap : register(t0);
-Texture2D PointShadowMap : register(t1);
+TextureCube PointShadowMap : register(t1);
 SamplerState ShadowSampler : register(s0);
 
 struct PointLightParam
@@ -34,6 +34,8 @@ cbuffer ConstantBuffer : register(b0)
     matrix View;
     matrix Projection;
     matrix Shadow;
+    matrix PointLightView[LIGHT_MAX][6];
+    matrix PointLightProjection[LIGHT_MAX];
     float4 DirectionalLights[LIGHT_MAX];
     PointLightParam PLightParams[LIGHT_MAX];
     float numDirectionalLights;

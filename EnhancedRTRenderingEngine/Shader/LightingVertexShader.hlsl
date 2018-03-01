@@ -1,4 +1,6 @@
 
+#define LIGHT_MAX 4
+
 struct vertexIn
 {
     float3 pos : POSITION0;
@@ -28,8 +30,10 @@ cbuffer ConstantBuffer : register(b0)
     matrix View;
     matrix Projection;
     matrix Shadow;
-    float4 DirectionalLight[4];
-    PointLightParam PLightParam[4];
+    matrix PointLightView[LIGHT_MAX][6];
+    matrix PointLightProjection[LIGHT_MAX];
+    float4 DirectionalLights[LIGHT_MAX];
+    PointLightParam PLightParams[LIGHT_MAX];
     float numDirectionalLights;
     float numPointLights;
     float4 Eye;

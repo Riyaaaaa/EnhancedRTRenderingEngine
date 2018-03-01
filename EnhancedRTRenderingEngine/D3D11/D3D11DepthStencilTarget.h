@@ -13,6 +13,8 @@ public:
     ComPtr<ID3D11DepthStencilView> GetDepthStencilView() const { return _depthStencilView; }
     ComPtr<ID3D11ShaderResourceView> GetSRV() const { return _texture.GetSubResourceView(); }
     ComPtr<ID3D11SamplerState> GetSampler() const { return _texture.GetSampler(); }
+    const D3D11Texture& GetTexture() const { return _texture; }
+
 
 protected:
     ComPtr<ID3D11DepthStencilView> _depthStencilView;

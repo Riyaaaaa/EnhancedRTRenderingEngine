@@ -9,7 +9,7 @@ class PointLight
 public:
     PointLight();
 
-    void SetPoint(const Vector3D& pos) { _point = pos; }
+    void SetPoint(const Vector3D& pos);
     const Vector3D& GetPoint() { return _point; }
 
     void SetAttenuation(const Vector3D& att) { _attenuation = att; }
@@ -17,8 +17,9 @@ public:
 
     Texture2D GetShadowTexture(CUBE_DIRECTION dir) { return _shodowTextures[dir](); }
 
+    DirectX::XMMATRIX* GetViewMatrixes();
     DirectX::XMMATRIX GetViewMatrix(CUBE_DIRECTION dir);
-    DirectX::XMMATRIX GetShadowPerspectiveMatrix(CUBE_DIRECTION dir);
+    DirectX::XMMATRIX GetShadowPerspectiveMatrix();
 
     bool Dirty() { return _isDirtyShadow; }
     bool SetDirty(bool dirty) { return _isDirtyShadow = dirty; }
@@ -27,7 +28,9 @@ protected:
     Vector3D _point;
     Vector3D _attenuation;
 
+    bool _isDirtyMatrix;
     bool _isDirtyShadow;
+    DirectX::XMMATRIX _viewMatrixes[6];
     CubeTexture _shodowTextures;
 };
 

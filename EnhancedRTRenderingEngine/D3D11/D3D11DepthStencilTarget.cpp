@@ -27,3 +27,4 @@ bool D3D11DepthStencilTarget::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3
 
     return true;
 }
+

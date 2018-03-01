@@ -48,9 +48,22 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Tex
 
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
     SRVDesc.Format = GetShaderResourceFormat(desc.Format);
-    SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    SRVDesc.Texture2DArray.MipLevels = 1;
-    SRVDesc.Texture2DArray.ArraySize = textures.size();
+
+    switch (param.type) {
+    case TextureType::Texture2D:
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        SRVDesc.Texture2D.MipLevels = 1;
+        break;
+    case TextureType::Texture2DArray:
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+        SRVDesc.Texture2DArray.MipLevels = 1;
+        SRVDesc.Texture2DArray.ArraySize = textures.size();
+        break;
+    case TextureType::TextureCube:
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+        SRVDesc.TextureCube.MipLevels = 1;
+        break;
+    }
 
     hr = device->CreateShaderResourceView(mTexture.Get(), &SRVDesc, mView.ToCreator());
     if (FAILED(hr))

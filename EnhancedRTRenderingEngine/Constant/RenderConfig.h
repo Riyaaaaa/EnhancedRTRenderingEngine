@@ -33,3 +33,9 @@ enum TextureUsage : unsigned int {
     STENCIL = 1,
     SHADER_RESOURCE = 1 << 2
 };
+
+enum class TextureType {
+    Texture2D,
+    Texture2DArray,
+    TextureCube
+};
