@@ -9,6 +9,7 @@
 #include "D3DX11RenderView.h"
 #include "../Scene/Scene.h"
 
+#include "D3D11Scene.h"
 #include "D3D11DepthRenderer.h"
 #include "D3D11BasePassRenderer.h"
 
@@ -26,6 +27,7 @@ public:
 protected:
     std::shared_ptr<D3DX11RenderView> mView;
 
+    D3D11Scene _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;
 };

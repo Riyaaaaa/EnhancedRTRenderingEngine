@@ -19,3 +19,11 @@ Texture2D::Texture2D(std::size_t width, std::size_t height, std::size_t channels
     channels(channels),
     stride(width * channels),
     RawBinary(ptr, size) {}
+
+Texture2D::Texture2D(std::size_t width, std::size_t height, std::size_t channels) : width(width),
+height(height),
+channels(channels),
+stride(width * channels) {
+    _ptr = new unsigned char[height * width * channels];
+    _size = height * width * channels;
+}

@@ -2,7 +2,8 @@
 #include "PointLight.h"
 
 
-PointLight::PointLight()
+PointLight::PointLight() :
+    _isDirtyShadow(true)
 {
 }
 

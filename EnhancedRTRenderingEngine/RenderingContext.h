@@ -22,4 +22,10 @@ struct RenderingContext
 template<class VertType>
 std::vector<VertexLayout> CreateVertexLayout();
 
+struct TextureParam {
+    TextureFormat format;
+    unsigned int usage;
+    // ...add as neecesary
+};
+
 

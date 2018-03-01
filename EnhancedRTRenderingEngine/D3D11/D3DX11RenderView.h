@@ -34,8 +34,6 @@ public:
     ComPtr<ID3D11RasterizerState> mRasterizerState;
     ComPtr<ID3D11RasterizerState> mDoubleSidedRasterizerState;
 
-    D3D11DepthStencilTarget hpShadowMapTarget;
-
 private:
     MSAAQualityType _type;
     Size _renderSize;

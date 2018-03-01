@@ -36,7 +36,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
     hDXGISwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     hDXGISwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     hDXGISwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-    hDXGISwapChainDesc.SampleDesc = CastToD3D11Formart<DXGI_SAMPLE_DESC>(_type);
+    hDXGISwapChainDesc.SampleDesc = CastToD3D11Format<DXGI_SAMPLE_DESC>(_type);
     hDXGISwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     hDXGISwapChainDesc.BufferCount = 1;
     hDXGISwapChainDesc.OutputWindow = hWnd;
@@ -97,8 +97,6 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
 
     hpDeviceContext->RSSetState(mRasterizerState.Get());
     //hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());
-    
-    hpShadowMapTarget.Initialize(device, hpDeviceContext);
 
     return true;
 }

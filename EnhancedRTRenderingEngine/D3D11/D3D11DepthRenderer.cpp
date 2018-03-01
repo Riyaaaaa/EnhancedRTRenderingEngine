@@ -14,10 +14,18 @@ bool D3D11DepthRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& vie
     return true;
 }
 
-void D3D11DepthRenderer::render(Scene* scene)
+void D3D11DepthRenderer::render(D3D11Scene* scene)
 {
-    _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, _view->hpShadowMapTarget.GetDepthStencilView().Get());
-    _view->hpDeviceContext->ClearDepthStencilView(_view->hpShadowMapTarget.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    RenderDirectionalLightShadowMap(scene);
+}
+
+void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11Scene* _scene) {
+    auto* scene = _scene->GetSourceScene();
+    auto& target = _scene->GetDirectionalShadow(0);
+    target.Initialize(_view->hpDevice, _view->hpDeviceContext, scene->GetDirectionalLights()[0].GetShadowTexture());
+
+    _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
+    _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     D3D11_BUFFER_DESC bufferDesc;
     ID3D11Buffer* hpConstantBuffer = NULL;
@@ -46,4 +54,8 @@ void D3D11DepthRenderer::render(Scene* scene)
     }
 
     SAFE_RELEASE(hpConstantBuffer);
+}
+
+void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* scene) {
+
 }

@@ -21,6 +21,9 @@ void D3D11ForwardRenderer::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11
 }
 
 void D3D11ForwardRenderer::render(Scene* scene) {
-    depthRenderer.render(scene);
-    bassPassRenderer.render(scene);
+
+    _scene.Refresh(scene);
+
+    depthRenderer.render(&_scene);
+    bassPassRenderer.render(&_scene);
 }

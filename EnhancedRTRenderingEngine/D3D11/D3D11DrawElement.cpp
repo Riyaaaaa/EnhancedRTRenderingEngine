@@ -16,11 +16,11 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
 
     UINT memoryOffset = 0;
     for (auto&& layout : context.layouts) {
-        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ layout.name, 0, CastToD3D11Formart<DXGI_FORMAT>(layout.vProperty), 0, memoryOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ layout.name, 0, CastToD3D11Format<DXGI_FORMAT>(layout.vProperty), 0, memoryOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 });
         memoryOffset += GetMemoryBlockSize(layout.vProperty);
     }
 
-    primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
+    primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
 
     if (!CreateBuffer(device, element)) {
         _state = RenderingState::FAILED;
@@ -29,11 +29,15 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
 
     drawMesh = element;
 
+    TextureParam param;
+    param.format = TextureFormat::RGBA8_UNORM;
+    param.usage = TextureUsage::SHADER_RESOURCE;
+
     textures.resize(drawMesh->GetMesh()->GetMaterialNum());
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         if (material.texture.HasResource() && material.texture().isValid()) {
-            textures[i].Initialize(device, material.texture);
+            textures[i].Initialize(device, material.texture(), param);
         }
     }
 
@@ -60,11 +64,11 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
 
     UINT memoryOffset = 0;
     for (auto&& layout : context.layouts) {
-        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ layout.name, 0, CastToD3D11Formart<DXGI_FORMAT>(layout.vProperty), 0, memoryOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ layout.name, 0, CastToD3D11Format<DXGI_FORMAT>(layout.vProperty), 0, memoryOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 });
         memoryOffset += GetMemoryBlockSize(layout.vProperty);
     }
 
-    primitiveTopology = CastToD3D11Formart<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
+    primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
 
     if (!CreateBuffer(device, element)) {
         _state = RenderingState::FAILED;

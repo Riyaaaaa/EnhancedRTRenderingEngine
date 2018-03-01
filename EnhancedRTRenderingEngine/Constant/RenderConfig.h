@@ -23,3 +23,13 @@ enum class RenderingState {
 enum MSAAQualityType {
     RAW_QUALITY
 };
+
+enum class TextureFormat {
+    RGBA8_UNORM,
+    R16_TYPELESS
+};
+
+enum TextureUsage : unsigned int {
+    STENCIL = 1,
+    SHADER_RESOURCE = 1 << 2
+};
