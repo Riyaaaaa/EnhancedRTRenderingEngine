@@ -33,7 +33,8 @@ cbuffer ConstantBuffer : register(b0)
 {
     matrix View;
     matrix Projection;
-    matrix Shadow;
+    matrix DirectionalLightView[LIGHT_MAX];
+    matrix DirectionalLightProjection[LIGHT_MAX];
     matrix PointLightView[LIGHT_MAX][6];
     matrix PointLightProjection[LIGHT_MAX];
     float4 DirectionalLights[LIGHT_MAX];
@@ -75,7 +76,7 @@ void Shadowing(float4 shadowCoord, inout float3 col) {
     float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
     float depth = DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x;
 
-    if (shadowCoord.z * w > depth + 0.0005f) {
+    if (shadowCoord.z * w > depth + 0.00005f) {
         col = col * 0.5f;
     }
 }

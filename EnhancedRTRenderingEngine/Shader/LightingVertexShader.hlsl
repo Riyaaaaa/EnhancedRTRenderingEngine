@@ -29,7 +29,8 @@ cbuffer ConstantBuffer : register(b0)
 {
     matrix View;
     matrix Projection;
-    matrix Shadow;
+    matrix DirectionalLightView[LIGHT_MAX];
+    matrix DirectionalLightProjection[LIGHT_MAX];
     matrix PointLightView[LIGHT_MAX][6];
     matrix PointLightProjection[LIGHT_MAX];
     float4 DirectionalLights[LIGHT_MAX];
@@ -62,7 +63,7 @@ vertexOut main(vertexIn IN)
     OUT.norw = float4(nor, 1.0f);
     OUT.col = IN.col;
     OUT.tex = IN.tex;
-    OUT.shadowCoord = mul(mul(OUT.posw, Shadow), Projection);
+    OUT.shadowCoord = mul(mul(OUT.posw, DirectionalLightView[0]), DirectionalLightProjection[0]);
 
     return OUT;
 }

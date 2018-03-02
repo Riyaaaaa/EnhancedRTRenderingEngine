@@ -14,6 +14,9 @@ public:
 
     const ResourceHandle<Texture2D>& GetShadowTexture() { return _shadowMap; }
 
+    DirectX::XMMATRIX GetViewProjection();
+    DirectX::XMMATRIX GetPerspectiveProjection();
+
     Vector3D _direction;
 
 protected:

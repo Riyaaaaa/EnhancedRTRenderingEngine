@@ -60,7 +60,6 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
     ConstantBuffer hConstantBuffer;
     hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
-    hConstantBuffer.Shadow = XMMatrixTranspose(scene->GetDirectionalLightViewProjection());
     hConstantBuffer.Eye = scene->GetEyePoint();
 
     // Only support one light.
@@ -69,7 +68,10 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
         if (i >= hConstantBuffer.numDirecitonalLights) {
             break;
         }
-        hConstantBuffer.DirectionalLight[i] = scene->GetDirectionalLights()[i].GetDirection();
+        auto& dLight = scene->GetDirectionalLights()[i];
+        hConstantBuffer.DirectionalLightView[i] = XMMatrixTranspose(dLight.GetViewProjection());
+        hConstantBuffer.DirectionalLightProjection[i] = XMMatrixTranspose(dLight.GetPerspectiveProjection());
+        hConstantBuffer.DirectionalLight[i] = dLight.GetDirection();
     }
 
     hConstantBuffer.numPointLights = scene->GetPointLightParams().size();

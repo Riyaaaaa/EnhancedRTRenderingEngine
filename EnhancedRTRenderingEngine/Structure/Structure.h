@@ -170,7 +170,8 @@ struct ConstantBuffer
 {
     DirectX::XMMATRIX View;
     DirectX::XMMATRIX Projection;
-    DirectX::XMMATRIX Shadow;
+    DirectX::XMMATRIX DirectionalLightView[LIGHT_MAX];
+    DirectX::XMMATRIX DirectionalLightProjection[LIGHT_MAX];
     DirectX::XMMATRIX PointLightView[LIGHT_MAX][6];
     DirectX::XMMATRIX PointLightProjection[LIGHT_MAX];
     Vector4D DirectionalLight[LIGHT_MAX];

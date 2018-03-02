@@ -56,7 +56,7 @@ Scene::Scene() {
     viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
     viewObjects[1].SetMaterial(std::move(materials));
 
-    directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.4f});
+    directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.01f});
 
     pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
@@ -77,24 +77,6 @@ XMMATRIX Scene::GetWorldProjection() {
 
 DirectX::XMMATRIX Scene::GetViewProjection() {
     return cameraObjects[mainCameraIdx].GetViewProjection();
-}
-
-DirectX::XMMATRIX Scene::GetDirectionalLightViewProjection() {
-    auto& dLights = GetDirectionalLights();
-    if (dLights.empty()) {
-        return DirectX::XMMATRIX();
-    }
-    auto lDir = dLights[0].GetDirection();
-    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, -4.0f, 0.0f);
-    DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
-    DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.4f, 1.0f, 0.0f);
-    /*static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(
-        0.5f, 0.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.0f, 1.0f);*/
-
-    return XMMatrixLookToLH(pos, dir, hUp);
 }
 
 std::vector<PointLightParameters> Scene::GetPointLightParams() {

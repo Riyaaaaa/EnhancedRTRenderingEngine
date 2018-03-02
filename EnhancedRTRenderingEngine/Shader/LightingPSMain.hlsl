@@ -27,12 +27,12 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 col = saturate(diffuse + specular);
     Shadowing(IN.shadowCoord, col);
 
-    float4 pointDir = IN.posw - PLightParams[0].pos;
+    /*float4 pointDir = IN.posw - PLightParams[0].pos;
     float depth = PointShadowMap.Sample(ShadowSampler, pointDir.xyz).x;
 
     if (pointDir.z > depth + 0.0005f) {
         col = col * 0.5f;
-    }
+    }*/
 
     return float4(col, 1.0f);
 }

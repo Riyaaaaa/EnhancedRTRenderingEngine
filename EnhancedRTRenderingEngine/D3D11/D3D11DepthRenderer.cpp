@@ -44,8 +44,10 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11Scene* _scene) {
 
     TransformBufferParam hConstantBuffer;
 
-    hConstantBuffer.View = XMMatrixTranspose(scene->GetDirectionalLightViewProjection());
-    hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
+    auto& dLight = scene->GetDirectionalLights()[0];
+
+    hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
+    hConstantBuffer.Projection = XMMatrixTranspose(dLight.GetPerspectiveProjection());
 
     _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
     _view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
