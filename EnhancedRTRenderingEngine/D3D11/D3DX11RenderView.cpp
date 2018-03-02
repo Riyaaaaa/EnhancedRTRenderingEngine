@@ -4,6 +4,8 @@
 #include "D3D11FormatUtils.h"
 #include "../Common.h"
 
+#include "WindowManager.h"
+
 #pragma comment(lib, "d3d11.lib")
 
 
@@ -25,7 +27,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
         return false;
     }
 
-    _renderSize = Size{ 1980 , 1080 };
+    _renderSize = WindowManager::getInstance()->GetWindowSize();
     _type = MSAAQualityType::RAW_QUALITY;
 
     DXGI_SWAP_CHAIN_DESC hDXGISwapChainDesc;

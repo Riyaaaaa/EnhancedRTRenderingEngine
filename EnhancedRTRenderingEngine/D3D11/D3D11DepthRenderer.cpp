@@ -24,7 +24,8 @@ void D3D11DepthRenderer::render(D3D11Scene* scene)
 void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11Scene* _scene) {
     auto* scene = _scene->GetSourceScene();
     D3D11DepthStencilTarget target;
-    target.Initialize(_view->hpDevice, _view->hpDeviceContext, scene->GetDirectionalLights()[0].GetShadowTexture());
+    Texture2D shadowTexture = scene->GetDirectionalLights()[0].GetShadowTexture()();
+    target.Initialize(_view->hpDevice, _view->hpDeviceContext, shadowTexture);
 
     _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
     _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -82,7 +83,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
     
     D3D11DepthStencilTarget target;
     for (int i = 0; i < 6; i++) {
-        target.Initialize(_view->hpDevice, _view->hpDeviceContext, pLight.GetShadowTexture(static_cast<CUBE_DIRECTION>(i)));
+        target.Initialize(_view->hpDevice, _view->hpDeviceContext, pLight.GetShadowTexture(static_cast<CUBE_DIRECTION>(i))());
 
         _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
         _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -102,20 +103,19 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
         }
     }
     
-    D3D11Texture shadowCubeTex;
     TextureParam param;
     param.format = TextureFormat::R16_TYPELESS;
-    param.usage = TextureUsage::STENCIL;
+    param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
     param.type = TextureType::TextureCube;
-    shadowCubeTex.Initialize(_view->hpDevice, std::vector<Texture2D>{
-            pLight.GetShadowTexture(PX),
-            pLight.GetShadowTexture(NX),
-            pLight.GetShadowTexture(PY),
-            pLight.GetShadowTexture(NY),
-            pLight.GetShadowTexture(PZ),
-            pLight.GetShadowTexture(NZ)
-        }, param);
-    _scene->GetPointShadow(0) = shadowCubeTex;
+
+    _scene->GetPointShadow(0).Initialize(_view->hpDevice, std::vector<Texture2D>{
+        pLight.GetShadowTexture(PX)(),
+        pLight.GetShadowTexture(NX)(),
+        pLight.GetShadowTexture(PY)(),
+        pLight.GetShadowTexture(NY)(),
+        pLight.GetShadowTexture(PZ)(),
+        pLight.GetShadowTexture(NZ)()
+       }, param);
 
     pLight.SetDirty(false);
 

@@ -130,6 +130,11 @@ struct SimpleVertex {
     float col[4];    //r-g-b-a
 };
 
+struct TexVertex {
+    float pos[3];    //x-y-z
+    float tex[2];    //r-g-b-a
+};
+
 struct Vertex3D {
     float pos[3];    //x-y-z
     float col[4];    //r-g-b-a

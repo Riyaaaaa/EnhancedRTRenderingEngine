@@ -325,7 +325,7 @@ public:
     }
 
     // ポインタ取得
-    T* Get(){return *m_ppInterface;}
+    T* Get() const {return *m_ppInterface;}
 
     // ダブルポインタを取得
     T** Ref() const {return m_ppInterface;}

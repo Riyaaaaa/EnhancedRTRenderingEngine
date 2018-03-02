@@ -17,6 +17,7 @@ enum class RenderingState {
     NONE,
     FAILED,
     WRITE_DEPTH,
+    WRITE_HUD,
     RENDER_READIED
 };
 
@@ -29,7 +30,7 @@ enum class TextureFormat {
     R16_TYPELESS
 };
 
-enum TextureUsage : unsigned int {
+enum TextureBindTarget : unsigned int {
     STENCIL = 1,
     SHADER_RESOURCE = 1 << 2
 };
@@ -38,4 +39,18 @@ enum class TextureType {
     Texture2D,
     Texture2DArray,
     TextureCube
+};
+
+enum class TextureUsage {
+    Default,
+    Immutable,
+    Dynamic,
+    Staging
+};
+
+enum class ResourceAccessFlag {
+    None,
+    R,
+    W,
+    RW
 };

@@ -33,6 +33,6 @@ float4 ps_main(pixcelIn IN) : SV_Target
     if (pointDir.z > depth + 0.0005f) {
         col = col * 0.5f;
     }
-    return float4(depth / 100, 0.0f, 0.0f, 1.0f);
+
     return float4(col, 1.0f);
 }

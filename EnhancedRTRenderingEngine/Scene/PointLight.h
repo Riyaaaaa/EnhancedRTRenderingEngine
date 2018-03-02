@@ -15,7 +15,7 @@ public:
     void SetAttenuation(const Vector3D& att) { _attenuation = att; }
     const Vector3D& GetAttenuation() { return _attenuation; }
 
-    Texture2D GetShadowTexture(CUBE_DIRECTION dir) { return _shodowTextures[dir](); }
+    ResourceHandle<Texture2D> GetShadowTexture(CUBE_DIRECTION dir) { return _shodowTextures[dir]; }
 
     DirectX::XMMATRIX* GetViewMatrixes();
     DirectX::XMMATRIX GetViewMatrix(CUBE_DIRECTION dir);

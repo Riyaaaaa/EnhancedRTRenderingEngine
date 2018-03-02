@@ -13,7 +13,7 @@ bool D3D11DepthStencilTarget::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3
     
     TextureParam param;
     param.format = TextureFormat::R16_TYPELESS;
-    param.usage = TextureUsage::SHADER_RESOURCE | TextureUsage::STENCIL;
+    param.bindFlag = TextureBindTarget::SHADER_RESOURCE | TextureBindTarget::STENCIL;
 
     _texture.Initialize(device, tex, param);
 

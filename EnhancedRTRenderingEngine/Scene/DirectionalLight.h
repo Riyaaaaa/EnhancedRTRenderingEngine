@@ -12,7 +12,7 @@ public:
     void SetDirection(const Vector3D& dir) { _direction = dir; }
     const Vector3D& GetDirection() { return _direction; }
 
-    const Texture2D& GetShadowTexture() { return _shadowMap(); }
+    const ResourceHandle<Texture2D>& GetShadowTexture() { return _shadowMap; }
 
     Vector3D _direction;
 

@@ -28,10 +28,16 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Tex
     desc.Format = CastToD3D11Format<DXGI_FORMAT>(param.format);
     desc.SampleDesc.Count = 1;
     desc.SampleDesc.Quality = 0;
-    desc.Usage = D3D11_USAGE_DEFAULT;
-    desc.BindFlags = CastToD3D11Format<UINT>(param.usage);
-    desc.CPUAccessFlags = 0;
+    desc.Usage = CastToD3D11Format<D3D11_USAGE>(param.usage);
+    desc.BindFlags = CastToD3D11Format<UINT>(param.bindFlag);
+    desc.CPUAccessFlags = CastToD3D11Format<UINT>(param.accessFlag);
     desc.MiscFlags = 0;
+
+    switch (param.type) {
+    case TextureType::TextureCube:
+        desc.MiscFlags |= D3D11_RESOURCE_MISC_FLAG::D3D11_RESOURCE_MISC_TEXTURECUBE;
+        break;
+    }
 
     std::vector<D3D11_SUBRESOURCE_DATA> initData(textures.size());
 
@@ -61,6 +67,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Tex
         break;
     case TextureType::TextureCube:
         SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+        SRVDesc.TextureCube.MostDetailedMip = 0;
         SRVDesc.TextureCube.MipLevels = 1;
         break;
     }

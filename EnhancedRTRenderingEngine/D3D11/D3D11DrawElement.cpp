@@ -31,7 +31,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
 
     TextureParam param;
     param.format = TextureFormat::RGBA8_UNORM;
-    param.usage = TextureUsage::SHADER_RESOURCE;
+    param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
     textures.resize(drawMesh->GetMesh()->GetMaterialNum());
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
@@ -76,7 +76,41 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     }
 
     drawMesh = element;
+
     _state = RenderingState::WRITE_DEPTH;
+}
+
+template<class VertType>
+void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::HUDRender) {
+    auto& context = element->GetContext();
+    _state = RenderingState::NONE;
+
+    UINT memoryOffset = 0;
+    for (auto&& layout : context.layouts) {
+        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ layout.name, 0, CastToD3D11Format<DXGI_FORMAT>(layout.vProperty), 0, memoryOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 });
+        memoryOffset += GetMemoryBlockSize(layout.vProperty);
+    }
+
+    primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
+
+    if (!CreateBuffer(device, element)) {
+        _state = RenderingState::FAILED;
+        return;
+    }
+
+    drawMesh = element;
+    TextureParam param;
+    param.format = TextureFormat::RGBA8_UNORM;
+    param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
+
+    textures.resize(drawMesh->GetMesh()->GetMaterialNum());
+    for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
+        auto& material = drawMesh->GetMaterials()[i];
+        if (material.texture.HasResource() && material.texture().isValid()) {
+            textures[i].Initialize(device, material.texture(), param);
+        }
+    }
+    _state = RenderingState::WRITE_HUD;
 }
 
 template<class VertType>
@@ -166,11 +200,20 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
             return;
         }
         view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
-        view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
-        view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
-        if (textures[drawIndex].IsAvalable()) {
-            view->hpDeviceContext->PSSetShaderResources(10, 1, textures[drawIndex].GetSubResourceView().Ref());
-            view->hpDeviceContext->PSSetSamplers(1, 1, textures[drawIndex].GetSampler().Ref());
+
+        if (_state == RenderingState::WRITE_HUD) {
+            if (textures[drawIndex].IsAvalable()) {
+                view->hpDeviceContext->PSSetShaderResources(0, 1, textures[drawIndex].GetSubResourceView().Ref());
+                view->hpDeviceContext->PSSetSamplers(0, 1, textures[drawIndex].GetSampler().Ref());
+            }
+        }
+        else {
+            view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
+            view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
+            if (textures[drawIndex].IsAvalable()) {
+                view->hpDeviceContext->PSSetShaderResources(10, 1, textures[drawIndex].GetSubResourceView().Ref());
+                view->hpDeviceContext->PSSetSamplers(1, 1, textures[drawIndex].GetSampler().Ref());
+            }
         }
     }
     else {
@@ -218,3 +261,4 @@ void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& v
 template D3D11DrawElement<Vertex3D>;
 template D3D11DrawElement<SimpleVertex>;
 template D3D11DrawElement<PMDVertex>;
+template D3D11DrawElement<TexVertex>;

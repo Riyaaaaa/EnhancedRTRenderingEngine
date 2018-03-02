@@ -57,13 +57,50 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
 }
 
 template<>
+D3D11_USAGE CastToD3D11Format<D3D11_USAGE, TextureUsage>(TextureUsage prop) {
+    D3D11_USAGE usage;
+
+    switch (prop) {
+    case TextureUsage::Default:
+        return D3D11_USAGE::D3D11_USAGE_DEFAULT;
+    case TextureUsage::Immutable:
+        return D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
+    case TextureUsage::Dynamic:
+        return D3D11_USAGE::D3D11_USAGE_DYNAMIC;
+    case TextureUsage::Staging:
+        return D3D11_USAGE::D3D11_USAGE_STAGING;
+    }
+
+    return D3D11_USAGE::D3D11_USAGE_DEFAULT;
+}
+
+template<>
+unsigned int CastToD3D11Format<unsigned int, ResourceAccessFlag>(ResourceAccessFlag prop) {
+    UINT flag = 0;
+
+    switch (prop) {
+    case ResourceAccessFlag::R:
+        flag |= D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ;
+        break;
+    case ResourceAccessFlag::W:
+        flag |= D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
+        break;
+    case ResourceAccessFlag::RW:
+        flag |= D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ | D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE;
+        break;
+    }
+
+    return flag;
+}
+
+template<>
 unsigned int CastToD3D11Format<unsigned int, unsigned int>(unsigned int prop) {
     UINT flag = 0;
-    if (prop & TextureUsage::SHADER_RESOURCE) {
+    if (prop & TextureBindTarget::SHADER_RESOURCE) {
         flag |= D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
     }
 
-    if (prop & TextureUsage::STENCIL) {
+    if (prop & TextureBindTarget::STENCIL) {
         flag |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
     }
 

@@ -85,7 +85,7 @@ DirectX::XMMATRIX Scene::GetDirectionalLightViewProjection() {
         return DirectX::XMMATRIX();
     }
     auto lDir = dLights[0].GetDirection();
-    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, -20.0f, 0.0f);
+    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, -4.0f, 0.0f);
     DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
     DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.4f, 1.0f, 0.0f);
     /*static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(

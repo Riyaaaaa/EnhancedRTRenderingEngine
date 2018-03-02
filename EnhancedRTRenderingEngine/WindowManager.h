@@ -10,8 +10,12 @@
 class WindowManager : public libspiral::SingletonBase<WindowManager>
 {
 public:
-    void RegisterWindow(HWND hWnd) { _hWnd = hWnd; }
+    void RegisterWindow(HWND hWnd, Size size) { 
+        _hWnd = hWnd; 
+        _windowSize = size;
+    }
     HWND GetActiveWindow() { return _hWnd;  }
+    Size GetWindowSize() { return _windowSize; }
 
     void RegisterPressListener(std::string key, const std::function<void(InputKey key)>& listener);
     void RegisterReleaseListener(std::string key, const std::function<void(InputKey key)>& listener);
@@ -22,6 +26,7 @@ public:
     void DispathDragEvent(InputKey key, Vector2D Delta);
 protected:
     HWND _hWnd;
+    Size _windowSize;
     Vector2D oldClickedPos;
     InputKey handleKey;
 

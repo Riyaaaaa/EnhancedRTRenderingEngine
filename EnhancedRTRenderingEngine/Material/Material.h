@@ -13,6 +13,7 @@ public:
 
     explicit Material(const MaterialParameters& param);
     Material(const MaterialParameters& param, const Texture2D& texture);
+    Material(const MaterialParameters& param, const ResourceHandle<Texture2D>& texture);
 
     Material& operator=(Material&& other) noexcept {
         if (this != &other) {
