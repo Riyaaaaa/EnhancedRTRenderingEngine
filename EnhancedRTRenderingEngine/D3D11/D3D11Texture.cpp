@@ -106,18 +106,44 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Tex
 bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2D> tex) {
     mTexture = tex;
 
+    D3D11_TEXTURE2D_DESC texDesc;
+    tex->GetDesc(&texDesc);
+
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
-    SRVDesc.Format = DXGI_FORMAT_R16_UNORM;
-    SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-    SRVDesc.Texture2D.MipLevels = 1;
+    SRVDesc.Format = GetShaderResourceFormat(texDesc.Format);
+
+    if (texDesc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE) {
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+        SRVDesc.TextureCube.MostDetailedMip = 0;
+        SRVDesc.TextureCube.MipLevels = texDesc.MipLevels;
+    }
+    else {
+        if (texDesc.SampleDesc.Count == 1) {
+            if (texDesc.ArraySize == 1) {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+                SRVDesc.Texture2DArray.MipLevels = texDesc.MipLevels;
+            }
+            else {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+                SRVDesc.Texture2DArray.MipLevels = texDesc.MipLevels;
+                SRVDesc.Texture2DArray.ArraySize = texDesc.ArraySize;
+            }
+        }
+        else {
+            if (texDesc.ArraySize == 1) {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+            }
+            else {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMSARRAY;
+            }
+        }
+    }
 
     auto hr = device->CreateShaderResourceView(tex.Get(), &SRVDesc, mView.ToCreator());
     if (FAILED(hr))
     {
         return false;
     }
-    
-    mTexture = tex;
 
     D3D11_SAMPLER_DESC samplerDesc;
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;

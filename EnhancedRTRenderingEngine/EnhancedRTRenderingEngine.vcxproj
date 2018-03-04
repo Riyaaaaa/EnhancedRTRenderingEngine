@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="D3D11\D3D11DrawPlate.h" />
     <ClInclude Include="D3D11\D3D11TextureHUDRenderer.h" />
     <ClInclude Include="Scene\CubeTexture.h" />
     <ClInclude Include="D3D11\D3D11Scene.h" />
@@ -299,6 +300,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11\D3D11DrawPlate.cpp" />
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp" />
     <ClCompile Include="Scene\CubeTexture.cpp" />
     <ClCompile Include="D3D11\D3D11Scene.cpp" />
@@ -391,6 +393,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\MinPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\MinTextureCubeColor.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>

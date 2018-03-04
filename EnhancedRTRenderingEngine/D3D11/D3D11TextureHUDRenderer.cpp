@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "D3D11TextureHUDRenderer.h"
-#include "D3D11DrawElement.h"
+#include "D3D11DrawPlate.h"
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
@@ -18,16 +18,12 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const ResourceHand
     Vector2D viewportPos = Vector2D{ pos.x / _view->GetRenderSize().w - 0.5f, pos.y / _view->GetRenderSize().h - 0.5f } * 2.0f;
 
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
-    Material material{ MaterialParameters{ "HUDVertexShader", "MinTextureColor", "", 0.0f, 0.0f }, texture };
-    std::vector<Material> materials;
-    materials.emplace_back(std::move(material));
-    mesh.SetMaterial(std::move(materials));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f});
 
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
-    D3D11DrawElement<TexVertex> element;
-    element.Initialize(_view->hpDevice, &mesh, HUDRenderTag);
+    D3D11DrawPlate<TexVertex> element;
+    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D);
     element.Draw(_view);
 }
 
@@ -37,16 +33,19 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture
     Vector2D viewportPos = Vector2D{ pos.x / _view->GetRenderSize().w - 0.5f, pos.y / _view->GetRenderSize().h - 0.5f } *2.0f;
 
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
-    Material material{ MaterialParameters{ "HUDVertexShader", "MinTextureColor", "", 0.0f, 0.0f }};
-    std::vector<Material> materials;
-    materials.emplace_back(std::move(material));
-    mesh.SetMaterial(std::move(materials));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
-    D3D11DrawElement<TexVertex> element;
-    element.Initialize(_view->hpDevice, &mesh, HUDRenderTag);
-    element.SetTexture(texture, 0);
+    D3D11DrawPlate<TexVertex> element;
+
+    TextureType type;
+    D3D11_TEXTURE2D_DESC desc;
+    texture.GetTexture().Get()->GetDesc(&desc);
+
+    type = desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE ? TextureType::TextureCube : TextureType::Texture2D;
+
+    element.Initialize(_view->hpDevice, &mesh, type);
+    element.SetTexture(texture);
     element.Draw(_view);
 }

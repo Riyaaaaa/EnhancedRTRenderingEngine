@@ -83,12 +83,12 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
         return;
     }
     
-    D3D11DepthStencilTarget target;
+    D3D11DepthStencilTarget target[6];
     for (int i = 0; i < 6; i++) {
-        target.Initialize(_view->hpDevice, _view->hpDeviceContext, pLight.GetShadowTexture(static_cast<CUBE_DIRECTION>(i))());
+        target[i].Initialize(_view->hpDevice, _view->hpDeviceContext, pLight.GetShadowTexture(static_cast<CUBE_DIRECTION>(i))());
 
-        _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
-        _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target[i].GetDepthStencilView().Get());
+        _view->hpDeviceContext->ClearDepthStencilView(target[i].GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
         TransformBufferParam hConstantBuffer;
 
@@ -110,14 +110,54 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
     param.type = TextureType::TextureCube;
 
-    _scene->GetPointShadow(0).Initialize(_view->hpDevice, std::vector<Texture2D>{
-        pLight.GetShadowTexture(PX)(),
-        pLight.GetShadowTexture(NX)(),
-        pLight.GetShadowTexture(PY)(),
-        pLight.GetShadowTexture(NY)(),
-        pLight.GetShadowTexture(PZ)(),
-        pLight.GetShadowTexture(NZ)()
-       }, param);
+    // Each element in the texture array has the same format/dimensions.
+    D3D11_TEXTURE2D_DESC texElementDesc;
+    target[0].GetTexture().GetTexture().Get()->GetDesc(&texElementDesc);
+
+    D3D11_TEXTURE2D_DESC texArrayDesc;
+    texArrayDesc.Width = texElementDesc.Width;
+    texArrayDesc.Height = texElementDesc.Height;
+    texArrayDesc.MipLevels = texElementDesc.MipLevels;
+    texArrayDesc.ArraySize = 6;
+    texArrayDesc.Format = texElementDesc.Format;
+    texArrayDesc.SampleDesc.Count = 1;
+    texArrayDesc.SampleDesc.Quality = 0;
+    texArrayDesc.Usage = D3D11_USAGE_DEFAULT;
+    texArrayDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    texArrayDesc.CPUAccessFlags = 0;
+    texArrayDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+    ComPtr<ID3D11Texture2D> texArray = 0;
+    if (FAILED(_view->hpDevice->CreateTexture2D(&texArrayDesc, 0, texArray.ToCreator())))
+        return;
+
+    // Copy individual texture elements into texture array.
+    D3D11_BOX sourceRegion;
+
+    //Here i copy the mip map levels of the textures
+    for (UINT x = 0; x < 6; x++)
+    {
+        //for (UINT mipLevel = 0; mipLevel < texArrayDesc.MipLevels; mipLevel++)
+        //{
+        //    sourceRegion.left = 0;
+        //    sourceRegion.right = (texArrayDesc.Width >> mipLevel);
+        //    sourceRegion.top = 0;
+        //    sourceRegion.bottom = (texArrayDesc.Height >> mipLevel);
+        //    sourceRegion.front = 0;
+        //    sourceRegion.back = 1;
+
+        //    //test for overflow
+        //    if (sourceRegion.bottom == 0 || sourceRegion.right == 0)
+        //        break;
+
+        //    pd3dContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(mipLevel, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetTexture().GetTexture().Get(), mipLevel, &sourceRegion);
+        //}
+        _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), 0, 0, 0, 0, target[x].GetTexture().GetTexture().Get(), 0, nullptr);
+    }
+
+    D3D11Texture tex;
+    tex.Initialize(_view->hpDevice, texArray);
+    _scene->GetPointShadow(0) = tex;
 
     pLight.SetDirty(false);
 
