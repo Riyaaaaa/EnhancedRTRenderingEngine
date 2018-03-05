@@ -35,5 +35,5 @@ DirectX::XMMATRIX* PointLight::GetViewMatrixes() {
 
 DirectX::XMMATRIX PointLight::GetShadowPerspectiveMatrix() {
     //todo far plane calculate from attenuation
-    return XMMatrixPerspectiveFovLH(D3DXToRadian(90.0f), 1.0f, 0.1f, 10.0f);
+    return XMMatrixPerspectiveFovLH(D3DXToRadian(90.0f), 1.0f, 0.1f, 100.0f);
 }

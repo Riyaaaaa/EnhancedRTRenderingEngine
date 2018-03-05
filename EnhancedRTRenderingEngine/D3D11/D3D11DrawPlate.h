@@ -16,7 +16,7 @@ class D3D11DrawPlate
 public:
     D3D11DrawPlate() {}
 
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type);
+    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type, int index);
 
     virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 
@@ -25,7 +25,7 @@ public:
     }
 
 protected:
-    virtual bool CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element);
+    virtual bool CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, float index);
 
     virtual void SetBuffer(const std::shared_ptr<D3DX11RenderView>& view);
     virtual void SetShader(const std::shared_ptr<D3DX11RenderView>& view);
@@ -36,6 +36,7 @@ protected:
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
     D3D11Texture texture;
+    TextureType _type;
 
     SIZE_T vertexCount;
 
@@ -45,7 +46,7 @@ protected:
     ComPtr<ID3D11PixelShader> hpPixelShader;
     ComPtr<ID3D11InputLayout> hpInputLayout;
     ComPtr<ID3D11Buffer> transformBuffer;
-    ComPtr<ID3D11Buffer> materialBuffer;
+    ComPtr<ID3D11Buffer> pBuffer;
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;
 };

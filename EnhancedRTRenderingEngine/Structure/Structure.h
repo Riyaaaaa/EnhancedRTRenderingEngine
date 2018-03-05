@@ -188,3 +188,7 @@ struct MaterialBuffer
     float roughness;
 };
 
+template <class T>
+struct __declspec(align(16)) AlignedBuffer {
+    T param;;
+};

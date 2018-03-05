@@ -7,11 +7,16 @@ struct pixcelIn
 TextureCube txDiffuse : register(t0);
 SamplerState samLinear : register(s0);
 
+cbuffer TextureIndex : register(b0) {
+    float index;
+    float3 dummy;
+}
+
 #define epsilon 1e-2
 
 float4 main(pixcelIn IN) : SV_Target
 {
-    float3 col = txDiffuse.Sample(samLinear, float3(IN.tex, 0));
+    float3 col = txDiffuse.Sample(samLinear, float3(IN.tex, index));
     return float4((col.xxx - float3(0.9f, 0.9f, 0.9f)) * 10.0f, 1.0f);
     return float4((1.0 - col.x) < epsilon ? 0.0f : 1.0f, 1.0f, 1.0f, 1.0f);
 }

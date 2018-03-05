@@ -56,7 +56,7 @@ Scene::Scene() {
     viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
     viewObjects[1].SetMaterial(std::move(materials));
 
-    directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.01f});
+    directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 
     pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });

@@ -153,10 +153,11 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
 
         //    pd3dContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(mipLevel, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetTexture().GetTexture().Get(), mipLevel, &sourceRegion);
         //}
-        _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), 0, 0, 0, 0, target[x].GetTexture().GetTexture().Get(), 0, nullptr);
+        _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetTexture().GetTexture().Get(), 0, nullptr);
     }
 
     D3D11Texture tex;
+    //tex.Initialize(_view->hpDevice, target[0].GetTexture().GetTexture());
     tex.Initialize(_view->hpDevice, texArray);
     _scene->GetPointShadow(0) = tex;
 

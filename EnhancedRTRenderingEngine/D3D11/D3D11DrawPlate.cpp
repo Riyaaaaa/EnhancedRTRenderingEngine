@@ -10,31 +10,35 @@
 #include "Common.h"
 
 template<class VertType>
-void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>*  element, TextureType type) {
+void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>*  element, TextureType type, int index) {
     inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
     inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "TEXCOORD", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
     primitiveTopology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP;
 
-    if (!CreateBuffer(device, element)) {
-        return;
-    }
-
     vShader = ResourceLoader::LoadShader("HUDVertexShader");
 
+    float _index;
     if (type == TextureType::Texture2D) {
         pShader = ResourceLoader::LoadShader("MinTextureColor");
+        _index = 0.0f;
     }
     else if (type == TextureType::TextureCube) {
         pShader = ResourceLoader::LoadShader("MinTextureCubeColor");
+        _index = (float)index;
     }
-    
+
+    _type = type;
+
+    if (!CreateBuffer(device, element, _index)) {
+        return;
+    }
 
     drawMesh = element;
 }
 
 template<class VertType>
-bool D3D11DrawPlate<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element) {
+bool D3D11DrawPlate<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, float index) {
     D3D11_BUFFER_DESC bufferDesc;
     D3D11_SUBRESOURCE_DATA subResource;
 
@@ -63,6 +67,14 @@ bool D3D11DrawPlate<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshObj
 
     bufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
     if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, transformBuffer.ToCreator()))) {
+        return false;
+    }
+
+    bufferDesc.ByteWidth = sizeof(AlignedBuffer<float>);
+    AlignedBuffer<float> buf;
+    buf.param = index;
+    constantSubResource.pSysMem = &buf;
+    if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, pBuffer.ToCreator()))) {
         return false;
     }
 
@@ -107,6 +119,11 @@ void D3D11DrawPlate<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>
     view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
 
     view->hpDeviceContext->PSSetShaderResources(0, 1, texture.GetSubResourceView().Ref());
+
+    if (_type == TextureType::TextureCube) {
+        view->hpDeviceContext->PSSetConstantBuffers(0, 0, pBuffer.Ref());
+    }
+
     view->hpDeviceContext->PSSetSamplers(0, 1, texture.GetSampler().Ref());
 }
 
