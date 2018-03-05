@@ -7,7 +7,7 @@ using namespace DirectX;
 
 DirectionalLight::DirectionalLight(const Vector3D& dir) :
     _direction(dir),
-    _shadowMap(Texture2D(1980, 1080, 2))
+    _shadowResolution({ 1000, 1000 })
 {
 }
 

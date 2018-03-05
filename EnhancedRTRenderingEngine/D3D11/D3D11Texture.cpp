@@ -14,17 +14,40 @@ D3D11Texture::D3D11Texture() :
 }
 
 
-bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const Texture2D& tex, TextureParam param)
+bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, const Texture2D& tex)
 {
-    return Initialize(device, std::vector<Texture2D>{tex}, param);
+    std::vector<Texture2D> v;
+    if (tex.isValid()) {
+        v.push_back(tex);
+    }
+    return Initialize(device, param, v);
 }
 
-bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Texture2D>& textures, TextureParam param) {
+bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, const std::vector<Texture2D>& textures) {
+    std::vector<D3D11_SUBRESOURCE_DATA> initData;
+    D3D11_SUBRESOURCE_DATA* initDataPtr = nullptr;
+    if (!textures.empty()) {
+        param.width = textures[0].Width();
+        param.height = textures[0].Height();
+        param.arraySize = textures.size();
+
+        initData.resize(param.arraySize);
+        for (int i = 0; i < param.arraySize; i++) {
+            for (std::size_t i = 0; i < textures.size(); i++) {
+                initData[i].pSysMem = textures[i].get();
+                initData[i].SysMemPitch = textures[i].Stride();
+                //initData.SysMemSlicePitch = tex.Size();
+            }
+        }
+
+        initDataPtr = &initData[0];
+    }
+    
     D3D11_TEXTURE2D_DESC desc;
-    desc.Width = textures[0].Width();
-    desc.Height = textures[0].Height();
+    desc.Width = param.width;
+    desc.Height = param.height;
     desc.MipLevels = 1;
-    desc.ArraySize = textures.size();
+    desc.ArraySize = param.arraySize;
     desc.Format = CastToD3D11Format<DXGI_FORMAT>(param.format);
     desc.SampleDesc.Count = 1;
     desc.SampleDesc.Quality = 0;
@@ -39,15 +62,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, const std::vector<Tex
         break;
     }
 
-    std::vector<D3D11_SUBRESOURCE_DATA> initData(textures.size());
-
-    for (std::size_t i = 0; i < textures.size(); i++) {
-        initData[i].pSysMem = textures[i].get();
-        initData[i].SysMemPitch = textures[i].Stride();
-        //initData.SysMemSlicePitch = tex.Size();
-    }
-
-    auto hr = device->CreateTexture2D(&desc, &initData[0], mTexture.ToCreator());
+    auto hr = device->CreateTexture2D(&desc, initDataPtr, mTexture.ToCreator());
     if (FAILED(hr)) {
         return false;
     }

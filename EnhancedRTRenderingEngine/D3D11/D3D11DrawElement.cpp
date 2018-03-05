@@ -37,7 +37,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         if (material.texture.HasResource() && material.texture().isValid()) {
-            textures[i].Initialize(device, material.texture(), param);
+            textures[i].Initialize(device, param, material.texture());
         }
     }
 
@@ -107,7 +107,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         if (material.texture.HasResource() && material.texture().isValid()) {
-            textures[i].Initialize(device, material.texture(), param);
+            textures[i].Initialize(device, param, material.texture());
         }
     }
     _state = RenderingState::WRITE_HUD;

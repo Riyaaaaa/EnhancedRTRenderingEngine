@@ -23,9 +23,9 @@ void D3D11DepthRenderer::render(D3D11Scene* scene)
 
 void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11Scene* _scene) {
     auto* scene = _scene->GetSourceScene();
+    auto& dLight = scene->GetDirectionalLights()[0];
     D3D11DepthStencilTarget target;
-    Texture2D shadowTexture = scene->GetDirectionalLights()[0].GetShadowTexture()();
-    target.Initialize(_view->hpDevice, _view->hpDeviceContext, shadowTexture);
+    target.Initialize(_view->hpDevice, _view->hpDeviceContext, dLight.GetShadowResolution());
 
     _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
     _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
@@ -44,7 +44,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11Scene* _scene) {
 
     TransformBufferParam hConstantBuffer;
 
-    auto& dLight = scene->GetDirectionalLights()[0];
+    
 
     hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(dLight.GetPerspectiveProjection());
@@ -83,9 +83,10 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
         return;
     }
     
+    Size resolution = pLight.GetShadowResolution();
     D3D11DepthStencilTarget target[6];
     for (int i = 0; i < 6; i++) {
-        target[i].Initialize(_view->hpDevice, _view->hpDeviceContext, pLight.GetShadowTexture(static_cast<CUBE_DIRECTION>(i))());
+        target[i].Initialize(_view->hpDevice, _view->hpDeviceContext, resolution);
 
         _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target[i].GetDepthStencilView().Get());
         _view->hpDeviceContext->ClearDepthStencilView(target[i].GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
