@@ -45,22 +45,30 @@ Scene::Scene() {
 
     //auto model = ResourceLoader::LoadPMDModel("nolicensed2");
     //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    auto model = ResourceLoader::LoadDXModel("nolicensed");
-    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
+    auto model = ResourceLoader::LoadDXModel("coin");
 
-    viewObjects[0].SetLocation(Vector3D{ 0.0f, 0.0f, 0.0f });
+    /*viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ 2.0f, 0.0f, 0.0f });*/
+    /*viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -2.0f, 0.0f, 0.0f });*/
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -1.0f, 0.0f, 2.0f });
+    viewObjects.back().SetScale(Vector3D{ 2.0f, 1.0f, 1.0f });
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -0.3f, 0.0f, 2.0f });
+
+    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
     //viewObjects[0].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
-    viewObjects[1].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
-    viewObjects[1].SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
-    viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
-    viewObjects[1].SetMaterial(std::move(materials));
+    viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
+    viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
+    viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
+    viewObjects.back().SetMaterial(std::move(materials));
 
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 
     pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-    pointLights[0].SetPoint(Vector3D{ 0.0, 3.0f, -3.0f });
+    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
 
     mainCameraIdx = 0;
 

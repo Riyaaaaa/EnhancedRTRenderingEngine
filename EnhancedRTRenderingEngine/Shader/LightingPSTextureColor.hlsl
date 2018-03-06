@@ -1,7 +1,7 @@
 #include "LightingPSMain.hlsl"
 
 Texture2D TextureMap : register(t10);
-SamplerState samLinear : register(s1);
+SamplerState samLinear : register(s10);
 
 float4 main(pixcelIn IN) : SV_Target
 {

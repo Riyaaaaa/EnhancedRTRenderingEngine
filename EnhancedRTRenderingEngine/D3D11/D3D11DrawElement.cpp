@@ -212,7 +212,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
             view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
             if (textures[drawIndex].IsAvalable()) {
                 view->hpDeviceContext->PSSetShaderResources(10, 1, textures[drawIndex].GetSubResourceView().Ref());
-                view->hpDeviceContext->PSSetSamplers(1, 1, textures[drawIndex].GetSampler().Ref());
+                view->hpDeviceContext->PSSetSamplers(10, 1, textures[drawIndex].GetSampler().Ref());
             }
         }
     }
