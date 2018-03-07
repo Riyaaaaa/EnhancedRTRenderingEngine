@@ -72,7 +72,7 @@ float DirectionalLighting(float3 Direction, float3 nor) {
     return saturate(dot(nor, -Direction));
 }
 
-bool IsVisibleFromLight(float4 shadowCoord) {
+bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
     float w = 1.0f / shadowCoord.w;
     float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
     float depth = DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x;
@@ -81,6 +81,16 @@ bool IsVisibleFromLight(float4 shadowCoord) {
         return true;
     }
     return false;
+}
+
+bool IsVisibleFromPointLight(float3 posw, int index) {
+    float3 pointDir = posw - PLightParams[index].pos;
+    float depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir)).x;
+    float3 absVec = abs(pointDir);
+    float z = max(absVec.x, max(absVec.y, absVec.z));
+
+    float normZComp = (100.0f + 0.10f) / (100.0f - 0.10f) - (2 * 100.0f * 0.10f) / (100.0f - 0.10f) / z;
+    return (normZComp + 1.0) * 0.5 <= depth + 0.005f;
 }
 
 // Frensel equations approximated by Schlick
