@@ -25,6 +25,8 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11Scene* _scene) {
     auto* scene = _scene->GetSourceScene();
     auto& dLight = scene->GetDirectionalLights()[0];
     D3D11DepthStencilTarget target;
+
+    _view->SetViewPortSize(dLight.GetShadowResolution());
     target.Initialize(_view->hpDevice, _view->hpDeviceContext, dLight.GetShadowResolution());
 
     _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
@@ -84,6 +86,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11Scene* _scene) {
     }
     
     Size resolution = pLight.GetShadowResolution();
+    _view->SetViewPortSize(resolution);
     D3D11DepthStencilTarget target[6];
     for (int i = 0; i < 6; i++) {
         target[i].Initialize(_view->hpDevice, _view->hpDeviceContext, resolution);

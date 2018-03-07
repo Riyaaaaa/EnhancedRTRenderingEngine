@@ -132,8 +132,10 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
     }
 
     D3D11_SUBRESOURCE_DATA constantSubResource;
-    auto mat = XMMatrixTranspose(element->GetMatrix());
-    constantSubResource.pSysMem = &mat;
+    ObjectBuffer buffer;
+    buffer.World = XMMatrixTranspose(element->GetMatrix());
+    buffer.NormalWorld = XMMatrixInverse(nullptr, element->GetMatrix());
+    constantSubResource.pSysMem = &buffer;
 
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -141,7 +143,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = sizeof(float);
 
-    bufferDesc.ByteWidth = sizeof(DirectX::XMMATRIX);
+    bufferDesc.ByteWidth = sizeof(ObjectBuffer);
     if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, transformBuffer.ToCreator()))) {
         return false;
     }

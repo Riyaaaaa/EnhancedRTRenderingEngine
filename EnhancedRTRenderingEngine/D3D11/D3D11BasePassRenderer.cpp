@@ -32,7 +32,7 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
     }
 
     Scene* scene = _scene->GetSourceScene();
-
+    _view->SetViewPortSize(_view->GetRenderSize());
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), _view->hpDepthStencilView.Get());
 
     float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };

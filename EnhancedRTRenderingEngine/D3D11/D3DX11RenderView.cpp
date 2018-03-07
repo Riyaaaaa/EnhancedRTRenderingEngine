@@ -81,14 +81,13 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
         return false;
     }
 
-    D3D11_VIEWPORT vp;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    vp.Width = _renderSize.w;
-    vp.Height = _renderSize.h;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    hpDeviceContext->RSSetViewports(1, &vp);
+    _viewPortCfg.TopLeftX = 0;
+    _viewPortCfg.TopLeftY = 0;
+    _viewPortCfg.Width = _renderSize.w;
+    _viewPortCfg.Height = _renderSize.h;
+    _viewPortCfg.MinDepth = 0.0f;
+    _viewPortCfg.MaxDepth = 1.0f;
+    hpDeviceContext->RSSetViewports(1, &_viewPortCfg);
 
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
     //desc.FillMode = D3D11_FILL_WIREFRAME;
@@ -101,6 +100,12 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
     //hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());
 
     return true;
+}
+
+void D3DX11RenderView::SetViewPortSize(Size size) {
+    _viewPortCfg.Width = size.w;
+    _viewPortCfg.Height = size.h;
+    hpDeviceContext->RSSetViewports(1, &_viewPortCfg);
 }
 
 bool D3DX11RenderView::EnableFullScreen(HWND hWnd) {

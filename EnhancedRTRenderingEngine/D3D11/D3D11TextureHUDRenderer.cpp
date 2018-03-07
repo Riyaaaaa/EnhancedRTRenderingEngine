@@ -23,7 +23,10 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const ResourceHand
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
     D3D11DrawPlate<TexVertex> element;
+    D3D11Texture tex;
+    tex.Initialize(_view->hpDevice, texture().GetParam(), texture());
     element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, 0);
+    element.SetTexture(tex);
     element.Draw(_view);
 }
 

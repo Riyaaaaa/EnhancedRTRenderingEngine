@@ -16,7 +16,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
         break;
         if (i >= numDirectionalLights) break;
         if (IsVisibleFromLight(IN.shadowCoord)) {
-            diffuse += albedo * DirectionalLighting(DirectionalLights[i].xyz, IN.norw.xyz) * (1.0f / PI);
+            diffuse += diffuseColor * DirectionalLighting(DirectionalLights[i].xyz, IN.norw.xyz) * (1.0f / PI);
             specular += SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
         }
     }
@@ -24,16 +24,13 @@ float4 ps_main(pixcelIn IN) : SV_Target
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numPointLights) break;
         float4 pointDir = IN.posw - PLightParams[i].pos;
-        float depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir)).x / 2;
+        float depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir)).x;
 
         float4 absVec = abs(pointDir);
         float z = max(absVec.x, max(absVec.y, absVec.z));
         float normZComp = (100.0f + 0.10f) / (100.0f - 0.10f) - (2 * 100.0f * 0.10f) / (100.0f - 0.10f) / z;
-
-        //return float4(z, z, z, 1.0f);
-        return float4(depth, depth, depth, 1.0f);
-        if ((normZComp + 1.0) * 0.5 <= depth + 0.05f) {
-            diffuse += albedo * PointLighting(PLightParams[i], IN.posw.xyz, IN.norw.xyz);
+        if ((normZComp + 1.0) * 0.5 <= depth + 0.005f) {
+            diffuse += diffuseColor * PointLighting(PLightParams[i], IN.posw.xyz, IN.norw.xyz);
             specular += SpecularBRDF(IN.posw - PLightParams[i].pos, IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
         }
     }

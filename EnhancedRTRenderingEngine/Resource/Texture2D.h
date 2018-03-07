@@ -2,6 +2,8 @@
 
 #include "ResourceHandle.h"
 
+#include "RenderingContext.h"
+
 struct png_info_def;
 
 // support png only
@@ -18,6 +20,8 @@ public:
     std::size_t Height() const { return height; }
     std::size_t Channels() const { return channels; }
     std::size_t Stride() const { return stride; }
+
+    TextureParam GetParam() const;
 
     void SetTextureName(std::string name) { textureName = name; }
 

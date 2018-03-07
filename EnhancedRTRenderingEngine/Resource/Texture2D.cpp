@@ -27,3 +27,15 @@ stride(width * channels) {
     _ptr = new unsigned char[height * width * channels];
     _size = height * width * channels;
 }
+
+TextureParam Texture2D::GetParam() const {
+    TextureParam param;
+    param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
+    param.format = TextureFormat::RGBA8_UNORM;
+    param.height = height;
+    param.width = width;
+    param.type = TextureType::Texture2D;
+    param.arraySize = 1;
+
+    return param;
+}

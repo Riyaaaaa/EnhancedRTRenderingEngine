@@ -43,6 +43,7 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer ObjectBuffer : register(b1)
 {
     matrix World;
+    matrix NormalWorld;
 }
 
 vertexOut main(vertexIn IN)
@@ -56,7 +57,7 @@ vertexOut main(vertexIn IN)
     pos = mul(OUT.posw, View);
     pos = mul(pos, Projection);
 
-    nor = mul(float4(IN.nor, 1.0f), World).xyz;
+    nor = mul(float4(IN.nor, 1.0f), NormalWorld).xyz;
     nor = normalize(nor);
 
     OUT.pos = pos;
