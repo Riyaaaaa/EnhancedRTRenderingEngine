@@ -4,6 +4,8 @@
 #include "D3D11FormatUtils.h"
 #include "../Common.h"
 
+#include "WindowManager.h"
+
 #pragma comment(lib, "d3d11.lib")
 
 
@@ -25,7 +27,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
         return false;
     }
 
-    _renderSize = Size{ 1980 , 1080 };
+    _renderSize = WindowManager::getInstance()->GetWindowSize();
     _type = MSAAQualityType::RAW_QUALITY;
 
     DXGI_SWAP_CHAIN_DESC hDXGISwapChainDesc;
@@ -36,7 +38,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
     hDXGISwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     hDXGISwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     hDXGISwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
-    hDXGISwapChainDesc.SampleDesc = CastToD3D11Formart<DXGI_SAMPLE_DESC>(_type);
+    hDXGISwapChainDesc.SampleDesc = CastToD3D11Format<DXGI_SAMPLE_DESC>(_type);
     hDXGISwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
     hDXGISwapChainDesc.BufferCount = 1;
     hDXGISwapChainDesc.OutputWindow = hWnd;
@@ -79,14 +81,13 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
         return false;
     }
 
-    D3D11_VIEWPORT vp;
-    vp.TopLeftX = 0;
-    vp.TopLeftY = 0;
-    vp.Width = _renderSize.w;
-    vp.Height = _renderSize.h;
-    vp.MinDepth = 0.0f;
-    vp.MaxDepth = 1.0f;
-    hpDeviceContext->RSSetViewports(1, &vp);
+    _viewPortCfg.TopLeftX = 0;
+    _viewPortCfg.TopLeftY = 0;
+    _viewPortCfg.Width = _renderSize.w;
+    _viewPortCfg.Height = _renderSize.h;
+    _viewPortCfg.MinDepth = 0.0f;
+    _viewPortCfg.MaxDepth = 1.0f;
+    hpDeviceContext->RSSetViewports(1, &_viewPortCfg);
 
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
     //desc.FillMode = D3D11_FILL_WIREFRAME;
@@ -97,10 +98,14 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
 
     hpDeviceContext->RSSetState(mRasterizerState.Get());
     //hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());
-    
-    hpShadowMapTarget.Initialize(device, hpDeviceContext);
 
     return true;
+}
+
+void D3DX11RenderView::SetViewPortSize(Size size) {
+    _viewPortCfg.Width = size.w;
+    _viewPortCfg.Height = size.h;
+    hpDeviceContext->RSSetViewports(1, &_viewPortCfg);
 }
 
 bool D3DX11RenderView::EnableFullScreen(HWND hWnd) {

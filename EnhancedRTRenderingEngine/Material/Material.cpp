@@ -23,6 +23,14 @@ texture(tex)
     metallic = param.metallic;
 }
 
+Material::Material(const MaterialParameters& param, const ResourceHandle<Texture2D>& tex) :
+texture(tex) {
+    vShader = ResourceLoader::LoadShader(param.vsName);
+    pShader = ResourceLoader::LoadShader(param.psName);
+    roughness = param.roughness;
+    metallic = param.metallic;
+}
+
 Material::~Material()
 {
 }

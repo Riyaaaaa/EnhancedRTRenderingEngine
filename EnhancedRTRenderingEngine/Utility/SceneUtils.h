@@ -9,10 +9,10 @@
 #include <vector>
 
 namespace SceneUtils {
-    template<class PrimitiveType>
-    MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject() {
+    template<class PrimitiveType, typename... Args>
+    MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject(Args&&... args) {
         RenderingContext context{ CreateVertexLayout < typename PrimitiveType::Type > (), VertexPrimitiveType::TRIANGLESTRIP };
-        MeshObject<PrimitiveType::Type> mesh(std::make_shared<PrimitiveType>(), context);
+        MeshObject<PrimitiveType::Type> mesh(std::make_shared<PrimitiveType>(args...), context);
         return mesh;
     }
 

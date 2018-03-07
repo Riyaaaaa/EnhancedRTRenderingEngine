@@ -12,15 +12,16 @@ D3D11ForwardRenderer::~D3D11ForwardRenderer()
 {
 }
 
-void D3D11ForwardRenderer::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext) {
-    mView = std::make_shared<D3DX11RenderView>();
-    mView->Initialize(WindowManager::getInstance()->GetActiveWindow(), device, hpDeviceContext);
-
-    depthRenderer.Initialize(mView);
-    bassPassRenderer.Initialize(mView);
+void D3D11ForwardRenderer::Initialize(std::shared_ptr<D3DX11RenderView> view) {
+    depthRenderer.Initialize(view);
+    bassPassRenderer.Initialize(view);
 }
 
 void D3D11ForwardRenderer::render(Scene* scene) {
-    depthRenderer.render(scene);
-    bassPassRenderer.render(scene);
+
+    _scene.Refresh(scene);
+
+    depthRenderer.render(&_scene);
+    bassPassRenderer.render(&_scene);
+
 }

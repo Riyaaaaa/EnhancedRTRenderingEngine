@@ -26,11 +26,13 @@ bool D3D11BasePassRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& 
     return true; 
 }
 
-void D3D11BasePassRenderer::render(Scene* scene) {
+void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
     if (!_view) {
         return;
     }
 
+    Scene* scene = _scene->GetSourceScene();
+    _view->SetViewPortSize(_view->GetRenderSize());
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), _view->hpDepthStencilView.Get());
 
     float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
@@ -58,7 +60,6 @@ void D3D11BasePassRenderer::render(Scene* scene) {
     ConstantBuffer hConstantBuffer;
     hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
-    hConstantBuffer.Shadow = XMMatrixTranspose(scene->GetDirectionalLightViewProjection());
     hConstantBuffer.Eye = scene->GetEyePoint();
 
     // Only support one light.
@@ -67,7 +68,10 @@ void D3D11BasePassRenderer::render(Scene* scene) {
         if (i >= hConstantBuffer.numDirecitonalLights) {
             break;
         }
-        hConstantBuffer.DirectionalLight[i] = scene->GetDirectionalLights()[0].GetDirection();
+        auto& dLight = scene->GetDirectionalLights()[i];
+        hConstantBuffer.DirectionalLightView[i] = XMMatrixTranspose(dLight.GetViewProjection());
+        hConstantBuffer.DirectionalLightProjection[i] = XMMatrixTranspose(dLight.GetPerspectiveProjection());
+        hConstantBuffer.DirectionalLight[i] = dLight.GetDirection();
     }
 
     hConstantBuffer.numPointLights = scene->GetPointLightParams().size();
@@ -75,14 +79,23 @@ void D3D11BasePassRenderer::render(Scene* scene) {
         if (i >= hConstantBuffer.numPointLights) {
             break;
         }
-        hConstantBuffer.PointLight[i] = scene->GetPointLightParams()[0];
+        auto& pLight = scene->GetPointLights()[i];
+        hConstantBuffer.PointLightProjection[i] = pLight.GetShadowPerspectiveMatrix();
+        memcpy(hConstantBuffer.PointLightView[i], pLight.GetViewMatrixes(), sizeof(XMMATRIX) * 6);
+        hConstantBuffer.PointLight[i] = scene->GetPointLightParams()[i];
     }
     
     _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
     _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
-    _view->hpDeviceContext->PSSetShaderResources(0, 1, _view->hpShadowMapTarget.GetSRV().Ref());
-    _view->hpDeviceContext->PSSetSamplers(0, 1, _view->hpShadowMapTarget.GetSampler().Ref());
+
+    // todo: support multi lights
+    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
+    _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    
+    _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
+    _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
+
 
     for (auto && object : scene->GetViewObjects()) {
         D3D11DrawElement<Scene::VertType> element;
@@ -97,5 +110,5 @@ void D3D11BasePassRenderer::render(Scene* scene) {
     _view->hpDeviceContext->PSSetSamplers(1, 1, &pNullSmp);
     _view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
     _view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
-    _view->hpDXGISwpChain->Present(0, 0);
+    
 }

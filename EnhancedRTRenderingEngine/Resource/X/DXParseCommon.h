@@ -61,3 +61,9 @@ FUSION_ADAPT_STRUCT_AUTO(
     (emissiveColor)
     (textureFileName)
 )
+
+FUSION_ADAPT_STRUCT_AUTO(
+    DXModel::MeshFace,
+    (nFaceVertexIndices)
+    (faceVertexIndices)
+)

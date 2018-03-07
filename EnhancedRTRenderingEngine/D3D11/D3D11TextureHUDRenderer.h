@@ -8,16 +8,12 @@
 #include "D3DX11RenderView.h"
 #include "D3D11Scene.h"
 
-class D3D11DepthRenderer
+class D3D11TextureHUDRenderer
 {
 public:
     bool Initialize(const std::shared_ptr<D3DX11RenderView>& view);
-    void render(D3D11Scene* scene);
-
+    void render(Vector2D pos, Size size, const ResourceHandle<Texture2D>& texture);
+    void render(Vector2D pos, Size size, const D3D11Texture& texture, int index);
 protected:
-    void RenderDirectionalLightShadowMap(D3D11Scene* scene);
-    void RenderPointLightShadowMap(D3D11Scene* scene);
-
     std::shared_ptr<D3DX11RenderView> _view;
 };
-

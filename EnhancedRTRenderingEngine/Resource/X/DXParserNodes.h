@@ -27,6 +27,7 @@ DECLARE_NODE(MeshTextureCoordsParser);
 DECLARE_NODE(MaterialParser);
 DECLARE_NODE(MaterialListParser);
 DECLARE_NODE(MeshVertexColorParser);
+DECLARE_NODE(MeshNormalParser);
 
 struct DXRootParser;
 struct TagDXRootParser;
@@ -158,8 +159,22 @@ struct MeshVertexColorParser<TagMeshParser> : ParserBase<> {
 };
 
 template<>
+struct MeshNormalParser<TagMeshParser> : ParserBase<> {
+    static constexpr auto Identifier = "MeshNormals";
+    void Parse(std::string::const_iterator& itr, const std::string::const_iterator end, DXModel::MeshNormals& meshNormals) {
+        qi::phrase_parse(itr, end, qi::lit('{'), qi::space);
+        qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, meshNormals.nNormals);
+        meshNormals.normals.reserve(meshNormals.nNormals);
+        qi::phrase_parse(itr, end, (qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';') >> qi::float_ >> qi::lit(';')) % ',' >> qi::lit(';'), qi::space, meshNormals.normals);
+        qi::phrase_parse(itr, end, qi::int_ >> qi::lit(';'), qi::space, meshNormals.nFaceNormals);
+        qi::phrase_parse(itr, end, (qi::int_ >> qi::lit(';') >> (qi::int_ % ',') >> qi::lit(';')) % ',' >> qi::lit(';'), qi::space, meshNormals.faceNormals);
+        ParseOptionalBody(itr, end);
+    }
+};
+
+template<>
 struct MeshParser<TagDXRootParser> : 
-    ParserBase<MeshTextureCoordsParser<TagMeshParser>, MeshVertexColorParser<TagMeshParser>, MaterialListParser<TagMeshParser>> {
+    ParserBase<MeshTextureCoordsParser<TagMeshParser>, MeshVertexColorParser<TagMeshParser>, MaterialListParser<TagMeshParser>, MeshNormalParser<TagMeshParser>> {
 
     static constexpr auto Identifier = "Mesh";
     struct Visitor : VisitorBase<DXModel::Mesh> {
@@ -172,6 +187,9 @@ struct MeshParser<TagDXRootParser> :
         }
         void operator()(MaterialListParser<TagMeshParser> parser) const {
             parser.Parse(_itr, end, _1.meshMaterialList);
+        }
+        void operator()(MeshNormalParser<TagMeshParser> parser) const {
+            parser.Parse(_itr, end, _1.meshNormals);
         }
     };
 

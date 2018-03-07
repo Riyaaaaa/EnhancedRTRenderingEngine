@@ -13,8 +13,10 @@ struct pixcelIn
     float4 shadowCoord : SHADOW_COORD;
 };
 
-Texture2D ShadowMap : register(t0);
+Texture2D DirectionalShadowMap : register(t0);
+TextureCube PointShadowMap : register(t1);
 SamplerState ShadowSampler : register(s0);
+SamplerState PShadowSampler : register(s1);
 
 struct PointLightParam
 {
@@ -32,7 +34,10 @@ cbuffer ConstantBuffer : register(b0)
 {
     matrix View;
     matrix Projection;
-    matrix Shadow;
+    matrix DirectionalLightView[LIGHT_MAX];
+    matrix DirectionalLightProjection[LIGHT_MAX];
+    matrix PointLightView[LIGHT_MAX][6];
+    matrix PointLightProjection[LIGHT_MAX];
     float4 DirectionalLights[LIGHT_MAX];
     PointLightParam PLightParams[LIGHT_MAX];
     float numDirectionalLights;
@@ -67,16 +72,26 @@ float DirectionalLighting(float3 Direction, float3 nor) {
     return saturate(dot(nor, -Direction));
 }
 
-void Shadowing(float4 shadowCoord, inout float3 col) {
+bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
     float w = 1.0f / shadowCoord.w;
     float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
-    float depth = ShadowMap.Sample(ShadowSampler, stex.xy).x;
+    float depth = DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x;
 
-    if (shadowCoord.z * w > depth + 0.0005f) {
-        col = col * 0.5f;
+    if (shadowCoord.z * w <= depth + 0.00005f) {
+        return true;
     }
+    return false;
 }
 
+bool IsVisibleFromPointLight(float3 posw, int index) {
+    float3 pointDir = posw - PLightParams[index].pos;
+    float depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir)).x;
+    float3 absVec = abs(pointDir);
+    float z = max(absVec.x, max(absVec.y, absVec.z));
+
+    float normZComp = (100.0f + 0.10f) / (100.0f - 0.10f) - (2 * 100.0f * 0.10f) / (100.0f - 0.10f) / z;
+    return (normZComp + 1.0) * 0.5 <= depth + 0.005f;
+}
 
 // Frensel equations approximated by Schlick
 float3 FrenselEquations(float3 reflectionCoef, float3 H, float3 V) {

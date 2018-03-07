@@ -420,6 +420,18 @@
     <ClInclude Include="Utility\TextureUtils.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="D3D11\D3D11Scene.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\CubeTexture.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11TextureHUDRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="D3D11\D3D11DrawPlate.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -542,6 +554,18 @@
     <ClCompile Include="Utility\TextureUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="D3D11\D3D11Scene.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\CubeTexture.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11DrawPlate.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -566,6 +590,9 @@
     <FxCompile Include="Shader\DepthVertexShader.hlsl" />
     <FxCompile Include="Shader\LightingPSTextureColor.hlsl" />
     <FxCompile Include="Shader\LightingPSMain.hlsl" />
+    <FxCompile Include="Shader\HUDVertexShader.hlsl" />
+    <FxCompile Include="Shader\MinTextureColor.hlsl" />
+    <FxCompile Include="Shader\MinTextureCubeColor.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

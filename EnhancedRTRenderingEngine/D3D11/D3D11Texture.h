@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #include "ComPtr.h"
 #include "Resource/Texture2D.h"
+#include "RenderingContext.h"
 
 class D3D11Texture
 {
@@ -16,8 +17,19 @@ public:
     bool IsAvalable() {
         return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
     }
-    bool Initialize(ComPtr<ID3D11Device> device, const ResourceHandle<Texture2D>& tex);
+    bool Initialize(ComPtr<ID3D11Device> device, TextureParam param, const Texture2D& tex = Texture2D{});
+    bool Initialize(ComPtr<ID3D11Device> device, TextureParam param, const std::vector<Texture2D>& textures);
     bool Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2D> tex);
+
+    const ComPtr<ID3D11Texture2D>& GetTexture() const
+    {
+        return mTexture;
+    }
+
+    ComPtr<ID3D11Texture2D>& GetTexture()
+    {
+        return mTexture;
+    }
 
     const ComPtr<ID3D11ShaderResourceView>& GetSubResourceView() const
     {

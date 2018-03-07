@@ -3,10 +3,11 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
-class Square : public MeshBase<Vertex3D>
+template<class VertType>
+class Square : public MeshBase<VertType>
 {
 public:
-    Square();
+    Square(Size size);
 };
 
 class SquarePMD : public MeshBase<PMDVertex>

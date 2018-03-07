@@ -24,8 +24,7 @@ public:
     std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
     std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
 
-    DirectX::XMMATRIX GetDirectionalLightViewProjection();
-
+    std::vector<PointLight>& GetPointLights() { return pointLights; }
     std::vector<PointLightParameters> GetPointLightParams();
 
     DirectX::XMVECTOR GetEyePoint();

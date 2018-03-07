@@ -23,6 +23,7 @@ public:
     }
 
     const void* get() const { return _ptr; }
+    void* mutableGet() { return const_cast<void*>(_ptr); }
     std::size_t size() const { return _size; }
     bool isValid() const { return _ptr != nullptr; }
 

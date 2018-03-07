@@ -1,5 +1,4 @@
 #pragma once
-
 #include <d3d11.h>
 #include <vector>
 #include <memory>
@@ -12,45 +11,42 @@
 #include "Constant/RenderTag.h"
 
 template<class VertType>
-class D3D11DrawElement
+class D3D11DrawPlate
 {
 public:
-    D3D11DrawElement() {}
+    D3D11DrawPlate() {}
 
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::OpaqueRender);
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::DepthRender);
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::HUDRender);
+    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type, int index);
 
     virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 
-    void SetTexture(const D3D11Texture& tex, std::size_t index) {
-        textures[index] = tex;
+    void SetTexture(const D3D11Texture& tex) {
+        texture = tex;
     }
 
 protected:
-    virtual bool CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element);
-    
+    virtual bool CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, float index);
+
     virtual void SetBuffer(const std::shared_ptr<D3DX11RenderView>& view);
-    virtual void SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex);
+    virtual void SetShader(const std::shared_ptr<D3DX11RenderView>& view);
+
+    MeshObject<VertType>* drawMesh;
 
     std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
-    std::vector<D3D11Texture> textures;
-
-    // TODO: Support smart pointer
-    MeshObject<VertType>* drawMesh;
+    D3D11Texture texture;
+    TextureType _type;
 
     SIZE_T vertexCount;
+
+    ResourceHandle<> vShader, pShader;
 
     ComPtr<ID3D11VertexShader> hpVertexShader;
     ComPtr<ID3D11PixelShader> hpPixelShader;
     ComPtr<ID3D11InputLayout> hpInputLayout;
     ComPtr<ID3D11Buffer> transformBuffer;
-    ComPtr<ID3D11Buffer> materialBuffer;
+    ComPtr<ID3D11Buffer> pBuffer;
     ComPtr<ID3D11Buffer> vertexBuffer;
     ComPtr<ID3D11Buffer> indexBuffer;
-
-    RenderingState _state;
 };
-

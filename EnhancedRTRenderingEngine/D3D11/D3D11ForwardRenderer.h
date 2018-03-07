@@ -9,6 +9,7 @@
 #include "D3DX11RenderView.h"
 #include "../Scene/Scene.h"
 
+#include "D3D11Scene.h"
 #include "D3D11DepthRenderer.h"
 #include "D3D11BasePassRenderer.h"
 
@@ -16,16 +17,17 @@ class D3D11ForwardRenderer
 {
 public:
 
-    void Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext);
+    void Initialize(std::shared_ptr<D3DX11RenderView> view);
 
     D3D11ForwardRenderer();
     ~D3D11ForwardRenderer();
 
     void render(Scene* scene);
 
-protected:
-    std::shared_ptr<D3DX11RenderView> mView;
+    D3D11Scene& GetScene() { return _scene; }
 
+protected:
+    D3D11Scene _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;
 };

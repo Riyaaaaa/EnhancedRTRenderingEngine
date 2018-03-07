@@ -45,24 +45,32 @@ Scene::Scene() {
 
     //auto model = ResourceLoader::LoadPMDModel("nolicensed2");
     //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    auto model = ResourceLoader::LoadDXModel("nolicensed");
+    auto model = ResourceLoader::LoadDXModel("coin");
+    auto model2 = ResourceLoader::LoadPMDModel("nolicensed");
+
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
+    viewObjects.back().SetLocation(Vector3D{ 2.0f, 0.0f, 0.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -2.0f, 0.0f, -2.0f });
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -1.0f, 0.0f, 2.0f });
+    viewObjects.back().SetScale(Vector3D{ 2.0f, 1.0f, 1.0f });
+    viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -0.3f, 0.0f, 2.0f });
+
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
-
-    viewObjects[0].SetLocation(Vector3D{ 0.0f, 0.0f, 0.0f });
     //viewObjects[0].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
-    viewObjects[1].SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
-    viewObjects[1].SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
-    viewObjects[1].SetLocation(Vector3D{ 0.0f, 0.0f, -0.4f });
-    viewObjects[1].SetMaterial(std::move(materials));
+    viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
+    viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
+    viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
+    viewObjects.back().SetMaterial(std::move(materials));
 
-    directionalLights.push_back(DirectionalLight(Vector3D{0.0, -1.0f, 0.4f}));
+    directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 
-    PointLight plight;
-    plight.SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-    plight.SetPoint(Vector3D{ 0.0, 3.0f, -3.0f });
-
-    pointLights.push_back(plight);
+    pointLights.emplace_back(PointLight{});
+    pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
 
     mainCameraIdx = 0;
 
@@ -79,24 +87,6 @@ XMMATRIX Scene::GetWorldProjection() {
 
 DirectX::XMMATRIX Scene::GetViewProjection() {
     return cameraObjects[mainCameraIdx].GetViewProjection();
-}
-
-DirectX::XMMATRIX Scene::GetDirectionalLightViewProjection() {
-    auto& dLights = GetDirectionalLights();
-    if (dLights.empty()) {
-        return DirectX::XMMATRIX();
-    }
-    auto lDir = dLights[0].GetDirection();
-    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, -20.0f, 0.0f);
-    DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 0.0f);
-    DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.4f, 1.0f, 0.0f);
-    /*static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(
-        0.5f, 0.0f, 0.0f, 0.0f,
-        0.0f, -0.5f, 0.0f, 0.0f,
-        0.0f, 0.0f, 1.0f, 0.0f,
-        0.5f, 0.5f, 0.0f, 1.0f);*/
-
-    return XMMatrixLookToLH(pos, dir, hUp);
 }
 
 std::vector<PointLightParameters> Scene::GetPointLightParams() {

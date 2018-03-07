@@ -16,6 +16,7 @@ public:
 
     bool EnableFullScreen(HWND hWnd);
 
+    void SetViewPortSize(Size size);
     Size GetRenderSize() const { return _renderSize; }
     MSAAQualityType GetMSAAQualityType() const { return _type;  }
 
@@ -34,7 +35,7 @@ public:
     ComPtr<ID3D11RasterizerState> mRasterizerState;
     ComPtr<ID3D11RasterizerState> mDoubleSidedRasterizerState;
 
-    D3D11DepthStencilTarget hpShadowMapTarget;
+    D3D11_VIEWPORT _viewPortCfg;
 
 private:
     MSAAQualityType _type;

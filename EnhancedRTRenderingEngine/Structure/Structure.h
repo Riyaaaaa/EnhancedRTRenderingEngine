@@ -16,6 +16,10 @@ struct Vector3D {
         return Vector3D{this->x - v.x, this->y - v.y, this->z - v.z};
     }
 
+    Vector3D operator-() const {
+        return Vector3D{ -this->x, -this->y, -this->z };
+    }
+
     Vector3D& operator+=(const Vector3D& v) {
         this->x = this->x + v.x;
         this->y = this->y + v.y;
@@ -130,6 +134,11 @@ struct SimpleVertex {
     float col[4];    //r-g-b-a
 };
 
+struct TexVertex {
+    float pos[3];    //x-y-z
+    float tex[2];    //r-g-b-a
+};
+
 struct Vertex3D {
     float pos[3];    //x-y-z
     float col[4];    //r-g-b-a
@@ -165,12 +174,21 @@ struct ConstantBuffer
 {
     DirectX::XMMATRIX View;
     DirectX::XMMATRIX Projection;
-    DirectX::XMMATRIX Shadow;
+    DirectX::XMMATRIX DirectionalLightView[LIGHT_MAX];
+    DirectX::XMMATRIX DirectionalLightProjection[LIGHT_MAX];
+    DirectX::XMMATRIX PointLightView[LIGHT_MAX][6];
+    DirectX::XMMATRIX PointLightProjection[LIGHT_MAX];
     Vector4D DirectionalLight[LIGHT_MAX];
     PointLightParameters PointLight[LIGHT_MAX];
     float numDirecitonalLights;
     float numPointLights;
     DirectX::XMVECTOR Eye;
+};
+
+struct ObjectBuffer
+{
+    DirectX::XMMATRIX World;
+    DirectX::XMMATRIX NormalWorld;
 };
 
 __declspec(align(16))
@@ -180,3 +198,7 @@ struct MaterialBuffer
     float roughness;
 };
 
+template <class T>
+struct __declspec(align(16)) AlignedBuffer {
+    T param;;
+};

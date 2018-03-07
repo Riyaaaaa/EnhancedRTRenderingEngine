@@ -1,4 +1,6 @@
 
+#define LIGHT_MAX 4
+
 struct vertexIn
 {
     float3 pos : POSITION0;
@@ -27,9 +29,12 @@ cbuffer ConstantBuffer : register(b0)
 {
     matrix View;
     matrix Projection;
-    matrix Shadow;
-    float4 DirectionalLight[4];
-    PointLightParam PLightParam[4];
+    matrix DirectionalLightView[LIGHT_MAX];
+    matrix DirectionalLightProjection[LIGHT_MAX];
+    matrix PointLightView[LIGHT_MAX][6];
+    matrix PointLightProjection[LIGHT_MAX];
+    float4 DirectionalLights[LIGHT_MAX];
+    PointLightParam PLightParams[LIGHT_MAX];
     float numDirectionalLights;
     float numPointLights;
     float4 Eye;
@@ -38,6 +43,7 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer ObjectBuffer : register(b1)
 {
     matrix World;
+    matrix NormalWorld;
 }
 
 vertexOut main(vertexIn IN)
@@ -51,14 +57,14 @@ vertexOut main(vertexIn IN)
     pos = mul(OUT.posw, View);
     pos = mul(pos, Projection);
 
-    nor = mul(float4(IN.nor, 1.0f), World).xyz;
+    nor = mul(float4(IN.nor, 1.0f), NormalWorld).xyz;
     nor = normalize(nor);
 
     OUT.pos = pos;
     OUT.norw = float4(nor, 1.0f);
     OUT.col = IN.col;
     OUT.tex = IN.tex;
-    OUT.shadowCoord = mul(mul(OUT.posw, Shadow), Projection);
+    OUT.shadowCoord = mul(mul(OUT.posw, DirectionalLightView[0]), DirectionalLightProjection[0]);
 
     return OUT;
 }
