@@ -89,8 +89,8 @@ bool IsVisibleFromPointLight(float3 posw, int index) {
     float3 absVec = abs(pointDir);
     float z = max(absVec.x, max(absVec.y, absVec.z));
 
-    float normZComp = (100.0f + 0.10f) / (100.0f - 0.10f) - (2 * 100.0f * 0.10f) / (100.0f - 0.10f) / z;
-    return (normZComp + 1.0) * 0.5 <= depth + 0.005f;
+    float normZComp = 100.0f / (100.0f - 0.10f) - (100.0f * 0.10f) / (100.0f - 0.10f) / z;
+    return normZComp <= depth + 0.005f;
 }
 
 // Frensel equations approximated by Schlick

@@ -49,19 +49,19 @@ cbuffer ObjectBuffer : register(b1)
 vertexOut main(vertexIn IN)
 {
     vertexOut OUT;
-    float3 nor;
 
+    float3 nor;
     float4 pos = float4(IN.pos, 1.0f);
 
     OUT.posw = mul(pos, World);
     pos = mul(OUT.posw, View);
     pos = mul(pos, Projection);
-
     nor = mul(float4(IN.nor, 1.0f), NormalWorld).xyz;
     nor = normalize(nor);
 
     OUT.pos = pos;
     OUT.norw = float4(nor, 1.0f);
+
     OUT.col = IN.col;
     OUT.tex = IN.tex;
     OUT.shadowCoord = mul(mul(OUT.posw, DirectionalLightView[0]), DirectionalLightProjection[0]);
