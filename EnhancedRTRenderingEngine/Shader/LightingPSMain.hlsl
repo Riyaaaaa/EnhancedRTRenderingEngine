@@ -13,7 +13,6 @@ float4 ps_main(pixcelIn IN) : SV_Target
     // direct lighting
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
-        break;
         if (i >= numDirectionalLights) break;
         if (IsVisibleFromLight(IN.shadowCoord)) {
             diffuse += diffuseColor * DirectionalLighting(DirectionalLights[i].xyz, IN.norw.xyz) * (1.0f / PI);
