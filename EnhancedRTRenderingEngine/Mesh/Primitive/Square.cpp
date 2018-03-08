@@ -39,10 +39,10 @@ Square<TexVertex>::Square(Size size)
 
 SquarePMD::SquarePMD() {
     _vertexList = std::vector<PMDVertex>{
-        PMDVertex{ { -0.75f, -0.75f, +0.5f },{ 0.0f, 1.0f },{ 0.0f, 0.0f, -1.0f },{ 0.5f, 0.5f, 0.5f, 1.0f } },
-        PMDVertex{ { -0.75f, +0.75f, +0.5f },{ 0.0f, 0.0f },{ 0.0f, 0.0f, -1.0f },{ 0.5f, 0.5f, 0.5f, 1.0f } },
-        PMDVertex{ { +0.75f, -0.75f, +0.5f },{ 1.0f, 1.0f },{ 0.0f, 0.0f, -1.0f },{ 0.5f, 0.5f, 0.5f, 1.0f } },
-        PMDVertex{ { +0.75f, +0.75f, +0.5f },{ 1.0f, 0.0f },{ 0.0f, 0.0f, -1.0f },{ 0.5f, 0.5f, 0.5f, 1.0f } }
+        PMDVertex{ Vector3D{ -0.75f, -0.75f, +0.5f },Vector2D{ 0.0f, 1.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
+        PMDVertex{ Vector3D{ -0.75f, +0.75f, +0.5f },Vector2D{ 0.0f, 0.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
+        PMDVertex{ Vector3D{ +0.75f, -0.75f, +0.5f },Vector2D{ 1.0f, 1.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
+        PMDVertex{ Vector3D{ +0.75f, +0.75f, +0.5f },Vector2D{ 1.0f, 0.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} }
     };
 
     _indexList = std::vector<uint16_t>{

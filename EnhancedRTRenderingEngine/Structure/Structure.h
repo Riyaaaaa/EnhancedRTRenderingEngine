@@ -146,10 +146,10 @@ struct Vertex3D {
 };
 
 struct PMDVertex {
-    float pos[3];    //x-y-z
-    float tex[2];    //x-y
-    float normal[3];
-    float col[4];
+    Vector3D pos;    //x-y-z
+    Vector2D tex;    //x-y
+    Vector3D normal;
+    Vector4D col;
 };
 
 struct Transform {

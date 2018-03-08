@@ -28,10 +28,10 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
             int idx = model.face_vert_index[cnt_idx];
             cnt_idx++;
 
-            _vertexList[idx].col[0] = model.materials[i].diffuse_color[0];
-            _vertexList[idx].col[1] = model.materials[i].diffuse_color[1];
-            _vertexList[idx].col[2] = model.materials[i].diffuse_color[2];
-            _vertexList[idx].col[3] = model.materials[i].alpha;
+            _vertexList[idx].col.x = model.materials[i].diffuse_color[0];
+            _vertexList[idx].col.y = model.materials[i].diffuse_color[1];
+            _vertexList[idx].col.z = model.materials[i].diffuse_color[2];
+            _vertexList[idx].col.w = model.materials[i].alpha;
         }
 
         _drawFacesMap[i] = Face{ i, model.materials[i].face_vert_count, i };
@@ -49,11 +49,22 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     // Vertex data into one bundle
     for (std::size_t  i = 0; i < mesh.nVertices; i++) {
         _vertexList[i] = PMDVertex{
-            { mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z },
-            { mesh.meshTextureCoords.textureCoords[i].x, mesh.meshTextureCoords.textureCoords[i].y },
-            { mesh.meshNormals.normals[i].x, mesh.meshNormals.normals[i].y, mesh.meshNormals.normals[i].z },
-            { 0.0f, 0.0f, 0.0f, 0.0f }
+            Vector3D{ mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z },
+            Vector2D{ mesh.meshTextureCoords.textureCoords[i].x, mesh.meshTextureCoords.textureCoords[i].y },
+            Vector3D{ 0.0f, 0.0f, 0.0f },
+            Vector4D{ 0.0f, 0.0f, 0.0f }
         };
+    }
+
+    for (std::size_t i = 0; i < mesh.nFaces; i++) {
+        for (std::size_t j = 0; j < mesh.faces[i].size(); j++) {
+            auto& normal = mesh.meshNormals.normals[mesh.meshNormals.faceNormals[i].faceVertexIndices[j]];
+            _vertexList[mesh.faces[i][j]].normal += normal;
+        }
+    }
+
+    for (auto&& vert : _vertexList) {
+        vert.normal.Normalize();
     }
 
     int cnt_idx = 0;
@@ -100,10 +111,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     for (std::size_t  i = 0; i < mesh.meshMaterialList.nFaceIndexes; i++) {
         int matIdx = _drawFacesMap[i].materialIdx;
         for (std::size_t  j = 0; j < mesh.faces[i].size(); j++) {
-            _vertexList[mesh.faces[i][j]].col[0] = mesh.meshMaterialList.materials[matIdx].faceColor.x;
-            _vertexList[mesh.faces[i][j]].col[1] = mesh.meshMaterialList.materials[matIdx].faceColor.y;
-            _vertexList[mesh.faces[i][j]].col[2] = mesh.meshMaterialList.materials[matIdx].faceColor.z;
-            _vertexList[mesh.faces[i][j]].col[3] = mesh.meshMaterialList.materials[matIdx].faceColor.w;
+            _vertexList[mesh.faces[i][j]].col = mesh.meshMaterialList.materials[matIdx].faceColor;
         }
     }
 
