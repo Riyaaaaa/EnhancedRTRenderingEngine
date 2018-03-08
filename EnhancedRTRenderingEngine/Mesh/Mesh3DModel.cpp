@@ -137,6 +137,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
         }
         indexCount += _drawFacesMap[i].faceNumVerts;
     }
+    dist.push_back(Face{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
     _drawFacesMap.swap(dist);
 
     _vertexCount = _indexList.size();
