@@ -19,7 +19,6 @@ public:
 
     void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::OpaqueRender);
     void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::DepthRender);
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::HUDRender);
 
     virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 
