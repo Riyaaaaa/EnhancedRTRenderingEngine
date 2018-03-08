@@ -24,6 +24,7 @@ public:
     const std::vector<Material>& GetMaterials() const { return _materials; }
 
 protected:
+    MeshObject() = default;
     std::vector<Material> _materials;
     RenderingContext _context;
     std::shared_ptr<MeshBase<VertType>> _mesh;

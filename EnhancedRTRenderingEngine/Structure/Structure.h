@@ -12,6 +12,9 @@ struct Size {
 struct Vector3D {
     float x, y, z;
 
+    Vector3D() {}
+    constexpr Vector3D(float x, float y, float z) : x(x), y(y), z(z) {}
+
     Vector3D operator-(const Vector3D &v) const {
         return Vector3D{this->x - v.x, this->y - v.y, this->z - v.z};
     }

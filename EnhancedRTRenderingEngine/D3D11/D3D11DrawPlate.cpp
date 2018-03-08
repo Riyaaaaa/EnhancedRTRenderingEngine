@@ -23,11 +23,6 @@ void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObjec
         pShader = ResourceLoader::LoadShader("MinTextureColor");
         _index = 0.0f;
     }
-    else if (type == TextureType::TextureCube) {
-        pShader = ResourceLoader::LoadShader("MinTextureCubeColor");
-        _index = (float)index;
-    }
-
     _type = type;
 
     if (!CreateBuffer(device, element, _index)) {

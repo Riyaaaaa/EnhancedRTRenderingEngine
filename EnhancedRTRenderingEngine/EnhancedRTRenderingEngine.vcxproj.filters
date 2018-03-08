@@ -432,6 +432,9 @@
     <ClInclude Include="D3D11\D3D11DrawPlate.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\SkyBox.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -566,6 +569,9 @@
     <ClCompile Include="D3D11\D3D11DrawPlate.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="Scene\SkyBox.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -592,7 +598,7 @@
     <FxCompile Include="Shader\LightingPSMain.hlsl" />
     <FxCompile Include="Shader\HUDVertexShader.hlsl" />
     <FxCompile Include="Shader\MinTextureColor.hlsl" />
-    <FxCompile Include="Shader\MinTextureCubeColor.hlsl" />
+    <FxCompile Include="Shader\UnlitPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
