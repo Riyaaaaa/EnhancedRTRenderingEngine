@@ -15,16 +15,20 @@ float4 ps_main(pixcelIn IN) : SV_Target
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numDirectionalLights) break;
         if (IsVisibleFromDirectionalLight(IN.shadowCoord)) {
-            diffuse += diffuseColor * DirectionalLighting(DirectionalLights[i].xyz, IN.norw.xyz) * (1.0f / PI);
-            specular += SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
+            float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz));
+            diffuse += irradiance * DirectionalLighting(diffuseColor);
+            specular += irradiance * SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
         }
     }
 
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numPointLights) break;
         if (IsVisibleFromPointLight(IN.posw.xyz, i)) {
-            diffuse += diffuseColor * PointLighting(PLightParams[i], IN.posw.xyz, IN.norw.xyz);
-            specular += SpecularBRDF(IN.posw - PLightParams[i].pos, IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
+            float3 dir = PLightParams[i].pos.xyz - IN.posw.xyz;
+            float len = length(dir);
+            float irradiance = saturate(dot(IN.norw.xyz, dir / len)); 
+            diffuse += irradiance * PointLighting(diffuseColor, len, PLightParams[i].att);
+            specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
         }
     }
 

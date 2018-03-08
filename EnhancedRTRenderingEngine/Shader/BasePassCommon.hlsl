@@ -50,26 +50,12 @@ cbuffer MaterialBuffer : register(b1)
     MaterialParameters materialParameters;
 }
 
-float PointLighting(PointLightParam param, float3 posw, float3 norw) {
-    float3 dir;
-    float  len;
-    float  colD;
-    float  colA;
-    float3  col;
-
-    dir = param.pos.xyz - posw.xyz;
-    len = length(dir);
-    dir = dir / len;
-    
-    // point light
-    colD = saturate(dot(norw.xyz, dir));
-    colA = saturate(1.0f / (param.att.x + param.att.y * len + param.att.z * len * len));
-
-    return saturate(colD * colA);
+float3 PointLighting(float3 diffuseColor, float distance, float3 attenuation) {
+    return diffuseColor * saturate(1.0f / (attenuation.x + attenuation.y * distance + attenuation.z * distance * distance));
 }
 
-float DirectionalLighting(float3 Direction, float3 nor) {
-    return saturate(dot(nor, -Direction));
+float3 DirectionalLighting(float3 diffuseColor) {
+    return diffuseColor / PI;
 }
 
 bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
@@ -118,12 +104,12 @@ float GeometryAttenuationFactor(float a, float dotNV, float dotNL) {
 }
 
 
-float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float3 specular, float roughness) {
+float SpecularBRDF(float3 normalizedLightDir, float4 posw, float4 norw, float4 eye, float3 specular, float roughness) {
     float3 N = norw.xyz;
     float3 V = normalize(eye.xyz - posw.xyz);
-    float3 L = normalize(-lightDir.xyz);
+    float3 L = normalizedLightDir;
 
-    float dotNL = saturate(dot(N, L));
+    float dotNL = saturate(dot(N, normalizedLightDir));
     float dotNV = saturate(dot(N, V));
     float3 H = normalize(L + V); // half vector
     float dotNH = saturate(dot(N, H));
