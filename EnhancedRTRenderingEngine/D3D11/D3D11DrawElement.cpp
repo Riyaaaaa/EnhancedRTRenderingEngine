@@ -37,8 +37,12 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     textures.resize(drawMesh->GetMesh()->GetMaterialNum());
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
-        if (material.texture.isValid()) {
+        param.type = material.type;
+        if (material.type == TextureType::Texture2D) {
             textures[i].Initialize(device, param, material.texture);
+        }
+        else if (material.type == TextureType::TextureCube) {
+            textures[i].Initialize(device, param, material.cubeTexture);
         }
     }
 
@@ -209,7 +213,7 @@ template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
     this->SetBuffer(view);
     int index = 0, matIdx = -1;
-    for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
+    for (std::size_t i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
         if (matIdx != drawMesh->GetMesh()->GetDrawFacesMap()[i].materialIdx) {
             matIdx = drawMesh->GetMesh()->GetDrawFacesMap()[i].materialIdx;
             this->SetShader(view, matIdx);

@@ -11,10 +11,15 @@ SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
     auto box = ResourceLoader::LoadDXModel("SkyBox");
     _mesh = std::make_shared<Mesh3DModel>(box());
     int i = 0;
+    std::vector<Texture2D> textures(6);
     for (auto&& key : {"posx.png", "negx.png", "posy.png", "negy.png", "posz.png", "negz.png"}) {
-        _materials.emplace_back(MaterialParameters{"LightingVertexShader", "UnlitCubeTexturePixelShader", ("SkyBox\\" + skyboxTextureDirectory + '\\' + key).c_str(), 0.0f, 0.0f});
+        ResourceLoader::LoadTexture(("SkyBox\\" + skyboxTextureDirectory + '\\' + key).c_str(), textures[i]);
         i++;
     }
+
+    _materials.emplace_back(MaterialParameters{ "LightingVertexShader", "UnlitCubeTexturePixelShader", "", 0.0f, 0.0f });
+    _materials.back().cubeTexture = textures;
+    _materials.back().type = TextureType::TextureCube;
 
     _context = RenderingContext{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLELIST };
 

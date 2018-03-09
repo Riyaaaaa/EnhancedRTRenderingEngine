@@ -16,7 +16,7 @@ public:
 
     float roughness, metallic;
     Vector3D specular;
-    TextureType type = TextureType::Texture2D;
+    TextureType type = TextureType::None;
     RawBinary vShader, pShader;
     Texture2D texture;
     std::vector<Texture2D> cubeTexture;

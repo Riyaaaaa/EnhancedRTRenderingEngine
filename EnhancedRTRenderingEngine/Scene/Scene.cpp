@@ -65,7 +65,7 @@ Scene::Scene() {
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
     viewObjects.back().SetMaterial(std::move(materials));
 
-    //viewObjects.push_back(SkyBox("Storforsen4"));
+    viewObjects.push_back(SkyBox("Storforsen4"));
 
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 

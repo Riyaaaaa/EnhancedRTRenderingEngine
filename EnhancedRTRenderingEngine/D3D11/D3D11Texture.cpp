@@ -33,11 +33,8 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, c
 
         initData.resize(param.arraySize);
         for (int i = 0; i < param.arraySize; i++) {
-            for (std::size_t i = 0; i < textures.size(); i++) {
-                initData[i].pSysMem = textures[i].get();
-                initData[i].SysMemPitch = textures[i].Stride();
-                //initData.SysMemSlicePitch = tex.Size();
-            }
+            initData[i].pSysMem = textures[i].get();
+            initData[i].SysMemPitch = textures[i].Stride();
         }
 
         initDataPtr = &initData[0];
