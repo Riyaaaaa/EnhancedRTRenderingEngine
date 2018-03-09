@@ -20,25 +20,25 @@ public:
     bool FileExists(std::string key);
 
     template<class HANDLE_TYPE>
-    ResourceHandle<HANDLE_TYPE> GetResourceHandleFromCache(std::string key) {
+    HANDLE_TYPE GetResourceHandleFromCache(std::string key) {
         auto it = CacheMap<HANDLE_TYPE>().find(key);
         if (it != CacheMap<HANDLE_TYPE>().end()) {
-            return it->second;
+            return it->second();
         }
 
-        return ResourceHandle<HANDLE_TYPE>();
+        return HANDLE_TYPE();
     }
 
     template<class HANDLE_TYPE, class... Args>
-    ResourceHandle<HANDLE_TYPE> CreateCachedResourceHandle(std::string key, Args&&... args) {
+    HANDLE_TYPE CreateCachedResourceHandle(std::string key, Args&&... args) {
         auto it = CacheMap<HANDLE_TYPE>().find(key);
         if (it != CacheMap<HANDLE_TYPE>().end()) {
-            return it->second;
+            return it->second();
         }
 
         AddCache<HANDLE_TYPE>(key, std::forward<Args>(args)...);
 
-        return CacheMap<HANDLE_TYPE>()[key];
+        return CacheMap<HANDLE_TYPE>()[key]();
     }
 
     template<class HANDLE_TYPE, class... Args>

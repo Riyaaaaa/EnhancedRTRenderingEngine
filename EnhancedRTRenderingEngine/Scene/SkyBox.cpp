@@ -12,7 +12,7 @@ SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
     _mesh = std::make_shared<Mesh3DModel>(box());
     int i = 0;
     for (auto&& key : {"posx.png", "negx.png", "posy.png", "negy.png", "posz.png", "negz.png"}) {
-        _materials.emplace_back(MaterialParameters{"LightingVertexShader", "UnlitPixelShader", ("SkyBox\\" + skyboxTextureDirectory + '\\' + key).c_str(), 0.0f, 0.0f});
+        _materials.emplace_back(MaterialParameters{"LightingVertexShader", "UnlitCubeTexturePixelShader", ("SkyBox\\" + skyboxTextureDirectory + '\\' + key).c_str(), 0.0f, 0.0f});
         i++;
     }
 

@@ -13,27 +13,12 @@ public:
 
     explicit Material(const MaterialParameters& param);
     Material(const MaterialParameters& param, const Texture2D& texture);
-    Material(const MaterialParameters& param, const ResourceHandle<Texture2D>& texture);
-
-    Material& operator=(Material&& other) noexcept {
-        if (this != &other) {
-            roughness = other.roughness;
-            metallic = other.metallic;
-            specular = other.specular;
-            vShader = std::move(other.vShader);
-            pShader = std::move(other.pShader);
-            texture = std::move(other.texture);
-        }
-        return *this;
-    }
-
-    Material(Material&& other) noexcept {
-        *this = std::move(other);
-    }
 
     float roughness, metallic;
     Vector3D specular;
-    ResourceHandle<> vShader, pShader;
-    ResourceHandle<Texture2D> texture;
+    TextureType type = TextureType::Texture2D;
+    RawBinary vShader, pShader;
+    Texture2D texture;
+    std::vector<Texture2D> cubeTexture;
 };
 

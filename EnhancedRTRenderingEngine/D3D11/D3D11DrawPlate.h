@@ -40,7 +40,7 @@ protected:
 
     SIZE_T vertexCount;
 
-    ResourceHandle<> vShader, pShader;
+    RawBinary vShader, pShader;
 
     ComPtr<ID3D11VertexShader> hpVertexShader;
     ComPtr<ID3D11PixelShader> hpPixelShader;

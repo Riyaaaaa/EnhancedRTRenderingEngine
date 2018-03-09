@@ -6,6 +6,7 @@
 
 #include "Structure/Structure.h"
 #include "Resource/ResourceLoader.h"
+#include "Resource/RawBinary.h"
 #include "Constant/RenderTag.h"
 #include "Common.h"
 
@@ -36,8 +37,8 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     textures.resize(drawMesh->GetMesh()->GetMaterialNum());
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
-        if (material.texture.HasResource() && material.texture().isValid()) {
-            textures[i].Initialize(device, param, material.texture());
+        if (material.texture.isValid()) {
+            textures[i].Initialize(device, param, material.texture);
         }
     }
 
@@ -138,7 +139,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
 
 template<class VertType>
 void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex) {
-    ResourceHandle<> vShader, pShader;
+    RawBinary vShader, pShader;
     MaterialBuffer materialParams;
 
     if (_state == RenderingState::WRITE_DEPTH){
@@ -152,20 +153,20 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         materialParams.roughness = material.roughness;
     }
     
-    auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), hpInputLayout.ToCreator());
+    auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), hpInputLayout.ToCreator());
     if (FAILED(err)) {
         return;
     }
 
     view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
 
-    if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, hpVertexShader.ToCreator()))) {
+    if (FAILED(view->hpDevice->CreateVertexShader(vShader.get(), vShader.size(), NULL, hpVertexShader.ToCreator()))) {
         return;
     }
     view->hpDeviceContext->VSSetShader(hpVertexShader.Get(), NULL, 0);
 
-    if (pShader.HasResource()) {
-        if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, hpPixelShader.ToCreator()))) {
+    if (pShader.isValid()) {
+        if (FAILED(view->hpDevice->CreatePixelShader(pShader.get(), pShader.size(), NULL, hpPixelShader.ToCreator()))) {
             return;
         }
         view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);

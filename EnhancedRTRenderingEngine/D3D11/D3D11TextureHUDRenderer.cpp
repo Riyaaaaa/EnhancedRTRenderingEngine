@@ -12,7 +12,7 @@ bool D3D11TextureHUDRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>
     return true;
 }
 
-void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const ResourceHandle<Texture2D>& texture)
+void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const Texture2D& texture)
 {
     Size viewportSize = Size{ size.w / _view->GetRenderSize().w, size.h / _view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / _view->GetRenderSize().w - 0.5f, pos.y / _view->GetRenderSize().h - 0.5f } * 2.0f;
@@ -24,7 +24,7 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const ResourceHand
 
     D3D11DrawPlate<TexVertex> element;
     D3D11Texture tex;
-    tex.Initialize(_view->hpDevice, texture().GetParam(), texture());
+    tex.Initialize(_view->hpDevice, texture.GetParam(), texture);
     element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, 0);
     element.SetTexture(tex);
     element.Draw(_view);

@@ -34,7 +34,7 @@ std::tuple<char*, std::size_t> LoadBinary(std::ifstream& ifs) {
 
 //#include <fbxsdk.h>  
 
-ResourceHandle<RawBinary> ResourceLoader::LoadShader(std::string filename) {
+RawBinary ResourceLoader::LoadShader(std::string filename) {
     std::ifstream ifs;
     auto manager = FileManager::getInstance();
     auto path = manager->MakeRelativePath(filename + ".cso");
@@ -46,7 +46,7 @@ ResourceHandle<RawBinary> ResourceLoader::LoadShader(std::string filename) {
     ifs.open(path, std::ios::in | std::ios::binary);
 
     if (!ifs.is_open()) {
-        return ResourceHandle<RawBinary>{};
+        return RawBinary();
     }
 
     char* buf;
@@ -57,7 +57,7 @@ ResourceHandle<RawBinary> ResourceLoader::LoadShader(std::string filename) {
     return manager->CreateCachedResourceHandle<RawBinary>(path, buf, size);
 }
 
-int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex) {
+int ResourceLoader::LoadTexture(std::string filename, Texture2D& outTex) {
     auto ex = StringUtils::GetExtension(filename);
 
     if (ex == "png") {
@@ -70,7 +70,7 @@ int ResourceLoader::LoadTexture(std::string filename, ResourceHandle<Texture2D>*
     return -1;
 }
 
-int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* outTex) {
+int ResourceLoader::LoadPNG(std::string filename, Texture2D& outTex) {
     int w, h, d;
     png_structp Png;
     png_infop PngInfo;
@@ -79,7 +79,7 @@ int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* out
     auto path = manager->MakeAssetPath("Texture\\" + filename);
 
     if (manager->FileExists(path)) {
-         *outTex = manager->GetResourceHandleFromCache<Texture2D>(path);
+         outTex = manager->GetResourceHandleFromCache<Texture2D>(path);
          return 0;
     }
 
@@ -166,8 +166,8 @@ int ResourceLoader::LoadPNG(std::string filename, ResourceHandle<Texture2D>* out
     }
     }
 
-    *outTex = manager->CreateCachedResourceHandle<Texture2D>(path, PngInfo, (void*)buf, sizeof(buf));
-    (*outTex)().SetTextureName(path);
+    outTex = manager->CreateCachedResourceHandle<Texture2D>(path, PngInfo, (void*)buf, sizeof(buf));
+    outTex.SetTextureName(path);
 
     png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
     fclose(fp);
@@ -231,14 +231,14 @@ void ResourceLoader::LoadFBXModel(std::string filename) {
     //}
 }
 
-int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2D>* outTex) {
+int ResourceLoader::LoadBMP(const std::string& filename, Texture2D& outTex) {
     std::ifstream ifs;
 
     auto manager = FileManager::getInstance();
     auto path = manager->MakeAssetPath("Texture\\" + filename);
 
     if (manager->FileExists(path)) {
-        *outTex = manager->GetResourceHandleFromCache<Texture2D>(path);
+        outTex = manager->GetResourceHandleFromCache<Texture2D>(path);
         return 0;
     }
     ifs.open(path, std::ios::in | std::ios::binary);
@@ -298,8 +298,8 @@ int ResourceLoader::LoadBMP(const std::string& filename, ResourceHandle<Texture2
         }
     }
 
-    *outTex = manager->CreateCachedResourceHandle<Texture2D>(path, w, h, 4u, (void*)buf, sizeof(buf));
-    (*outTex)().SetTextureName(path);
+    outTex = manager->CreateCachedResourceHandle<Texture2D>(path, w, h, 4u, (void*)buf, sizeof(buf));
+    outTex.SetTextureName(path);
 
     ifs.close();
 
