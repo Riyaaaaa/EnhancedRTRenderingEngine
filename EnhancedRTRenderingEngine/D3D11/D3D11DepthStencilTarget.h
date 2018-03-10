@@ -6,9 +6,9 @@
 class D3D11DepthStencilTarget
 {
 public:
-    D3D11DepthStencilTarget();
+    D3D11DepthStencilTarget(const ComPtr<ID3D11Device>& device);
 
-    bool Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext, Size size);
+    bool Initialize(ComPtr<ID3D11DeviceContext> hpDeviceContext, Size size);
 
     ComPtr<ID3D11DepthStencilView> GetDepthStencilView() const { return _depthStencilView; }
     ComPtr<ID3D11ShaderResourceView> GetSRV() const { return _texture.GetSubResourceView(); }
@@ -18,6 +18,7 @@ public:
 
 protected:
     ComPtr<ID3D11DepthStencilView> _depthStencilView;
+    ComPtr<ID3D11Device> _device;
     D3D11Texture _texture;
 };
 

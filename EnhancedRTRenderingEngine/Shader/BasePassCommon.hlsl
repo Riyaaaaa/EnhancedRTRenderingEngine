@@ -18,6 +18,9 @@ TextureCube PointShadowMap : register(t1);
 SamplerState ShadowSampler : register(s0);
 SamplerState PShadowSampler : register(s1);
 
+TextureCube EnviromentMap : register(t2);
+SamplerState EnviromentSampler : register(s2);
+
 struct PointLightParam
 {
     float4 pos;

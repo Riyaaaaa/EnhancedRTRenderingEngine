@@ -34,15 +34,15 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     param.format = TextureFormat::RGBA8_UNORM;
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
-    textures.resize(drawMesh->GetMesh()->GetMaterialNum());
+    textures.resize(drawMesh->GetMesh()->GetMaterialNum(), D3D11Texture(device));
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         param.type = material.type;
         if (material.type == TextureType::Texture2D) {
-            textures[i].Initialize(device, param, material.texture);
+            textures[i].Initialize(param, material.texture);
         }
         else if (material.type == TextureType::TextureCube) {
-            textures[i].Initialize(device, param, material.cubeTexture);
+            textures[i].Initialize(param, material.cubeTexture);
         }
     }
 

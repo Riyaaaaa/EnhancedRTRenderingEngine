@@ -3,6 +3,7 @@
 #include "MeshObject.h"
 #include "SceneObject.h"
 #include "CameraObject.h"
+#include "Enviroment/CubeReflectionCapture.h"
 #include "PointLight.h"
 #include "DirectionalLight.h"
 #include "CameraController.h"
@@ -17,6 +18,9 @@ public:
 
     Scene();
 
+    bool Dirty() { return lightDirty | meshDirty; }
+    bool LightDirty() { return lightDirty; }
+
     DirectX::XMMATRIX GetPerspectiveProjection();
     DirectX::XMMATRIX GetWorldProjection();
     DirectX::XMMATRIX GetViewProjection();
@@ -30,12 +34,16 @@ public:
     DirectX::XMVECTOR GetEyePoint();
 
 private:
+    bool lightDirty;
+    bool meshDirty;
+
     DirectX::XMMATRIX worldProjection;
     int mainCameraIdx;
 
     std::vector<MeshObject<VertType>> viewObjects;
     //std::vector<SceneObject> exertObjects;
     std::vector<CameraObject> cameraObjects;
+    std::vector<CubeReflectionCapture> captureObjects;
 
     std::vector<DirectionalLight> directionalLights;
     std::vector<PointLight> pointLights;

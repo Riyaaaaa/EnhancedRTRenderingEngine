@@ -5,7 +5,8 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 albedo = IN.col.xyz;
 
     float3 diffuseColor = lerp(albedo, float3(0.0f, 0.0f, 0.0f), materialParameters.metallic);
-    float3 specularColor = lerp(float3(0.04f, 0.04f, 0.04f), albedo, materialParameters.metallic);
+    float3 specularCoef = lerp(float3(0.04f, 0.04f, 0.04f), albedo, materialParameters.metallic);
+    float3 specularColor = EnviromentMap.Sample(EnviromentSampler, reflect(Eye, IN.norw));
 
     float3 diffuse = 0.0f;
     float3 specular = 0.0f;
@@ -17,7 +18,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
         if (IsVisibleFromDirectionalLight(IN.shadowCoord)) {
             float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz));
             diffuse += irradiance * DirectionalLighting(diffuseColor);
-            specular += irradiance * SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
+            specular += irradiance * SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
 
@@ -28,7 +29,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
             float len = length(dir);
             float irradiance = saturate(dot(IN.norw.xyz, dir / len)); 
             diffuse += irradiance * PointLighting(diffuseColor, len, PLightParams[i].att);
-            specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularColor, materialParameters.roughness);
+            specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
 

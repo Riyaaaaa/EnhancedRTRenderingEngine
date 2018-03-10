@@ -6,7 +6,7 @@
 
 #include "D3D11DepthStencilTarget.h"
 #include "D3DX11RenderView.h"
-#include "D3D11Scene.h"
+#include "D3D11SceneInfo.h"
 
 class D3D11TextureHUDRenderer
 {

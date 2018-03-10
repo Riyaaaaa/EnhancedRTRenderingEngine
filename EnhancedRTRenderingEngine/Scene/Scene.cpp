@@ -40,8 +40,7 @@ Scene::Scene() {
     //viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
     //viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
 
-    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "", 0.2f, 0.5f},
-        TextureUtils::CreateColorPalletTexture(64, 64));
+    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "plane.png", 0.0f, 0.0f});
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
@@ -76,6 +75,9 @@ Scene::Scene() {
     mainCameraIdx = 0;
 
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
+
+    meshDirty = false;
+    lightDirty = true;
 }
 
 XMMATRIX Scene::GetPerspectiveProjection() {

@@ -4,12 +4,14 @@
 #include "Common.h"
 
 
-D3D11DepthStencilTarget::D3D11DepthStencilTarget() :
-    _depthStencilView(nullptr)
+D3D11DepthStencilTarget::D3D11DepthStencilTarget(const ComPtr<ID3D11Device>& device) :
+    _depthStencilView(nullptr),
+    _device(device),
+    _texture(device)
 {
 }
 
-bool D3D11DepthStencilTarget::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> hpDeviceContext, Size size) {
+bool D3D11DepthStencilTarget::Initialize(ComPtr<ID3D11DeviceContext> hpDeviceContext, Size size) {
     
     TextureParam param;
     param.format = TextureFormat::R16_TYPELESS;
@@ -18,13 +20,13 @@ bool D3D11DepthStencilTarget::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3
     param.height = size.h;
     param.arraySize = 1;
 
-    _texture.Initialize(device, param);
+    _texture.Initialize(param);
 
     D3D11_DEPTH_STENCIL_VIEW_DESC hDepthStencilViewDesc;
     hDepthStencilViewDesc.Format = DXGI_FORMAT_D16_UNORM;
     hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
     hDepthStencilViewDesc.Flags = 0;
-    if (FAILED(device->CreateDepthStencilView(_texture.GetTexture().Get(), &hDepthStencilViewDesc, _depthStencilView.ToCreator()))) {
+    if (FAILED(_device->CreateDepthStencilView(_texture.GetTexture().Get(), &hDepthStencilViewDesc, _depthStencilView.ToCreator()))) {
         return false;
     }
 

@@ -160,13 +160,15 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="GraphicsInterface\GITexture.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
     <ClInclude Include="D3D11\D3D11DrawPlate.h" />
     <ClInclude Include="D3D11\D3D11TextureHUDRenderer.h" />
     <ClInclude Include="Resource\CubeTexture.h" />
-    <ClInclude Include="D3D11\D3D11Scene.h" />
+    <ClInclude Include="D3D11\D3D11SceneInfo.h" />
     <ClInclude Include="D3D11\ComPtr.h" />
     <ClInclude Include="Scene\SkyBox.h" />
+    <ClInclude Include="Scene\Enviroment\StaticCubeReflectionCapture.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
     <ClInclude Include="Utility\MathUtils.h" />
     <ClInclude Include="Resource\X\DXGrammers.h" />
@@ -303,12 +305,14 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="GraphicsInterface\GITexture.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="D3D11\D3D11DrawPlate.cpp" />
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp" />
     <ClCompile Include="Resource\CubeTexture.cpp" />
-    <ClCompile Include="D3D11\D3D11Scene.cpp" />
+    <ClCompile Include="D3D11\D3D11SceneInfo.cpp" />
     <ClCompile Include="Scene\SkyBox.cpp" />
+    <ClCompile Include="Scene\Enviroment\StaticCubeReflectionCapture.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />
     <ClCompile Include="Resource\X\DXModel.cpp" />

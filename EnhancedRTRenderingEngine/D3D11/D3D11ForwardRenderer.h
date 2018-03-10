@@ -9,7 +9,7 @@
 #include "D3DX11RenderView.h"
 #include "../Scene/Scene.h"
 
-#include "D3D11Scene.h"
+#include "D3D11SceneInfo.h"
 #include "D3D11DepthRenderer.h"
 #include "D3D11BasePassRenderer.h"
 
@@ -24,10 +24,11 @@ public:
 
     void render(Scene* scene);
 
-    D3D11Scene& GetScene() { return _scene; }
+    D3D11SceneInfo& GetSceneInfo() { return _scene; }
 
 protected:
-    D3D11Scene _scene;
+    std::shared_ptr<D3DX11RenderView> _view;
+    D3D11SceneInfo _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;
 };

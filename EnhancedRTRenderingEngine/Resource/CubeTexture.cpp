@@ -3,11 +3,12 @@
 
 using namespace DirectX;
 
-CubeTexture::CubeTexture()
+CubeTexture::CubeTexture(int _size) :
+size(_size)
 {
     textures.reserve(6);
     for (int i = 0; i < 6; i++) {
-        textures.emplace_back(Texture2D(1000, 1000, 4));
+        textures.emplace_back(Texture2D(size, size, 4));
     }
 }
 

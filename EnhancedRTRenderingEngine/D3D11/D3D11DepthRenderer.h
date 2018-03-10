@@ -6,17 +6,17 @@
 
 #include "D3D11DepthStencilTarget.h"
 #include "D3DX11RenderView.h"
-#include "D3D11Scene.h"
+#include "D3D11SceneInfo.h"
 
 class D3D11DepthRenderer
 {
 public:
     bool Initialize(const std::shared_ptr<D3DX11RenderView>& view);
-    void render(D3D11Scene* scene);
+    void render(D3D11SceneInfo* scene);
 
 protected:
-    void RenderDirectionalLightShadowMap(D3D11Scene* scene);
-    void RenderPointLightShadowMap(D3D11Scene* scene);
+    void RenderDirectionalLightShadowMap(D3D11SceneInfo* scene);
+    void RenderPointLightShadowMap(D3D11SceneInfo* scene);
 
     std::shared_ptr<D3DX11RenderView> _view;
 };

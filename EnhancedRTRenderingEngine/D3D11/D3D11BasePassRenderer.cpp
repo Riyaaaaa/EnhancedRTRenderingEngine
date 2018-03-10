@@ -26,7 +26,7 @@ bool D3D11BasePassRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& 
     return true; 
 }
 
-void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
+void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     if (!_view) {
         return;
     }
