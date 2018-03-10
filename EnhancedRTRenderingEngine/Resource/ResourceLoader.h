@@ -9,10 +9,10 @@
 
 namespace ResourceLoader
 {
-    ResourceHandle<RawBinary> LoadShader(std::string filename);
-    int LoadTexture(std::string filename, ResourceHandle<Texture2D>* outTex);
-    int LoadPNG(std::string filename, ResourceHandle<Texture2D>* outTex);
-    int LoadBMP(const std::string& filename, ResourceHandle<Texture2D>* outTex);
+    RawBinary LoadShader(std::string filename);
+    int LoadTexture(std::string filename, Texture2D& outTex);
+    int LoadPNG(std::string filename, Texture2D& outTex);
+    int LoadBMP(const std::string& filename, Texture2D& outTex);
     
     void LoadFBXModel(std::string filename);
     ResourceHandle<DXModel> LoadDXModel(std::string filename);

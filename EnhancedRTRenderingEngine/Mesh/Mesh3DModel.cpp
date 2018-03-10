@@ -137,6 +137,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
         }
         indexCount += _drawFacesMap[i].faceNumVerts;
     }
+    dist.push_back(Face{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
     _drawFacesMap.swap(dist);
 
     _vertexCount = _indexList.size();
@@ -150,13 +151,17 @@ std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
 
         if (_materialTextures[i] != "") {
             materials[i].pShader = ResourceLoader::LoadShader("LightingPSTextureColor");
-            ResourceLoader::LoadTexture(_materialTextures[i], &materials[i].texture);
+            ResourceLoader::LoadTexture(_materialTextures[i], materials[i].texture);
             materials[i].specular = _speculars[i];
             materials[i].metallic = 0.5f;
-            materials[i].roughness = 0.2f;
+            materials[i].roughness = 0.5f;
+            materials[i].type = TextureType::Texture2D;
         }
         else {
             materials[i].pShader = ResourceLoader::LoadShader("LightingPSMain");
+            materials[i].specular = _speculars[i];
+            materials[i].metallic = 1.0f;
+            materials[i].roughness = 0.5f;
         }
     }
 

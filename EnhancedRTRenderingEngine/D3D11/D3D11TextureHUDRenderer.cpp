@@ -12,7 +12,7 @@ bool D3D11TextureHUDRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>
     return true;
 }
 
-void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const ResourceHandle<Texture2D>& texture)
+void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const Texture2D& texture)
 {
     Size viewportSize = Size{ size.w / _view->GetRenderSize().w, size.h / _view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / _view->GetRenderSize().w - 0.5f, pos.y / _view->GetRenderSize().h - 0.5f } * 2.0f;
@@ -23,8 +23,8 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const ResourceHand
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
     D3D11DrawPlate<TexVertex> element;
-    D3D11Texture tex;
-    tex.Initialize(_view->hpDevice, texture().GetParam(), texture());
+    D3D11Texture tex(_view->hpDevice);
+    tex.Initialize(texture.GetParam(), texture);
     element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, 0);
     element.SetTexture(tex);
     element.Draw(_view);
@@ -52,7 +52,7 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture
 
     if (type == TextureType::TextureCube) {
         D3D11_TEXTURE2D_DESC faceDesc(desc);
-        D3D11Texture faceTexture;
+        D3D11Texture faceTexture(_view->hpDevice);
         ComPtr<ID3D11Texture2D> faceTextureSrc;
 
         faceDesc.ArraySize = 1;
@@ -65,7 +65,7 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture
             0, 0, 0, 0, texture.GetTexture().Get(), 
             D3D11CalcSubresource(0, index, desc.MipLevels), nullptr);
 
-        faceTexture.Initialize(_view->hpDevice, faceTextureSrc);
+        faceTexture.Initialize(faceTextureSrc);
 
         element.SetTexture(faceTexture);
     }

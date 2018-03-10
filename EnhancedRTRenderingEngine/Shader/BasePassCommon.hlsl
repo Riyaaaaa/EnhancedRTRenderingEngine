@@ -18,6 +18,9 @@ TextureCube PointShadowMap : register(t1);
 SamplerState ShadowSampler : register(s0);
 SamplerState PShadowSampler : register(s1);
 
+TextureCube EnviromentMap : register(t2);
+SamplerState EnviromentSampler : register(s2);
+
 struct PointLightParam
 {
     float4 pos;
@@ -50,26 +53,12 @@ cbuffer MaterialBuffer : register(b1)
     MaterialParameters materialParameters;
 }
 
-float PointLighting(PointLightParam param, float3 posw, float3 norw) {
-    float3 dir;
-    float  len;
-    float  colD;
-    float  colA;
-    float3  col;
-
-    dir = param.pos.xyz - posw.xyz;
-    len = length(dir);
-    dir = dir / len;
-    
-    // point light
-    colD = saturate(dot(norw.xyz, dir));
-    colA = saturate(1.0f / (param.att.x + param.att.y * len + param.att.z * len * len));
-
-    return saturate(colD * colA);
+float3 PointLighting(float3 diffuseColor, float distance, float3 attenuation) {
+    return diffuseColor * saturate(1.0f / (attenuation.x + attenuation.y * distance + attenuation.z * distance * distance));
 }
 
-float DirectionalLighting(float3 Direction, float3 nor) {
-    return saturate(dot(nor, -Direction));
+float3 DirectionalLighting(float3 diffuseColor) {
+    return diffuseColor / PI;
 }
 
 bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
@@ -98,6 +87,10 @@ float3 FrenselEquations(float3 reflectionCoef, float3 H, float3 V) {
     return (reflectionCoef + (1.0f - reflectionCoef) * pow(1.0 - saturate(dot(V, H)), 5.0));
 }
 
+float FrenselEquations(float reflectionCoef, float3 H, float3 V) {
+    return (reflectionCoef + (1.0f - reflectionCoef) * pow(1.0 - saturate(dot(V, H)), 5.0));
+}
+
 
 // Microfacet distribution function
 // GGX(Throwbridge-Reiz) model
@@ -118,12 +111,12 @@ float GeometryAttenuationFactor(float a, float dotNV, float dotNL) {
 }
 
 
-float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float3 specular, float roughness) {
+float SpecularBRDF(float3 normalizedLightDir, float4 posw, float4 norw, float4 eye, float3 specular, float roughness) {
     float3 N = norw.xyz;
     float3 V = normalize(eye.xyz - posw.xyz);
-    float3 L = normalize(-lightDir.xyz);
+    float3 L = normalizedLightDir;
 
-    float dotNL = saturate(dot(N, L));
+    float dotNL = saturate(dot(N, normalizedLightDir));
     float dotNV = saturate(dot(N, V));
     float3 H = normalize(L + V); // half vector
     float dotNH = saturate(dot(N, H));
@@ -135,4 +128,20 @@ float SpecularBRDF(float4 lightDir, float4 posw, float4 norw, float4 eye, float3
     float G = GeometryAttenuationFactor(a, dotNV, dotNL);
     float F = FrenselEquations(specular, H, V);
     return (F * G * D) / (4.0 * dotNL * dotNV + EPSILON);
+}
+
+float3 ReflectionFrensel(float4 posw, float4 norw, float4 eye, float eta)
+{
+    float3 N = norw;
+    float3 I = normalize(posw.xyz - eye);
+    float3 R = reflect(I, N);
+    float3 T = refract(I, N, eta);
+    float fresnel = FrenselEquations(eta, N, I);
+
+    float3 reflecColor = EnviromentMap.Sample(EnviromentSampler, R);
+    float3 refracColor = EnviromentMap.Sample(EnviromentSampler, T);
+
+    float3 col = lerp(refracColor, reflecColor, fresnel);
+
+    return col;
 }

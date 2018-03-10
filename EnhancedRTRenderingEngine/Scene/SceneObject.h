@@ -1,10 +1,11 @@
 #pragma once
 
+#include "ERTREObject.h"
 #include "Structure/Structure.h"
 
 #include <DirectXMath.h>
 
-class SceneObject
+class SceneObject : public ERTREObject
 {
 public:
     SceneObject();
@@ -16,6 +17,8 @@ public:
     void SetRotation(Vector3D rot);
     void SetLocation(Vector3D lot);
     void SetScale(Vector3D scale);
+
+    Vector3D GetLocation() { return transform.location; }
 
 protected:
     bool dirty;

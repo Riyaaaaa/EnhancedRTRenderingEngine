@@ -7,23 +7,24 @@
 
 #include "Common.h"
 
-D3D11Texture::D3D11Texture() :
+D3D11Texture::D3D11Texture(const ComPtr<ID3D11Device>& device) :
+    mDevice(device),
     mTexture(nullptr),
     mView(nullptr),
     mSampler(nullptr){
 }
 
 
-bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, const Texture2D& tex)
+bool D3D11Texture::Initialize(TextureParam param, const Texture2D& tex)
 {
     std::vector<Texture2D> v;
     if (tex.isValid()) {
         v.push_back(tex);
     }
-    return Initialize(device, param, v);
+    return Initialize(param, v);
 }
 
-bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, const std::vector<Texture2D>& textures) {
+bool D3D11Texture::Initialize(TextureParam param, const std::vector<Texture2D>& textures) {
     std::vector<D3D11_SUBRESOURCE_DATA> initData;
     D3D11_SUBRESOURCE_DATA* initDataPtr = nullptr;
     if (!textures.empty()) {
@@ -33,11 +34,8 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, c
 
         initData.resize(param.arraySize);
         for (int i = 0; i < param.arraySize; i++) {
-            for (std::size_t i = 0; i < textures.size(); i++) {
-                initData[i].pSysMem = textures[i].get();
-                initData[i].SysMemPitch = textures[i].Stride();
-                //initData.SysMemSlicePitch = tex.Size();
-            }
+            initData[i].pSysMem = textures[i].get();
+            initData[i].SysMemPitch = textures[i].Stride();
         }
 
         initDataPtr = &initData[0];
@@ -62,7 +60,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, c
         break;
     }
 
-    auto hr = device->CreateTexture2D(&desc, initDataPtr, mTexture.ToCreator());
+    auto hr = mDevice->CreateTexture2D(&desc, initDataPtr, mTexture.ToCreator());
     if (FAILED(hr)) {
         return false;
     }
@@ -87,7 +85,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, c
         break;
     }
 
-    hr = device->CreateShaderResourceView(mTexture.Get(), &SRVDesc, mView.ToCreator());
+    hr = mDevice->CreateShaderResourceView(mTexture.Get(), &SRVDesc, mView.ToCreator());
     if (FAILED(hr))
     {
         return false;
@@ -109,7 +107,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, c
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     // Create the texture sampler state.
-    hr = device->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
+    hr = mDevice->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
     if (FAILED(hr))
     {
         return false;
@@ -118,7 +116,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, TextureParam param, c
     return true;
 }
 
-bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2D> tex) {
+bool D3D11Texture::Initialize(ComPtr<ID3D11Texture2D> tex) {
     mTexture = tex;
 
     D3D11_TEXTURE2D_DESC texDesc;
@@ -154,7 +152,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2
         }
     }
 
-    auto hr = device->CreateShaderResourceView(tex.Get(), &SRVDesc, mView.ToCreator());
+    auto hr = mDevice->CreateShaderResourceView(tex.Get(), &SRVDesc, mView.ToCreator());
     if (FAILED(hr))
     {
         return false;
@@ -176,7 +174,7 @@ bool D3D11Texture::Initialize(ComPtr<ID3D11Device> device, ComPtr<ID3D11Texture2
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
     // Create the texture sampler state.
-    hr = device->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
+    hr = mDevice->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
     if (FAILED(hr))
     {
         return false;

@@ -36,6 +36,7 @@ enum TextureBindTarget : unsigned int {
 };
 
 enum class TextureType {
+    None,
     Texture2D,
     Texture2DArray,
     TextureCube

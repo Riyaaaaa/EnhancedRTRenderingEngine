@@ -23,11 +23,6 @@ void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObjec
         pShader = ResourceLoader::LoadShader("MinTextureColor");
         _index = 0.0f;
     }
-    else if (type == TextureType::TextureCube) {
-        pShader = ResourceLoader::LoadShader("MinTextureCubeColor");
-        _index = (float)index;
-    }
-
     _type = type;
 
     if (!CreateBuffer(device, element, _index)) {
@@ -101,19 +96,19 @@ bool D3D11DrawPlate<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshObj
 
 template<class VertType>
 void D3D11DrawPlate<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view) {
-    auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), hpInputLayout.ToCreator());
+    auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), hpInputLayout.ToCreator());
     if (FAILED(err)) {
         return;
     }
 
     view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
 
-    if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, hpVertexShader.ToCreator()))) {
+    if (FAILED(view->hpDevice->CreateVertexShader(vShader.get(), vShader.size(), NULL, hpVertexShader.ToCreator()))) {
         return;
     }
     view->hpDeviceContext->VSSetShader(hpVertexShader.Get(), NULL, 0);
 
-    if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, hpPixelShader.ToCreator()))) {
+    if (FAILED(view->hpDevice->CreatePixelShader(pShader.get(), pShader.size(), NULL, hpPixelShader.ToCreator()))) {
         return;
     }
     view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);

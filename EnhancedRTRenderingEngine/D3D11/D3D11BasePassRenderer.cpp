@@ -26,7 +26,7 @@ bool D3D11BasePassRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& 
     return true; 
 }
 
-void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
+void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     if (!_view) {
         return;
     }
@@ -90,15 +90,26 @@ void D3D11BasePassRenderer::render(D3D11Scene* _scene) {
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
     // todo: support multi lights
-    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
-    _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    if (hConstantBuffer.numDirecitonalLights > 0) {
+        _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
+        _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    }
     
-    _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
-    _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
+    if (hConstantBuffer.numPointLights > 0) {
+        _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
+        _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
+    }
 
 
     for (auto && object : scene->GetViewObjects()) {
         D3D11DrawElement<Scene::VertType> element;
+
+        if (object.HasReflectionSource()) {
+            auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
+            _view->hpDeviceContext->PSSetShaderResources(2, 1, tex.GetSubResourceView().Ref());
+            _view->hpDeviceContext->PSSetSamplers(2, 1, tex.GetSampler().Ref());
+        }
+        
         element.Initialize(_view->hpDevice, &object, OpaqueRenderTag);
         element.Draw(_view);
     }

@@ -10,6 +10,9 @@
 #include "Mesh/SimpleModel/Box.h"
 #include "Mesh/Mesh3DModel.h"
 
+#include "Scene/SkyBox.h"
+#include "Scene/Enviroment/StaticCubeReflectionCapture.h"
+
 #include "Material/Material.h"
 
 #include "Resource/ResourceLoader.h"
@@ -38,24 +41,20 @@ Scene::Scene() {
     //viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
     //viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
 
-    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "", 0.2f, 0.5f},
-        TextureUtils::CreateColorPalletTexture(64, 64));
+    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "plane.png", 0.0f, 0.0f});
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
     //auto model = ResourceLoader::LoadPMDModel("nolicensed2");
     //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    auto model2 = ResourceLoader::LoadDXModel("sphere");
     auto model = ResourceLoader::LoadDXModel("coin");
-    auto model2 = ResourceLoader::LoadPMDModel("nolicensed");
-
-    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
-    viewObjects.back().SetLocation(Vector3D{ 2.0f, 0.0f, 0.0f });
+    
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ -2.0f, 0.0f, -2.0f });
-    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ -1.0f, 0.0f, 2.0f });
-    viewObjects.back().SetScale(Vector3D{ 2.0f, 1.0f, 1.0f });
-    viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
+    viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, 0.0f });
+    viewObjects.back().SetScale(Vector3D{ 10.0f, 10.0f, 10.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ -0.3f, 0.0f, 2.0f });
 
@@ -66,15 +65,29 @@ Scene::Scene() {
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
     viewObjects.back().SetMaterial(std::move(materials));
 
+    auto skybox = SkyBox("Storforsen4");
+    viewObjects.push_back(skybox);
+
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 
-    pointLights.emplace_back(PointLight{});
+    /*pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
+    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });*/
+
+    captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
 
     mainCameraIdx = 0;
 
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
+
+    meshDirty = true;
+    lightDirty = true;
+}
+
+Scene::~Scene() {
+    for (auto && object : captureObjects) {
+        delete object;
+    }
 }
 
 XMMATRIX Scene::GetPerspectiveProjection() {

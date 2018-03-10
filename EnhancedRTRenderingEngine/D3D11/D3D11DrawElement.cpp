@@ -6,6 +6,7 @@
 
 #include "Structure/Structure.h"
 #include "Resource/ResourceLoader.h"
+#include "Resource/RawBinary.h"
 #include "Constant/RenderTag.h"
 #include "Common.h"
 
@@ -33,11 +34,15 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     param.format = TextureFormat::RGBA8_UNORM;
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
-    textures.resize(drawMesh->GetMesh()->GetMaterialNum());
+    textures.resize(drawMesh->GetMesh()->GetMaterialNum(), D3D11Texture(device));
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
-        if (material.texture.HasResource() && material.texture().isValid()) {
-            textures[i].Initialize(device, param, material.texture());
+        param.type = material.type;
+        if (material.type == TextureType::Texture2D) {
+            textures[i].Initialize(param, material.texture);
+        }
+        else if (material.type == TextureType::TextureCube) {
+            textures[i].Initialize(param, material.cubeTexture);
         }
     }
 
@@ -78,39 +83,6 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     drawMesh = element;
 
     _state = RenderingState::WRITE_DEPTH;
-}
-
-template<class VertType>
-void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* element, RenderTag::HUDRender) {
-    auto& context = element->GetContext();
-    _state = RenderingState::NONE;
-
-    UINT memoryOffset = 0;
-    for (auto&& layout : context.layouts) {
-        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ layout.name, 0, CastToD3D11Format<DXGI_FORMAT>(layout.vProperty), 0, memoryOffset, D3D11_INPUT_PER_VERTEX_DATA, 0 });
-        memoryOffset += GetMemoryBlockSize(layout.vProperty);
-    }
-
-    primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(context.pType);
-
-    if (!CreateBuffer(device, element)) {
-        _state = RenderingState::FAILED;
-        return;
-    }
-
-    drawMesh = element;
-    TextureParam param;
-    param.format = TextureFormat::RGBA8_UNORM;
-    param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
-
-    textures.resize(drawMesh->GetMesh()->GetMaterialNum());
-    for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
-        auto& material = drawMesh->GetMaterials()[i];
-        if (material.texture.HasResource() && material.texture().isValid()) {
-            textures[i].Initialize(device, param, material.texture());
-        }
-    }
-    _state = RenderingState::WRITE_HUD;
 }
 
 template<class VertType>
@@ -171,7 +143,7 @@ bool D3D11DrawElement<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshO
 
 template<class VertType>
 void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>& view, int drawIndex) {
-    ResourceHandle<> vShader, pShader;
+    RawBinary vShader, pShader;
     MaterialBuffer materialParams;
 
     if (_state == RenderingState::WRITE_DEPTH){
@@ -185,20 +157,20 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         materialParams.roughness = material.roughness;
     }
     
-    auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader().get(), vShader().size(), hpInputLayout.ToCreator());
+    auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), vShader.get(), vShader.size(), hpInputLayout.ToCreator());
     if (FAILED(err)) {
         return;
     }
 
     view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
 
-    if (FAILED(view->hpDevice->CreateVertexShader(vShader().get(), vShader().size(), NULL, hpVertexShader.ToCreator()))) {
+    if (FAILED(view->hpDevice->CreateVertexShader(vShader.get(), vShader.size(), NULL, hpVertexShader.ToCreator()))) {
         return;
     }
     view->hpDeviceContext->VSSetShader(hpVertexShader.Get(), NULL, 0);
 
-    if (pShader.HasResource()) {
-        if (FAILED(view->hpDevice->CreatePixelShader(pShader().get(), pShader().size(), NULL, hpPixelShader.ToCreator()))) {
+    if (pShader.isValid()) {
+        if (FAILED(view->hpDevice->CreatePixelShader(pShader.get(), pShader.size(), NULL, hpPixelShader.ToCreator()))) {
             return;
         }
         view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
@@ -212,6 +184,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
         else {
             view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
             view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
+
             if (textures[drawIndex].IsAvalable()) {
                 view->hpDeviceContext->PSSetShaderResources(10, 1, textures[drawIndex].GetSubResourceView().Ref());
                 view->hpDeviceContext->PSSetSamplers(10, 1, textures[drawIndex].GetSampler().Ref());
@@ -241,7 +214,7 @@ template<class VertType>
 void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& view) {
     this->SetBuffer(view);
     int index = 0, matIdx = -1;
-    for (int i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
+    for (std::size_t i = 0; i < drawMesh->GetMesh()->GetDrawTargetNum(); i++) {
         if (matIdx != drawMesh->GetMesh()->GetDrawFacesMap()[i].materialIdx) {
             matIdx = drawMesh->GetMesh()->GetDrawFacesMap()[i].materialIdx;
             this->SetShader(view, matIdx);
