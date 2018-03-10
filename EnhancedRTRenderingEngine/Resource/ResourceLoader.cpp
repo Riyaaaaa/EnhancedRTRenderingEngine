@@ -129,7 +129,7 @@ int ResourceLoader::LoadPNG(std::string filename, Texture2D& outTex) {
         fclose(fp);
         return -7;
     }
-    png_bytep buf = new png_byte[w * h * d * 4];
+    png_bytep buf = new png_byte[w * h * d];
     if (buf == NULL)
     {
         png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
