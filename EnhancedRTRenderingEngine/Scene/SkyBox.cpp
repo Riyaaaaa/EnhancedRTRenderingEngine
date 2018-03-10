@@ -26,3 +26,7 @@ SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
     transform.location = Vector3D(0.0f, 0.0f, 0.0f);
     transform.scale = Vector3D(100.0f, 100.0f, 100.0f);
 }
+
+const std::vector<Texture2D>& SkyBox::GetCubeTextureResource() {
+    return _materials[0].cubeTexture;
+}

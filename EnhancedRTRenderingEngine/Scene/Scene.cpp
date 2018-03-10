@@ -76,8 +76,14 @@ Scene::Scene() {
 
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    meshDirty = false;
+    meshDirty = true;
     lightDirty = true;
+}
+
+Scene::~Scene() {
+    for (auto && object : captureObjects) {
+        delete object;
+    }
 }
 
 XMMATRIX Scene::GetPerspectiveProjection() {

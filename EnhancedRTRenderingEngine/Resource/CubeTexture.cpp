@@ -12,6 +12,10 @@ size(_size)
     }
 }
 
+CubeTexture::CubeTexture(const std::vector<Texture2D>& texResource) {
+    textures = texResource;
+}
+
 DirectX::XMVECTOR CubeTexture::lookAt[6] = {
     XMVectorSet(1.0f,  0.0f,  0.0f, 0.0f), // +X
     XMVectorSet(-1.0f,  0.0f,  0.0f, 0.0f), // -X

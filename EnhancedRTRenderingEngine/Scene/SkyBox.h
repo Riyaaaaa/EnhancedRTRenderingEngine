@@ -7,5 +7,7 @@ class SkyBox : public MeshObject<PMDVertex>
 {
 public:
     SkyBox(const std::string& skyboxTextureDirectory);
+
+    const std::vector<Texture2D>& GetCubeTextureResource();
 };
 

@@ -21,6 +21,23 @@ void D3D11SceneInfo::Refresh(ComPtr<ID3D11Device> device, Scene* scene) {
             for (auto && pLight : scene->GetPointLights()) {
                 pLight.SetDirty(true);
             }
+            scene->SetLightDirty(false);
+        }
+        
+        if (scene->MeshDirty()) {
+            for (auto && reflectionCapture : scene->GetReflectionCaptures()) {
+                if (_enviromentMaps.find(reflectionCapture->GetID()) == _enviromentMaps.end()) {
+                    _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), D3D11Texture(device)));
+                }
+
+                reflectionCapture->SetupTexture(&_enviromentMaps.at(reflectionCapture->GetID()));
+            }
+
+            for (auto && viewObject : scene->GetViewObjects()) {
+                viewObject.FindPrecisionReflectionSource(scene->GetReflectionCaptures());
+            }
+
+            scene->SetMeshDirty(false);
         }
     }
 }

@@ -17,9 +17,14 @@ public:
     typedef PMDVertex VertType;
 
     Scene();
+    ~Scene();
 
     bool Dirty() { return lightDirty | meshDirty; }
     bool LightDirty() { return lightDirty; }
+    bool MeshDirty() { return meshDirty; }
+
+    void SetLightDirty(bool b) { lightDirty = b; }
+    void SetMeshDirty(bool b) { meshDirty = b; }
 
     DirectX::XMMATRIX GetPerspectiveProjection();
     DirectX::XMMATRIX GetWorldProjection();
@@ -30,6 +35,7 @@ public:
 
     std::vector<PointLight>& GetPointLights() { return pointLights; }
     std::vector<PointLightParameters> GetPointLightParams();
+    std::vector<CubeReflectionCapture*> GetReflectionCaptures() { return captureObjects; }
 
     DirectX::XMVECTOR GetEyePoint();
 
@@ -43,7 +49,7 @@ private:
     std::vector<MeshObject<VertType>> viewObjects;
     //std::vector<SceneObject> exertObjects;
     std::vector<CameraObject> cameraObjects;
-    std::vector<CubeReflectionCapture> captureObjects;
+    std::vector<CubeReflectionCapture*> captureObjects;
 
     std::vector<DirectionalLight> directionalLights;
     std::vector<PointLight> pointLights;

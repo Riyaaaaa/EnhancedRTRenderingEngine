@@ -11,7 +11,9 @@ class CubeReflectionCapture : public SceneObject
 public:
     CubeReflectionCapture() : dirty(true) {}
     CubeReflectionCapture(float size);
-    virtual void ReflectGraphics(GITexture* tex);
+    virtual void SetupTexture(GITexture* tex);
+    virtual bool Contains(Vector3D pos);
+    virtual float PrecisionSize() { return box.w; }
 
 protected:
     bool dirty;

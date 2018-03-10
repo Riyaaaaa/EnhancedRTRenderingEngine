@@ -2,10 +2,11 @@
 
 #include <d3d11.h>
 #include "ComPtr.h"
+#include "GraphicsInterface/GITexture.h"
 #include "Resource/Texture2D.h"
 #include "RenderingContext.h"
 
-class D3D11Texture
+class D3D11Texture : public GITexture
 {
     ComPtr<ID3D11Device> mDevice;
     ComPtr<ID3D11Texture2D> mTexture;

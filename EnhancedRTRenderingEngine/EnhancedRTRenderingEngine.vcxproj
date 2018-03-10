@@ -160,6 +160,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITexture.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
     <ClInclude Include="D3D11\D3D11DrawPlate.h" />
@@ -305,6 +306,7 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="GraphicsInterface\GITexture.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="D3D11\D3D11DrawPlate.cpp" />

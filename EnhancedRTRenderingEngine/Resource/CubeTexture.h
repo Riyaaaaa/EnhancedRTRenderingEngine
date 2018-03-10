@@ -20,13 +20,14 @@ public:
     static DirectX::XMVECTOR lookAt[6];
     static DirectX::XMVECTOR up[6];
 
-    CubeTexture(int _size = 1000);
+    explicit CubeTexture(int _size = 1000);
+    CubeTexture(const std::vector<Texture2D>& texResource);
 
-    const ResourceHandle<Texture2D>& operator[](CUBE_DIRECTION dir) {
+    const Texture2D& operator[](CUBE_DIRECTION dir) {
         return textures[dir];
     }
 
     int size;
-    std::vector<ResourceHandle<Texture2D>> textures;
+    std::vector<Texture2D> textures;
 };
 

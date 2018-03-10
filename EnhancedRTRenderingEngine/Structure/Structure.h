@@ -13,11 +13,11 @@ struct Size {
 };
 
 struct Size3D {
-    float w, h, z;
+    float w, h, d;
 };
 
 struct Color4B {
-    float r, g, b, a;
+    unsigned char r, g, b, a;
 };
 
 struct BoundingBox2D {
