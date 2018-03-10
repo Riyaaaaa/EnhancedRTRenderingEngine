@@ -87,6 +87,10 @@ float3 FrenselEquations(float3 reflectionCoef, float3 H, float3 V) {
     return (reflectionCoef + (1.0f - reflectionCoef) * pow(1.0 - saturate(dot(V, H)), 5.0));
 }
 
+float FrenselEquations(float reflectionCoef, float3 H, float3 V) {
+    return (reflectionCoef + (1.0f - reflectionCoef) * pow(1.0 - saturate(dot(V, H)), 5.0));
+}
+
 
 // Microfacet distribution function
 // GGX(Throwbridge-Reiz) model
@@ -124,4 +128,20 @@ float SpecularBRDF(float3 normalizedLightDir, float4 posw, float4 norw, float4 e
     float G = GeometryAttenuationFactor(a, dotNV, dotNL);
     float F = FrenselEquations(specular, H, V);
     return (F * G * D) / (4.0 * dotNL * dotNV + EPSILON);
+}
+
+float3 ReflectionFrensel(float4 posw, float4 norw, float4 eye, float eta)
+{
+    float3 N = norw;
+    float3 I = normalize(posw.xyz - eye);
+    float3 R = reflect(I, N);
+    float3 T = refract(I, N, eta);
+    float fresnel = FrenselEquations(eta, N, I);
+
+    float3 reflecColor = EnviromentMap.Sample(EnviromentSampler, R);
+    float3 refracColor = EnviromentMap.Sample(EnviromentSampler, T);
+
+    float3 col = lerp(refracColor, reflecColor, fresnel);
+
+    return col;
 }

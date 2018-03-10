@@ -11,6 +11,7 @@
 #include "Mesh/Mesh3DModel.h"
 
 #include "Scene/SkyBox.h"
+#include "Scene/Enviroment/StaticCubeReflectionCapture.h"
 
 #include "Material/Material.h"
 
@@ -64,13 +65,16 @@ Scene::Scene() {
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
     viewObjects.back().SetMaterial(std::move(materials));
 
-    viewObjects.push_back(SkyBox("Storforsen4"));
+    auto skybox = SkyBox("Storforsen4");
+    viewObjects.push_back(skybox);
 
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 
-    pointLights.emplace_back(PointLight{});
+    /*pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
+    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });*/
+
+    captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
 
     mainCameraIdx = 0;
 

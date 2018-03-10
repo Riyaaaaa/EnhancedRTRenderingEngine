@@ -154,11 +154,14 @@ std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
             ResourceLoader::LoadTexture(_materialTextures[i], materials[i].texture);
             materials[i].specular = _speculars[i];
             materials[i].metallic = 0.5f;
-            materials[i].roughness = 0.2f;
+            materials[i].roughness = 0.5f;
             materials[i].type = TextureType::Texture2D;
         }
         else {
             materials[i].pShader = ResourceLoader::LoadShader("LightingPSMain");
+            materials[i].specular = _speculars[i];
+            materials[i].metallic = 1.0f;
+            materials[i].roughness = 0.5f;
         }
     }
 

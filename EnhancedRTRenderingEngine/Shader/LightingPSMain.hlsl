@@ -18,7 +18,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
         if (IsVisibleFromDirectionalLight(IN.shadowCoord)) {
             float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz));
             diffuse += irradiance * DirectionalLighting(diffuseColor);
-            specular += irradiance * SpecularBRDF(DirectionalLights[i], IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
+            specular += irradiance * SpecularBRDF(-DirectionalLights[i], IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
 
@@ -32,6 +32,8 @@ float4 ps_main(pixcelIn IN) : SV_Target
             specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
+
+    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f);
 
     float3 col = saturate(diffuse + specular);
     return float4(col, 1.0f);

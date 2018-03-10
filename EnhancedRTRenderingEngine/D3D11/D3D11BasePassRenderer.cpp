@@ -90,11 +90,15 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
     // todo: support multi lights
-    _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
-    _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    if (hConstantBuffer.numDirecitonalLights > 0) {
+        _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
+        _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+    }
     
-    _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
-    _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
+    if (hConstantBuffer.numPointLights > 0) {
+        _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
+        _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
+    }
 
 
     for (auto && object : scene->GetViewObjects()) {
