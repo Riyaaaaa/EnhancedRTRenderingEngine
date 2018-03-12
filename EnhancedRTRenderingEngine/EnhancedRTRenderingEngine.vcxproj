@@ -160,6 +160,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
+    <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITexture.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
@@ -306,6 +308,8 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
+    <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="GraphicsInterface\GITexture.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
@@ -375,6 +379,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\Filter\Gussian5x5Filter.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\HUDVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
