@@ -136,7 +136,7 @@ float3 ReflectionFrensel(float4 posw, float4 norw, float4 eye, float eta)
     float3 I = normalize(posw.xyz - eye);
     float3 R = reflect(I, N);
     float3 T = refract(I, N, eta);
-    float fresnel = FrenselEquations(eta, N, I);
+    float fresnel = FrenselEquations(pow(eta - 1 / eta + 1, 2), N, I);
 
     float3 reflecColor = EnviromentMap.Sample(EnviromentSampler, R);
     float3 refracColor = EnviromentMap.Sample(EnviromentSampler, T);

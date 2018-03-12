@@ -284,7 +284,7 @@ public:
     }
 
     // ->ƒƒ“ƒo‘I‘ð‰‰ŽZŽq
-    T* operator ->(){ return *m_ppInterface; }
+    T* operator ->() const { return *m_ppInterface; }
 
 
 /////////////////

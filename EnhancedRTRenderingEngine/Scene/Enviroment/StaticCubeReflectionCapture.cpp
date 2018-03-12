@@ -5,6 +5,7 @@
 StaticCubeReflectionCapture::StaticCubeReflectionCapture(const CubeTexture& tex) :
     reflectionSource(tex)
 {
+    box.w = box.h = box.d = reflectionSource.size;
 }
 
 void StaticCubeReflectionCapture::SetupTexture(GITexture* tex) {

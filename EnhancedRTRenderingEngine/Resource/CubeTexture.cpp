@@ -14,6 +14,7 @@ size(_size)
 
 CubeTexture::CubeTexture(const std::vector<Texture2D>& texResource) {
     textures = texResource;
+    size = textures[0].Width();
 }
 
 DirectX::XMVECTOR CubeTexture::lookAt[6] = {

@@ -100,7 +100,6 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
         _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
     }
 
-
     for (auto && object : scene->GetViewObjects()) {
         D3D11DrawElement<Scene::VertType> element;
 
@@ -109,7 +108,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
             _view->hpDeviceContext->PSSetShaderResources(2, 1, tex.GetSubResourceView().Ref());
             _view->hpDeviceContext->PSSetSamplers(2, 1, tex.GetSampler().Ref());
         }
-        
+
         element.Initialize(_view->hpDevice, &object, OpaqueRenderTag);
         element.Draw(_view);
     }
