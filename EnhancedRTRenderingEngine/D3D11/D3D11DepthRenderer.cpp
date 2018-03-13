@@ -136,7 +136,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
         texArrayDesc.CPUAccessFlags = 0;
         texArrayDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-        ComPtr<ID3D11Texture2D> texArray = 0;
+        ComPtr<ID3D11Texture2D> texArray(nullptr);
         if (FAILED(_view->hpDevice->CreateTexture2D(&texArrayDesc, 0, texArray.ToCreator())))
             return;
 

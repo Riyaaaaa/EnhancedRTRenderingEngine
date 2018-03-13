@@ -42,7 +42,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
 
     
     ConstantBuffer hConstantBuffer = D3D11ConstantBufferBuilder::CreateBasePassConstantBuffer(scene);
-    ComPtr<ID3D11Buffer> hpConstantBuffer = nullptr, hpMaterialBuffer = nullptr;
+    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr), hpMaterialBuffer(nullptr);
     
     hpConstantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<ConstantBuffer>(_view->hpDevice, &hConstantBuffer);
     hpMaterialBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<MaterialBuffer>(_view->hpDevice, nullptr);

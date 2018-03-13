@@ -104,6 +104,10 @@ unsigned int CastToD3D11Format<unsigned int, unsigned int>(unsigned int prop) {
         flag |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
     }
 
+    if (prop & TextureBindTarget::RENDER_TARGET) {
+        flag |= D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET;
+    }
+
     return flag;
 }
 

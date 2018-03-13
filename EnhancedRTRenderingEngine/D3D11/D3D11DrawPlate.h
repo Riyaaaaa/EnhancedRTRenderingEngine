@@ -16,7 +16,7 @@ class D3D11DrawPlate
 public:
     D3D11DrawPlate() {}
 
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type, int index);
+    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type, std::string psshader, int index);
 
     virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 

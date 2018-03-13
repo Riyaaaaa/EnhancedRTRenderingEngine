@@ -13,6 +13,8 @@ class D3D11Texture : public GITexture
     ComPtr<ID3D11ShaderResourceView> mView;
     ComPtr<ID3D11SamplerState> mSampler;
 
+    TextureParam _param;
+
 public:
     D3D11Texture(){}
     D3D11Texture(const ComPtr<ID3D11Device>& device);
@@ -22,7 +24,11 @@ public:
     }
     bool Initialize(TextureParam param, const Texture2D& tex = Texture2D{});
     bool Initialize(TextureParam param, const std::vector<Texture2D>& textures);
-    bool Initialize(ComPtr<ID3D11Texture2D> tex);
+    bool Initialize(const ComPtr<ID3D11Texture2D>& tex);
+
+    const TextureParam& GetParam() const {
+        return _param;
+    }
 
     const ComPtr<ID3D11Texture2D>& GetTexture() const
     {

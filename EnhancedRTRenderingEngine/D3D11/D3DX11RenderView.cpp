@@ -23,7 +23,7 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
     }
 
     hpAdapter->GetParent(__uuidof(IDXGIFactory), (void**)hpDXGIFactory.ToCreator());
-    if (hpDXGIFactory == NULL) {
+    if (hpDXGIFactory == nullptr) {
         return false;
     }
 

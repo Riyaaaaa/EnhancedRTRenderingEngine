@@ -12,7 +12,7 @@ namespace D3D11ConstantBufferBuilder
     template <class BufferType>
     ComPtr<ID3D11Buffer> BuildConstantBuffer(const ComPtr<ID3D11Device>& device, BufferType* buffer) {
         D3D11_BUFFER_DESC bufferDesc;
-        ComPtr<ID3D11Buffer> hpConstantBuffer = nullptr;
+        ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
 
         bufferDesc.Usage = D3D11_USAGE_DEFAULT;
         bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -30,7 +30,7 @@ namespace D3D11ConstantBufferBuilder
         }
        
         if (FAILED(device->CreateBuffer(&bufferDesc, initPtr, hpConstantBuffer.ToCreator()))) {
-            return nullptr;
+            return ComPtr<ID3D11Buffer>(nullptr);
         }
 
         return hpConstantBuffer;

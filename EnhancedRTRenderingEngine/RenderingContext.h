@@ -24,9 +24,9 @@ std::vector<VertexLayout> CreateVertexLayout();
 
 struct TextureParam {
     unsigned int width, height;
-    unsigned int arraySize;
-    TextureFormat format;
-    unsigned int bindFlag;
+    TextureFormat format = TextureFormat::RGBA8_UNORM;
+    unsigned int bindFlag = TextureBindTarget::SHADER_RESOURCE;
+    unsigned int arraySize = 1;
     TextureType type = TextureType::Texture2D;
     TextureUsage usage = TextureUsage::Default;
     ResourceAccessFlag accessFlag = ResourceAccessFlag::None;

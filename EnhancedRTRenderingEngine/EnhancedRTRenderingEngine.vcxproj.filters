@@ -456,6 +456,9 @@
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="D3D11\D3D11GaussianFilter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -614,6 +617,9 @@
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="D3D11\D3D11GaussianFilter.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -642,7 +648,8 @@
     <FxCompile Include="Shader\MinTextureColor.hlsl" />
     <FxCompile Include="Shader\UnlitPixelShader.hlsl" />
     <FxCompile Include="Shader\UnlitCubeTexturePixelShader.hlsl" />
-    <FxCompile Include="Shader\Filter\Gussian5x5Filter.hlsl" />
+    <FxCompile Include="Shader\Filter\Gaussian5x5FilterX.hlsl" />
+    <FxCompile Include="Shader\Filter\Gaussian5x5FilterY.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

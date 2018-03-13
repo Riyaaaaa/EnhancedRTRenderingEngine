@@ -116,11 +116,11 @@ bool D3D11Texture::Initialize(TextureParam param, const std::vector<Texture2D>& 
     return true;
 }
 
-bool D3D11Texture::Initialize(ComPtr<ID3D11Texture2D> tex) {
+bool D3D11Texture::Initialize(const ComPtr<ID3D11Texture2D>& tex) {
     mTexture = tex;
 
     D3D11_TEXTURE2D_DESC texDesc;
-    tex->GetDesc(&texDesc);
+    mTexture->GetDesc(&texDesc);
 
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
     SRVDesc.Format = GetShaderResourceFormat(texDesc.Format);

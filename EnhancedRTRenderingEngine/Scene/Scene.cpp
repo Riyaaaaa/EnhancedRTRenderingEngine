@@ -70,9 +70,9 @@ Scene::Scene() {
 
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
 
-    /*pointLights.emplace_back(PointLight{});
+    pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
-    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });*/
+    pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
 
     captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
 
