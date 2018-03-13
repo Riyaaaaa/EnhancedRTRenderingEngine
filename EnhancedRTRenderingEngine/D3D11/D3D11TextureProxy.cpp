@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "D3D11FormatUtils.h"
 
 #include "Constant/RenderConfig.h"
@@ -7,7 +7,7 @@
 
 #include "Common.h"
 
-D3D11Texture::D3D11Texture(const ComPtr<ID3D11Device>& device) :
+D3D11TextureProxy::D3D11TextureProxy(const ComPtr<ID3D11Device>& device) :
     mDevice(device),
     mTexture(nullptr),
     mView(nullptr),
@@ -15,7 +15,7 @@ D3D11Texture::D3D11Texture(const ComPtr<ID3D11Device>& device) :
 }
 
 
-bool D3D11Texture::Initialize(TextureParam param, const Texture2D& tex)
+bool D3D11TextureProxy::Initialize(TextureParam param, const Texture2D& tex)
 {
     std::vector<Texture2D> v;
     if (tex.isValid()) {
@@ -24,7 +24,7 @@ bool D3D11Texture::Initialize(TextureParam param, const Texture2D& tex)
     return Initialize(param, v);
 }
 
-bool D3D11Texture::Initialize(TextureParam param, const std::vector<Texture2D>& textures) {
+bool D3D11TextureProxy::Initialize(TextureParam param, const std::vector<Texture2D>& textures) {
     std::vector<D3D11_SUBRESOURCE_DATA> initData;
     D3D11_SUBRESOURCE_DATA* initDataPtr = nullptr;
     if (!textures.empty()) {
@@ -63,6 +63,10 @@ bool D3D11Texture::Initialize(TextureParam param, const std::vector<Texture2D>& 
     auto hr = mDevice->CreateTexture2D(&desc, initDataPtr, mTexture.ToCreator());
     if (FAILED(hr)) {
         return false;
+    }
+
+    if (!(desc.BindFlags & D3D11_BIND_SHADER_RESOURCE)) {
+        return true;
     }
 
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
@@ -116,7 +120,7 @@ bool D3D11Texture::Initialize(TextureParam param, const std::vector<Texture2D>& 
     return true;
 }
 
-bool D3D11Texture::Initialize(const ComPtr<ID3D11Texture2D>& tex) {
+bool D3D11TextureProxy::Initialize(const ComPtr<ID3D11Texture2D>& tex) {
     mTexture = tex;
 
     D3D11_TEXTURE2D_DESC texDesc;

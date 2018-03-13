@@ -6,7 +6,7 @@
 #include <functional>
 
 #include "D3D11ConstantBufferBuilder.h"
-#include "D3D11DepthStencilTarget.h"
+#include "D3D11OMResource.h"
 #include "D3DX11RenderView.h"
 #include "D3D11SceneInfo.h"
 
@@ -20,7 +20,7 @@ public:
         _constantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<BufferType>(_view->hpDevice, buffer);
     }
 
-    D3D11Texture Apply(const D3D11Texture& src, const std::string& effect);
+    D3D11TextureProxy Apply(const D3D11TextureProxy& src, const std::string& effect);
 protected:
     std::shared_ptr<D3DX11RenderView> _view;
     ComPtr<ID3D11Buffer> _constantBuffer;

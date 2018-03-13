@@ -6,7 +6,7 @@
 #include "Resource/Texture2D.h"
 #include "RenderingContext.h"
 
-class D3D11Texture : public GITexture
+class D3D11TextureProxy : public GITexture
 {
     ComPtr<ID3D11Device> mDevice;
     ComPtr<ID3D11Texture2D> mTexture;
@@ -16,8 +16,8 @@ class D3D11Texture : public GITexture
     TextureParam _param;
 
 public:
-    D3D11Texture(){}
-    D3D11Texture(const ComPtr<ID3D11Device>& device);
+    D3D11TextureProxy(){}
+    D3D11TextureProxy(const ComPtr<ID3D11Device>& device);
 
     bool IsAvalable() {
         return mTexture != nullptr && mView != nullptr && mSampler != nullptr;

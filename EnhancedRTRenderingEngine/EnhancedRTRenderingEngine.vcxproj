@@ -161,7 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
-    <ClInclude Include="D3D11\D3D11GaussianFilter.h" />
+    <ClInclude Include="D3D11\D3D11TextureEffects.h" />
     <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITexture.h" />
@@ -184,7 +184,7 @@
     <ClInclude Include="test.h" />
     <ClInclude Include="Scene\CameraController.h" />
     <ClInclude Include="Constant\RenderTag.h" />
-    <ClInclude Include="D3D11\D3D11DepthStencilTarget.h" />
+    <ClInclude Include="D3D11\D3D11OMResource.h" />
     <ClInclude Include="D3D11\D3D11ForwardRenderer.h" />
     <ClInclude Include="D3D11\D3D11DepthRenderer.h" />
     <ClInclude Include="D3D11\D3D11FormatUtils.h" />
@@ -194,7 +194,7 @@
     <ClInclude Include="Material\MaterialParameters.h" />
     <ClInclude Include="Mesh\Mesh3DModel.h" />
     <ClInclude Include="Mesh\SimpleModel\Box.h" />
-    <ClInclude Include="D3D11\D3D11Texture.h" />
+    <ClInclude Include="D3D11\D3D11TextureProxy.h" />
     <ClInclude Include="Mesh\Primitive\Primitives.h" />
     <ClInclude Include="Mesh\Primitive\Pentagon.h" />
     <ClInclude Include="Resource\PMD\PMDModel.h" />
@@ -310,7 +310,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
-    <ClCompile Include="D3D11\D3D11GaussianFilter.cpp" />
+    <ClCompile Include="D3D11\D3D11TextureEffects.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="GraphicsInterface\GITexture.cpp" />
@@ -327,7 +327,7 @@
     <ClCompile Include="Resource\X\DXParserNodes.cpp" />
     <ClCompile Include="Resource\X\StringParser.cpp" />
     <ClCompile Include="Scene\CameraController.cpp" />
-    <ClCompile Include="D3D11\D3D11DepthStencilTarget.cpp" />
+    <ClCompile Include="D3D11\D3D11OMResource.cpp" />
     <ClCompile Include="D3D11\D3D11FormatUtils.cpp" />
     <ClCompile Include="D3D11\D3D11ForwardRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11DepthRenderer.cpp" />
@@ -336,7 +336,7 @@
     <ClCompile Include="Material\Material.cpp" />
     <ClCompile Include="Mesh\Mesh3DModel.cpp" />
     <ClCompile Include="Mesh\SimpleModel\Box.cpp" />
-    <ClCompile Include="D3D11\D3D11Texture.cpp" />
+    <ClCompile Include="D3D11\D3D11TextureProxy.cpp" />
     <ClCompile Include="Mesh\Primitive\Pentagon.cpp" />
     <ClCompile Include="Resource\PMD\PMDModel.cpp" />
     <ClCompile Include="Utility\StringUtils.cpp" />
@@ -438,6 +438,12 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(TargetDir)%(Filename).cso</ObjectFileOutput>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\RenderShadowMapShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\UnlitCubeTexturePixelShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>

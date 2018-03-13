@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "D3D11DrawElement.h"
 
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "D3D11FormatUtils.h"
 
 #include "Structure/Structure.h"
@@ -34,7 +34,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     param.format = TextureFormat::RGBA8_UNORM;
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
-    textures.resize(drawMesh->GetMesh()->GetMaterialNum(), D3D11Texture(device));
+    textures.resize(drawMesh->GetMesh()->GetMaterialNum(), D3D11TextureProxy(device));
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         param.type = material.type;

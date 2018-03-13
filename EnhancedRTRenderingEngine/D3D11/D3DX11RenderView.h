@@ -3,7 +3,7 @@
 
 #include <d3d11.h>
 
-#include "D3D11DepthStencilTarget.h"
+#include "D3D11OMResource.h"
 #include "Constant/RenderConfig.h"
 #include "Structure/Structure.h"
 

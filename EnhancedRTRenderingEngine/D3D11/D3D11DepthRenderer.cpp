@@ -40,13 +40,13 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
 
     for (std::size_t i = 0; i < dLights.size(); i++) {
         auto& dLight = dLights[i];
-        D3D11DepthStencilTarget target(_view->hpDevice);
+        D3D11OMResource target(_view->hpDevice, dLight.GetShadowResolution());
 
         _view->SetViewPortSize(dLight.GetShadowResolution());
-        target.Initialize(_view->hpDeviceContext, dLight.GetShadowResolution());
+        target.InitializeDepthStencilView(_view->hpDeviceContext, true);
 
-        _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
-        _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView());
+        _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
         TransformBufferParam hConstantBuffer;
         hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
@@ -61,7 +61,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
             element.Draw(_view);
         }
 
-        _scene->GetDirectionalShadow(i) = target.GetTexture();
+        _scene->GetDirectionalShadow(i) = target.GetDSVTexture();
     }
 
     SAFE_RELEASE(hpConstantBuffer);
@@ -92,12 +92,12 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         Size resolution = pLight.GetShadowResolution();
         _view->SetViewPortSize(resolution);
-        std::vector<D3D11DepthStencilTarget> target(6, _view->hpDevice);
+        std::vector<D3D11OMResource> target(6, D3D11OMResource(_view->hpDevice, resolution));
         for (int j = 0; j < 6; j++) {
-            target[j].Initialize(_view->hpDeviceContext, resolution);
+            target[j].InitializeDepthStencilView(_view->hpDeviceContext, true);
 
-            _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target[j].GetDepthStencilView().Get());
-            _view->hpDeviceContext->ClearDepthStencilView(target[j].GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+            _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target[j].GetDepthStencilView());
+            _view->hpDeviceContext->ClearDepthStencilView(target[j].GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
             TransformBufferParam hConstantBuffer;
 
@@ -121,7 +121,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         // Each element in the texture array has the same format/dimensions.
         D3D11_TEXTURE2D_DESC texElementDesc;
-        target[0].GetTexture().GetTexture().Get()->GetDesc(&texElementDesc);
+        target[0].GetDSVTexture().GetTexture().Get()->GetDesc(&texElementDesc);
 
         D3D11_TEXTURE2D_DESC texArrayDesc;
         texArrayDesc.Width = texElementDesc.Width;
@@ -142,10 +142,10 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         for (UINT x = 0; x < 6; x++)
         {
-            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetTexture().GetTexture().Get(), 0, nullptr);
+            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetDSVTexture().GetTexture().Get(), 0, nullptr);
         }
 
-        D3D11Texture tex(_view->hpDevice);
+        D3D11TextureProxy tex(_view->hpDevice);
         tex.Initialize(texArray);
         _scene->GetPointShadow(i) = tex;
 

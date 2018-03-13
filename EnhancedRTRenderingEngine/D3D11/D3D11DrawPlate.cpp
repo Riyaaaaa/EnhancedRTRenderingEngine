@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "D3D11DrawPlate.h"
 
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "D3D11FormatUtils.h"
 
 #include "Structure/Structure.h"

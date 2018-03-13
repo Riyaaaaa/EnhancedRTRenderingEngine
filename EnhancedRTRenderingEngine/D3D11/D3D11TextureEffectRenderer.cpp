@@ -12,7 +12,7 @@ bool D3D11TextureEffectRenderer::Initialize(const std::shared_ptr<D3DX11RenderVi
     return true;
 }
 
-D3D11Texture D3D11TextureEffectRenderer::Apply(const D3D11Texture& src, const std::string& effect) {
+D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src, const std::string& effect) {
     D3D11_TEXTURE2D_DESC desc;
     src.GetTexture()->GetDesc(&desc);
     
@@ -20,10 +20,10 @@ D3D11Texture D3D11TextureEffectRenderer::Apply(const D3D11Texture& src, const st
 
     ComPtr<ID3D11Texture2D> dstTex;
     if (FAILED(_view->hpDevice->CreateTexture2D(&desc, nullptr, dstTex.ToCreator()))) {
-        return D3D11Texture();
+        return D3D11TextureProxy();
     }
 
-    D3D11Texture dst(_view->hpDevice);
+    D3D11TextureProxy dst(_view->hpDevice);
     dst.Initialize(dstTex);
 
     ComPtr<ID3D11RenderTargetView> rtv;

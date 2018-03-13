@@ -51,6 +51,8 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
         return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
     case TextureFormat::R16_TYPELESS:
         return DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS;
+    case TextureFormat::R32_TYPELESS:
+        return DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS;
     default:
         return DXGI_FORMAT_UNKNOWN;
     }
@@ -118,6 +120,8 @@ DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat) {
         return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
     case DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS:
         return DXGI_FORMAT::DXGI_FORMAT_R16_UNORM;
+    case DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS:
+        return DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
     default:
         return DXGI_FORMAT_UNKNOWN;
     }
