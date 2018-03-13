@@ -2,6 +2,8 @@
 
 #include "D3D11GaussianFilter.h"
 
+#include "D3D11TextureEffectRenderer.h"
+
 D3D11Texture D3D11GaussianFilter(const std::shared_ptr<D3DX11RenderView>& view, D3D11Texture& src) {
     struct GaussianCBuffer {
         float weight[8];
