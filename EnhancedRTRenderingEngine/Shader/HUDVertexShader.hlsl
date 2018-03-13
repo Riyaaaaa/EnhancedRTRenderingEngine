@@ -8,6 +8,7 @@ struct vertexOut
 {
     float4 pos : SV_POSITION;
     float2 tex : TEXCOORD0;
+    float2 viewpos : TEXCOORD1;
 };
 
 cbuffer ObjectBuffer : register(b1)
@@ -23,6 +24,7 @@ vertexOut main(vertexIn IN)
     OUT.pos = mul(OUT.pos, World);
 
     OUT.tex = IN.tex;
+    OUT.viewpos = OUT.pos.xy;
 
     return OUT;
 }

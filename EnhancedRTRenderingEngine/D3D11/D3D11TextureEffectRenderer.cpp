@@ -32,7 +32,7 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
     _view->SetViewPortSize(Size(desc.Width, desc.Height));
     _view->hpDevice->CreateRenderTargetView(dstTex.Get(), nullptr, rtv.ToCreator());
     _view->hpDeviceContext->OMSetRenderTargets(1, rtv.Ref(), nullptr);
-    _view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView.Get(), ClearColor);
+    _view->hpDeviceContext->ClearRenderTargetView(rtv.Get(), ClearColor);
 
     if (_constantBuffer) {
         _view->hpDeviceContext->PSSetConstantBuffers(0, 1, _constantBuffer.Ref());

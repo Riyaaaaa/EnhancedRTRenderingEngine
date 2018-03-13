@@ -85,6 +85,7 @@ struct ConstantBuffer
     float numDirecitonalLights;
     float numPointLights;
     DirectX::XMVECTOR Eye;
+    float Time;
 };
 
 struct ObjectBuffer
