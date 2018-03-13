@@ -36,7 +36,7 @@ VertexOut main(vertexIn IN)
     OUT.pos = pos;
 
     float z = pos.z / pos.w;
-    OUT.depthcol = float4(z, z * z, 1.0f, 1.0f);
+    OUT.depthcol = float4(z, z * z, 0.0f, 1.0f);
 
     return OUT;
 }

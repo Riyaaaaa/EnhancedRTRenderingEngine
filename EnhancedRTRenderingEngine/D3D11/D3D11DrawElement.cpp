@@ -148,6 +148,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
 
     if (_state == RenderingState::WRITE_DEPTH){
         vShader = ResourceLoader::LoadShader("DepthVertexShader");
+        pShader = ResourceLoader::LoadShader("RenderShadowMapShader");
     }
     else {
         auto& material = drawMesh->GetMaterials()[drawIndex];
@@ -181,7 +182,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
                 view->hpDeviceContext->PSSetSamplers(0, 1, textures[drawIndex].GetSampler().Ref());
             }
         }
-        else {
+        else if (_state == RenderingState::RENDER_READIED){
             view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
             view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
 

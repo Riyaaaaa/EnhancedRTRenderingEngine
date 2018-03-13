@@ -11,6 +11,11 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 diffuse = 0.0f;
     float3 specular = 0.0f;
 
+    float w = 1.0f / IN.shadowCoord.w;
+    float2 stex = float2((1.0f + IN.shadowCoord.x * w) * 0.5f, (1.0f - IN.shadowCoord.y * w) * 0.5f);
+    float depth = (DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x - 0.9f) * 10.0f;
+    return float4(depth, depth, depth, 1.0f);
+
     // direct lighting
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
@@ -33,7 +38,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
         }
     }
 
-    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f);
+    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f) * materialParameters.metallic;
 
     float3 col = saturate(diffuse + specular);
     return float4(col, 1.0f);

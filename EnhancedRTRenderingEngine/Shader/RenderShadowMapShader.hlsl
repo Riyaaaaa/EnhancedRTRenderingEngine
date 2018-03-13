@@ -4,7 +4,7 @@ struct VertexOut
     float4 depthcol: COLOR0;
 };
 
-float4 main(VertexOut IN) : SV_TARGET
+float4 main(VertexOut IN) : SV_Target
 {
     return IN.depthcol;
 }

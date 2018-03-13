@@ -11,6 +11,7 @@ public:
     bool InitializeRenderTarget(ComPtr<ID3D11DeviceContext> hpDeviceContext, bool useAsShaderResource);
     bool InitializeDepthStencilView(ComPtr<ID3D11DeviceContext> hpDeviceContext, bool useAsShaderResource);
 
+    ID3D11RenderTargetView** GetRenderTargetRef() const { return _renderTarget.Ref(); }
     ID3D11RenderTargetView* GetRenderTarget() const { return _renderTarget.Get(); }
     ID3D11DepthStencilView* GetDepthStencilView() const { return _depthStencilView.Get(); }
 
