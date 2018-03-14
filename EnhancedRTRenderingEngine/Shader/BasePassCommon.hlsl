@@ -75,7 +75,7 @@ float GetVarianceDirectionalShadowFactor(float4 shadowCoord) {
     float md = fragDepth - depth.x;
     float p = variance / (variance + (md * md));
 
-    return max(p, fragDepth <= depth.x + 0.005f);
+    return max(p, fragDepth <= depth.x);
 }
 
 bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
@@ -104,7 +104,7 @@ float GetVariancePointShadowFactor(float3 posw, int index) {
     float md = fragDepth - depth.x;
     float p = variance / (variance + (md * md));
 
-    return max(p, fragDepth <= depth.x + 0.005f);
+    return max(p, fragDepth <= depth.x);
 }
 
 bool IsVisibleFromPointLight(float3 posw, int index) {
