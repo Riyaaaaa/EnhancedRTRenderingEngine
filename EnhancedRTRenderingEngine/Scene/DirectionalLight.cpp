@@ -20,7 +20,7 @@ DirectX::XMMATRIX DirectionalLight::GetViewProjection() {
     auto lDir = GetDirection();
 
     //todo: calculation covering scene AABB
-    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 50.0f, -15.0f, 1.0f);
+    DirectX::XMVECTOR pos = XMVectorSet(0.0f, 40.0f, -15.0f, 1.0f);
     DirectX::XMVECTOR dir = XMVectorSet(lDir.x, lDir.y, lDir.z, 1.0f);
     DirectX::XMVECTOR hUp = XMVectorSet(0.0f, 0.1f, 1.0f, 1.0f);
     /*static const DirectX::XMMATRIX SHADOW_BIAS = DirectX::XMMATRIX(

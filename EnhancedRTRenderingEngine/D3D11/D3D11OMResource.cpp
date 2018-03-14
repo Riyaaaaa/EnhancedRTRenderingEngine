@@ -16,7 +16,7 @@ D3D11OMResource::D3D11OMResource(const ComPtr<ID3D11Device>& device, Size size) 
 bool D3D11OMResource::InitializeRenderTarget(ComPtr<ID3D11DeviceContext> hpDeviceContext, bool useAsShaderResource) {
     
     TextureParam param;
-    param.format = TextureFormat::RGBA8_UNORM;
+    param.format = TextureFormat::RGBA16_UNORM;
     param.bindFlag = TextureBindTarget::RENDER_TARGET | (useAsShaderResource ? TextureBindTarget::SHADER_RESOURCE : 0);
     param.width = _size.w;
     param.height = _size.h;

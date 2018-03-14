@@ -7,5 +7,5 @@
 
 #include "D3DX11RenderView.h"
 
-D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3DX11RenderView>& view, D3D11TextureProxy& src);
+D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3DX11RenderView>& view, const D3D11TextureProxy& src);
 

@@ -1,5 +1,7 @@
 #include "BasePassCommon.hlsl"
 
+#define USE_VSM 1
+
 float4 ps_main(pixcelIn IN) : SV_Target
 {
     float3 albedo = IN.col.xyz;
@@ -11,17 +13,17 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 diffuse = 0.0f;
     float3 specular = 0.0f;
 
-    float w = 1.0f / IN.shadowCoord.w;
-    float2 stex = float2((1.0f + IN.shadowCoord.x * w) * 0.5f, (1.0f - IN.shadowCoord.y * w) * 0.5f);
-    float depth = (DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x - 0.9f) * 10.0f;
-    return float4(depth, depth, depth, 1.0f);
-
     // direct lighting
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numDirectionalLights) break;
-        if (IsVisibleFromDirectionalLight(IN.shadowCoord)) {
-            float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz));
+#if USE_VSM
+        float shadowFactor = GetVarianceDirectionalShadowFactor(IN.shadowCoord);
+#else
+        float shadowFactor = IsVisibleFromDirectionalLight(IN.shadowCoord);
+#endif
+        if (shadowFactor > 0.0f) {
+            float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz)) * shadowFactor;
             diffuse += irradiance * DirectionalLighting(diffuseColor);
             specular += irradiance * SpecularBRDF(-DirectionalLights[i], IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
@@ -29,10 +31,15 @@ float4 ps_main(pixcelIn IN) : SV_Target
 
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numPointLights) break;
-        if (IsVisibleFromPointLight(IN.posw.xyz, i)) {
+#if USE_VSM
+        float shadowFactor = GetVariancePointShadowFactor(IN.posw.xyz, i);
+#else
+        float shadowFactor = IsVisibleFromPointLight(IN.posw.xyz, i);
+#endif
+        if (shadowFactor > 0.0f) {
             float3 dir = PLightParams[i].pos.xyz - IN.posw.xyz;
             float len = length(dir);
-            float irradiance = saturate(dot(IN.norw.xyz, dir / len)); 
+            float irradiance = saturate(dot(IN.norw.xyz, dir / len)) * shadowFactor;
             diffuse += irradiance * PointLighting(diffuseColor, len, PLightParams[i].att);
             specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }

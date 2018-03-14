@@ -61,15 +61,50 @@ float3 DirectionalLighting(float3 diffuseColor) {
     return diffuseColor / PI;
 }
 
+float GetVarianceDirectionalShadowFactor(float4 shadowCoord) {
+    float w = 1.0f / shadowCoord.w;
+    float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
+    
+    float2 depth = DirectionalShadowMap.Sample(ShadowSampler, stex.xy).xy;
+
+    float depth_sq = depth.x * depth.x;
+    float variance = depth.y - depth_sq;
+    variance = min(1.0f, max(0.0f, variance + 0.0001f));
+
+    float fragDepth = shadowCoord.z * w;
+    float md = fragDepth - depth.x;
+    float p = variance / (variance + (md * md));
+
+    return max(p, fragDepth <= depth.x + 0.005f);
+}
+
 bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
     float w = 1.0f / shadowCoord.w;
     float2 stex = float2((1.0f + shadowCoord.x * w) * 0.5f, (1.0f - shadowCoord.y * w) * 0.5f);
     float depth = DirectionalShadowMap.Sample(ShadowSampler, stex.xy).x;
 
-    if (shadowCoord.z * w <= depth + 0.00005f) {
+    if (shadowCoord.z * w <= depth + 0.005f) {
         return true;
     }
     return false;
+}
+
+float GetVariancePointShadowFactor(float3 posw, int index) {
+    float3 pointDir = posw - PLightParams[index].pos;
+    float3 depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir));
+
+    float3 absVec = abs(pointDir);
+    float z = max(absVec.x, max(absVec.y, absVec.z));
+    float fragDepth = 100.0f / (100.0f - 0.10f) - (100.0f * 0.10f) / (100.0f - 0.10f) / z;
+
+    float depth_sq = depth.x * depth.x;
+    float variance = depth.y - depth_sq;
+    variance = min(1.0f, max(0.0f, variance + 0.0001f));
+
+    float md = fragDepth - depth.x;
+    float p = variance / (variance + (md * md));
+
+    return max(p, fragDepth <= depth.x + 0.005f);
 }
 
 bool IsVisibleFromPointLight(float3 posw, int index) {

@@ -2,6 +2,7 @@
 #include "D3D11DepthRenderer.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11DrawElement.h"
+#include "D3D11TextureEffects.h"
 
 #include "Constant/RenderTag.h"
 
@@ -64,7 +65,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
             element.Draw(_view);
         }
 
-        _scene->GetDirectionalShadow(i) = target.GetRTVTexture();
+        _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(_view, target.GetRTVTexture());
     }
 
     SAFE_RELEASE(hpConstantBuffer);
@@ -148,7 +149,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         for (UINT x = 0; x < 6; x++)
         {
-            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetRTVTexture().GetTexture().Get(), 0, nullptr);
+            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture()).GetTexture().Get(), 0, nullptr);
         }
 
         D3D11TextureProxy tex(_view->hpDevice);
