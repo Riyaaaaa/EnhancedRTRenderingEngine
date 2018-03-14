@@ -1,5 +1,7 @@
 #include "BasePassCommon.hlsl"
 
+#define USE_VSM 1
+
 float4 ps_main(pixcelIn IN) : SV_Target
 {
     float3 albedo = IN.col.xyz;
@@ -15,8 +17,13 @@ float4 ps_main(pixcelIn IN) : SV_Target
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numDirectionalLights) break;
-        if (IsVisibleFromDirectionalLight(IN.shadowCoord)) {
-            float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz));
+#if USE_VSM
+        float shadowFactor = GetVarianceDirectionalShadowFactor(IN.shadowCoord);
+#else
+        float shadowFactor = IsVisibleFromDirectionalLight(IN.shadowCoord);
+#endif
+        if (shadowFactor > 0.0f) {
+            float irradiance = saturate(dot(IN.norw.xyz, -DirectionalLights[i].xyz)) * shadowFactor;
             diffuse += irradiance * DirectionalLighting(diffuseColor);
             specular += irradiance * SpecularBRDF(-DirectionalLights[i], IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
@@ -24,16 +31,21 @@ float4 ps_main(pixcelIn IN) : SV_Target
 
     for (i = 0; i < LIGHT_MAX; i++) {
         if (i >= numPointLights) break;
-        if (IsVisibleFromPointLight(IN.posw.xyz, i)) {
+#if USE_VSM
+        float shadowFactor = GetVariancePointShadowFactor(IN.posw.xyz, i);
+#else
+        float shadowFactor = IsVisibleFromPointLight(IN.posw.xyz, i);
+#endif
+        if (shadowFactor > 0.0f) {
             float3 dir = PLightParams[i].pos.xyz - IN.posw.xyz;
             float len = length(dir);
-            float irradiance = saturate(dot(IN.norw.xyz, dir / len)); 
+            float irradiance = saturate(dot(IN.norw.xyz, dir / len)) * shadowFactor;
             diffuse += irradiance * PointLighting(diffuseColor, len, PLightParams[i].att);
             specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
 
-    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f);
+    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f) * materialParameters.metallic;
 
     float3 col = saturate(diffuse + specular);
     return float4(col, 1.0f);

@@ -122,15 +122,6 @@ public:
             AddRef( *m_ppInterface );
     }
 
-    // コピーコンストラクタ(NULL代入用)
-    ComPtr(std::nullptr_t nullval)
-    {
-        m_ppInterface = new T*;    // ポインタ格納領域を新規確保
-        *m_ppInterface = m_NullPtr;
-        m_pRef = new ULONG(1);
-    }
-
-
     // デストラクタ
     virtual ~ComPtr()
     {
@@ -199,24 +190,6 @@ public:
         return *this;
     }
 
-    // =NULL代入用演算子（明示的コピー）
-    ComPtr<T>& operator =(const int nullval)
-    {
-        // 自分の持つインターフェイスの参照カウンタを1つ減らす
-        if(*m_ppInterface)
-            Release(*m_ppInterface);
-
-        // 自分は空っぽになってしまうので自身の参照カウンタをデクリメント
-        ReleaseComRef();
-
-        // ポインタを初期化
-        m_ppInterface = new T*;
-        *m_ppInterface = m_NullPtr;
-        m_pRef = new ULONG(1);
-
-        return *this;
-    }
-
     // =インターフェイス代入演算子（新規インターフェイス登録）
     template<class T2> void operator =(T2* pInterface)
     {
@@ -281,6 +254,13 @@ public:
         if( *m_ppInterface == NULL )
             return true;
         return false;
+    }
+
+    operator bool() const {
+        if (*m_ppInterface) {
+            return true;
+        }
+        return true;
     }
 
     // ->メンバ選択演算子

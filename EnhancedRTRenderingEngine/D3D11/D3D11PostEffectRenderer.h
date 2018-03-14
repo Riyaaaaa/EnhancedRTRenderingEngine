@@ -3,21 +3,18 @@
 #include <d3d11.h>
 
 #include <memory>
+#include <functional>
 
-#include "D3D11TextureProxy.h"
+#include "D3D11ConstantBufferBuilder.h"
+#include "D3D11OMResource.h"
 #include "D3DX11RenderView.h"
 #include "D3D11SceneInfo.h"
 
-class D3D11BasePassRenderer
+class D3D11PostEffectRenderer
 {
 public:
-    D3D11BasePassRenderer();
-    ~D3D11BasePassRenderer();
-
-    void render(D3D11SceneInfo* scene);
     bool Initialize(const std::shared_ptr<D3DX11RenderView>& view);
-
+    void Apply(const std::string& effect);
 protected:
     std::shared_ptr<D3DX11RenderView> _view;
 };
-

@@ -2,6 +2,7 @@
 
 #include <DirectXMath.h>
 #include <cmath>
+#include <type_traits>
 
 #include "Vector.h"
 #include "Constant/RenderConfig.h"
@@ -84,6 +85,7 @@ struct ConstantBuffer
     float numDirecitonalLights;
     float numPointLights;
     DirectX::XMVECTOR Eye;
+    float Time;
 };
 
 struct ObjectBuffer
@@ -99,7 +101,14 @@ struct MaterialBuffer
     float roughness;
 };
 
+template <class T, bool = std::is_class<T>::value>
+struct __declspec(align(16)) AlignedBuffer;
+
+
 template <class T>
-struct __declspec(align(16)) AlignedBuffer {
-    T param;;
+struct __declspec(align(16)) AlignedBuffer<T, true> : public T {};
+
+template <class T>
+struct __declspec(align(16)) AlignedBuffer<T, false> {
+    T value;
 };

@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "D3D11BasePassRenderer.h"
 #include "D3D11DrawElement.h"
+#include "D3D11ConstantBufferBuilder.h"
 
 #include "../Resource/ResourceLoader.h"
 #include "Mesh/Primitive/Primitives.h"
@@ -39,53 +40,13 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     _view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView.Get(), ClearColor);
     _view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
-    D3D11_BUFFER_DESC bufferDesc;
-    ComPtr<ID3D11Buffer> hpConstantBuffer = nullptr, hpMaterialBuffer = nullptr;
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = sizeof(float);
-
-    bufferDesc.ByteWidth = sizeof(ConstantBuffer);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, nullptr, hpConstantBuffer.ToCreator()))) {
-        return;
-    }
-
-    bufferDesc.ByteWidth = sizeof(MaterialBuffer);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, nullptr, hpMaterialBuffer.ToCreator()))) {
-        return;
-    }
-
-    ConstantBuffer hConstantBuffer;
-    hConstantBuffer.View = XMMatrixTranspose(scene->GetViewProjection());
-    hConstantBuffer.Projection = XMMatrixTranspose(scene->GetPerspectiveProjection());
-    hConstantBuffer.Eye = scene->GetEyePoint();
-
-    // Only support one light.
-    hConstantBuffer.numDirecitonalLights = scene->GetDirectionalLights().size();
-    for (int i = 0; i < LIGHT_MAX; i++) {
-        if (i >= hConstantBuffer.numDirecitonalLights) {
-            break;
-        }
-        auto& dLight = scene->GetDirectionalLights()[i];
-        hConstantBuffer.DirectionalLightView[i] = XMMatrixTranspose(dLight.GetViewProjection());
-        hConstantBuffer.DirectionalLightProjection[i] = XMMatrixTranspose(dLight.GetPerspectiveProjection());
-        hConstantBuffer.DirectionalLight[i] = dLight.GetDirection();
-    }
-
-    hConstantBuffer.numPointLights = scene->GetPointLightParams().size();
-    for (int i = 0; i < LIGHT_MAX; i++) {
-        if (i >= hConstantBuffer.numPointLights) {
-            break;
-        }
-        auto& pLight = scene->GetPointLights()[i];
-        hConstantBuffer.PointLightProjection[i] = pLight.GetShadowPerspectiveMatrix();
-        memcpy(hConstantBuffer.PointLightView[i], pLight.GetViewMatrixes(), sizeof(XMMATRIX) * 6);
-        hConstantBuffer.PointLight[i] = scene->GetPointLightParams()[i];
-    }
     
-    _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
+    ConstantBuffer hConstantBuffer = D3D11ConstantBufferBuilder::CreateBasePassConstantBuffer(scene);
+    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr), hpMaterialBuffer(nullptr);
+    
+    hpConstantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<ConstantBuffer>(_view->hpDevice, &hConstantBuffer);
+    hpMaterialBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<MaterialBuffer>(_view->hpDevice, nullptr);
+
     _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
     _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 

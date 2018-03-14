@@ -20,17 +20,18 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const Texture2D& t
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f});
 
+    _view->SetViewPortSize(_view->GetRenderSize());
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
     D3D11DrawPlate<TexVertex> element;
-    D3D11Texture tex(_view->hpDevice);
+    D3D11TextureProxy tex(_view->hpDevice);
     tex.Initialize(texture.GetParam(), texture);
-    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, 0);
+    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, "MinTextureColor", 0);
     element.SetTexture(tex);
     element.Draw(_view);
 }
 
-void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture& texture, int index)
+void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11TextureProxy& texture, int index)
 {
     Size viewportSize = Size{ size.w / _view->GetRenderSize().w, size.h / _view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / _view->GetRenderSize().w - 0.5f, pos.y / _view->GetRenderSize().h - 0.5f } *2.0f;
@@ -48,11 +49,11 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture
 
     type = desc.MiscFlags & D3D11_RESOURCE_MISC_TEXTURECUBE ? TextureType::TextureCube : TextureType::Texture2D;
 
-    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, index);
+    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, "MinTextureColor", index);
 
     if (type == TextureType::TextureCube) {
         D3D11_TEXTURE2D_DESC faceDesc(desc);
-        D3D11Texture faceTexture(_view->hpDevice);
+        D3D11TextureProxy faceTexture(_view->hpDevice);
         ComPtr<ID3D11Texture2D> faceTextureSrc;
 
         faceDesc.ArraySize = 1;

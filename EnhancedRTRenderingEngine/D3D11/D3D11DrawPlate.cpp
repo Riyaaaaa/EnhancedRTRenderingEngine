@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "D3D11DrawPlate.h"
 
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "D3D11FormatUtils.h"
 
 #include "Structure/Structure.h"
@@ -10,7 +10,7 @@
 #include "Common.h"
 
 template<class VertType>
-void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>*  element, TextureType type, int index) {
+void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>*  element, TextureType type, std::string psshader, int index) {
     inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 });
     inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 4 * 3, D3D11_INPUT_PER_VERTEX_DATA, 0 });
 
@@ -20,7 +20,7 @@ void D3D11DrawPlate<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObjec
 
     float _index;
     if (type == TextureType::Texture2D) {
-        pShader = ResourceLoader::LoadShader("MinTextureColor");
+        pShader = ResourceLoader::LoadShader(psshader);
         _index = 0.0f;
     }
     _type = type;
@@ -67,7 +67,7 @@ bool D3D11DrawPlate<VertType>::CreateBuffer(ComPtr<ID3D11Device> device, MeshObj
 
     bufferDesc.ByteWidth = sizeof(AlignedBuffer<float>);
     AlignedBuffer<float> buf;
-    buf.param = index;
+    buf.value = index;
     constantSubResource.pSysMem = &buf;
     if (FAILED(device->CreateBuffer(&bufferDesc, &constantSubResource, pBuffer.ToCreator()))) {
         return false;

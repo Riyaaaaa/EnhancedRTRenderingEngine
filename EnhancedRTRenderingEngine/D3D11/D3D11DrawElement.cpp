@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "D3D11DrawElement.h"
 
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "D3D11FormatUtils.h"
 
 #include "Structure/Structure.h"
@@ -34,7 +34,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
     param.format = TextureFormat::RGBA8_UNORM;
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
-    textures.resize(drawMesh->GetMesh()->GetMaterialNum(), D3D11Texture(device));
+    textures.resize(drawMesh->GetMesh()->GetMaterialNum(), D3D11TextureProxy(device));
     for (int i = 0; i < drawMesh->GetMesh()->GetMaterialNum(); i++) {
         auto& material = drawMesh->GetMaterials()[i];
         param.type = material.type;
@@ -148,6 +148,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
 
     if (_state == RenderingState::WRITE_DEPTH){
         vShader = ResourceLoader::LoadShader("DepthVertexShader");
+        pShader = ResourceLoader::LoadShader("RenderShadowMapShader");
     }
     else {
         auto& material = drawMesh->GetMaterials()[drawIndex];
@@ -181,7 +182,7 @@ void D3D11DrawElement<VertType>::SetShader(const std::shared_ptr<D3DX11RenderVie
                 view->hpDeviceContext->PSSetSamplers(0, 1, textures[drawIndex].GetSampler().Ref());
             }
         }
-        else {
+        else if (_state == RenderingState::RENDER_READIED){
             view->hpDeviceContext->UpdateSubresource(materialBuffer.Get(), 0, NULL, &materialParams, 0, 0);
             view->hpDeviceContext->PSSetConstantBuffers(1, 1, materialBuffer.Ref());
 

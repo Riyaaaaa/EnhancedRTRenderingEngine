@@ -5,7 +5,7 @@
 #include <memory>
 
 #include "D3DX11RenderView.h"
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "Scene/MeshObject.h"
 #include "Resource/ResourceHandle.h"
 #include "RenderingContext.h"
@@ -22,7 +22,7 @@ public:
 
     virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 
-    void SetTexture(const D3D11Texture& tex, std::size_t index) {
+    void SetTexture(const D3D11TextureProxy& tex, std::size_t index) {
         textures[index] = tex;
     }
 
@@ -35,7 +35,7 @@ protected:
     std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
-    std::vector<D3D11Texture> textures;
+    std::vector<D3D11TextureProxy> textures;
 
     // TODO: Support smart pointer
     MeshObject<VertType>* drawMesh;

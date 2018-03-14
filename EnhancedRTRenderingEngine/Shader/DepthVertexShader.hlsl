@@ -7,9 +7,10 @@ struct vertexIn
     float4 col : COLOR0;
 };
 
-struct vertexOut
+struct VertexOut
 {
     float4 pos : SV_POSITION;
+    float4 depthcol: COLOR0;
 };
 
 cbuffer ConstantBuffer : register(b0)
@@ -23,9 +24,9 @@ cbuffer ObjectBuffer : register(b1)
     matrix World;
 }
 
-vertexOut main(vertexIn IN)
+VertexOut main(vertexIn IN)
 {
-    vertexOut OUT;
+    VertexOut OUT;
 
     float4 pos = float4(IN.pos, 1.0f);
 
@@ -33,6 +34,9 @@ vertexOut main(vertexIn IN)
     pos = mul(pos, View);
     pos = mul(pos, Projection);
     OUT.pos = pos;
+
+    float z = pos.z / pos.w;
+    OUT.depthcol = float4(z, z * z, 0.0f, 1.0f);
 
     return OUT;
 }

@@ -4,7 +4,7 @@
 #include <memory>
 
 #include "D3DX11RenderView.h"
-#include "D3D11Texture.h"
+#include "D3D11TextureProxy.h"
 #include "Scene/MeshObject.h"
 #include "Resource/ResourceHandle.h"
 #include "RenderingContext.h"
@@ -16,11 +16,11 @@ class D3D11DrawPlate
 public:
     D3D11DrawPlate() {}
 
-    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type, int index);
+    void Initialize(ComPtr<ID3D11Device> device, MeshObject<VertType>* mesh, TextureType type, std::string psshader, int index);
 
     virtual void Draw(const std::shared_ptr<D3DX11RenderView>& view);
 
-    void SetTexture(const D3D11Texture& tex) {
+    void SetTexture(const D3D11TextureProxy& tex) {
         texture = tex;
     }
 
@@ -35,7 +35,7 @@ protected:
     std::vector<D3D11_INPUT_ELEMENT_DESC> inElemDesc;
     D3D_PRIMITIVE_TOPOLOGY primitiveTopology;
 
-    D3D11Texture texture;
+    D3D11TextureProxy texture;
     TextureType _type;
 
     SIZE_T vertexCount;

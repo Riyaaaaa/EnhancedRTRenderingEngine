@@ -49,8 +49,12 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
     {
     case TextureFormat::RGBA8_UNORM:
         return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+    case TextureFormat::RGBA16_UNORM:
+        return DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM;
     case TextureFormat::R16_TYPELESS:
         return DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS;
+    case TextureFormat::R32_TYPELESS:
+        return DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS;
     default:
         return DXGI_FORMAT_UNKNOWN;
     }
@@ -104,6 +108,10 @@ unsigned int CastToD3D11Format<unsigned int, unsigned int>(unsigned int prop) {
         flag |= D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL;
     }
 
+    if (prop & TextureBindTarget::RENDER_TARGET) {
+        flag |= D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET;
+    }
+
     return flag;
 }
 
@@ -114,8 +122,10 @@ DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat) {
         return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
     case DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS:
         return DXGI_FORMAT::DXGI_FORMAT_R16_UNORM;
+    case DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS:
+        return DXGI_FORMAT::DXGI_FORMAT_R32_UINT;
     default:
-        return DXGI_FORMAT_UNKNOWN;
+        return textureFormat;
     }
 }
 

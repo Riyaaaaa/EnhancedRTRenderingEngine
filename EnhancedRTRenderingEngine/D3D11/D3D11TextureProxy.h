@@ -6,23 +6,29 @@
 #include "Resource/Texture2D.h"
 #include "RenderingContext.h"
 
-class D3D11Texture : public GITexture
+class D3D11TextureProxy : public GITexture
 {
     ComPtr<ID3D11Device> mDevice;
     ComPtr<ID3D11Texture2D> mTexture;
     ComPtr<ID3D11ShaderResourceView> mView;
     ComPtr<ID3D11SamplerState> mSampler;
 
+    TextureParam _param;
+
 public:
-    D3D11Texture(){}
-    D3D11Texture(const ComPtr<ID3D11Device>& device);
+    D3D11TextureProxy(){}
+    D3D11TextureProxy(const ComPtr<ID3D11Device>& device);
 
     bool IsAvalable() {
         return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
     }
     bool Initialize(TextureParam param, const Texture2D& tex = Texture2D{});
     bool Initialize(TextureParam param, const std::vector<Texture2D>& textures);
-    bool Initialize(ComPtr<ID3D11Texture2D> tex);
+    bool Initialize(const ComPtr<ID3D11Texture2D>& tex);
+
+    const TextureParam& GetParam() const {
+        return _param;
+    }
 
     const ComPtr<ID3D11Texture2D>& GetTexture() const
     {

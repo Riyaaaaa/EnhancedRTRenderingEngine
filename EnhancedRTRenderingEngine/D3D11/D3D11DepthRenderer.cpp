@@ -2,6 +2,7 @@
 #include "D3D11DepthRenderer.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11DrawElement.h"
+#include "D3D11TextureEffects.h"
 
 #include "Constant/RenderTag.h"
 
@@ -40,13 +41,16 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
 
     for (std::size_t i = 0; i < dLights.size(); i++) {
         auto& dLight = dLights[i];
-        D3D11DepthStencilTarget target(_view->hpDevice);
+        D3D11OMResource target(_view->hpDevice, dLight.GetShadowResolution());
 
         _view->SetViewPortSize(dLight.GetShadowResolution());
-        target.Initialize(_view->hpDeviceContext, dLight.GetShadowResolution());
+        target.InitializeRenderTarget(_view->hpDeviceContext, true);
+        target.InitializeDepthStencilView(_view->hpDeviceContext, true);
 
-        _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target.GetDepthStencilView().Get());
-        _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        _view->hpDeviceContext->OMSetRenderTargets(1, target.GetRenderTargetRef(), target.GetDepthStencilView());
+        float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+        _view->hpDeviceContext->ClearRenderTargetView(target.GetRenderTarget(), color);
+        _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
         TransformBufferParam hConstantBuffer;
         hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
@@ -61,7 +65,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
             element.Draw(_view);
         }
 
-        _scene->GetDirectionalShadow(i) = target.GetTexture();
+        _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(_view, target.GetRTVTexture());
     }
 
     SAFE_RELEASE(hpConstantBuffer);
@@ -92,12 +96,15 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         Size resolution = pLight.GetShadowResolution();
         _view->SetViewPortSize(resolution);
-        std::vector<D3D11DepthStencilTarget> target(6, _view->hpDevice);
+        std::vector<D3D11OMResource> target(6, D3D11OMResource(_view->hpDevice, resolution));
         for (int j = 0; j < 6; j++) {
-            target[j].Initialize(_view->hpDeviceContext, resolution);
+            target[j].InitializeRenderTarget(_view->hpDeviceContext, true);
+            target[j].InitializeDepthStencilView(_view->hpDeviceContext, true);
 
-            _view->hpDeviceContext->OMSetRenderTargets(0, nullptr, target[j].GetDepthStencilView().Get());
-            _view->hpDeviceContext->ClearDepthStencilView(target[j].GetDepthStencilView().Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+            _view->hpDeviceContext->OMSetRenderTargets(1, target[j].GetRenderTargetRef(), target[j].GetDepthStencilView());
+            float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+            _view->hpDeviceContext->ClearRenderTargetView(target[j].GetRenderTarget(), color);
+            _view->hpDeviceContext->ClearDepthStencilView(target[j].GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
             TransformBufferParam hConstantBuffer;
 
@@ -115,13 +122,13 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
         }
 
         TextureParam param;
-        param.format = TextureFormat::R16_TYPELESS;
+        param.format = TextureFormat::RGBA8_UNORM;
         param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
         param.type = TextureType::TextureCube;
 
         // Each element in the texture array has the same format/dimensions.
         D3D11_TEXTURE2D_DESC texElementDesc;
-        target[0].GetTexture().GetTexture().Get()->GetDesc(&texElementDesc);
+        target[0].GetRTVTexture().GetTexture().Get()->GetDesc(&texElementDesc);
 
         D3D11_TEXTURE2D_DESC texArrayDesc;
         texArrayDesc.Width = texElementDesc.Width;
@@ -136,16 +143,16 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
         texArrayDesc.CPUAccessFlags = 0;
         texArrayDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
 
-        ComPtr<ID3D11Texture2D> texArray = 0;
+        ComPtr<ID3D11Texture2D> texArray(nullptr);
         if (FAILED(_view->hpDevice->CreateTexture2D(&texArrayDesc, 0, texArray.ToCreator())))
             return;
 
         for (UINT x = 0; x < 6; x++)
         {
-            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, target[x].GetTexture().GetTexture().Get(), 0, nullptr);
+            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture()).GetTexture().Get(), 0, nullptr);
         }
 
-        D3D11Texture tex(_view->hpDevice);
+        D3D11TextureProxy tex(_view->hpDevice);
         tex.Initialize(texArray);
         _scene->GetPointShadow(i) = tex;
 

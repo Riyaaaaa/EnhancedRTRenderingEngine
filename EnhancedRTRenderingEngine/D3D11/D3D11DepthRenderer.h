@@ -4,7 +4,7 @@
 
 #include <memory>
 
-#include "D3D11DepthStencilTarget.h"
+#include "D3D11OMResource.h"
 #include "D3DX11RenderView.h"
 #include "D3D11SceneInfo.h"
 
