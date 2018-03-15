@@ -101,14 +101,14 @@ struct MaterialBuffer
     float roughness;
 };
 
-template <class T, bool = std::is_class<T>::value>
-struct __declspec(align(16)) AlignedBuffer;
+template <class T, std::size_t Align = 16, bool = std::is_class<T>::value>
+struct alignas(Align) AlignedBuffer;
 
 
-template <class T>
-struct __declspec(align(16)) AlignedBuffer<T, true> : public T {};
+template <class T, std::size_t Align>
+struct alignas(Align) AlignedBuffer<T, Align, true> : public T {};
 
-template <class T>
-struct __declspec(align(16)) AlignedBuffer<T, false> {
+template <class T, std::size_t Align>
+struct alignas(Align) AlignedBuffer<T, Align,  false> {
     T value;
 };
