@@ -52,6 +52,13 @@ enum class TextureUsage {
     Staging
 };
 
+enum class TextureAddressMode {
+    WRAP,
+    MIRROR,
+    CLAMP,
+    BORADER
+};
+
 enum class ResourceAccessFlag {
     None,
     R,

@@ -115,6 +115,22 @@ unsigned int CastToD3D11Format<unsigned int, unsigned int>(unsigned int prop) {
     return flag;
 }
 
+template<>
+D3D11_TEXTURE_ADDRESS_MODE CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE, TextureAddressMode>(TextureAddressMode mode) {
+    switch (mode) {
+    case TextureAddressMode::WRAP:
+        return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+    case TextureAddressMode::MIRROR:
+        return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_MIRROR;
+    case TextureAddressMode::CLAMP:
+        return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP;
+    case TextureAddressMode::BORADER:
+        return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_BORDER;
+    }
+
+    return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+}
+
 DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat) {
     switch (textureFormat)
     {

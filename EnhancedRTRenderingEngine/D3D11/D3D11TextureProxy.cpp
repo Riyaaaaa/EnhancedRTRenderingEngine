@@ -97,9 +97,9 @@ bool D3D11TextureProxy::Initialize(TextureParam param, const std::vector<Texture
 
     D3D11_SAMPLER_DESC samplerDesc;
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.AddressU = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.samplerParam.addressMode);
+    samplerDesc.AddressV = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.samplerParam.addressMode);
+    samplerDesc.AddressW = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.samplerParam.addressMode);
     samplerDesc.MipLODBias = 0.0f;
     samplerDesc.MaxAnisotropy = 1;
     samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
@@ -120,7 +120,7 @@ bool D3D11TextureProxy::Initialize(TextureParam param, const std::vector<Texture
     return true;
 }
 
-bool D3D11TextureProxy::Initialize(const ComPtr<ID3D11Texture2D>& tex) {
+bool D3D11TextureProxy::Initialize(const ComPtr<ID3D11Texture2D>& tex, SamplerParam param) {
     mTexture = tex;
 
     D3D11_TEXTURE2D_DESC texDesc;
@@ -164,9 +164,9 @@ bool D3D11TextureProxy::Initialize(const ComPtr<ID3D11Texture2D>& tex) {
 
     D3D11_SAMPLER_DESC samplerDesc;
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-    samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
-    samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
-    samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+    samplerDesc.AddressU = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.addressMode);
+    samplerDesc.AddressV = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.addressMode);
+    samplerDesc.AddressW = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.addressMode);
     samplerDesc.MipLODBias = 0.0f;
     samplerDesc.MaxAnisotropy = 1;
     samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;

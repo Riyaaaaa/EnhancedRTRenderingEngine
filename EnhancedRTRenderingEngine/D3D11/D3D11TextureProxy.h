@@ -24,7 +24,7 @@ public:
     }
     bool Initialize(TextureParam param, const Texture2D& tex = Texture2D{});
     bool Initialize(TextureParam param, const std::vector<Texture2D>& textures);
-    bool Initialize(const ComPtr<ID3D11Texture2D>& tex);
+    bool Initialize(const ComPtr<ID3D11Texture2D>& tex, SamplerParam param = SamplerParam());
 
     const TextureParam& GetParam() const {
         return _param;

@@ -22,6 +22,10 @@ struct RenderingContext
 template<class VertType>
 std::vector<VertexLayout> CreateVertexLayout();
 
+struct SamplerParam {
+    TextureAddressMode addressMode = TextureAddressMode::WRAP;
+};
+
 struct TextureParam {
     unsigned int width, height;
     TextureFormat format = TextureFormat::RGBA8_UNORM;
@@ -29,7 +33,8 @@ struct TextureParam {
     unsigned int arraySize = 1;
     TextureType type = TextureType::Texture2D;
     TextureUsage usage = TextureUsage::Default;
-    ResourceAccessFlag accessFlag = ResourceAccessFlag::None;
+    ResourceAccessFlag accessFlag = ResourceAccessFlag::None;  
+    SamplerParam samplerParam;
     // ...add as neecesary
 };
 

@@ -23,8 +23,10 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
         return D3D11TextureProxy();
     }
 
+    SamplerParam param;
+    param.addressMode = TextureAddressMode::CLAMP;
     D3D11TextureProxy dst(_view->hpDevice);
-    dst.Initialize(dstTex);
+    dst.Initialize(dstTex, param);
 
     ComPtr<ID3D11RenderTargetView> rtv;
 

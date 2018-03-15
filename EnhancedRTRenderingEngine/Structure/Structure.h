@@ -104,7 +104,6 @@ struct MaterialBuffer
 template <class T, std::size_t Align = 16, bool = std::is_class<T>::value>
 struct alignas(Align) AlignedBuffer;
 
-
 template <class T, std::size_t Align>
 struct alignas(Align) AlignedBuffer<T, Align, true> : public T {};
 

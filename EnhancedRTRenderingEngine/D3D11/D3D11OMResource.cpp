@@ -21,6 +21,7 @@ bool D3D11OMResource::InitializeRenderTarget(ComPtr<ID3D11DeviceContext> hpDevic
     param.width = _size.w;
     param.height = _size.h;
     param.arraySize = 1;
+    param.samplerParam.addressMode = TextureAddressMode::CLAMP;
 
     _RTVTexture.Initialize(param);
 
@@ -39,6 +40,7 @@ bool D3D11OMResource::InitializeDepthStencilView(ComPtr<ID3D11DeviceContext> hpD
     param.width = _size.w;
     param.height = _size.h;
     param.arraySize = 1;
+    param.samplerParam.addressMode = TextureAddressMode::CLAMP;
 
     _DSVTexture.Initialize(param);
 

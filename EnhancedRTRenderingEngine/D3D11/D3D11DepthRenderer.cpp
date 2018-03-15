@@ -28,14 +28,14 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
     auto& dLights = scene->GetDirectionalLights();
 
     D3D11_BUFFER_DESC bufferDesc;
-    ID3D11Buffer* hpConstantBuffer = NULL;
+    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
     bufferDesc.ByteWidth = sizeof(TransformBufferParam);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.CPUAccessFlags = 0;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = sizeof(float);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
+    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, hpConstantBuffer.ToCreator()))) {
         return;
     }
 
@@ -56,8 +56,8 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
         hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
         hConstantBuffer.Projection = XMMatrixTranspose(dLight.GetPerspectiveProjection());
 
-        _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
-        _view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
+        _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
+        _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
         for (auto && object : scene->GetViewObjects()) {
             D3D11DrawElement<Scene::VertType> element;
@@ -67,22 +67,20 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
 
         _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(_view, target.GetRTVTexture());
     }
-
-    SAFE_RELEASE(hpConstantBuffer);
 }
 
 void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
     auto* scene = _scene->GetSourceScene();
 
     D3D11_BUFFER_DESC bufferDesc;
-    ID3D11Buffer* hpConstantBuffer = NULL;
+    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
     bufferDesc.ByteWidth = sizeof(TransformBufferParam);
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
     bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.CPUAccessFlags = 0;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = sizeof(float);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, &hpConstantBuffer))) {
+    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, hpConstantBuffer.ToCreator()))) {
         return;
     }
 
@@ -111,8 +109,8 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
             hConstantBuffer.View = XMMatrixTranspose(pLight.GetViewMatrix(static_cast<CUBE_DIRECTION>(j)));
             hConstantBuffer.Projection = XMMatrixTranspose(pLight.GetShadowPerspectiveMatrix());
 
-            _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer, 0, NULL, &hConstantBuffer, 0, 0);
-            _view->hpDeviceContext->VSSetConstantBuffers(0, 1, &hpConstantBuffer);
+            _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
+            _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
             for (auto && object : scene->GetViewObjects()) {
                 D3D11DrawElement<Scene::VertType> element;
@@ -158,6 +156,4 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         pLight.SetDirty(false);
     }
-
-    SAFE_RELEASE(hpConstantBuffer);
 }

@@ -52,6 +52,8 @@ Scene::Scene() {
     
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ -2.0f, 0.0f, -2.0f });
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ 2.0f, 0.0f, -2.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, 0.0f });
     viewObjects.back().SetScale(Vector3D{ 10.0f, 10.0f, 10.0f });
