@@ -159,17 +159,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="D3D11\D3D11PostEffectRenderer.h" />
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="D3D11\D3D11TextureEffects.h" />
     <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
+    <ClInclude Include="GraphicsInterface\GIShaderResource.h" />
+    <ClInclude Include="GraphicsInterface\GIShader.h" />
+    <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITexture.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
     <ClInclude Include="D3D11\D3D11DrawPlate.h" />
     <ClInclude Include="D3D11\D3D11TextureHUDRenderer.h" />
-    <ClInclude Include="Resource\CubeTexture.h" />
+    <ClInclude Include="Resource\TextureCube.h" />
     <ClInclude Include="D3D11\D3D11SceneInfo.h" />
     <ClInclude Include="D3D11\ComPtr.h" />
     <ClInclude Include="Scene\SkyBox.h" />
@@ -314,12 +318,15 @@
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffects.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
+    <ClCompile Include="GraphicsInterface\GIShaderResource.cpp" />
+    <ClCompile Include="GraphicsInterface\GIShader.cpp" />
+    <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="GraphicsInterface\GITexture.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="D3D11\D3D11DrawPlate.cpp" />
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp" />
-    <ClCompile Include="Resource\CubeTexture.cpp" />
+    <ClCompile Include="Resource\TextureCube.cpp" />
     <ClCompile Include="D3D11\D3D11SceneInfo.cpp" />
     <ClCompile Include="Scene\SkyBox.cpp" />
     <ClCompile Include="Scene\Enviroment\StaticCubeReflectionCapture.cpp" />

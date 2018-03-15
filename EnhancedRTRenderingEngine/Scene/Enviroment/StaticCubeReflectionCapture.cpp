@@ -2,7 +2,7 @@
 #include "StaticCubeReflectionCapture.h"
 #include "GraphicsInterface/GITexture.h"
 
-StaticCubeReflectionCapture::StaticCubeReflectionCapture(const CubeTexture& tex) :
+StaticCubeReflectionCapture::StaticCubeReflectionCapture(const TextureCube& tex) :
     reflectionSource(tex)
 {
     box.w = box.h = box.d = reflectionSource.size;

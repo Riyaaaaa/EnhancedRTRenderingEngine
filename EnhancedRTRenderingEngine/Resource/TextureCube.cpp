@@ -3,7 +3,7 @@
 
 using namespace DirectX;
 
-CubeTexture::CubeTexture(int _size) :
+TextureCube::TextureCube(int _size) :
 size(_size)
 {
     textures.reserve(6);
@@ -12,12 +12,12 @@ size(_size)
     }
 }
 
-CubeTexture::CubeTexture(const std::vector<Texture2D>& texResource) {
+TextureCube::TextureCube(const std::vector<Texture2D>& texResource) {
     textures = texResource;
     size = textures[0].Width();
 }
 
-DirectX::XMVECTOR CubeTexture::lookAt[6] = {
+DirectX::XMVECTOR TextureCube::lookAt[6] = {
     XMVectorSet(1.0f,  0.0f,  0.0f, 0.0f), // +X
     XMVectorSet(-1.0f,  0.0f,  0.0f, 0.0f), // -X
     XMVectorSet(0.0f,  1.0f,  0.0f, 0.0f), // +Y
@@ -26,7 +26,7 @@ DirectX::XMVECTOR CubeTexture::lookAt[6] = {
     XMVectorSet(0.0f,  0.0f, -1.0f, 0.0f) // -Z
 };
 
-DirectX::XMVECTOR CubeTexture::up[6] = {
+DirectX::XMVECTOR TextureCube::up[6] = {
     XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f), // +X(Up = +Y)
     XMVectorSet(0.0f, 1.0f,  0.0f, 0.0f), // -X(Up = +Y)
     XMVectorSet(0.0f, 0.0f, -1.0f, 0.0f), // +Y(Up = -Z)

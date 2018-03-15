@@ -32,7 +32,7 @@ protected:
     bool _isDirtyMatrix;
     bool _isDirtyShadow;
     DirectX::XMMATRIX _viewMatrixes[6];
-    CubeTexture _shodowTextures;
+    TextureCube _shodowTextures;
     Size _shadowResolution;
 };
 

@@ -19,10 +19,13 @@ protected:
 
     Material _material;
 
-    std::vector<std::pair<ResourceType, int>> shaderResourceIndices;
-
+    // Shader Resources
+    std::vector<std::pair<ResourceType, int>> psShaderResourceIndices;
     std::vector<Texture2D> textures;
     std::vector<TextureCube> textureCubes;
+    
+    // Shader Buffers
+    std::vector<std::pair<void*, unsigned int>> constantBuffers;
     
     VertexLayout _vertexLayout;
 

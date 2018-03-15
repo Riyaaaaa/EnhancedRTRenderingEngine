@@ -11,6 +11,9 @@
 struct VertexLayout {
     const char* name;
     VertexProperty vProperty;
+    int semanticsIndex;
+    int slot;
+    int memoryOffset;
 };
 
 struct RenderingContext
