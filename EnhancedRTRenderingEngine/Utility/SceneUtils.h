@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Scene/Scene.h"
 #include "Scene/MeshObject.h"
 #include "Structure/Structure.h"
 
@@ -9,6 +10,8 @@
 #include <vector>
 
 namespace SceneUtils {
+    ConstantBuffer CreateBasePassConstantBuffer(Scene* scene);
+
     template<class PrimitiveType, typename... Args>
     MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject(Args&&... args) {
         RenderingContext context{ CreateVertexLayout < typename PrimitiveType::Type > (), VertexPrimitiveType::TRIANGLESTRIP };

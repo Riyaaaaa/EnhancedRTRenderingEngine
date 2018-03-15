@@ -35,7 +35,5 @@ namespace D3D11ConstantBufferBuilder
 
         return hpConstantBuffer;
     }
-
-    ConstantBuffer CreateBasePassConstantBuffer(Scene* scene);
 };
 

@@ -3,11 +3,13 @@
 #include "D3D11DrawElement.h"
 #include "D3D11ConstantBufferBuilder.h"
 
-#include "../Resource/ResourceLoader.h"
+#include "Resource/ResourceLoader.h"
 #include "Mesh/Primitive/Primitives.h"
 #include "Mesh/SimpleModel/Box.h"
 
 #include "Constant/RenderTag.h"
+#include "Utility/SceneUtils.h"
+
 #include "WindowManager.h"
 #include "Common.h"
 
@@ -41,7 +43,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     _view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
     
-    ConstantBuffer hConstantBuffer = D3D11ConstantBufferBuilder::CreateBasePassConstantBuffer(scene);
+    ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
     ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr), hpMaterialBuffer(nullptr);
     
     hpConstantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<ConstantBuffer>(_view->hpDevice, &hConstantBuffer);
