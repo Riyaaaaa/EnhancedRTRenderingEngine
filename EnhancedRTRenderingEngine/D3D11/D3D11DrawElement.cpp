@@ -234,6 +234,140 @@ void D3D11DrawElement<VertType>::Draw(const std::shared_ptr<D3DX11RenderView>& v
     }
 }
 
+template<class VertType>
+bool D3D11DrawElement<VertType>::_Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawElement& element) {
+    auto& layouts = element.GetVertexLayout();
+
+    for (auto&& layout : layouts) {
+        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ 
+            layout.name, layout.semanticsIndex,
+            CastToD3D11Format<DXGI_FORMAT>(layout.vProperty), 
+            layout.slot, 
+            layout.memoryOffset, 
+            D3D11_INPUT_PER_VERTEX_DATA, 0 });
+    }
+
+    primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(element.GetPrimitiveType());
+
+    std::unordered_map<unsigned int, ComPtr<ID3D11Buffer>> _bufferMap;
+
+    for (auto&& psResource : element.GetShaderResources()) {
+        D3D11_BUFFER_DESC bufferDesc;
+        D3D11_SUBRESOURCE_DATA subResource;
+        subResource.pSysMem = psResource.first._resource.get();
+        bufferDesc.ByteWidth = psResource.first._resource.size();
+        bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+        bufferDesc.CPUAccessFlags = 0;
+        bufferDesc.MiscFlags = 0;
+
+        bufferDesc.StructureByteStride = psResource.first._structureByteStride;
+
+        switch (psResource.first._type) {
+        case ResourceType::VertexList:
+            bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, vertexBuffer.ToCreator()))) {
+                return false;
+            }
+            break;
+        case ResourceType::IndexList:
+            bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, indexBuffer.ToCreator()))) {
+                return false;
+            }
+            break;
+        case ResourceType::ConstantBuffer:
+            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            ComPtr<ID3D11Buffer> buffer;
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
+                return false;
+            }
+            _bufferMap.insert(std::make_pair(psResource.second, buffer));
+            break;
+        }
+    }
+
+    auto& drawLinks = element.GetDrawLinks();
+    for (ShadingType type : { ShadingType::BasePass, ShadingType::Detph, ShadingType::Unlit } ) {
+        auto range = drawLinks.equal_range(type);
+
+        view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
+
+        for (auto&& sharedRes : _bufferMap) {
+            view->hpDeviceContext->VSSetConstantBuffers(sharedRes.first, 1, sharedRes.second.Ref());
+        }
+
+        for (auto it = range.first; it != range.second; it++) {
+            auto& shader = it->second;
+
+            if (FAILED(view->hpDevice->CreateVertexShader(shader.VS().get(), shader.VS().size(), NULL, hpVertexShader.ToCreator()))) {
+                return false;
+            }
+            view->hpDeviceContext->VSSetShader(hpVertexShader.Get(), NULL, 0);
+
+            if (shader.PS().isValid()) {
+                if (FAILED(view->hpDevice->CreatePixelShader(shader.PS().get(), shader.PS().size(), NULL, hpPixelShader.ToCreator()))) {
+                    return false;
+                }
+                view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
+            }
+            else {
+                view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
+            }
+            
+            auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), shader.VS().get(), shader.VS().size(), hpInputLayout.ToCreator());
+            if (FAILED(err)) {
+                return false;
+            }
+
+            TextureParam param;
+            param.format = TextureFormat::RGBA8_UNORM;
+            param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
+
+            for (auto&& texRes : shader.GetTextureResources()) {
+                D3D11TextureProxy texture;
+                switch (texRes.first._type) {
+                case ResourceType::Texture2D:
+                    param.type = TextureType::Texture2D;
+                    break;
+                case ResourceType::TextureCube:
+                    param.type = TextureType::TextureCube;
+                    break;
+                }
+                texture.Initialize(param, texRes.first._resource);
+                view->hpDeviceContext->PSSetShaderResources(texRes.second, 1, texture.GetSubResourceView().Ref());
+                view->hpDeviceContext->PSSetSamplers(texRes.second, 1, texture.GetSampler().Ref());
+            }
+
+            for (auto && rawRes : shader.GetRawResources()) {
+                D3D11_BUFFER_DESC bufferDesc;
+                D3D11_SUBRESOURCE_DATA subResource;
+                subResource.pSysMem = rawRes.first._resource.get();
+                bufferDesc.ByteWidth = rawRes.first._resource.size();
+                bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+                bufferDesc.CPUAccessFlags = 0;
+                bufferDesc.MiscFlags = 0;
+
+                bufferDesc.StructureByteStride = rawRes.first._structureByteStride;
+                bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+                ComPtr<ID3D11Buffer> buffer;
+                if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
+                    return false;
+                }
+                view->hpDeviceContext->PSSetConstantBuffers(rawRes.second, 1, buffer.Ref());
+            }
+
+            if (indexBuffer.Get()) {
+                view->hpDeviceContext->DrawIndexed(shader.faceNumVerts, shader.startIndex, 0);
+            }
+            else {
+                view->hpDeviceContext->Draw(shader.faceNumVerts, shader.startIndex);
+            }
+        }
+    }
+
+    return true;
+}
+
 template D3D11DrawElement<Vertex3D>;
 template D3D11DrawElement<SimpleVertex>;
 template D3D11DrawElement<PMDVertex>;

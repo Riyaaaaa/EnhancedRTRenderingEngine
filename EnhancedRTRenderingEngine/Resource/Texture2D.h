@@ -6,7 +6,6 @@
 
 struct png_info_def;
 
-// support png only
 class Texture2D : public RawBinary
 {
     using RawBinary::RawBinary;

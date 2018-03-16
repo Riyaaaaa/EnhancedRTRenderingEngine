@@ -2,7 +2,7 @@
 
 #include "Structure/Structure.h"
 #include "Resource/Texture2D.h"
-#include "Resource/CubeTexture.h"
+#include "Resource/TextureCube.h"
 
 class PointLight
 {

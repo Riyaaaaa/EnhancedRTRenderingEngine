@@ -4,6 +4,8 @@
 #include "D3D11DrawElement.h"
 #include "D3D11TextureEffects.h"
 
+#include "GraphicsInterface/GIShader.h"
+
 #include "Constant/RenderTag.h"
 
 #include "Common.h"
@@ -60,9 +62,19 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
         _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
         for (auto && object : scene->GetViewObjects()) {
-            D3D11DrawElement<Scene::VertType> element;
-            element.Initialize(_view->hpDevice, &object, DepthRenderTag);
-            element.Draw(_view);
+            GIDrawElement element(&object);
+            GIDrawFace face;
+
+            face.startIndex = 0;
+            if (object.GetMesh()->HasIndexList()) {
+                face.faceNumVerts = object.GetMesh()->GetIndexList().size();
+            }
+            else {
+                face.faceNumVerts = object.GetMesh()->GetVertexList().size();
+            }
+            element.AddDrawFace(face);
+            D3D11DrawElement<Scene::VertType> draw;
+            draw._Draw(_view, element);
         }
 
         _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(_view, target.GetRTVTexture());

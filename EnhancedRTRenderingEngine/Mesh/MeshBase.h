@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "Constant/RenderConfig.h"
+
 struct Face {
     std::size_t faceIdx;
     std::size_t faceNumVerts;
@@ -27,6 +29,8 @@ public:
     std::size_t GetDrawTargetNum() const { return _drawFacesMap.size(); }
     const std::vector<Face>& GetDrawFacesMap() const { return _drawFacesMap; }
 
+    VertexPrimitiveType GetPrimitiveType() const { return _primitiveType; }
+
 protected:
     int _materialNum;
     // face index / material index
@@ -34,5 +38,7 @@ protected:
     std::vector<VertType> _vertexList;
     std::vector<uint16_t> _indexList;
     std::size_t _vertexCount;
+
+    VertexPrimitiveType _primitiveType;
 };
 

@@ -2,5 +2,20 @@
 
 enum class ResourceType {
     Texture2D,
-    TextureCube
+    TextureCube,
+    IndexList,
+    VertexList,
+    ConstantBuffer
 };
+
+enum class ShaderType {
+    VShader,
+    PShader
+};
+
+enum class ShadingType {
+    BasePass,
+    Detph,
+    Unlit
+};
+

@@ -10,6 +10,7 @@
 #include "Resource/ResourceHandle.h"
 #include "RenderingContext.h"
 #include "Constant/RenderTag.h"
+#include "GraphicsInterface/GIShader.h"
 
 template<class VertType>
 class D3D11DrawElement
@@ -25,6 +26,8 @@ public:
     void SetTexture(const D3D11TextureProxy& tex, std::size_t index) {
         textures[index] = tex;
     }
+
+    bool _Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawElement& element);
 
 protected:
     virtual bool CreateBuffer(ComPtr<ID3D11Device> device, MeshObject<VertType>* element);

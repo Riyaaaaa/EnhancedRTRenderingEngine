@@ -6,7 +6,7 @@
 #include "Resource/Texture2D.h"
 #include "RenderingContext.h"
 
-class GITexture
+class GITextureProxy
 {
 public:
     virtual bool Initialize(TextureParam param, const Texture2D& tex = Texture2D{}) = 0;
