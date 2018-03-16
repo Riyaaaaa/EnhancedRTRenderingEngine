@@ -11,11 +11,19 @@
 #include "Resource/Texture2D.h"
 #include "Resource/TextureCube.h"
 
+#include "Shader/ShaderFactory.h"
+
 #include "GIRawResource.h"
 
 class GIDrawFace
 {
 public:
+    GIDrawFace(Shader ps, Shader vs) : 
+        _shadingType(ps.type),
+        _pshader(ps),
+        _vshader(vs)
+    {}
+
     template<class BufferType>
     void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId, ShaderType type) {
         RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), ResourceType::ConstantBuffer), registerId, type);
@@ -25,7 +33,7 @@ public:
     void RegisterShaderResource(const TextureCube& tex, unsigned int regsiterId, ShaderType type);
 
     ShadingType GetShadingType() const {
-        return shadingType;
+        return _shadingType;
     }
 
     const std::vector<std::pair<GITextureResource, unsigned int>>& GetTextureResources() const {
@@ -39,11 +47,11 @@ public:
     unsigned int faceNumVerts;
     unsigned int startIndex;
 
-    RawBinary PS() const {
+    Shader PS() const {
         return _pshader;
     }
 
-    RawBinary VS() const {
+    Shader VS() const {
         return _vshader;
     }
 
@@ -54,10 +62,10 @@ protected:
     std::vector<std::pair<GITextureResource, unsigned int>> textureResources;
     std::vector<std::pair<GIRawResource, unsigned int>> rawResources;
 
-    RawBinary _pshader;
-    RawBinary _vshader;
+    Shader _pshader;
+    Shader _vshader;
 
-    ShadingType shadingType;
+    ShadingType _shadingType;
 };
 
 class GIDrawElement {
@@ -68,7 +76,7 @@ public:
         auto& vertexList = element->GetMesh()->GetVertexList();
         shaderResources.emplace_back(GIRawResource(
             RawBinary((void*)&(vertexList[0]), sizeof(float) * vertexList.size()),
-            ResourceType::VertexList, sizeof(float)), -1);
+            ResourceType::VertexList, sizeof(VertType)), -1);
 
         if (element->GetMesh()->HasIndexList()) {
             auto& indexList = element->GetMesh()->GetIndexList();

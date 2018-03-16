@@ -179,6 +179,7 @@
     <ClInclude Include="D3D11\ComPtr.h" />
     <ClInclude Include="Scene\SkyBox.h" />
     <ClInclude Include="Scene\Enviroment\StaticCubeReflectionCapture.h" />
+    <ClInclude Include="Shader\ShaderFactory.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
     <ClInclude Include="Utility\MathUtils.h" />
     <ClInclude Include="Resource\X\DXGrammers.h" />
@@ -331,6 +332,7 @@
     <ClCompile Include="D3D11\D3D11SceneInfo.cpp" />
     <ClCompile Include="Scene\SkyBox.cpp" />
     <ClCompile Include="Scene\Enviroment\StaticCubeReflectionCapture.cpp" />
+    <ClCompile Include="Shader\ShaderFactory.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />
     <ClCompile Include="Resource\X\DXModel.cpp" />

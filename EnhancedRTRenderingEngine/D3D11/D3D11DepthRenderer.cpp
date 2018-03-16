@@ -63,7 +63,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
 
         for (auto && object : scene->GetViewObjects()) {
             GIDrawElement element(&object);
-            GIDrawFace face;
+            GIDrawFace face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
             face.startIndex = 0;
             if (object.GetMesh()->HasIndexList()) {

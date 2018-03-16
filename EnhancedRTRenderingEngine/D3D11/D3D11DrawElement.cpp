@@ -263,17 +263,21 @@ bool D3D11DrawElement<VertType>::_Draw(const std::shared_ptr<D3DX11RenderView>& 
         bufferDesc.StructureByteStride = psResource.first._structureByteStride;
 
         switch (psResource.first._type) {
-        case ResourceType::VertexList:
+        case ResourceType::VertexList: {
+            UINT hOffsets = 0;
             bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
             if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, vertexBuffer.ToCreator()))) {
                 return false;
             }
+            view->hpDeviceContext->IASetVertexBuffers(0, 1, vertexBuffer.Ref(), &psResource.first._structureByteStride, &hOffsets);
             break;
+        }
         case ResourceType::IndexList:
             bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
             if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, indexBuffer.ToCreator()))) {
                 return false;
             }
+            view->hpDeviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
             break;
         case ResourceType::ConstantBuffer:
             bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
@@ -286,16 +290,19 @@ bool D3D11DrawElement<VertType>::_Draw(const std::shared_ptr<D3DX11RenderView>& 
         }
     }
 
+    for (auto&& sharedRes : _bufferMap) {
+        view->hpDeviceContext->VSSetConstantBuffers(sharedRes.first, 1, sharedRes.second.Ref());
+    }
+    view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
+
     auto& drawLinks = element.GetDrawLinks();
     for (ShadingType type : { ShadingType::BasePass, ShadingType::Detph, ShadingType::Unlit } ) {
         auto range = drawLinks.equal_range(type);
 
-        view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
-
-        for (auto&& sharedRes : _bufferMap) {
-            view->hpDeviceContext->VSSetConstantBuffers(sharedRes.first, 1, sharedRes.second.Ref());
+        if (range.first == range.second) {
+            continue;
         }
-
+        
         for (auto it = range.first; it != range.second; it++) {
             auto& shader = it->second;
 

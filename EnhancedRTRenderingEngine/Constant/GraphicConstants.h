@@ -14,8 +14,10 @@ enum class ShaderType {
 };
 
 enum class ShadingType {
+    None,
     BasePass,
     Detph,
-    Unlit
+    Unlit,
+    Vertex
 };
 
