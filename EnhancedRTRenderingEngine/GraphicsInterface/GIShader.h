@@ -75,7 +75,7 @@ public:
         _vertexLayout = GenerateVertexLayout<VertType>();
         auto& vertexList = element->GetMesh()->GetVertexList();
         shaderResources.emplace_back(GIRawResource(
-            RawBinary((void*)&(vertexList[0]), sizeof(float) * vertexList.size()),
+            RawBinary((void*)&(vertexList[0]), sizeof(VertType) * vertexList.size()),
             ResourceType::VertexList, sizeof(VertType)), -1);
 
         if (element->GetMesh()->HasIndexList()) {
@@ -92,9 +92,11 @@ public:
         pBuffer->NormalWorld = XMMatrixInverse(nullptr, element->GetMatrix());
 
         shaderResources.emplace_back(GIRawResource(RawBinary(pBuffer, sizeof(ObjectBuffer)),
-            ResourceType::ConstantBuffer, -1), 0);
+            ResourceType::ConstantBuffer, -1), 1);
 
         _dataHandles.push_back(buffer);
+
+        _primitiveType = VertexPrimitiveType::TRIANGLELIST;
     }
 
     VertexPrimitiveType GetPrimitiveType() const { 

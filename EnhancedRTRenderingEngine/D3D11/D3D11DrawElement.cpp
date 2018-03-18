@@ -325,6 +325,7 @@ bool D3D11DrawElement<VertType>::_Draw(const std::shared_ptr<D3DX11RenderView>& 
             if (FAILED(err)) {
                 return false;
             }
+            view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
 
             TextureParam param;
             param.format = TextureFormat::RGBA8_UNORM;
