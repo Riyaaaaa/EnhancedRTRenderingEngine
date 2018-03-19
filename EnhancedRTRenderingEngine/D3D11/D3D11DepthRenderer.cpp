@@ -106,8 +106,9 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         Size resolution = pLight.GetShadowResolution();
         _view->SetViewPortSize(resolution);
-        std::vector<D3D11OMResource> target(6, D3D11OMResource(_view->hpDevice, resolution));
+        std::vector<D3D11OMResource> target;
         for (int j = 0; j < 6; j++) {
+            target.push_back(D3D11OMResource(_view->hpDevice, resolution));
             target[j].InitializeRenderTarget(_view->hpDeviceContext, true);
             target[j].InitializeDepthStencilView(_view->hpDeviceContext, true);
 
