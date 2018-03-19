@@ -52,13 +52,13 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {
-        _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0).GetSubResourceView().Ref());
-        _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0).GetSampler().Ref());
+        _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0)->GetSubResourceView().Ref());
+        _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0)->GetSampler().Ref());
     }
     
     if (hConstantBuffer.numPointLights > 0) {
-        _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0).GetSubResourceView().Ref());
-        _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0).GetSampler().Ref());
+        _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0)->GetSubResourceView().Ref());
+        _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0)->GetSampler().Ref());
     }
 
     for (auto && object : scene->GetViewObjects()) {
@@ -67,8 +67,8 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
-            _view->hpDeviceContext->PSSetShaderResources(2, 1, tex.GetSubResourceView().Ref());
-            _view->hpDeviceContext->PSSetSamplers(2, 1, tex.GetSampler().Ref());
+            _view->hpDeviceContext->PSSetShaderResources(2, 1, tex->GetSubResourceView().Ref());
+            _view->hpDeviceContext->PSSetSamplers(2, 1, tex->GetSampler().Ref());
         }
 
         int index = 0;
@@ -78,12 +78,17 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
             face.faceNumVerts = drawface.faceNumVerts;
             face.startIndex = index;
 
+            TextureParam param;
+            param.type = material.type;
+            D3D11TextureProxy texture = std::make_shared<D3D11TextureProxyEntity>(_view->hpDevice);
             if (material.type == TextureType::Texture2D) {
-                face.RegisterShaderResource(material.texture, 10);
+                texture->Initialize(param, material.texture);
             }
             else if (material.type == TextureType::TextureCube) {
-                face.RegisterShaderResource(material.cubeTexture, 10);
+                texture->Initialize(param, material.cubeTexture.textures);
             }
+
+            face.RegisterShaderResource(texture, 10);
 
             MaterialBuffer buf{ material.metallic, material.roughness };
             face.RegisterConstantBuffer(&buf, 1);
@@ -92,8 +97,8 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
             index += drawface.faceNumVerts;
         }
 
-        D3D11DrawElement<Scene::VertType> drawer;
-        drawer._Draw(_view, element);
+        D3D11DrawElement drawer;
+        drawer.Draw(_view, element);
     }
     
     ID3D11ShaderResourceView*   pNullSRV = nullptr;

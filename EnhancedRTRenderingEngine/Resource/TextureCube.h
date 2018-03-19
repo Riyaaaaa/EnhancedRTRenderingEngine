@@ -14,7 +14,7 @@ enum CUBE_DIRECTION {
     NZ
 };
 
-class TextureCube : public Texture2D
+class TextureCube
 {
 public:
     static DirectX::XMVECTOR lookAt[6];
@@ -28,6 +28,13 @@ public:
         return textures[dir];
     }
 
+    unsigned int Size() const {
+        return _size;
+    }
+
     std::vector<Texture2D> textures;
+
+protected:
+    unsigned int _size;
 };
 

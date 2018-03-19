@@ -73,8 +73,8 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
                 face.faceNumVerts = object.GetMesh()->GetVertexList().size();
             }
             element.AddDrawFace(face);
-            D3D11DrawElement<Scene::VertType> draw;
-            draw._Draw(_view, element);
+            D3D11DrawElement draw;
+            draw.Draw(_view, element);
         }
 
         _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(_view, target.GetRTVTexture());
@@ -136,8 +136,8 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
                     face.faceNumVerts = object.GetMesh()->GetVertexList().size();
                 }
                 element.AddDrawFace(face);
-                D3D11DrawElement<Scene::VertType> draw;
-                draw._Draw(_view, element);
+                D3D11DrawElement draw;
+                draw.Draw(_view, element);
             }
         }
 
@@ -148,7 +148,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         // Each element in the texture array has the same format/dimensions.
         D3D11_TEXTURE2D_DESC texElementDesc;
-        target[0].GetRTVTexture().GetTexture().Get()->GetDesc(&texElementDesc);
+        target[0].GetRTVTexture()->GetTexture().Get()->GetDesc(&texElementDesc);
 
         D3D11_TEXTURE2D_DESC texArrayDesc;
         texArrayDesc.Width = texElementDesc.Width;
@@ -169,11 +169,11 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         for (UINT x = 0; x < 6; x++)
         {
-            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture()).GetTexture().Get(), 0, nullptr);
+            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture())->GetTexture().Get(), 0, nullptr);
         }
 
-        D3D11TextureProxy tex(_view->hpDevice);
-        tex.Initialize(texArray);
+        D3D11TextureProxy tex = D3D11TextureProxyEntity::Create(_view->hpDevice);
+        tex->Initialize(texArray);
         _scene->GetPointShadow(i) = tex;
 
         pLight.SetDirty(false);

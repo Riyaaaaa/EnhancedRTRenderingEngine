@@ -35,14 +35,13 @@ public:
         RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), ResourceType::ConstantBuffer, sizeof(float)), regsiterId);
     }
 
-    void RegisterShaderResource(const Texture2D& tex, unsigned int regsiterId);
-    void RegisterShaderResource(const TextureCube& tex, unsigned int regsiterId);
+    void RegisterShaderResource(const GITextureProxy& tex, unsigned int regsiterId);
 
     ShadingType GetShadingType() const {
         return _shadingType;
     }
 
-    const std::vector<std::pair<GITextureResource, unsigned int>>& GetTextureResources() const {
+    const std::vector<std::pair<GITextureProxy, unsigned int>>& GetTextureResources() const {
         return textureResources;
     }
 
@@ -65,7 +64,7 @@ protected:
     void RegisterShaderResource(GIRawResource res, unsigned int registerId);
 
     // Shader Resources
-    std::vector<std::pair<GITextureResource, unsigned int>> textureResources;
+    std::vector<std::pair<GITextureProxy, unsigned int>> textureResources;
     std::vector<std::pair<GIRawResource, unsigned int>> rawResources;
 
     Shader _pshader;

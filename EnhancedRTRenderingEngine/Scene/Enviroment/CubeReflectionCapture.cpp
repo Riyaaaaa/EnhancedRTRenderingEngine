@@ -9,7 +9,7 @@ CubeReflectionCapture::CubeReflectionCapture(float size) {
     dirty = true;
 }
 
-void CubeReflectionCapture::SetupTexture(GITextureProxy* tex) {
+void CubeReflectionCapture::SetupTexture(GITextureProxy tex) {
     TextureParam param;
     param.arraySize = 6;
     param.width = box.w;

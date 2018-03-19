@@ -3,30 +3,18 @@
 
 using namespace DirectX;
 
-TextureCube::TextureCube(int size)
+TextureCube::TextureCube(int size) :
+_size(size)
 {
     textures.reserve(6);
     for (int i = 0; i < 6; i++) {
         textures.emplace_back(Texture2D(size, size, 4));
     }
-
-    width = height = size;
-    channels = 4;
-    stride = size * 4;
-
-    _ptr = &textures[0];
-    _size = size;
 }
 
 TextureCube::TextureCube(const std::vector<Texture2D>& texResource) {
     textures = texResource;
     _size = textures[0].Width();
-
-    width = height = _size;
-    channels = 4;
-    stride = _size * 4;
-
-    _ptr = &textures[0];
 }
 
 DirectX::XMVECTOR TextureCube::lookAt[6] = {

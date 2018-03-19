@@ -1,12 +1,8 @@
 #include "stdafx.h"
 #include "GIShader.h"
 
-void GIDrawFace::RegisterShaderResource(const Texture2D& tex, unsigned int registerId) {
-    textureResources.push_back(std::make_pair(GITextureResource(tex), registerId));
-}
-
-void GIDrawFace::RegisterShaderResource(const TextureCube& tex, unsigned int registerId) {
-    textureResources.push_back(std::make_pair(GITextureResource(tex.textures, ResourceType::TextureCube), registerId));
+void GIDrawFace::RegisterShaderResource(const GITextureProxy& tex, unsigned int registerId) {
+    textureResources.push_back(std::make_pair(tex, registerId));
 }
 
 void GIDrawFace::RegisterShaderResource(GIRawResource res, unsigned int registerId) {

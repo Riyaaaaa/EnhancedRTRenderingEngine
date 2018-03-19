@@ -14,7 +14,7 @@ bool D3D11TextureEffectRenderer::Initialize(const std::shared_ptr<D3DX11RenderVi
 
 D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src, const std::string& effect) {
     D3D11_TEXTURE2D_DESC desc;
-    src.GetTexture()->GetDesc(&desc);
+    src->GetTexture()->GetDesc(&desc);
     
     desc.BindFlags |= D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET;
 
@@ -25,8 +25,8 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
 
     SamplerParam param;
     param.addressMode = TextureAddressMode::CLAMP;
-    D3D11TextureProxy dst(_view->hpDevice);
-    dst.Initialize(dstTex, param);
+    D3D11TextureProxy dst = D3D11TextureProxyEntity::Create(_view->hpDevice);
+    dst->Initialize(dstTex, param);
 
     ComPtr<ID3D11RenderTargetView> rtv;
 

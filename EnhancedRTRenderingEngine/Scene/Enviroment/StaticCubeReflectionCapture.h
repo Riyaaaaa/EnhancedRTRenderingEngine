@@ -6,7 +6,7 @@ class StaticCubeReflectionCapture : public CubeReflectionCapture
 {
 public:
     explicit StaticCubeReflectionCapture(const TextureCube& tex);
-    void SetupTexture(GITextureProxy* tex) override;
+    void SetupTexture(GITextureProxy tex) override;
 
 protected:
     TextureCube reflectionSource;

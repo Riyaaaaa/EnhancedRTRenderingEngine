@@ -23,5 +23,13 @@ namespace ShaderFactory
     inline Shader RenderShadowMapShader() {
         return Shader(ShadingType::Detph, ResourceLoader::LoadShader("RenderShadowMapShader"));
     }
+
+    inline Shader HUDVertexShader() {
+        return Shader(ShadingType::Vertex, ResourceLoader::LoadShader("HUDVertexShader"));
+    }
+
+    inline Shader MinTextureColor() {
+        return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("MinTextureColor"));
+    }
 };
 

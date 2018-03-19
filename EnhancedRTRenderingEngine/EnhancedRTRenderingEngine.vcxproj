@@ -165,8 +165,9 @@
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="D3D11\D3D11TextureEffects.h" />
     <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
+    <ClInclude Include="GraphicsInterface\GIResource.h" />
     <ClInclude Include="GraphicsInterface\GIRawResource.h" />
-    <ClInclude Include="GraphicsInterface\GIShaderResource.h" />
+    <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
     <ClInclude Include="GraphicsInterface\GIShader.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
@@ -320,8 +321,8 @@
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffects.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
+    <ClCompile Include="GraphicsInterface\GIResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
-    <ClCompile Include="GraphicsInterface\GIShaderResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIShader.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />

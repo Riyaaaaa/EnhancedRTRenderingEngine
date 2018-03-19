@@ -113,13 +113,13 @@ void D3D11DrawPlate<VertType>::SetShader(const std::shared_ptr<D3DX11RenderView>
     }
     view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
 
-    view->hpDeviceContext->PSSetShaderResources(0, 1, texture.GetSubResourceView().Ref());
+    view->hpDeviceContext->PSSetShaderResources(0, 1, texture->GetSubResourceView().Ref());
 
     if (_type == TextureType::TextureCube) {
         view->hpDeviceContext->PSSetConstantBuffers(0, 0, pBuffer.Ref());
     }
 
-    view->hpDeviceContext->PSSetSamplers(0, 1, texture.GetSampler().Ref());
+    view->hpDeviceContext->PSSetSamplers(0, 1, texture->GetSampler().Ref());
 }
 
 template<class VertType>

@@ -462,9 +462,6 @@
     <ClInclude Include="GraphicsInterface\GIShader.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsInterface\GIShaderResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Constant\GraphicConstants.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -478,6 +475,12 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Shader\ShaderFactory.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsInterface\GIResource.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsInterface\GIResourceAttribute.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -644,9 +647,6 @@
     <ClCompile Include="GraphicsInterface\GIShader.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsInterface\GIShaderResource.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\TextureCube.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -654,6 +654,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Shader\ShaderFactory.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsInterface\GIResource.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
