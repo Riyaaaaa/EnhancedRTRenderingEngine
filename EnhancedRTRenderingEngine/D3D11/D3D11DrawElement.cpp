@@ -10,7 +10,7 @@
 #include "Constant/RenderTag.h"
 #include "Common.h"
 
-bool D3D11DrawElement::Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawElement& element) {
+bool D3D11DrawElement::Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawMesh& element) {
     auto& layouts = element.GetVertexLayout();
 
     for (auto&& layout : layouts) {

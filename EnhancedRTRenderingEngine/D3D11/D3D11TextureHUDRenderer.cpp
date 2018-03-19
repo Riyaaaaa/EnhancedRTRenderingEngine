@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "D3D11TextureHUDRenderer.h"
 #include "D3D11DrawElement.h"
-#include "GraphicsInterface/GIShader.h"
+#include "GraphicsInterface/GIDrawMesh.h"
 #include "Shader/ShaderFactory.h"
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
@@ -25,8 +25,8 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const Texture2D& t
     _view->SetViewPortSize(_view->GetRenderSize());
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
-    GIDrawElement element(&mesh);
-    GIDrawFace face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
+    GIDrawMesh element(&mesh);
+    GIDrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 
@@ -51,8 +51,8 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture
 
     _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
 
-    GIDrawElement element(&mesh);
-    GIDrawFace face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
+    GIDrawMesh element(&mesh);
+    GIDrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 

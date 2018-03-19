@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "D3D11PostEffectRenderer.h"
 #include "D3D11DrawElement.h"
-#include "GraphicsInterface/GIShader.h"
+#include "GraphicsInterface/GIDrawMesh.h"
 #include "Shader/ShaderFactory.h"
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
@@ -42,8 +42,8 @@ void D3D11PostEffectRenderer::Apply(const std::string& effect) {
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    GIDrawElement element(&mesh);
-    GIDrawFace face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    GIDrawMesh element(&mesh);
+    GIDrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     element.AddDrawFace(face);

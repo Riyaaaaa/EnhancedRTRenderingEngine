@@ -10,14 +10,14 @@
 #include "Resource/ResourceHandle.h"
 #include "RenderingContext.h"
 #include "Constant/RenderTag.h"
-#include "GraphicsInterface/GIShader.h"
+#include "GraphicsInterface/GIDrawMesh.h"
 
 class D3D11DrawElement
 {
 public:
     D3D11DrawElement() {}
 
-    bool Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawElement& element);
+    bool Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawMesh& element);
 
 protected:
 

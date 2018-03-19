@@ -4,7 +4,7 @@
 #include "D3D11DrawElement.h"
 #include "D3D11TextureEffects.h"
 
-#include "GraphicsInterface/GIShader.h"
+#include "GraphicsInterface/GIDrawMesh.h"
 
 #include "Constant/RenderTag.h"
 
@@ -62,8 +62,8 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
         _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
         for (auto && object : scene->GetViewObjects()) {
-            GIDrawElement element(&object);
-            GIDrawFace face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+            GIDrawMesh element(&object);
+            GIDrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
             face.startIndex = 0;
             if (object.GetMesh()->HasIndexList()) {
@@ -126,8 +126,8 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
             _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
             for (auto && object : scene->GetViewObjects()) {
-                GIDrawElement element(&object);
-                GIDrawFace face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+                GIDrawMesh element(&object);
+                GIDrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
                 face.startIndex = 0;
                 if (object.GetMesh()->HasIndexList()) {

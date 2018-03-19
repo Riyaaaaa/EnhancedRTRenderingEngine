@@ -2,7 +2,7 @@
 #include "D3D11TextureEffectRenderer.h"
 #include "Mesh/Primitive/Square.h"
 #include "D3D11DrawElement.h"
-#include "GraphicsInterface/GIShader.h"
+#include "GraphicsInterface/GIDrawMesh.h"
 #include "Shader/ShaderFactory.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
@@ -46,8 +46,8 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    GIDrawElement element(&mesh);
-    GIDrawFace face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    GIDrawMesh element(&mesh);
+    GIDrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     face.RegisterShaderResource(src, 0);

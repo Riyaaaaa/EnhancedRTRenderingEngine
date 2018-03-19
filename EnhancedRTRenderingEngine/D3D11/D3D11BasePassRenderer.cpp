@@ -3,7 +3,7 @@
 #include "D3D11DrawElement.h"
 #include "D3D11ConstantBufferBuilder.h"
 
-#include "GraphicsInterface/GIShader.h"
+#include "GraphicsInterface/GIDrawMesh.h"
 
 #include "Constant/RenderTag.h"
 #include "Utility/SceneUtils.h"
@@ -63,7 +63,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
 
     for (auto && object : scene->GetViewObjects()) {
         auto& mesh = object.GetMesh();
-        GIDrawElement element(&object);
+        GIDrawMesh element(&object);
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
@@ -74,7 +74,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
         int index = 0;
         for (auto && drawface : mesh->GetDrawFacesMap()) {
             auto& material = object.GetMaterials()[drawface.materialIdx];
-            GIDrawFace face(material);
+            GIDrawElement face(material);
             face.faceNumVerts = drawface.faceNumVerts;
             face.startIndex = index;
 

@@ -168,7 +168,7 @@
     <ClInclude Include="GraphicsInterface\GIResource.h" />
     <ClInclude Include="GraphicsInterface\GIRawResource.h" />
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
-    <ClInclude Include="GraphicsInterface\GIShader.h" />
+    <ClInclude Include="GraphicsInterface\GIDrawMesh.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITextureProxy.h" />
@@ -322,7 +322,7 @@
     <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
     <ClCompile Include="GraphicsInterface\GIResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
-    <ClCompile Include="GraphicsInterface\GIShader.cpp" />
+    <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />

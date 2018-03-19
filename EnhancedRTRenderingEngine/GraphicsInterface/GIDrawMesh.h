@@ -15,16 +15,16 @@
 
 #include "GIRawResource.h"
 
-class GIDrawFace
+class GIDrawElement
 {
 public:
-    GIDrawFace(Shader ps, Shader vs) : 
+    GIDrawElement(Shader ps, Shader vs) : 
         _shadingType(ps.type),
         _pshader(ps),
         _vshader(vs)
     {}
 
-    GIDrawFace(const Material& material) :
+    GIDrawElement(const Material& material) :
         _shadingType(material.shadingType),
         _pshader(material.shadingType, material.pShader),
         _vshader(ShadingType::Vertex, material.vShader)
@@ -73,10 +73,10 @@ protected:
     ShadingType _shadingType;
 };
 
-class GIDrawElement {
+class GIDrawMesh {
 public:
     template<class VertType>
-    GIDrawElement(MeshObject<VertType>* element) {
+    GIDrawMesh(MeshObject<VertType>* element) {
         _vertexLayout = GenerateVertexLayout<VertType>();
         auto& vertexList = element->GetMesh()->GetVertexList();
         shaderResources.emplace_back(GIRawResource(
@@ -116,11 +116,11 @@ public:
         return shaderResources;
     }
 
-    void AddDrawFace(const GIDrawFace& face) {
+    void AddDrawFace(const GIDrawElement& face) {
         _drawLinks.insert(std::make_pair(face.GetShadingType(), face));
     }
 
-    const std::unordered_multimap<ShadingType, GIDrawFace>& GetDrawLinks() const {
+    const std::unordered_multimap<ShadingType, GIDrawElement>& GetDrawLinks() const {
         return _drawLinks;
     }
 
@@ -133,7 +133,7 @@ private:
     std::vector<VertexLayout> _vertexLayout;
     std::vector<std::shared_ptr<void>> _dataHandles;
     std::vector<std::pair<GIRawResource, unsigned int>> shaderResources;
-    std::unordered_multimap<ShadingType, GIDrawFace> _drawLinks;
+    std::unordered_multimap<ShadingType, GIDrawElement> _drawLinks;
 };
 
 
