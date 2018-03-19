@@ -173,7 +173,6 @@
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITextureProxy.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
-    <ClInclude Include="D3D11\D3D11DrawPlate.h" />
     <ClInclude Include="D3D11\D3D11TextureHUDRenderer.h" />
     <ClInclude Include="Resource\TextureCube.h" />
     <ClInclude Include="D3D11\D3D11SceneInfo.h" />
@@ -327,7 +326,6 @@
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
-    <ClCompile Include="D3D11\D3D11DrawPlate.cpp" />
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp" />
     <ClCompile Include="Resource\TextureCube.cpp" />
     <ClCompile Include="D3D11\D3D11SceneInfo.cpp" />

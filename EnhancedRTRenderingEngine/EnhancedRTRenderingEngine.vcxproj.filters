@@ -417,9 +417,6 @@
     <ClInclude Include="D3D11\D3D11TextureHUDRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11\D3D11DrawPlate.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Scene\SkyBox.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -600,9 +597,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11DrawPlate.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene\SkyBox.cpp">
