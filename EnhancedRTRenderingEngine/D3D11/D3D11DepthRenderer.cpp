@@ -125,9 +125,19 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
             _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
 
             for (auto && object : scene->GetViewObjects()) {
-                D3D11DrawElement<Scene::VertType> element;
-                element.Initialize(_view->hpDevice, &object, DepthRenderTag);
-                element.Draw(_view);
+                GIDrawElement element(&object);
+                GIDrawFace face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+
+                face.startIndex = 0;
+                if (object.GetMesh()->HasIndexList()) {
+                    face.faceNumVerts = object.GetMesh()->GetIndexList().size();
+                }
+                else {
+                    face.faceNumVerts = object.GetMesh()->GetVertexList().size();
+                }
+                element.AddDrawFace(face);
+                D3D11DrawElement<Scene::VertType> draw;
+                draw._Draw(_view, element);
             }
         }
 

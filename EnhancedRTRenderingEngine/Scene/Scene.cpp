@@ -41,7 +41,7 @@ Scene::Scene() {
     //viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
     //viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
 
-    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.0f, 0.0f});
+    Material material(MaterialParameters{"LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.0f, 1.0f});
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 

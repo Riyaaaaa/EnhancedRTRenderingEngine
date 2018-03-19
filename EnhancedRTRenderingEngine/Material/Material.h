@@ -3,7 +3,9 @@
 #include "Structure/Structure.h"
 #include "Resource/ResourceHandle.h"
 #include "Resource/Texture2D.h"
+#include "Resource/TextureCube.h"
 #include "MaterialParameters.h"
+#include "Constant/GraphicConstants.h"
 
 class Material
 {
@@ -16,9 +18,10 @@ public:
 
     float roughness, metallic;
     Vector3D specular;
+    ShadingType shadingType = ShadingType::BasePass;
     TextureType type = TextureType::None;
     RawBinary vShader, pShader;
     Texture2D texture;
-    std::vector<Texture2D> cubeTexture;
+    TextureCube cubeTexture;
 };
 

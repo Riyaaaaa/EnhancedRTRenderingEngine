@@ -24,13 +24,19 @@ public:
         _vshader(vs)
     {}
 
+    GIDrawFace(const Material& material) :
+        _shadingType(material.shadingType),
+        _pshader(material.shadingType, material.pShader),
+        _vshader(ShadingType::Vertex, material.vShader)
+    {}
+
     template<class BufferType>
-    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId, ShaderType type) {
-        RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), ResourceType::ConstantBuffer), registerId, type);
+    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId) {
+        RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), ResourceType::ConstantBuffer, sizeof(float)), regsiterId);
     }
 
-    void RegisterShaderResource(const Texture2D& tex, unsigned int regsiterId, ShaderType type);
-    void RegisterShaderResource(const TextureCube& tex, unsigned int regsiterId, ShaderType type);
+    void RegisterShaderResource(const Texture2D& tex, unsigned int regsiterId);
+    void RegisterShaderResource(const TextureCube& tex, unsigned int regsiterId);
 
     ShadingType GetShadingType() const {
         return _shadingType;

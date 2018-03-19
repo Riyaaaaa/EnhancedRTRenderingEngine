@@ -163,6 +163,8 @@ std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {
             materials[i].metallic = 0.2f;
             materials[i].roughness = 0.5f;
         }
+
+        materials[i].shadingType = ShadingType::BasePass;
     }
 
     return materials;

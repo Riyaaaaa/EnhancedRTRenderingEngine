@@ -42,7 +42,7 @@ void D3D11DrawElement<VertType>::Initialize(ComPtr<ID3D11Device> device, MeshObj
             textures[i].Initialize(param, material.texture);
         }
         else if (material.type == TextureType::TextureCube) {
-            textures[i].Initialize(param, material.cubeTexture);
+            textures[i].Initialize(param, material.cubeTexture.textures);
         }
     }
 
@@ -332,7 +332,7 @@ bool D3D11DrawElement<VertType>::_Draw(const std::shared_ptr<D3DX11RenderView>& 
             param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
             for (auto&& texRes : shader.GetTextureResources()) {
-                D3D11TextureProxy texture;
+                D3D11TextureProxy texture(view->hpDevice);
                 switch (texRes.first._type) {
                 case ResourceType::Texture2D:
                     param.type = TextureType::Texture2D;

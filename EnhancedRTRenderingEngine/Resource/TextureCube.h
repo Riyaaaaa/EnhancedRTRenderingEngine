@@ -20,7 +20,8 @@ public:
     static DirectX::XMVECTOR lookAt[6];
     static DirectX::XMVECTOR up[6];
 
-    explicit TextureCube(int _size = 1000);
+    TextureCube() = default;
+    explicit TextureCube(int _size);
     TextureCube(const std::vector<Texture2D>& texResource);
 
     const Texture2D& operator[](CUBE_DIRECTION dir) {

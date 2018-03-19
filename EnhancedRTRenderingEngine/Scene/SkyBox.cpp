@@ -18,8 +18,9 @@ SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
     }
 
     _materials.emplace_back(MaterialParameters{ "LightingVertexShader", "UnlitCubeTexturePixelShader", "", 0.0f, 0.0f });
-    _materials.back().cubeTexture = textures;
+    _materials.back().cubeTexture = TextureCube(textures);
     _materials.back().type = TextureType::TextureCube;
+    _materials.back().shadingType = ShadingType::Unlit;
 
     _context = RenderingContext{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLELIST };
 
@@ -27,6 +28,6 @@ SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
     transform.scale = Vector3D(100.0f, 100.0f, 100.0f);
 }
 
-const std::vector<Texture2D>& SkyBox::GetCubeTextureResource() {
+const TextureCube& SkyBox::GetCubeTextureResource() {
     return _materials[0].cubeTexture;
 }

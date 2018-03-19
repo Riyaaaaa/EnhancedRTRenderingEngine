@@ -3,9 +3,7 @@
 #include "D3D11DrawElement.h"
 #include "D3D11ConstantBufferBuilder.h"
 
-#include "Resource/ResourceLoader.h"
-#include "Mesh/Primitive/Primitives.h"
-#include "Mesh/SimpleModel/Box.h"
+#include "GraphicsInterface/GIShader.h"
 
 #include "Constant/RenderTag.h"
 #include "Utility/SceneUtils.h"
@@ -64,7 +62,8 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     }
 
     for (auto && object : scene->GetViewObjects()) {
-        D3D11DrawElement<Scene::VertType> element;
+        auto& mesh = object.GetMesh();
+        GIDrawElement element(&object);
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
@@ -72,8 +71,29 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
             _view->hpDeviceContext->PSSetSamplers(2, 1, tex.GetSampler().Ref());
         }
 
-        element.Initialize(_view->hpDevice, &object, OpaqueRenderTag);
-        element.Draw(_view);
+        int index = 0;
+        for (auto && drawface : mesh->GetDrawFacesMap()) {
+            auto& material = object.GetMaterials()[drawface.materialIdx];
+            GIDrawFace face(material);
+            face.faceNumVerts = drawface.faceNumVerts;
+            face.startIndex = index;
+
+            if (material.type == TextureType::Texture2D) {
+                face.RegisterShaderResource(material.texture, 10);
+            }
+            else if (material.type == TextureType::TextureCube) {
+                face.RegisterShaderResource(material.cubeTexture, 10);
+            }
+
+            MaterialBuffer buf{ material.metallic, material.roughness };
+            face.RegisterConstantBuffer(&buf, 1);
+            
+            element.AddDrawFace(face);
+            index += drawface.faceNumVerts;
+        }
+
+        D3D11DrawElement<Scene::VertType> drawer;
+        drawer._Draw(_view, element);
     }
     
     ID3D11ShaderResourceView*   pNullSRV = nullptr;
