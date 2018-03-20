@@ -1,7 +1,9 @@
 #include "stdafx.h"
 #include "D3D11TextureEffectRenderer.h"
-#include "D3D11DrawPlate.h"
 #include "Mesh/Primitive/Square.h"
+#include "D3D11DrawElement.h"
+#include "GraphicsInterface/GIDrawMesh.h"
+#include "Shader/ShaderFactory.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
 #include "WindowManager.h"
@@ -14,7 +16,7 @@ bool D3D11TextureEffectRenderer::Initialize(const std::shared_ptr<D3DX11RenderVi
 
 D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src, const std::string& effect) {
     D3D11_TEXTURE2D_DESC desc;
-    src.GetTexture()->GetDesc(&desc);
+    src->GetTexture()->GetDesc(&desc);
     
     desc.BindFlags |= D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET;
 
@@ -25,8 +27,8 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
 
     SamplerParam param;
     param.addressMode = TextureAddressMode::CLAMP;
-    D3D11TextureProxy dst(_view->hpDevice);
-    dst.Initialize(dstTex, param);
+    D3D11TextureProxy dst = D3D11TextureProxyEntity::Create(_view->hpDevice);
+    dst->Initialize(dstTex, param);
 
     ComPtr<ID3D11RenderTargetView> rtv;
 
@@ -44,10 +46,14 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    D3D11DrawPlate<TexVertex> element;
-    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, effect, 0);
-    element.SetTexture(src);
-    element.Draw(_view);
+    GIDrawMesh element(&mesh);
+    GIDrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
+    face.startIndex = 0;
+    face.RegisterShaderResource(src, 0);
+    element.AddDrawFace(face);
+    D3D11DrawElement drawer;
+    drawer.Draw(_view, element);
 
     return dst;
 }

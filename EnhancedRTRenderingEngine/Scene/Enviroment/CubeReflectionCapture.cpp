@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CubeReflectionCapture.h" 
 
-#include "GraphicsInterface/GITexture.h"
+#include "GraphicsInterface/GITextureProxy.h"
 
 
 CubeReflectionCapture::CubeReflectionCapture(float size) {
@@ -9,7 +9,7 @@ CubeReflectionCapture::CubeReflectionCapture(float size) {
     dirty = true;
 }
 
-void CubeReflectionCapture::SetupTexture(GITexture* tex) {
+void CubeReflectionCapture::SetupTexture(GITextureProxy tex) {
     TextureParam param;
     param.arraySize = 6;
     param.width = box.w;

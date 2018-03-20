@@ -7,8 +7,8 @@
 D3D11OMResource::D3D11OMResource(const ComPtr<ID3D11Device>& device, Size size) :
     _depthStencilView(nullptr),
     _device(device),
-    _RTVTexture(device),
-    _DSVTexture(device),
+    _RTVTexture(D3D11TextureProxyEntity::Create(device)),
+    _DSVTexture(D3D11TextureProxyEntity::Create(device)),
     _size(size)
 {
 }
@@ -23,9 +23,9 @@ bool D3D11OMResource::InitializeRenderTarget(ComPtr<ID3D11DeviceContext> hpDevic
     param.arraySize = 1;
     param.samplerParam.addressMode = TextureAddressMode::CLAMP;
 
-    _RTVTexture.Initialize(param);
+    _RTVTexture->Initialize(param);
 
-    if (FAILED(_device->CreateRenderTargetView(_RTVTexture.GetTexture().Get(), nullptr, _renderTarget.ToCreator()))) {
+    if (FAILED(_device->CreateRenderTargetView(_RTVTexture->GetTexture().Get(), nullptr, _renderTarget.ToCreator()))) {
         return false;
     }
 
@@ -42,13 +42,13 @@ bool D3D11OMResource::InitializeDepthStencilView(ComPtr<ID3D11DeviceContext> hpD
     param.arraySize = 1;
     param.samplerParam.addressMode = TextureAddressMode::CLAMP;
 
-    _DSVTexture.Initialize(param);
+    _DSVTexture->Initialize(param);
 
     D3D11_DEPTH_STENCIL_VIEW_DESC hDepthStencilViewDesc;
     hDepthStencilViewDesc.Format = DXGI_FORMAT::DXGI_FORMAT_D16_UNORM;
     hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
     hDepthStencilViewDesc.Flags = 0;
-    if (FAILED(_device->CreateDepthStencilView(_DSVTexture.GetTexture().Get(), &hDepthStencilViewDesc, _depthStencilView.ToCreator()))) {
+    if (FAILED(_device->CreateDepthStencilView(_DSVTexture->GetTexture().Get(), &hDepthStencilViewDesc, _depthStencilView.ToCreator()))) {
         return false;
     }
 

@@ -2,7 +2,7 @@
 
 #include "Structure/Structure.h"
 #include "Resource/Texture2D.h"
-#include "Resource/CubeTexture.h"
+#include "Resource/TextureCube.h"
 
 class PointLight
 {
@@ -32,7 +32,7 @@ protected:
     bool _isDirtyMatrix;
     bool _isDirtyShadow;
     DirectX::XMMATRIX _viewMatrixes[6];
-    CubeTexture _shodowTextures;
+    TextureCube _shodowTextures;
     Size _shadowResolution;
 };
 

@@ -15,11 +15,11 @@ public:
     ID3D11RenderTargetView* GetRenderTarget() const { return _renderTarget.Get(); }
     ID3D11DepthStencilView* GetDepthStencilView() const { return _depthStencilView.Get(); }
 
-    ID3D11ShaderResourceView* GetRTVSRV() const { return _RTVTexture.GetSubResourceView().Get(); }
-    ID3D11SamplerState* GetRTVSampler() const { return _RTVTexture.GetSampler().Get(); }
+    ID3D11ShaderResourceView* GetRTVSRV() const { return _RTVTexture->GetSubResourceView().Get(); }
+    ID3D11SamplerState* GetRTVSampler() const { return _RTVTexture->GetSampler().Get(); }
 
-    ID3D11ShaderResourceView* GetDSVSRV() const { return _DSVTexture.GetSubResourceView().Get(); }
-    ID3D11SamplerState* GetDSVSampler() const { return _DSVTexture.GetSampler().Get(); }
+    ID3D11ShaderResourceView* GetDSVSRV() const { return _DSVTexture->GetSubResourceView().Get(); }
+    ID3D11SamplerState* GetDSVSampler() const { return _DSVTexture->GetSampler().Get(); }
 
     const D3D11TextureProxy& GetRTVTexture() const { return _RTVTexture; }
     const D3D11TextureProxy& GetDSVTexture() const { return _DSVTexture; }

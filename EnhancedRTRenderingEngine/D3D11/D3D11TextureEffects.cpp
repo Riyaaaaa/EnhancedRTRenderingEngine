@@ -29,7 +29,7 @@ D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3DX11RenderView>& v
     }
 
     D3D11_TEXTURE2D_DESC desc;
-    src.GetTexture()->GetDesc(&desc);
+    src->GetTexture()->GetDesc(&desc);
     buf.texsize.w = desc.Width;
     buf.texsize.h = desc.Height;
 

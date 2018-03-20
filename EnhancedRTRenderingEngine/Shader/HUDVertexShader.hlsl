@@ -14,6 +14,7 @@ struct vertexOut
 cbuffer ObjectBuffer : register(b1)
 {
     matrix World;
+    matrix NormalWorld;
 }
 
 vertexOut main(vertexIn IN)

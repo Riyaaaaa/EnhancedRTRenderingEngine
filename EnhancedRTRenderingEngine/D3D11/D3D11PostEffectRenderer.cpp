@@ -1,6 +1,8 @@
 #include "stdafx.h"
 #include "D3D11PostEffectRenderer.h"
-#include "D3D11DrawPlate.h"
+#include "D3D11DrawElement.h"
+#include "GraphicsInterface/GIDrawMesh.h"
+#include "Shader/ShaderFactory.h"
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
@@ -40,7 +42,11 @@ void D3D11PostEffectRenderer::Apply(const std::string& effect) {
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    D3D11DrawPlate<TexVertex> element;
-    element.Initialize(_view->hpDevice, &mesh, TextureType::Texture2D, effect, 0);
-    element.Draw(_view);
+    GIDrawMesh element(&mesh);
+    GIDrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
+    face.startIndex = 0;
+    element.AddDrawFace(face);
+    D3D11DrawElement drawer;
+    drawer.Draw(_view, element);
 }

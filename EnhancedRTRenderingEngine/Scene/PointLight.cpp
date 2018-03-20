@@ -26,7 +26,7 @@ DirectX::XMMATRIX* PointLight::GetViewMatrixes() {
         for (int i = 0; i < 6; i++) {
             DirectX::XMVECTOR pos = XMVectorSet(_point.x, _point.y, _point.z, 0.0f);
             auto dir = static_cast<CUBE_DIRECTION>(i);
-            _viewMatrixes[i] = XMMatrixLookToLH(pos, CubeTexture::lookAt[dir], CubeTexture::up[dir]);
+            _viewMatrixes[i] = XMMatrixLookToLH(pos, TextureCube::lookAt[dir], TextureCube::up[dir]);
         }
         _isDirtyMatrix = false;
     }
