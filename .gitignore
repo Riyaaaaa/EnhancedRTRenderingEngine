@@ -24,7 +24,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 # Executables
 *.exe
@@ -38,7 +37,7 @@
 *.env
 
 Debug/
-x64/
+./x64/
 EnhancedRTRenderingEngine/x64/
 EnhancedRTRenderingEngine/Debug/
 packages/

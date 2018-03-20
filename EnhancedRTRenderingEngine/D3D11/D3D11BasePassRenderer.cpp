@@ -93,7 +93,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
             MaterialBuffer buf{ material.metallic, material.roughness };
             face.RegisterConstantBuffer(&buf, 1);
             
-            element.AddDrawFace(face);
+            element.AddDrawElement(face);
             index += drawface.faceNumVerts;
         }
 
@@ -108,5 +108,4 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
     _view->hpDeviceContext->PSSetSamplers(1, 1, &pNullSmp);
     _view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
     _view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
-    
 }

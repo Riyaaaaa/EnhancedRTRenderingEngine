@@ -117,12 +117,6 @@ int ResourceLoader::LoadPNG(std::string filename, Texture2D& outTex) {
     h = PngInfo->height; 
     d = PngInfo->bit_depth / 8 * 4;
 
-    char str[256];
-    sprintf_s(str, "%d x %d (%d bit/channel)\nrow %d byte\nchannnel count : %d",
-        PngInfo->width, PngInfo->height, PngInfo->bit_depth,
-        PngInfo->rowbytes,
-        PngInfo->channels);
-
     if (PngInfo->interlace_type != PNG_INTERLACE_NONE)
     {
         png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);

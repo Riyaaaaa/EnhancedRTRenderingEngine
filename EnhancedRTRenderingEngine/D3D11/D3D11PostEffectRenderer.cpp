@@ -46,7 +46,7 @@ void D3D11PostEffectRenderer::Apply(const std::string& effect) {
     GIDrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
-    element.AddDrawFace(face);
+    element.AddDrawElement(face);
     D3D11DrawElement drawer;
     drawer.Draw(_view, element);
 }

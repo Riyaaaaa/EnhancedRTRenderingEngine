@@ -77,8 +77,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)ThirdParty;$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)ThirdParty\libpng;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)ThirdParty\include\;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(ProjectDir)ThirdParty\x64\libpng;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -180,6 +180,14 @@
     <ClInclude Include="Scene\SkyBox.h" />
     <ClInclude Include="Scene\Enviroment\StaticCubeReflectionCapture.h" />
     <ClInclude Include="Shader\ShaderFactory.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\png.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\pngconf.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\pngdebug.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\pnginfo.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\pnglibconf.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\pngstruct.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\zconf.h" />
+    <ClInclude Include="ThirdParty\x64\libpng\zlib.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
     <ClInclude Include="Utility\MathUtils.h" />
     <ClInclude Include="Resource\X\DXGrammers.h" />
@@ -307,11 +315,6 @@
     <ClInclude Include="Structure\Structure.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Resource\Texture2D.h" />
-    <ClInclude Include="ThirdParty\libpng\png.h" />
-    <ClInclude Include="ThirdParty\libpng\pngconf.h" />
-    <ClInclude Include="ThirdParty\libpng\pnglibconf.h" />
-    <ClInclude Include="ThirdParty\libpng\zconf.h" />
-    <ClInclude Include="ThirdParty\libpng\zlib.h" />
     <ClInclude Include="Structure\Vector.h" />
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
@@ -395,9 +398,11 @@
     </FxCompile>
     <FxCompile Include="Shader\Filter\Gaussian5x5FilterX.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\Filter\Gaussian5x5FilterY.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
     <FxCompile Include="Shader\HUDVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -413,6 +418,8 @@
       <FileType>Document</FileType>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ps_main</EntryPointName>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DisableOptimizations>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ps_main</EntryPointName>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
     </FxCompile>
     <FxCompile Include="Shader\LightingPSTextureColor.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -420,6 +427,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DisableOptimizations>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
     </FxCompile>
     <FxCompile Include="Shader\LightingVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
@@ -489,6 +497,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="ThirdParty\x64\libpng\LICENSE" />
+  </ItemGroup>
+  <ItemGroup>
+    <Library Include="ThirdParty\x64\libpng\libpng16.lib" />
+    <Library Include="ThirdParty\x64\libpng\zlib.lib" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

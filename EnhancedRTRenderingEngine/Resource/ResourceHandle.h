@@ -120,7 +120,8 @@ public:
     int _uid;
     ResourceHandle() {}
     ResourceHandle(const ResourceType& resource) : ResourceHandleBase<ResourceType>(resource), _isOwner(true) {}
-    ResourceHandle(const ResourceHandle& src) {
+    
+    /*ResourceHandle(const ResourceHandle& src) {
         this->_resource = src._resource;
         this->_isOwner = false;
     }
@@ -131,7 +132,10 @@ public:
             this->_isOwner = false;
         }
         return *this;
-    }
+    }*/
+
+    ResourceHandle(const ResourceHandle& src) = delete;
+    ResourceHandle& operator=(const ResourceHandle& rhs) = delete;
 
     ResourceHandle& operator=(ResourceHandle&& other) noexcept {
         if (this != &other) {

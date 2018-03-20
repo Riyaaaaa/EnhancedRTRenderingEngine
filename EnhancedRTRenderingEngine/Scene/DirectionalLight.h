@@ -12,7 +12,6 @@ public:
     void SetDirection(const Vector3D& dir) { _direction = dir; }
     const Vector3D& GetDirection() { return _direction; }
 
-    const ResourceHandle<Texture2D>& GetShadowTexture() { return _shadowMap; }
     Size GetShadowResolution() { return _shadowResolution; }
 
     DirectX::XMMATRIX GetViewProjection();
@@ -21,7 +20,6 @@ public:
     Vector3D _direction;
 
 protected:
-    ResourceHandle<Texture2D> _shadowMap;
     Size _shadowResolution;
 };
 

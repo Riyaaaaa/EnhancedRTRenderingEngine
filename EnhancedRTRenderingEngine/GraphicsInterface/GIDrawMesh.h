@@ -116,7 +116,7 @@ public:
         return shaderResources;
     }
 
-    void AddDrawFace(const GIDrawElement& face) {
+    void AddDrawElement(const GIDrawElement& face) {
         _drawLinks.insert(std::make_pair(face.GetShadingType(), face));
     }
 

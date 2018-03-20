@@ -51,7 +51,7 @@ D3D11TextureProxy D3D11TextureEffectRenderer::Apply(const D3D11TextureProxy& src
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     face.RegisterShaderResource(src, 0);
-    element.AddDrawFace(face);
+    element.AddDrawElement(face);
     D3D11DrawElement drawer;
     drawer.Draw(_view, element);
 

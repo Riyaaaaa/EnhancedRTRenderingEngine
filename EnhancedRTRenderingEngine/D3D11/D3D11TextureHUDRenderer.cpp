@@ -35,7 +35,7 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const Texture2D& t
 
     face.RegisterShaderResource(textureProxy, 10);
 
-    element.AddDrawFace(face);
+    element.AddDrawElement(face);
 
     D3D11DrawElement drawer;
     drawer.Draw(_view, element);
@@ -84,7 +84,7 @@ void D3D11TextureHUDRenderer::render(Vector2D pos, Size size, const D3D11Texture
         face.RegisterShaderResource(texture, 0);
     }
 
-    element.AddDrawFace(face);
+    element.AddDrawElement(face);
 
     D3D11DrawElement drawer;
     drawer.Draw(_view, element);

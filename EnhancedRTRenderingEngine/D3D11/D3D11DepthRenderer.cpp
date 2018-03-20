@@ -72,7 +72,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
             else {
                 face.faceNumVerts = object.GetMesh()->GetVertexList().size();
             }
-            element.AddDrawFace(face);
+            element.AddDrawElement(face);
             D3D11DrawElement draw;
             draw.Draw(_view, element);
         }
@@ -136,7 +136,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
                 else {
                     face.faceNumVerts = object.GetMesh()->GetVertexList().size();
                 }
-                element.AddDrawFace(face);
+                element.AddDrawElement(face);
                 D3D11DrawElement draw;
                 draw.Draw(_view, element);
             }
