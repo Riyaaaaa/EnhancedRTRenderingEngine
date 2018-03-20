@@ -17,6 +17,10 @@ struct Size3D {
     float w, h, d;
 };
 
+struct Color3B {
+    unsigned char r, g, b;
+};
+
 struct Color4B {
     unsigned char r, g, b, a;
 };
@@ -28,6 +32,11 @@ struct BoundingBox2D {
 
 struct BoundingBox3D {
     Vector3D pos;
+    Size3D size;
+};
+
+struct AABB {
+    Vector3D minpos;
     Size3D size;
 };
 

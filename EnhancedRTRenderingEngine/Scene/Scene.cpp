@@ -10,6 +10,7 @@
 #include "Mesh/SimpleModel/Box.h"
 #include "Mesh/Mesh3DModel.h"
 
+#include "StaticMeshObject.h"
 #include "Scene/SkyBox.h"
 #include "Scene/Enviroment/StaticCubeReflectionCapture.h"
 
@@ -70,6 +71,8 @@ Scene::Scene() {
     viewObjects.push_back(skybox);
 
     directionalLights.emplace_back(Vector3D{0.0, -1.0f, 0.1f});
+
+    StaticMeshObject<PMDVertex>(std::make_shared<Mesh3DModel>(model()), Transform());
 
     pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });

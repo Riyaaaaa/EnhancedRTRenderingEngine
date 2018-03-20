@@ -13,10 +13,9 @@ template<class VertType>
 class MeshObject : public SceneObject
 {
 public:
-    MeshObject(const std::shared_ptr<MeshBase<VertType>>& mesh, RenderingContext context) : _mesh(mesh), _context(context) {}
+    MeshObject(const std::shared_ptr<MeshBase<VertType>>& mesh) : _mesh(mesh) {}
 
     const std::shared_ptr<MeshBase<VertType>>& GetMesh() const { return _mesh; }
-    const RenderingContext& GetContext() const { return _context;  }
 
     void SetMaterial(std::vector<Material>&& materials) {
         _materials.swap(materials);
@@ -34,7 +33,6 @@ protected:
     std::size_t _reflectionSourceId;
     std::vector<Material> _materials;
     std::shared_ptr<MeshBase<VertType>> _mesh;
-    RenderingContext _context;
 };
 
 template<class VertType>
@@ -43,7 +41,7 @@ void MeshObject<VertType>::FindPrecisionReflectionSource(const std::vector<CubeR
     
     _hasReflectionSource = false;
     for (auto&& capture: captures) {
-        if (capture->Contains(transform.location) && capture->PrecisionSize() < precision) {
+        if (capture->Contains(_transform.location) && capture->PrecisionSize() < precision) {
             precision = capture->PrecisionSize();
             _reflectionSourceId = capture->GetID();
             _hasReflectionSource = true;

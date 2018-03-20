@@ -159,6 +159,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithms\SpaceSplits.h" />
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="D3D11\D3D11PostEffectRenderer.h" />
@@ -180,6 +181,9 @@
     <ClInclude Include="Scene\SkyBox.h" />
     <ClInclude Include="Scene\Enviroment\StaticCubeReflectionCapture.h" />
     <ClInclude Include="Shader\ShaderFactory.h" />
+    <ClInclude Include="Scene\StaticMeshObject.h" />
+    <ClInclude Include="Structure\Octree.h" />
+    <ClInclude Include="Structure\Voxel.h" />
     <ClInclude Include="ThirdParty\x64\libpng\png.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngconf.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngdebug.h" />
@@ -335,6 +339,7 @@
     <ClCompile Include="Scene\SkyBox.cpp" />
     <ClCompile Include="Scene\Enviroment\StaticCubeReflectionCapture.cpp" />
     <ClCompile Include="Shader\ShaderFactory.cpp" />
+    <ClCompile Include="Scene\StaticMeshObject.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />
     <ClCompile Include="Resource\X\DXModel.cpp" />

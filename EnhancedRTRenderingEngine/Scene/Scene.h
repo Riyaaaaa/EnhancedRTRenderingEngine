@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MeshObject.h"
+//#include "StaticMeshObject.h"
 #include "SceneObject.h"
 #include "CameraObject.h"
 #include "Enviroment/CubeReflectionCapture.h"
