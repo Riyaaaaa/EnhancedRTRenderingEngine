@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "../Structure/Structure.h"
-#include "D3DX11RenderView.h"
+#include "D3D11RenderView.h"
 #include "../Scene/Scene.h"
 
 #include "D3D11SceneInfo.h"
@@ -17,7 +17,7 @@ class D3D11ForwardRenderer
 {
 public:
 
-    void Initialize(std::shared_ptr<D3DX11RenderView> view);
+    void Initialize(std::shared_ptr<D3D11RenderView> view);
 
     D3D11ForwardRenderer();
     ~D3D11ForwardRenderer();
@@ -27,7 +27,7 @@ public:
     D3D11SceneInfo& GetSceneInfo() { return _scene; }
 
 protected:
-    std::shared_ptr<D3DX11RenderView> _view;
+    std::shared_ptr<D3D11RenderView> _view;
     D3D11SceneInfo _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;

@@ -7,12 +7,12 @@
 #include "Constant/RenderConfig.h"
 #include "Structure/Structure.h"
 
-class D3DX11RenderView
+class D3D11RenderView
 {
 public:
     bool Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext);
 
-    D3DX11RenderView() {};
+    D3D11RenderView() {};
 
     bool EnableFullScreen(HWND hWnd);
 

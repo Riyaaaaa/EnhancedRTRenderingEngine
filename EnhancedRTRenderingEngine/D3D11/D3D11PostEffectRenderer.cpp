@@ -10,7 +10,7 @@
 #include <chrono>
 
 
-bool D3D11PostEffectRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& view) {
+bool D3D11PostEffectRenderer::Initialize(const std::shared_ptr<D3D11RenderView>& view) {
     _view = view;
 
     return true;

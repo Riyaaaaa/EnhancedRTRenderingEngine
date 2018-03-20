@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "D3DX11RenderView.h"
+#include "D3D11RenderView.h"
 
 #include "D3D11FormatUtils.h"
 #include "../Common.h"
@@ -9,7 +9,7 @@
 #pragma comment(lib, "d3d11.lib")
 
 
-bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
+bool D3D11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> deviceContext)
 {
     hpDevice = device;
     hpDeviceContext = deviceContext;
@@ -102,13 +102,13 @@ bool D3DX11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr
     return true;
 }
 
-void D3DX11RenderView::SetViewPortSize(Size size) {
+void D3D11RenderView::SetViewPortSize(Size size) {
     _viewPortCfg.Width = size.w;
     _viewPortCfg.Height = size.h;
     hpDeviceContext->RSSetViewports(1, &_viewPortCfg);
 }
 
-bool D3DX11RenderView::EnableFullScreen(HWND hWnd) {
+bool D3D11RenderView::EnableFullScreen(HWND hWnd) {
     if (FAILED(hpDXGIFactory->MakeWindowAssociation(hWnd, 0))) {
         return false;
     }

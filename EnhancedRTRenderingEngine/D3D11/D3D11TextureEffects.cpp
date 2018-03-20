@@ -4,7 +4,7 @@
 
 #include "D3D11TextureEffectRenderer.h"
 
-D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3DX11RenderView>& view, const D3D11TextureProxy& src) {
+D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3D11RenderView>& view, const D3D11TextureProxy& src) {
     struct GaussianCBuffer {
         float weight[8];
         Size texsize;

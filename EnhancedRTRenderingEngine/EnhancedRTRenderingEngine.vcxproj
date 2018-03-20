@@ -222,7 +222,7 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
     <ClInclude Include="D3D11\D3D11DrawElement.h" />
-    <ClInclude Include="D3D11\D3DX11RenderView.h" />
+    <ClInclude Include="D3D11\D3D11RenderView.h" />
     <ClInclude Include="D3D11\D3D11BasePassRenderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
     <ClInclude Include="FileManager.h" />
@@ -359,7 +359,7 @@
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3D11\D3D11DrawElement.cpp" />
-    <ClCompile Include="D3D11\D3DX11RenderView.cpp" />
+    <ClCompile Include="D3D11\D3D11RenderView.cpp" />
     <ClCompile Include="D3D11\D3D11BasePassRenderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
     <ClCompile Include="FileManager.cpp" />

@@ -12,7 +12,7 @@
 
 using namespace DirectX;
 
-bool D3D11DepthRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& view) {
+bool D3D11DepthRenderer::Initialize(const std::shared_ptr<D3D11RenderView>& view) {
     _view = view;
     return true;
 }

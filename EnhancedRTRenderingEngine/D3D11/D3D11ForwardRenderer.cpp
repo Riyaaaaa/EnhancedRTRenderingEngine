@@ -12,7 +12,7 @@ D3D11ForwardRenderer::~D3D11ForwardRenderer()
 {
 }
 
-void D3D11ForwardRenderer::Initialize(std::shared_ptr<D3DX11RenderView> view) {
+void D3D11ForwardRenderer::Initialize(std::shared_ptr<D3D11RenderView> view) {
     _view = view;
     depthRenderer.Initialize(view);
     bassPassRenderer.Initialize(view);

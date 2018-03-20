@@ -8,7 +8,7 @@
 #include "Utility/SceneUtils.h"
 #include "WindowManager.h"
 
-bool D3D11TextureEffectRenderer::Initialize(const std::shared_ptr<D3DX11RenderView>& view) {
+bool D3D11TextureEffectRenderer::Initialize(const std::shared_ptr<D3D11RenderView>& view) {
     _view = view;
 
     return true;

@@ -4,7 +4,7 @@
 #include <vector>
 #include <memory>
 
-#include "D3DX11RenderView.h"
+#include "D3D11RenderView.h"
 #include "D3D11TextureProxy.h"
 #include "Scene/MeshObject.h"
 #include "Resource/ResourceHandle.h"
@@ -17,7 +17,7 @@ class D3D11DrawElement
 public:
     D3D11DrawElement() {}
 
-    bool Draw(const std::shared_ptr<D3DX11RenderView>& view, const GIDrawMesh& element);
+    bool Draw(const std::shared_ptr<D3D11RenderView>& view, const GIDrawMesh& element);
 
 protected:
 

@@ -351,9 +351,6 @@
     <ClInclude Include="D3D11\D3D11ForwardRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11\D3DX11RenderView.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Constant\RenderTag.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -489,6 +486,9 @@
     <ClInclude Include="ThirdParty\x64\libpng\zlib.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="D3D11\D3D11RenderView.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -575,9 +575,6 @@
     <ClCompile Include="D3D11\D3D11ForwardRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11\D3DX11RenderView.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="D3D11\D3D11FormatUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -660,6 +657,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="D3D11\D3D11RenderView.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>
