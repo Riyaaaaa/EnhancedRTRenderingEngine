@@ -15,6 +15,11 @@ struct Size {
 
 struct Size3D {
     float w, h, d;
+    Size3D() = default;
+    Size3D(float _w, float _h, float _d) : w(_w), h(_h), d(_d) {}
+    Size3D operator/(float s) {
+        return Size3D(w/s, h/s, d/s);
+    }
 };
 
 struct Color3B {
@@ -36,24 +41,33 @@ struct BoundingBox3D {
 };
 
 struct AABB {
-    Vector3D minpos;
-    Size3D size;
+    AABB() = default;
+    AABB(Vector3D _bpos, Vector3D _epos) :
+    bpos(_bpos),
+    epos(_epos)
+    {}
+    Vector3D bpos;
+    Vector3D epos;
+    Size3D size() {
+        auto diff = epos - bpos;
+        return Size3D(diff.x, diff.y, diff.z);
+    }
 };
 
 struct SimpleVertex {
-    float pos[3];    //x-y-z
-    float col[4];    //r-g-b-a
+    Vector3D pos;    //x-y-z
+    Vector4D col;    //r-g-b-a
 };
 
 struct TexVertex {
-    float pos[3];    //x-y-z
-    float tex[2];    //r-g-b-a
+    Vector3D pos;    //x-y-z
+    Vector2D tex;    //r-g-b-a
 };
 
 struct Vertex3D {
-    float pos[3];    //x-y-z
-    float col[4];    //r-g-b-a
-    float tex[2];    //x-y
+    Vector3D pos;    //x-y-z
+    Vector4D col;    //r-g-b-a
+    Vector2D tex;    //x-y
 };
 
 struct PMDVertex {

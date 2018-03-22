@@ -31,5 +31,13 @@ namespace ShaderFactory
     inline Shader MinTextureColor() {
         return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("MinTextureColor"));
     }
+
+    inline Shader MinVertexColor() {
+        return Shader(ShadingType::Vertex, ResourceLoader::LoadShader("VertexShader"));
+    }
+
+    inline Shader MinPixelColor() {
+        return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("PixelShader"));
+    }
 };
 

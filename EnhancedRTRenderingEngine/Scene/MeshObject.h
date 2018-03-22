@@ -9,8 +9,14 @@
 
 #include <memory>
 
+class IMeshObject {
+public:
+    // add if necessary
+    virtual AABB GetAABB() = 0;
+};
+
 template<class VertType>
-class MeshObject : public SceneObject
+class MeshObject : public SceneObject, public IMeshObject
 {
 public:
     MeshObject(const std::shared_ptr<MeshBase<VertType>>& mesh) : _mesh(mesh) {}
@@ -27,8 +33,13 @@ public:
     bool HasReflectionSource() { return _hasReflectionSource; }
     std::size_t GetReflectionSourceId() { return _reflectionSourceId; }
 
+    virtual AABB GetAABB() override;
+
 protected:
+    virtual void DirtyWorldMatrix() override;
+
     MeshObject() = default;
+    bool AABBDirty = true;
     bool _hasReflectionSource = false;
     std::size_t _reflectionSourceId;
     std::vector<Material> _materials;

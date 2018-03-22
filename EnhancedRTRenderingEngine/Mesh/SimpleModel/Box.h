@@ -5,6 +5,7 @@
 class Box : public MeshBase<Vertex3D>
 {
 public:
-    Box();
+    explicit Box(float size = 1.0f);
+    explicit Box(Size3D size);
     ~Box();
 };

@@ -114,7 +114,7 @@ struct Vector3D {
 
 struct Vector4D {
     Vector4D() {}
-    constexpr Vector4D(float x, float y, float z) : x(x), y(y), z(z), w(1.0f) {}
+    constexpr Vector4D(float x, float y, float z, float w = 1.0f) : x(x), y(y), z(z), w(w) {}
     constexpr Vector4D(const Vector3D vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1.0f) {}
     float x, y, z, w;
 

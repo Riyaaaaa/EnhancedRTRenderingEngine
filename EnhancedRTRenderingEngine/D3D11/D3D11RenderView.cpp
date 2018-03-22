@@ -90,8 +90,10 @@ bool D3D11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<
     hpDeviceContext->RSSetViewports(1, &_viewPortCfg);
 
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
-    //desc.FillMode = D3D11_FILL_WIREFRAME;
     device->CreateRasterizerState(&desc, mRasterizerState.ToCreator());
+
+    desc.FillMode = D3D11_FILL_WIREFRAME;
+    device->CreateRasterizerState(&desc, mWireFrameRasterizerState.ToCreator());
 
     desc.CullMode = D3D11_CULL_NONE;
     device->CreateRasterizerState(&desc, mDoubleSidedRasterizerState.ToCreator());
@@ -100,6 +102,20 @@ bool D3D11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<
     //hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());
 
     return true;
+}
+
+void D3D11RenderView::SetRasterizerState(RasterizerState state) {
+    switch (state) {
+    case RasterizerState::Default:
+        hpDeviceContext->RSSetState(mRasterizerState.Get());
+        break;
+    case RasterizerState::CullNone:
+        hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());
+        break;
+    case RasterizerState::WireFrame:
+        hpDeviceContext->RSSetState(mWireFrameRasterizerState.Get());
+        break;
+    }
 }
 
 void D3D11RenderView::SetViewPortSize(Size size) {

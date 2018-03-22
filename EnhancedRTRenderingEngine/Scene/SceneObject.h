@@ -21,8 +21,11 @@ public:
     Vector3D GetLocation() { return _transform.location; }
 
 protected:
-    bool dirty;
+    virtual void DirtyWorldMatrix();
+
+    bool worldMatrixDirty;
     DirectX::XMMATRIX matrix;
     Transform _transform;
+    AABB _aabb;
 };
 
