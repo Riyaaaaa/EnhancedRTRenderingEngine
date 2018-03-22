@@ -89,6 +89,10 @@ struct Vector3D {
         return Vector3D{ this->x - v.x, this->y - v.y, this->z - v.z };
     }
 
+    Vector3D operator+(const Vector3D &v) const {
+        return Vector3D{ this->x + v.x, this->y + v.y, this->z + v.z };
+    }
+
     Vector3D operator-() const {
         return Vector3D{ -this->x, -this->y, -this->z };
     }

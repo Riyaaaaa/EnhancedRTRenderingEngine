@@ -8,7 +8,8 @@ struct OctreeNode {
     OctreeNode(IMeshObject* _object) :
     object(_object),
         next(nullptr),
-        prev(nullptr)
+        prev(nullptr),
+        belongs(nullptr)
     {}
     IMeshObject* object;
     std::shared_ptr<OctreeNode> next, prev;

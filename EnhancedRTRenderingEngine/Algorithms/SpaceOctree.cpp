@@ -22,10 +22,10 @@ uint32_t SpaceOctree::Get3DMortonOrder(uint8_t x, uint8_t y, uint8_t z)
 LinerOctreeFactory::LinerOctreeFactory(AABB RootAABB, int splitLevel) :
 _rootAABB(RootAABB),
 _splitLevel(splitLevel),
-_splitNums(std::pow(8, splitLevel) / 7),
+_splitNums(std::pow(8, splitLevel + 1) / 7),
 _linerTree(_splitNums) {
     
-    _minBoxSize = RootAABB.size() / (1 >> splitLevel);
+    _minBoxSize = RootAABB.size() / (1 << splitLevel);
 }
 
 int LinerOctreeFactory::CalculateMortonNumber(const AABB& aabb) {
@@ -61,27 +61,30 @@ int LinerOctreeFactory::CalculateIndexFromPoint(const Vector3D& pos) {
 
 AABB LinerOctreeFactory::CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const {
     int level = 0;
-    while (number - PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level) > 0) {
+    while (number >= PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level)) {
         number -= PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level);
         level++;
     }
 
     uint32_t s = 0;
 
-    for (int i = _splitLevel; i >= 0; i++) {
-        s = s | number >> (3 * i - 2 - i);
+    for (int i = _splitLevel; i > 0; i--) {
+        s = s | (number >> (3 * i - 2 - i) & 1 << 3 * i);
     }
-    uint32_t x = s & 0x000000ff;
+    uint32_t x = s;
 
-    for (int i = _splitLevel; i >= 0; i++) {
-        s = s | number >> (3 * i - 1 - i);
+    s = 0;
+    for (int i = _splitLevel; i > 0; i--) {
+        s = s | (number >> (3 * i - 1 - i) & 1 << 3 * i + 1);
     }
-    uint32_t y = s & 0x000000ff;
+    uint32_t y = s;
 
-    for (int i = _splitLevel; i >= 0; i++) {
-        s = s | number >> (3 * i - i);
+    s = 0;
+    for (int i = _splitLevel; i > 0; i--) {
+        s = s | (number >> (3 * i - i) & 1 << 3 * i + 2);
     }
-    uint32_t z = s & 0x000000ff;
+    uint32_t z = s;
 
-    return AABB(Vector3D(x, y, z), Vector3D(x + _minBoxSize.w, y + _minBoxSize.h, z + _minBoxSize.d));
+    Vector3D bpos = Vector3D(x * _minBoxSize.w, y * _minBoxSize.h, z + _minBoxSize.d) + _rootAABB.bpos;
+    return AABB(bpos, Vector3D(bpos.x + _minBoxSize.w, bpos.y + _minBoxSize.h, bpos.z + _minBoxSize.d));
 }
