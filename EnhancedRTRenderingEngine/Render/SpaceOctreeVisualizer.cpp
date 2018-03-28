@@ -9,7 +9,7 @@
 
 using namespace SpaceOctree;
 
-void SpaceOctreeVisualizer::Initialize(const SpaceOctree::LinerOctreeFactory& factory) {
+void SpaceOctreeVisualizer::Initialize(const SpaceOctree::OctreeFactoryBase* factory) {
     _spaceBoxes = GenerateOcreeBoxMeshes(factory);
 }
 
@@ -25,17 +25,14 @@ void SpaceOctreeVisualizer::RenderOctreeBoxes(const std::shared_ptr<D3D11RenderV
 }
 
 std::vector<MeshObject<Vertex3D>> SpaceOctreeVisualizer::GenerateOcreeBoxMeshes
-(const LinerOctreeFactory& factory) {
+(const SpaceOctree::OctreeFactoryBase* factory) {
     std::vector<MeshObject<Vertex3D>> spaceBoxes;
 
-    for (int i = 0; i < factory.GetTree().size(); i++) {
-        auto& box = factory.GetTree()[i];
-        if (box && box->head) {
-            AABB aabb = factory.CalculateOctreeBoxAABBFromMortonNumber(i);
-            spaceBoxes.push_back(MeshObject<Vertex3D>(std::make_shared<Box>(aabb.size() / 2.0f)));
-            spaceBoxes.back().SetLocation(aabb.Center());
-        }
-    }
+    factory->IterateEnableBox([&](const std::pair<uint32_t, OctreeBox*>& pair) {
+        AABB aabb = factory->CalculateOctreeBoxAABBFromMortonNumber(pair.first);
+        spaceBoxes.push_back(MeshObject<Vertex3D>(std::make_shared<Box>(aabb.size() / 2.0f)));
+        spaceBoxes.back().SetLocation(aabb.Center());
+    });
 
     return spaceBoxes;
 }

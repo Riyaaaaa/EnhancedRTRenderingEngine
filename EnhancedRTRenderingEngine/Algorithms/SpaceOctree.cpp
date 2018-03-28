@@ -19,16 +19,15 @@ uint32_t SpaceOctree::Get3DMortonOrder(uint8_t x, uint8_t y, uint8_t z)
     return BitSeparateFor3D(x) | BitSeparateFor3D(y) << 1 | BitSeparateFor3D(z) << 2;
 }
 
-LinerOctreeFactory::LinerOctreeFactory(AABB RootAABB, int splitLevel) :
+OctreeFactoryBase::OctreeFactoryBase(AABB RootAABB, int splitLevel) :
 _rootAABB(RootAABB),
 _splitLevel(splitLevel),
-_splitNums(std::pow(8, splitLevel + 1) / 7),
-_linerTree(_splitNums) {
+_splitNums(std::pow(8, splitLevel + 1) / 7) {
     
     _minBoxSize = RootAABB.size() / (1 << splitLevel);
 }
 
-int LinerOctreeFactory::CalculateMortonNumber(const AABB& aabb) {
+int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
     uint32_t index1 = CalculateIndexFromPoint(aabb.bpos);
     uint32_t index2 = CalculateIndexFromPoint(aabb.epos);
 
@@ -51,7 +50,7 @@ int LinerOctreeFactory::CalculateMortonNumber(const AABB& aabb) {
     return SpaceNum;
 }
 
-int LinerOctreeFactory::CalculateIndexFromPoint(const Vector3D& pos) {
+int OctreeFactoryBase::CalculateIndexFromPoint(const Vector3D& pos) {
     return Get3DMortonOrder(
         (pos.x - _rootAABB.bpos.x) / _minBoxSize.w,
         (pos.y - _rootAABB.bpos.y) / _minBoxSize.h,
@@ -59,7 +58,7 @@ int LinerOctreeFactory::CalculateIndexFromPoint(const Vector3D& pos) {
     );
 }
 
-AABB LinerOctreeFactory::CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const {
+AABB OctreeFactoryBase::CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const {
     int level = 0;
     while (number >= PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level)) {
         number -= PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level);

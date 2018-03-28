@@ -9,10 +9,10 @@ class Scene;
 class SpaceOctreeVisualizer
 {
 public:
-    void Initialize(const SpaceOctree::LinerOctreeFactory& factory);
+    void Initialize(const SpaceOctree::OctreeFactoryBase* factory);
     void RenderOctreeBoxes(const std::shared_ptr<D3D11RenderView>& view, Scene* scene);
 protected:
-    static std::vector<MeshObject<Vertex3D>> GenerateOcreeBoxMeshes(const SpaceOctree::LinerOctreeFactory& factory);
+    static std::vector<MeshObject<Vertex3D>> GenerateOcreeBoxMeshes(const SpaceOctree::OctreeFactoryBase* factory);
 
     std::vector<MeshObject<Vertex3D>> _spaceBoxes;
 };
