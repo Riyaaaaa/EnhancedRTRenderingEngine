@@ -48,7 +48,7 @@ struct AABB {
     {}
     Vector3D bpos;
     Vector3D epos;
-    Size3D size() {
+    Size3D size() const {
         auto diff = epos - bpos;
         return Size3D(diff.x, diff.y, diff.z);
     }

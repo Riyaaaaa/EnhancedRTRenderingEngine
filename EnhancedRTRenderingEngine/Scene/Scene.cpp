@@ -52,11 +52,12 @@ void Scene::CreateTestScene() {
     viewObjects.back().SetLocation(Vector3D{ -2.0f, 0.0f, -2.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ 2.0f, 0.0f, -2.0f });
-    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
-    viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, 0.0f });
-    viewObjects.back().SetScale(Vector3D{ 10.0f, 10.0f, 10.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ -0.3f, 0.0f, 2.0f });
+
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
+    viewObjects.back().SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
+    viewObjects.back().SetScale(Vector3D{ 10.0f, 10.0f, 10.0f });
 
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
     viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
@@ -64,8 +65,8 @@ void Scene::CreateTestScene() {
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
     viewObjects.back().SetMaterial(std::move(materials));
 
-    auto skybox = SkyBox("Storforsen4");
-    viewObjects.push_back(skybox);
+    //auto skybox = SkyBox("Storforsen4");
+    //viewObjects.push_back(skybox);
 
     directionalLights.emplace_back(Vector3D{ 0.0, -1.0f, 0.1f });
 
@@ -75,7 +76,7 @@ void Scene::CreateTestScene() {
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
     pointLights[0].SetPoint(Vector3D{ 0.0, 1.0f, 0.0f });
 
-    captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
+    //captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
     mainCameraIdx = 0;
 
     meshDirty = true;

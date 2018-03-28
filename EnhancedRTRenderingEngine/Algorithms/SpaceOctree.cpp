@@ -68,23 +68,26 @@ AABB LinerOctreeFactory::CalculateOctreeBoxAABBFromMortonNumber(uint32_t number)
 
     uint32_t s = 0;
 
-    for (int i = _splitLevel; i > 0; i--) {
-        s = s | (number >> (3 * i - 2 - i) & 1 << 3 * i);
+    for (int i = level; i > 0; i--) {
+        auto tmp = (number >> (3 * i - 2 - i) & (1 << i - 1));
+        s = s | tmp;
     }
     uint32_t x = s;
 
     s = 0;
-    for (int i = _splitLevel; i > 0; i--) {
-        s = s | (number >> (3 * i - 1 - i) & 1 << 3 * i + 1);
+    for (int i = level; i > 0; i--) {
+        s = s | (number >> (3 * i - 1 - i) & (1 << i - 1));
     }
     uint32_t y = s;
 
     s = 0;
-    for (int i = _splitLevel; i > 0; i--) {
-        s = s | (number >> (3 * i - i) & 1 << 3 * i + 2);
+    for (int i = level; i > 0; i--) {
+        s = s | (number >> (3 * i - i) & (1 << i - 1));
     }
     uint32_t z = s;
 
-    Vector3D bpos = Vector3D(x * _minBoxSize.w, y * _minBoxSize.h, z + _minBoxSize.d) + _rootAABB.bpos;
-    return AABB(bpos, Vector3D(bpos.x + _minBoxSize.w, bpos.y + _minBoxSize.h, bpos.z + _minBoxSize.d));
+    Size3D boxSize = _rootAABB.size() / (1 << level);;
+    Vector3D bpos = Vector3D(x * boxSize.w, y * boxSize.h, z * boxSize.d) + _rootAABB.bpos;
+    
+    return AABB(bpos, Vector3D(bpos.x + boxSize.w, bpos.y + boxSize.h, bpos.z + boxSize.d));
 }
