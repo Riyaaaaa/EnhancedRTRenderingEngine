@@ -32,8 +32,8 @@ std::vector<MeshObject<Vertex3D>> SpaceOctreeVisualizer::GenerateOcreeBoxMeshes
         auto& box = factory.GetTree()[i];
         if (box && box->head) {
             AABB aabb = factory.CalculateOctreeBoxAABBFromMortonNumber(i);
-            spaceBoxes.push_back(MeshObject<Vertex3D>(std::make_shared<Box>(aabb.size())));
-            spaceBoxes.back().SetLocation(aabb.bpos);
+            spaceBoxes.push_back(MeshObject<Vertex3D>(std::make_shared<Box>(aabb.size() / 2.0f)));
+            spaceBoxes.back().SetLocation(aabb.Center());
         }
     }
 

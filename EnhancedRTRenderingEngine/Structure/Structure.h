@@ -52,6 +52,10 @@ struct AABB {
         auto diff = epos - bpos;
         return Size3D(diff.x, diff.y, diff.z);
     }
+    Vector3D Center() const {
+        Size3D halfSize = size() / 2.0f;
+        return Vector3D(bpos.x + halfSize.w, bpos.y + halfSize.h, bpos.z + halfSize.d);
+    }
 };
 
 struct SimpleVertex {

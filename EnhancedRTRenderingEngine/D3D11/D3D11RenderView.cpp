@@ -92,11 +92,11 @@ bool D3D11RenderView::Initialize(HWND hWnd, ComPtr<ID3D11Device> device, ComPtr<
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
     device->CreateRasterizerState(&desc, mRasterizerState.ToCreator());
 
-    desc.FillMode = D3D11_FILL_WIREFRAME;
-    device->CreateRasterizerState(&desc, mWireFrameRasterizerState.ToCreator());
-
     desc.CullMode = D3D11_CULL_NONE;
     device->CreateRasterizerState(&desc, mDoubleSidedRasterizerState.ToCreator());
+
+    desc.FillMode = D3D11_FILL_WIREFRAME;
+    device->CreateRasterizerState(&desc, mWireFrameRasterizerState.ToCreator());
 
     hpDeviceContext->RSSetState(mRasterizerState.Get());
     //hpDeviceContext->RSSetState(mDoubleSidedRasterizerState.Get());

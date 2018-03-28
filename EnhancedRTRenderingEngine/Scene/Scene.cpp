@@ -49,11 +49,13 @@ void Scene::CreateTestScene() {
     auto model = ResourceLoader::LoadDXModel("coin");
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ -2.0f, 0.0f, -2.0f });
+    viewObjects.back().SetLocation(Vector3D{ -2.0f, 1.0f, -2.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ 2.0f, 0.0f, -2.0f });
+    viewObjects.back().SetLocation(Vector3D{ 3.0f, 5.0f, -1.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ -0.3f, 0.0f, 2.0f });
+    viewObjects.back().SetLocation(Vector3D{ -4.0f, 1.0f, 4.0f });
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
+    viewObjects.back().SetLocation(Vector3D{ -0.3f, 1.0f, 2.0f });
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
     viewObjects.back().SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
@@ -62,7 +64,7 @@ void Scene::CreateTestScene() {
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
     viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
-    viewObjects.back().SetLocation(Vector3D{ 0.0f, 10.0f, -0.4f });
+    viewObjects.back().SetLocation(Vector3D{ 0.0f, 11.0f, -0.4f });
     viewObjects.back().SetMaterial(std::move(materials));
 
     //auto skybox = SkyBox("Storforsen4");
