@@ -161,16 +161,19 @@
   <ItemGroup>
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
+    <ClInclude Include="Constant\GICommandParameter.h" />
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="Constant\PrecomputedConstants.h" />
+    <ClInclude Include="D3D11\D3D11Resources.h" />
+    <ClInclude Include="D3D11\D3D11ImmediateCommands.h" />
     <ClInclude Include="D3D11\D3D11LineRenderer.h" />
     <ClInclude Include="D3D11\D3D11UnlitRenderer.h" />
     <ClInclude Include="D3D11\D3D11PostEffectRenderer.h" />
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="D3D11\D3D11TextureEffects.h" />
     <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
-    <ClInclude Include="D3D11\Resource\D3D11Buffer.h" />
+    <ClInclude Include="GraphicsInterface\GIRenderView.h" />
     <ClInclude Include="GraphicsInterface\GIResource.h" />
     <ClInclude Include="GraphicsInterface\GIRawResource.h" />
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
@@ -334,12 +337,15 @@
   <ItemGroup>
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
+    <ClCompile Include="D3D11\D3D11Resources.cpp" />
+    <ClCompile Include="D3D11\D3D11ImmediateCommands.cpp" />
     <ClCompile Include="D3D11\D3D11LineRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11UnlitRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11PostEffectRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffects.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
+    <ClCompile Include="GraphicsInterface\GIRenderView.cpp" />
     <ClCompile Include="GraphicsInterface\GIResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp" />
