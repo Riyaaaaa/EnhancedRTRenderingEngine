@@ -79,25 +79,49 @@ struct Vector2D {
     }
 };
 
-struct Vector3D {
-    float x, y, z;
+template<class T>
+struct _Vector3D {
+    T x, y, z;
 
-    Vector3D() {}
-    constexpr Vector3D(float x, float y, float z) : x(x), y(y), z(z) {}
+    _Vector3D() {}
+    constexpr _Vector3D(T x, T y, T z) : x(x), y(y), z(z) {}
 
-    Vector3D operator-(const Vector3D &v) const {
-        return Vector3D{ this->x - v.x, this->y - v.y, this->z - v.z };
+    template<class U>
+    _Vector3D operator-(const _Vector3D<U> &v) const {
+        return _Vector3D{
+            static_cast<T>(this->x - v.x),
+            static_cast<T>(this->y - v.y),
+            static_cast<T>(this->z - v.z)
+        };
     }
 
-    Vector3D operator+(const Vector3D &v) const {
-        return Vector3D{ this->x + v.x, this->y + v.y, this->z + v.z };
+    template<class U>
+    _Vector3D operator+(const _Vector3D<U> &v) const {
+        return _Vector3D{ 
+            static_cast<T>(this->x + v.x), 
+            static_cast<T>(this->y + v.y),
+            static_cast<T>(this->z + v.z)
+        };
     }
 
-    Vector3D operator-() const {
-        return Vector3D{ -this->x, -this->y, -this->z };
+    template<class U>
+    operator _Vector3D<U>() {
+        return _Vector3D<U>(
+            static_cast<U>(x),
+            static_cast<U>(y),
+            static_cast<U>(z)
+            );
     }
 
-    Vector3D& operator+=(const Vector3D& v) {
+    _Vector3D operator-() const {
+        return _Vector3D{ -this->x, -this->y, -this->z };
+    }
+
+    _Vector3D operator*(float s) const {
+        return _Vector3D{ this->x * s, this->y * s, this->z * s };
+    }
+
+    _Vector3D& operator+=(const _Vector3D& v) {
         this->x = this->x + v.x;
         this->y = this->y + v.y;
         this->z = this->z + v.z;
@@ -115,6 +139,8 @@ struct Vector3D {
         this->z /= l;
     }
 };
+
+using Vector3D = _Vector3D<float>;
 
 struct Vector4D {
     Vector4D() {}

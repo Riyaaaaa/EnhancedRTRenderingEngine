@@ -174,6 +174,8 @@
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
     <ClInclude Include="GraphicsInterface\GIDrawMesh.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
+    <ClInclude Include="Render\RayTracer.h" />
+    <ClInclude Include="Render\PhotonMapping.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITextureProxy.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
@@ -338,6 +340,8 @@
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
+    <ClCompile Include="Render\RayTracer.cpp" />
+    <ClCompile Include="Render\PhotonMapping.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp" />

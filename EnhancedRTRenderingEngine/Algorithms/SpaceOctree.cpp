@@ -19,6 +19,11 @@ uint32_t SpaceOctree::Get3DMortonOrder(uint8_t x, uint8_t y, uint8_t z)
     return BitSeparateFor3D(x) | BitSeparateFor3D(y) << 1 | BitSeparateFor3D(z) << 2;
 }
 
+uint32_t SpaceOctree::Get3DMortonOrder(_Vector3D<uint8_t> coordinate) 
+{
+    return BitSeparateFor3D(coordinate.x) | BitSeparateFor3D(coordinate.y) << 1 | BitSeparateFor3D(coordinate.z) << 2;
+}
+
 OctreeFactoryBase::OctreeFactoryBase(AABB RootAABB, int splitLevel) :
 _rootAABB(RootAABB),
 _splitLevel(splitLevel),
@@ -50,12 +55,22 @@ int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
     return SpaceNum;
 }
 
+_Vector3D<uint8_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& pos) {
+    return _Vector3D<uint8_t>(
+        static_cast<uint8_t>((pos.x - _rootAABB.bpos.x) / _minBoxSize.w),
+        static_cast<uint8_t>((pos.y - _rootAABB.bpos.y) / _minBoxSize.h),
+        static_cast<uint8_t>((pos.z - _rootAABB.bpos.z) / _minBoxSize.d));
+}
+
+int OctreeFactoryBase::CalculateMortonNumber(const Vector3D& pos, int splitLevel) {
+    uint32_t index = CalculateIndexFromPoint(pos);
+    uint32_t AddNum = (PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(splitLevel) - 1) / 7;
+
+    return index + AddNum;
+}
+
 int OctreeFactoryBase::CalculateIndexFromPoint(const Vector3D& pos) {
-    return Get3DMortonOrder(
-        (pos.x - _rootAABB.bpos.x) / _minBoxSize.w,
-        (pos.y - _rootAABB.bpos.y) / _minBoxSize.h,
-        (pos.z - _rootAABB.bpos.z) / _minBoxSize.d
-    );
+    return Get3DMortonOrder(CalculateGridCoordinate(pos));
 }
 
 AABB OctreeFactoryBase::CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const {

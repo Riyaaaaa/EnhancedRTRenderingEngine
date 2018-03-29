@@ -12,13 +12,16 @@ namespace SpaceOctree {
 
     uint32_t BitSeparateFor3D(uint8_t n);
     uint32_t Get3DMortonOrder(uint8_t x, uint8_t y, uint8_t z);
-    
+    uint32_t Get3DMortonOrder(_Vector3D<uint8_t> coordinate);
+
     class OctreeFactoryBase {
     public:
         OctreeFactoryBase(AABB RootAABB, int splitLevel);
 
         AABB CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const;
+        _Vector3D<uint8_t> CalculateGridCoordinate(const Vector3D& pos);
         int CalculateMortonNumber(const AABB& aabb);
+        int CalculateMortonNumber(const Vector3D& pos, int splitLevel);
         int CalculateIndexFromPoint(const Vector3D& pos);
 
         virtual bool BoxExists(uint32_t index) = 0;
@@ -49,6 +52,18 @@ namespace SpaceOctree {
             }
         }
 
+        Size3D GetMinBoxSize() const {
+            return _minBoxSize;
+        }
+
+        AABB GetRootAABB() const {
+            return _rootAABB;
+        }
+
+        int GetSplitLevel() const {
+            return _splitLevel;
+        }
+
     protected:
         uint32_t _splitNums;
         int _splitLevel;
@@ -61,7 +76,7 @@ namespace SpaceOctree {
         using OctreeFactoryBase::OctreeFactoryBase;
 
         bool BoxExists(uint32_t index) override {
-            return static_cast<bool>(_tree[index]);
+            return _tree.count(index) == 1;
         }
 
         void AddRootBox(uint32_t index) override {

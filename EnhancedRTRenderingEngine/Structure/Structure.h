@@ -56,6 +56,11 @@ struct AABB {
         Size3D halfSize = size() / 2.0f;
         return Vector3D(bpos.x + halfSize.w, bpos.y + halfSize.h, bpos.z + halfSize.d);
     }
+    bool Contains(Vector3D pos) const {
+        return pos.x >= bpos.x && pos.x <= epos.x &&
+            pos.y >= bpos.y && pos.y <= epos.y &&
+            pos.z >= bpos.z && pos.z <= epos.z ;
+    }
 };
 
 struct SimpleVertex {
