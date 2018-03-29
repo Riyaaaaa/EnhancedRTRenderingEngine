@@ -24,7 +24,7 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
 
     primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(element.GetPrimitiveType());
 
-    std::unordered_map<unsigned int, ComPtr<ID3D11Buffer>> _bufferMap;
+    bool useIndexList = false;
 
     for (auto&& psResource : element.GetShaderResources()) {
         D3D11_BUFFER_DESC bufferDesc;
@@ -37,37 +37,50 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
 
         bufferDesc.StructureByteStride = psResource.first._structureByteStride;
 
+        ComPtr<ID3D11Buffer> buffer;
+
         switch (psResource.first._type) {
         case ResourceType::VertexList: {
             UINT hOffsets = 0;
             bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, vertexBuffer.ToCreator()))) {
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
                 return false;
             }
-            view->hpDeviceContext->IASetVertexBuffers(0, 1, vertexBuffer.Ref(), &psResource.first._structureByteStride, &hOffsets);
+            view->hpDeviceContext->IASetVertexBuffers(0, 1, buffer.Ref(), &psResource.first._structureByteStride, &hOffsets);
             break;
         }
         case ResourceType::IndexList:
             bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, indexBuffer.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->IASetIndexBuffer(indexBuffer.Get(), DXGI_FORMAT_R16_UINT, 0);
-            break;
-        case ResourceType::ConstantBuffer:
-            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            ComPtr<ID3D11Buffer> buffer;
             if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
                 return false;
             }
-            _bufferMap.insert(std::make_pair(psResource.second, buffer));
+            view->hpDeviceContext->IASetIndexBuffer(buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+            useIndexList = true;
+            break;
+        case ResourceType::VSConstantBuffer:
+            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
+                return false;
+            }
+            view->hpDeviceContext->VSSetConstantBuffers(psResource.second, 1, buffer.Ref());
+            break;
+        case ResourceType::PSConstantBuffer:
+            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
+                return false;
+            }
+            view->hpDeviceContext->PSSetConstantBuffers(psResource.second, 1, buffer.Ref());
+            break;
+        case ResourceType::GSConstantBuffer:
+            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
+                return false;
+            }
+            view->hpDeviceContext->GSSetConstantBuffers(psResource.second, 1, buffer.Ref());
             break;
         }
     }
 
-    for (auto&& sharedRes : _bufferMap) {
-        view->hpDeviceContext->VSSetConstantBuffers(sharedRes.first, 1, sharedRes.second.Ref());
-    }
     view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
 
     auto& drawLinks = element.GetDrawLinks();
@@ -130,7 +143,7 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
                 view->hpDeviceContext->PSSetConstantBuffers(rawRes.second, 1, buffer.Ref());
             }
 
-            if (indexBuffer.Get()) {
+            if (useIndexList) {
                 view->hpDeviceContext->DrawIndexed(shader.faceNumVerts, shader.startIndex, 0);
             }
             else {

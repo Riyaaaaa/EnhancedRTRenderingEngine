@@ -9,6 +9,7 @@ enum class VertexProperty {
 };
 
 enum class VertexPrimitiveType {
+    LINELIST,
     TRIANGLELIST,
     TRIANGLESTRIP
 };

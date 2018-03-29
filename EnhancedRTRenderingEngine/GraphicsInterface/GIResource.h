@@ -1,9 +1,15 @@
 #pragma once
 
+#include "Constant/GraphicConstants.h"
+
 class GIResource
 {
 public:
-    virtual unsigned long AddRef() = 0;
-    virtual unsigned long Release() = 0;
 };
 
+class GIBuffer : public GIResource
+{
+public:
+    unsigned int structureByteStride;
+    ResourceType type;
+};

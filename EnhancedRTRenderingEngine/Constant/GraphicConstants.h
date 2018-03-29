@@ -5,12 +5,15 @@ enum class ResourceType {
     TextureCube,
     IndexList,
     VertexList,
-    ConstantBuffer
+    PSConstantBuffer,
+    VSConstantBuffer,
+    GSConstantBuffer
 };
 
 enum class ShaderType {
-    VShader,
-    PShader
+    PS,
+    VS,
+    GS
 };
 
 enum class ShadingType {
@@ -18,6 +21,7 @@ enum class ShadingType {
     BasePass,
     Detph,
     Unlit,
-    Vertex
+    Vertex,
+    Geometry
 };
 

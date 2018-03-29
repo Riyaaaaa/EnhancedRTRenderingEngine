@@ -18,10 +18,11 @@
 class GIDrawElement
 {
 public:
-    GIDrawElement(Shader ps, Shader vs) : 
+    GIDrawElement(Shader ps, Shader vs, Shader gs = Shader(ShadingType::Geometry, RawBinary())) :
         _shadingType(ps.type),
         _pshader(ps),
-        _vshader(vs)
+        _vshader(vs),
+        _gshader(gs)
     {}
 
     GIDrawElement(const Material& material) :
@@ -31,8 +32,22 @@ public:
     {}
 
     template<class BufferType>
-    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId) {
-        RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), ResourceType::ConstantBuffer, sizeof(float)), regsiterId);
+    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId, ShaderType shaderType) {
+        ResourceType resType;
+
+        switch (shaderType) {
+        case ShaderType::PS:
+            resType = ResourceType::PSConstantBuffer;
+            break;
+        case ShaderType::VS:
+            resType = ResourceType::VSConstantBuffer;
+            break;
+        case ShaderType::GS:
+            resType = ResourceType::GSConstantBuffer;
+            break;
+        }
+
+        RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), resType, sizeof(float)), regsiterId);
     }
 
     void RegisterShaderResource(const GITextureProxy& tex, unsigned int regsiterId);
@@ -60,6 +75,10 @@ public:
         return _vshader;
     }
 
+    Shader GS() const {
+        return _gshader;
+    }
+
 protected:
     void RegisterShaderResource(GIRawResource res, unsigned int registerId);
 
@@ -69,6 +88,7 @@ protected:
 
     Shader _pshader;
     Shader _vshader;
+    Shader _gshader;
 
     ShadingType _shadingType;
 };
@@ -97,7 +117,7 @@ public:
         pBuffer->NormalWorld = XMMatrixInverse(nullptr, element->GetMatrix());
 
         shaderResources.emplace_back(GIRawResource(RawBinary(pBuffer, sizeof(ObjectBuffer)),
-            ResourceType::ConstantBuffer, -1), 1);
+            ResourceType::VSConstantBuffer, -1), 1);
 
         _dataHandles.push_back(buffer);
 
@@ -123,6 +143,8 @@ public:
     const std::unordered_multimap<ShadingType, GIDrawElement>& GetDrawLinks() const {
         return _drawLinks;
     }
+protected:
+    void Init();
 
 private:
     template<class VertType>

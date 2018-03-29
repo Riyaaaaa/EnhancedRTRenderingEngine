@@ -88,7 +88,7 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
             face.RegisterShaderResource(texture, 10);
 
             MaterialBuffer buf{ material.metallic, material.roughness };
-            face.RegisterConstantBuffer(&buf, 1);
+            face.RegisterConstantBuffer(&buf, 1, ShaderType::PS);
             
             element.AddDrawElement(face);
             index += drawface.faceNumVerts;

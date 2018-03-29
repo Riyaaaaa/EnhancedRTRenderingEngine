@@ -2,6 +2,7 @@
 
 #include "Structure/Structure.h"
 
+#include "GIResource.h"
 #include "GraphicsInterface/GITextureProxy.h"
 
 class GIImmediateCommands

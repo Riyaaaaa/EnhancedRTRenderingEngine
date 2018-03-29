@@ -16,17 +16,24 @@ class MeshBase
 public:
     typedef VertType Type;
 
-    MeshBase() : _materialNum(1) {};
+    MeshBase() : _materialNum(1), _vertexCount(0) {};
     virtual ~MeshBase() {};
+
+    void AddVertex(const VertType& vert) {
+        _vertexList.push_back(vert);
+        _vertexCount++;
+    }
 
     const std::vector<VertType>& GetVertexList() const { return _vertexList; }
     const std::vector<uint16_t>& GetIndexList() const { return _indexList; }
+
     std::size_t GetVertexCount() const { return _vertexCount; }
     bool HasIndexList() const { return !_indexList.empty(); }
     int GetMaterialNum() const { return _materialNum; }
     std::size_t GetDrawTargetNum() const { return _drawFacesMap.size(); }
     const std::vector<Face>& GetDrawFacesMap() const { return _drawFacesMap; }
 
+    void SetPrimitiveType(VertexPrimitiveType type) { _primitiveType = type; }
     VertexPrimitiveType GetPrimitiveType() const { return _primitiveType; }
 
 protected:

@@ -9,6 +9,10 @@ void GIDrawElement::RegisterShaderResource(GIRawResource res, unsigned int regis
     rawResources.push_back(std::make_pair(res, registerId));
 }
 
+void GIDrawMesh::Init() {
+
+}
+
 template<>
 std::vector<VertexLayout> GIDrawMesh::GenerateVertexLayout<Vertex3D>() {
     return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB, 0, 0, 0  }, { "COLOR", VertexProperty::FloatRGBA, 0, 0, 12 }, { "TEXCOORD", VertexProperty::FloatRG,0,0,28 } };

@@ -164,11 +164,13 @@
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="Constant\PrecomputedConstants.h" />
+    <ClInclude Include="D3D11\D3D11LineRenderer.h" />
     <ClInclude Include="D3D11\D3D11UnlitRenderer.h" />
     <ClInclude Include="D3D11\D3D11PostEffectRenderer.h" />
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="D3D11\D3D11TextureEffects.h" />
     <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
+    <ClInclude Include="D3D11\Resource\D3D11Buffer.h" />
     <ClInclude Include="GraphicsInterface\GIResource.h" />
     <ClInclude Include="GraphicsInterface\GIRawResource.h" />
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
@@ -189,6 +191,7 @@
     <ClInclude Include="Scene\StaticMeshObject.h" />
     <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
     <ClInclude Include="Structure\Octree.h" />
+    <ClInclude Include="Structure\Primitive.h" />
     <ClInclude Include="Structure\Voxel.h" />
     <ClInclude Include="ThirdParty\x64\libpng\png.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngconf.h" />
@@ -331,6 +334,7 @@
   <ItemGroup>
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
+    <ClCompile Include="D3D11\D3D11LineRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11UnlitRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11PostEffectRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
