@@ -24,8 +24,7 @@ public:
     }
     bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{});
     bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures);
-    bool Initialize(GIImmediateCommands* cmd, const ComPtr<ID3D11Texture2D>& tex, SamplerParam param = SamplerParam());
-
+    
     const TextureParam& GetParam() const {
         return _param;
     }
