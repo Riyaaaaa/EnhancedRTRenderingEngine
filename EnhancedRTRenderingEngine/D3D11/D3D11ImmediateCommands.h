@@ -14,43 +14,51 @@ public:
         _device(device),
         _deviceContext(context) {}
 
-    virtual void SetViewPortSize(const ViewportCfg& cfg);
+    virtual GISwapChain* CreateSwapChain(const ViewportParam& param) override;
+    virtual void SetViewPortSize(const ViewportCfg& cfg) override;
 
-    virtual void OMSetRenderTargets(int numViews, std::vector<GIRenderTargetView*> rtvs, GIDepthStencilView*);
+    virtual void OMSetRenderTargets(int numViews, std::vector<GIRenderTargetView*> rtvs, GIDepthStencilView*) override;
 
-    virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color);
-    virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f);
+    virtual GIRenderTargetView* CreateRenderTargetView(GITexture2D* tex) override;
+    virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex) override;
+    virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) override;
+    virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) override;
+
+    virtual GITexture2D* CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures);
+    virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex, TextureFormat format, TextureType type, unsigned int textureNums, unsigned int mipLevels);
+    virtual GISamplerState* CreateSamplerState(const SamplerParam& param);
 
     GIBuffer* CreateBuffer(ResourceType type, unsigned int stride) override;
     GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, void* initPtr, float byteWidth) override;
 
+    virtual void RSSetState(GIRasterizerState* state);
+
     virtual void UpdateSubresource() {}
 
-    virtual GIPixelShader* CreatePixelShader(RawBinary byteCode);
-    virtual void PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture);
-    virtual void PSSetSamplers(unsigned int slot, GISamplerState* sampler);
-    virtual void PSSetShader(GIPixelShader* shader);
-    virtual void PSSetConstantBuffers(unsigned int slot, GIBuffer* buffer);
+    virtual GIPixelShader* CreatePixelShader(RawBinary byteCode) override;
+    virtual void PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) override;
+    virtual void PSSetSamplers(unsigned int slot, GISamplerState* sampler) override;
+    virtual void PSSetShader(GIPixelShader* shader) override;
+    virtual void PSSetConstantBuffers(unsigned int slot, GIBuffer* buffer) override;
 
-    virtual GIVertexShader* CreateVertexShader(RawBinary byteCode);
-    virtual void VSSetShader(GIVertexShader* shader);
-    virtual void VSSetConstantBuffers(unsigned int slot, GIBuffer* buffer);
+    virtual GIVertexShader* CreateVertexShader(RawBinary byteCode) override;
+    virtual void VSSetShader(GIVertexShader* shader) override;
+    virtual void VSSetConstantBuffers(unsigned int slot, GIBuffer* buffer) override;
 
-    virtual void IASetPrimitiveTopology(VertexPrimitiveType primitiveType);
-    virtual void IASetIndexBuffer(GIBuffer* buffer, unsigned int offset);
-    virtual void IASetVertexBuffer(GIBuffer* buffer, unsigned int stride, unsigned int offset);
+    virtual void IASetPrimitiveTopology(VertexPrimitiveType primitiveType) override;
+    virtual void IASetIndexBuffer(GIBuffer* buffer, unsigned int offset) override;
+    virtual void IASetVertexBuffer(GIBuffer* buffer, unsigned int stride, unsigned int offset) override;
 
-    GIInputLayout* CreateInputLayout(const std::vector<VertexLayout>& layouts, GIVertexShader* shader);
-    GIRasterizerState* CreateRasterizerState(RasterizerType type);
+    GIInputLayout* CreateInputLayout(const std::vector<VertexLayout>& layouts, GIVertexShader* shader) override;
+    GIRasterizerState* CreateRasterizerState(RasterizerType type) override;
 
-    virtual void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0);
-    virtual void Draw(unsigned int vertexCount, unsigned int startIndex);
+    virtual void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0) override;
+    virtual void Draw(unsigned int vertexCount, unsigned int startIndex) override;
 
-    virtual D3D11TextureProxyEntity* CreateTextureProxy(TextureParam param, const Texture2D & tex);
-    virtual D3D11TextureProxyEntity* CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex);
+    virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const Texture2D & tex) override;
+    virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) override;
 
 protected:
-    D3D11RenderView _renderView;
     ComPtr<ID3D11Device> _device;
     ComPtr<ID3D11DeviceContext> _deviceContext;
 };

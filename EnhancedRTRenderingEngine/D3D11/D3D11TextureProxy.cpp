@@ -5,72 +5,29 @@
 #include "Constant/RenderConfig.h"
 #include "RenderingContext.h"
 
+#include "Utility/TextureUtils.h"
+
 #include "Common.h"
 
-D3D11TextureProxyEntity::D3D11TextureProxyEntity(const ComPtr<ID3D11Device>& device) :
-    mDevice(device),
-    mTexture(nullptr),
-    mView(nullptr),
-    mSampler(nullptr){
-}
-
-
-bool D3D11TextureProxyEntity::Initialize(TextureParam param, const Texture2D& tex)
+bool D3D11TextureProxyEntity::Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex)
 {
     std::vector<Texture2D> v;
     if (tex.isValid()) {
         v.push_back(tex);
     }
-    return Initialize(param, v);
+    return Initialize(cmd, param, v);
 }
 
-bool D3D11TextureProxyEntity::Initialize(TextureParam param, const std::vector<Texture2D>& textures) {
-    std::vector<D3D11_SUBRESOURCE_DATA> initData;
-    D3D11_SUBRESOURCE_DATA* initDataPtr = nullptr;
-    if (!textures.empty()) {
-        param.width = textures[0].Width();
-        param.height = textures[0].Height();
-        param.arraySize = textures.size();
-
-        initData.resize(param.arraySize);
-        for (int i = 0; i < param.arraySize; i++) {
-            initData[i].pSysMem = textures[i].get();
-            initData[i].SysMemPitch = textures[i].Stride();
-        }
-
-        initDataPtr = &initData[0];
-    }
+bool D3D11TextureProxyEntity::Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures) {
     
-    D3D11_TEXTURE2D_DESC desc;
-    desc.Width = param.width;
-    desc.Height = param.height;
-    desc.MipLevels = 1;
-    desc.ArraySize = param.arraySize;
-    desc.Format = CastToD3D11Format<DXGI_FORMAT>(param.format);
-    desc.SampleDesc.Count = 1;
-    desc.SampleDesc.Quality = 0;
-    desc.Usage = CastToD3D11Format<D3D11_USAGE>(param.usage);
-    desc.BindFlags = CastToD3D11Format<UINT>(param.bindFlag);
-    desc.CPUAccessFlags = CastToD3D11Format<UINT>(param.accessFlag);
-    desc.MiscFlags = 0;
+    cmd->CreateTexture2D(param, textures);
 
-    switch (param.type) {
-    case TextureType::TextureCube:
-        desc.MiscFlags |= D3D11_RESOURCE_MISC_FLAG::D3D11_RESOURCE_MISC_TEXTURECUBE;
-        break;
-    }
-
-    auto hr = mDevice->CreateTexture2D(&desc, initDataPtr, mTexture.ToCreator());
-    if (FAILED(hr)) {
-        return false;
-    }
-
-    if (!(desc.BindFlags & D3D11_BIND_SHADER_RESOURCE)) {
+    if (!(param.bindFlag & TextureBindTarget::SHADER_RESOURCE)) {
         return true;
     }
 
     D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
-    SRVDesc.Format = GetShaderResourceFormat(desc.Format);
+    SRVDesc.Format = GetShaderResourceFormat(CastToD3D11Format<DXGI_FORMAT>(param.format));
 
     switch (param.type) {
     case TextureType::Texture2D:
@@ -89,11 +46,7 @@ bool D3D11TextureProxyEntity::Initialize(TextureParam param, const std::vector<T
         break;
     }
 
-    hr = mDevice->CreateShaderResourceView(mTexture.Get(), &SRVDesc, mView.ToCreator());
-    if (FAILED(hr))
-    {
-        return false;
-    }
+    mView = cmd->CreateShaderResourceView(mTexture.get(), TextureUtils::GetShaderResourceFormat(param.format), param.type, param.arraySize, 1);
 
     D3D11_SAMPLER_DESC samplerDesc;
     samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
@@ -110,17 +63,12 @@ bool D3D11TextureProxyEntity::Initialize(TextureParam param, const std::vector<T
     samplerDesc.MinLOD = 0;
     samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
 
-    // Create the texture sampler state.
-    hr = mDevice->CreateSamplerState(&samplerDesc, mSampler.ToCreator());
-    if (FAILED(hr))
-    {
-        return false;
-    }
+    mSampler = MakeRef(cmd->CreateSamplerState(param.samplerParam));
 
     return true;
 }
 
-bool D3D11TextureProxyEntity::Initialize(const ComPtr<ID3D11Texture2D>& tex, SamplerParam param) {
+bool D3D11TextureProxyEntity::Initialize(GIImmediateCommands* cmd, const ComPtr<ID3D11Texture2D>& tex, SamplerParam param) {
     mTexture = tex;
 
     D3D11_TEXTURE2D_DESC texDesc;

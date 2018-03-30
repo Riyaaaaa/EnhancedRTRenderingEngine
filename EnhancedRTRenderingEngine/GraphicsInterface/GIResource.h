@@ -3,6 +3,11 @@
 #include "Constant/GraphicConstants.h"
 #include "GITextureProxy.h"
 
+template<class T>
+std::shared_ptr<T> MakeRef(T* ptr) {
+    return std::make_shared<T>(ptr);
+}
+
 class GIResource {};
 
 class GIBuffer : public GIResource
@@ -12,34 +17,28 @@ public:
     ResourceType type;
 };
 
-class GIRenderTargetView : public GIResource
-{
-public:
-    GIRenderTargetView(bool _useAsShaderResource)
-    : useAsShaderResource(_useAsShaderResource) {}
-    bool useAsShaderResource;
-    GITextureProxy rtvTexture;
-};
+class GIRenderTargetView : public GIResource {};
 
-class GIDepthStencilView : public GIResource
-{
-public:
-    GIDepthStencilView(bool _useAsShaderResource)
-        : useAsShaderResource(_useAsShaderResource) {}
-    bool useAsShaderResource;
-    GITextureProxy dsvTexture;
-};
+class GIDepthStencilView : public GIResource {};
 
 class GIOMResource : public GIResource
 {
 public:
-    virtual GIRenderTargetView** GetRenderTargetViewsRef() = 0;
+    std::vector<std::shared_ptr<GIRenderTargetView>> renderTargets;
+    std::shared_ptr<GIDepthStencilView> depthStencilView;
+};
+
+class GISwapChain : public GIResource {
+public:
+    std::shared_ptr<GITexture2D> backBuffer;
 };
 
 class GITexture2D : public GIResource {};
+class GISamplerState : public GIResource {};
+class GIShaderResourceView : public GIResource {};
 
 class GIRasterizerState : public GIResource {};
-class GISamplerState : public GIResource {};
+
 
 class GIShader : public GIResource
 {

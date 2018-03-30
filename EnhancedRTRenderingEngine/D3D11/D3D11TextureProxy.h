@@ -3,61 +3,59 @@
 #include <d3d11.h>
 #include <memory>
 #include "ComPtr.h"
+#include "D3D11Resources.h"
 #include "GraphicsInterface/GITextureProxy.h"
 #include "GraphicsInterface/GIResourceattribute.h"
+#include "GraphicsInterface/GIImmediateCommands.h"
 #include "Resource/Texture2D.h"
 #include "RenderingContext.h"
 
 class D3D11TextureProxyEntity : public GITextureProxyEntity, public ResourceAttribute::Creatable<D3D11TextureProxyEntity>
 {
-    ComPtr<ID3D11Device> mDevice;
-    ComPtr<ID3D11Texture2D> mTexture;
-    ComPtr<ID3D11ShaderResourceView> mView;
-    ComPtr<ID3D11SamplerState> mSampler;
+    std::shared_ptr<D3D11Texture2D> mTexture;
+    std::shared_ptr<D3D11ShaderResourceView> mView;
+    std::shared_ptr<D3D11SamplerState> mSampler;
 
     TextureParam _param;
 
 public:
-    D3D11TextureProxyEntity(){}
-    D3D11TextureProxyEntity(const ComPtr<ID3D11Device>& device);
-
     bool IsAvalable() {
         return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
     }
-    bool Initialize(TextureParam param, const Texture2D& tex = Texture2D{});
-    bool Initialize(TextureParam param, const std::vector<Texture2D>& textures);
-    bool Initialize(const ComPtr<ID3D11Texture2D>& tex, SamplerParam param = SamplerParam());
+    bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{});
+    bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures);
+    bool Initialize(GIImmediateCommands* cmd, const ComPtr<ID3D11Texture2D>& tex, SamplerParam param = SamplerParam());
 
     const TextureParam& GetParam() const {
         return _param;
     }
 
-    const ComPtr<ID3D11Texture2D>& GetTexture() const
+    const std::shared_ptr<D3D11Texture2D>& GetTexture() const
     {
         return mTexture;
     }
 
-    ComPtr<ID3D11Texture2D>& GetTexture()
+    std::shared_ptr<D3D11Texture2D>& GetTexture()
     {
         return mTexture;
     }
 
-    const ComPtr<ID3D11ShaderResourceView>& GetSubResourceView() const
+    const std::shared_ptr<D3D11ShaderResourceView>& GetSubResourceView() const
     {
         return mView;
     }
 
-    const ComPtr<ID3D11SamplerState>& GetSampler() const 
+    const std::shared_ptr<D3D11SamplerState>& GetSampler() const
     {
         return mSampler;
     }
 
-    ComPtr<ID3D11ShaderResourceView>& GetSubResourceView()
+    std::shared_ptr<D3D11ShaderResourceView>& GetSubResourceView()
     {
         return mView;
     }
 
-    ComPtr<ID3D11SamplerState>& GetSampler()
+    std::shared_ptr<D3D11SamplerState>& GetSampler()
     {
         return mSampler;
     }

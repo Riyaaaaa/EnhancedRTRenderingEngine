@@ -14,6 +14,36 @@ void D3D11ImmediateCommands::OMSetRenderTargets(int numViews, std::vector<GIRend
     _deviceContext->OMSetRenderTargets(numViews, &rtvs_[0], CastRes<D3D11DepthStencilView>(dsv).Get());
 }
 
+GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param) {
+    D3D11SwapChain* swapchain = new D3D11SwapChain;
+    _device->QueryInterface(__uuidof(IDXGIDevice1), (void**)swapchain->dxgiDevice.ToCreator());
+    swapchain->dxgiDevice->GetAdapter(swapchain->adapter.ToCreator());
+    swapchain->adapter->GetParent(__uuidof(IDXGIFactory), (void**)swapchain->factory.ToCreator());
+
+    DXGI_SWAP_CHAIN_DESC hDXGISwapChainDesc;
+    hDXGISwapChainDesc.BufferDesc.Width = param.cfg.width;
+    hDXGISwapChainDesc.BufferDesc.Height = param.cfg.height;
+    hDXGISwapChainDesc.BufferDesc.RefreshRate.Numerator = 0;
+    hDXGISwapChainDesc.BufferDesc.RefreshRate.Denominator = 1;
+    hDXGISwapChainDesc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+    hDXGISwapChainDesc.BufferDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
+    hDXGISwapChainDesc.BufferDesc.Scaling = DXGI_MODE_SCALING_UNSPECIFIED;
+    hDXGISwapChainDesc.SampleDesc = CastToD3D11Format<DXGI_SAMPLE_DESC>(param.MSAAQuality);
+    hDXGISwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+    hDXGISwapChainDesc.BufferCount = 1;
+    hDXGISwapChainDesc.OutputWindow = reinterpret_cast<HWND>(param.runtimeWindowHandle);
+    hDXGISwapChainDesc.Windowed = TRUE;
+    hDXGISwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT_DISCARD;
+    hDXGISwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
+
+    swapchain->factory->CreateSwapChain(_device.Get(), &hDXGISwapChainDesc, swapchain->resource.ToCreator());
+    
+    swapchain->backBuffer = std::make_shared<D3D11Texture2D>();
+    swapchain->resource->GetBuffer(0, __uuidof(ID3D11Texture2D), CastRes<D3D11Texture2D>(swapchain->backBuffer.get()).ToCreator());
+
+    return swapchain;
+}
+
 void D3D11ImmediateCommands::SetViewPortSize(const ViewportCfg& cfg) {
     D3D11_VIEWPORT d3d11_cfg;
 
@@ -25,6 +55,104 @@ void D3D11ImmediateCommands::SetViewPortSize(const ViewportCfg& cfg) {
     d3d11_cfg.MaxDepth = cfg.maxDepth;
 
     _deviceContext->RSSetViewports(1, &d3d11_cfg);
+}
+
+GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures) {
+    D3D11Texture2D* tex = new D3D11Texture2D;
+    
+    std::vector<D3D11_SUBRESOURCE_DATA> initData;
+    D3D11_SUBRESOURCE_DATA* initDataPtr = nullptr;
+
+    unsigned int width, height, arraySize;
+    if (!textures.empty()) {
+        width = textures[0].Width();
+        height = textures[0].Height();
+        arraySize = textures.size();
+
+        initData.resize(param.arraySize);
+        for (int i = 0; i < param.arraySize; i++) {
+            initData[i].pSysMem = textures[i].get();
+            initData[i].SysMemPitch = textures[i].Stride();
+        }
+
+        initDataPtr = &initData[0];
+    }
+    else {
+        width = param.width;
+        height = param.height;
+        arraySize = param.arraySize;
+    }
+
+    D3D11_TEXTURE2D_DESC desc;
+    desc.Width = width;
+    desc.Height = height;
+    desc.MipLevels = 1;
+    desc.ArraySize = arraySize;
+    desc.Format = CastToD3D11Format<DXGI_FORMAT>(param.format);
+    desc.SampleDesc.Count = 1;
+    desc.SampleDesc.Quality = 0;
+    desc.Usage = CastToD3D11Format<D3D11_USAGE>(param.usage);
+    desc.BindFlags = CastToD3D11Format<UINT>(param.bindFlag);
+    desc.CPUAccessFlags = CastToD3D11Format<UINT>(param.accessFlag);
+    desc.MiscFlags = 0;
+
+    switch (param.type) {
+    case TextureType::TextureCube:
+        desc.MiscFlags |= D3D11_RESOURCE_MISC_FLAG::D3D11_RESOURCE_MISC_TEXTURECUBE;
+        break;
+    }
+
+    _device->CreateTexture2D(&desc, initDataPtr, tex->resource.ToCreator());
+
+    return tex;
+}
+
+GIShaderResourceView* D3D11ImmediateCommands::CreateShaderResourceView(GITexture2D* tex, TextureFormat format, TextureType type, unsigned int textureNums, unsigned int mipLevels) {
+    D3D11ShaderResourceView* srv = new D3D11ShaderResourceView;
+    D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+    SRVDesc.Format = GetShaderResourceFormat(CastToD3D11Format<DXGI_FORMAT>(format));
+
+    switch (type) {
+    case TextureType::Texture2D:
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+        SRVDesc.Texture2D.MipLevels = 1;
+        break;
+    case TextureType::Texture2DArray:
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+        SRVDesc.Texture2DArray.MipLevels = 1;
+        SRVDesc.Texture2DArray.ArraySize = textureNums;
+        break;
+    case TextureType::TextureCube:
+        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+        SRVDesc.TextureCube.MostDetailedMip = 0;
+        SRVDesc.TextureCube.MipLevels = 1;
+        break;
+    }
+
+    _device->CreateShaderResourceView(CastRes<D3D11Texture2D>(tex).Get(), &SRVDesc, srv->resource.ToCreator());
+}
+
+GISamplerState* D3D11ImmediateCommands::CreateSamplerState(const SamplerParam& param) {
+    D3D11SamplerState* state = new D3D11SamplerState;
+
+    D3D11_SAMPLER_DESC samplerDesc;
+    samplerDesc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+    samplerDesc.AddressU = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.addressMode);
+    samplerDesc.AddressV = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.addressMode);
+    samplerDesc.AddressW = CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE>(param.addressMode);
+    samplerDesc.MipLODBias = 0.0f;
+    samplerDesc.MaxAnisotropy = 1;
+    samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+    samplerDesc.BorderColor[0] = 0;
+    samplerDesc.BorderColor[1] = 0;
+    samplerDesc.BorderColor[2] = 0;
+    samplerDesc.BorderColor[3] = 0;
+    samplerDesc.MinLOD = 0;
+    samplerDesc.MaxLOD = D3D11_FLOAT32_MAX;
+
+    _device->CreateSamplerState(&samplerDesc, state->resource.ToCreator());
+
+    return state;
 }
 
 GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int stride) {
@@ -73,6 +201,27 @@ GIInputLayout* D3D11ImmediateCommands::CreateInputLayout(const std::vector<Verte
     return inputLayout;
 }
 
+GIRenderTargetView* D3D11ImmediateCommands::CreateRenderTargetView(GITexture2D* tex) {
+    D3D11RenderTargetView* rtv = new D3D11RenderTargetView;
+
+    _device->CreateRenderTargetView(CastRes<D3D11Texture2D>(tex).Get(), nullptr, rtv->resource.ToCreator());
+
+    return rtv;
+}
+
+GIDepthStencilView* D3D11ImmediateCommands::CreateDepthStencilView(GITexture2D* tex) {
+    D3D11DepthStencilView* dsv = new D3D11DepthStencilView;
+
+    D3D11_DEPTH_STENCIL_VIEW_DESC hDepthStencilViewDesc;
+    hDepthStencilViewDesc.Format = DXGI_FORMAT::DXGI_FORMAT_D16_UNORM;
+    hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
+    hDepthStencilViewDesc.Flags = 0;
+
+    _device->CreateDepthStencilView(CastRes<D3D11Texture2D>(tex).Get(), &hDepthStencilViewDesc, dsv->resource.ToCreator());
+
+    return dsv;
+}
+
 void D3D11ImmediateCommands::ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) {
     _deviceContext->ClearRenderTargetView(CastRes<D3D11RenderTargetView>(view).Get(), reinterpret_cast<float*>(&color));
 }
@@ -91,6 +240,10 @@ GIVertexShader* D3D11ImmediateCommands::CreateVertexShader(RawBinary byteCode) {
     D3D11VertexShader* shader = new D3D11VertexShader;
     _device->CreateVertexShader(byteCode.get(), byteCode.size(), nullptr, shader->resource.ToCreator());
     return shader;
+}
+
+void D3D11ImmediateCommands::RSSetState(GIRasterizerState* state) {
+    _deviceContext->RSSetState(CastRes<D3D11RasterizerState>(state).Get());
 }
 
 void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) {

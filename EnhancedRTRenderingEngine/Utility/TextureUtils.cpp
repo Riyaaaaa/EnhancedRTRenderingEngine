@@ -31,3 +31,15 @@ Texture2D TextureUtils::CreateUniformTexture(std::size_t width, std::size_t heig
 
     return Texture2D(width, height, 4, buffer, sizeof(buffer));
 }
+
+TextureFormat TextureUtils::GetShaderResourceFormat(TextureFormat textureFormat) {
+    switch (textureFormat)
+    {
+    case TextureFormat::R16_TYPELESS:
+        return TextureFormat::R16_UNORM;
+    case TextureFormat::R32_TYPELESS:
+        return TextureFormat::R32_UINT;
+    default:
+        return textureFormat;
+    }
+}

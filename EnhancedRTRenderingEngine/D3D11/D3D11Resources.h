@@ -29,6 +29,14 @@ public:
     ComPtr<ID3D11RasterizerState> resource;
 };
 
+class D3D11SwapChain : public GISwapChain {
+public:
+    ComPtr<IDXGISwapChain> resource;
+    ComPtr<IDXGIDevice1> dxgiDevice;
+    ComPtr<IDXGIAdapter> adapter;
+    ComPtr<IDXGIFactory> factory;
+};
+
 class D3D11SamplerState : public GISamplerState {
 public:
     ComPtr<ID3D11SamplerState> resource;
@@ -47,5 +55,20 @@ public:
 class D3D11InputLayout : public GIInputLayout {
 public:
     ComPtr<ID3D11InputLayout> resource;
+};
+
+class D3D11Texture2D : public GITexture2D {
+public:
+    ComPtr<ID3D11Texture2D> resource;
+};
+
+class D3D11ShaderResourceView : public GIShaderResourceView {
+public:
+    ComPtr<ID3D11ShaderResourceView> resource;
+};
+
+class D3D11SamplerState : public GISamplerState {
+public:
+    ComPtr<ID3D11SamplerState> resource;
 };
 

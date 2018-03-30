@@ -5,14 +5,12 @@
 #include "D3D11RenderView.h"
 #include "Scene/Scene.h"
 
+#include "GraphicsInterface/GIImmediateCommands.h"
+
 class D3D11UnlitRenderer
 {
 public:
     template<class VertType>
-    void render(const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes);
-    bool Initialize(const std::shared_ptr<D3D11RenderView>& view);
-
-protected:
-    std::shared_ptr<D3D11RenderView> _view;
+    void render(GIImmediateCommands* cmd, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes);
 };
 

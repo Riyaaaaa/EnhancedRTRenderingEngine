@@ -28,9 +28,13 @@ enum MSAAQualityType {
 
 enum class TextureFormat {
     RGBA8_UNORM,
+    RGBA8_UNORM_SRGB,
     RGBA16_UNORM,
     R16_TYPELESS,
-    R32_TYPELESS
+    R16_UNORM,
+    R24G8_TYPELESS,
+    R32_TYPELESS,
+    R32_UINT
 };
 
 enum TextureBindTarget : unsigned int {

@@ -13,21 +13,17 @@
 #include "D3D11DepthRenderer.h"
 #include "D3D11BasePassRenderer.h"
 
+#include "GraphicsInterface/GIImmediateCommands.h"
+#include "GraphicsInterface/GIRenderView.h"
+
 class D3D11ForwardRenderer
 {
 public:
-
-    void Initialize(std::shared_ptr<D3D11RenderView> view);
-
-    D3D11ForwardRenderer();
-    ~D3D11ForwardRenderer();
-
-    void render(Scene* scene);
+    void render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene);
 
     D3D11SceneInfo& GetSceneInfo() { return _scene; }
 
 protected:
-    std::shared_ptr<D3D11RenderView> _view;
     D3D11SceneInfo _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;
