@@ -18,11 +18,14 @@ public:
     void SetLocation(Vector3D lot);
     void SetScale(Vector3D scale);
 
-    Vector3D GetLocation() { return transform.location; }
+    Vector3D GetLocation() { return _transform.location; }
 
 protected:
-    bool dirty;
+    virtual void DirtyWorldMatrix();
+
+    bool worldMatrixDirty;
     DirectX::XMMATRIX matrix;
-    Transform transform;
+    Transform _transform;
+    AABB _aabb;
 };
 

@@ -19,6 +19,7 @@ public:
     void SetViewPortSize(Size size);
     Size GetRenderSize() const { return _renderSize; }
     MSAAQualityType GetMSAAQualityType() const { return _type;  }
+    void SetRasterizerState(RasterizerState state);
 
 //protected:
 public:
@@ -34,6 +35,7 @@ public:
     ComPtr<ID3D11DepthStencilView> hpDepthStencilView;
     ComPtr<ID3D11RasterizerState> mRasterizerState;
     ComPtr<ID3D11RasterizerState> mDoubleSidedRasterizerState;
+    ComPtr<ID3D11RasterizerState> mWireFrameRasterizerState;
 
     D3D11_VIEWPORT _viewPortCfg;
 

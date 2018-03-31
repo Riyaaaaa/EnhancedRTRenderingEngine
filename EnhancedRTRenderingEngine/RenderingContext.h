@@ -16,12 +16,6 @@ struct VertexLayout {
     unsigned int memoryOffset;
 };
 
-struct RenderingContext
-{
-    std::vector<VertexLayout> layouts;
-    VertexPrimitiveType pType;
-};
-
 template<class VertType>
 std::vector<VertexLayout> CreateVertexLayout();
 

@@ -22,7 +22,7 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
         hConstantBuffer.DirectionalLight[i] = dLight.GetDirection();
     }
 
-    hConstantBuffer.numPointLights = scene->GetPointLightParams().size();
+    hConstantBuffer.numPointLights = scene->GetPointLights().size();
     for (int i = 0; i < LIGHT_MAX; i++) {
         if (i >= hConstantBuffer.numPointLights) {
             break;
@@ -30,27 +30,23 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
         auto& pLight = scene->GetPointLights()[i];
         hConstantBuffer.PointLightProjection[i] = pLight.GetShadowPerspectiveMatrix();
         memcpy(hConstantBuffer.PointLightView[i], pLight.GetViewMatrixes(), sizeof(XMMATRIX) * 6);
-        hConstantBuffer.PointLight[i] = scene->GetPointLightParams()[i];
+        hConstantBuffer.PointLight[i] = PointLightParameters{ pLight.GetPoint(), pLight.GetAttenuation() };
     }
 
     return hConstantBuffer;
 }
 
 MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const PMDModel& model) {
-    RenderingContext context{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLELIST };
-
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
-    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D, context);
+    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D);
     mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
     
     return mesh;
 }
 
 MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
-    RenderingContext context{ CreateVertexLayout < typename Mesh3DModel::Type >(), VertexPrimitiveType::TRIANGLELIST };
-
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
-    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D, context);
+    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D);
     mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
 
     return mesh;

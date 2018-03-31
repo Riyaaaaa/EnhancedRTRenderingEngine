@@ -14,8 +14,7 @@ namespace SceneUtils {
 
     template<class PrimitiveType, typename... Args>
     MeshObject<typename PrimitiveType::Type> CreatePrimitiveMeshObject(Args&&... args) {
-        RenderingContext context{ CreateVertexLayout < typename PrimitiveType::Type > (), VertexPrimitiveType::TRIANGLESTRIP };
-        MeshObject<PrimitiveType::Type> mesh(std::make_shared<PrimitiveType>(args...), context);
+        MeshObject<PrimitiveType::Type> mesh(std::make_shared<PrimitiveType>(args...));
         return mesh;
     }
 

@@ -5,10 +5,10 @@ template<>
 Square<Vertex3D>::Square(Size size)
 {
     _vertexList = std::vector<Vertex3D>{
-        Vertex3D{ { -size.w, -size.h, 0.0f },{ 1.0f, 1.0f, 1.0f, 1.0f },{ 0.0f, 0.0f } },
-        Vertex3D{ { -size.w, -size.h, 0.0f },{ 1.0f, 1.0f, 1.0f, 1.0f },{ 0.0f, 1.0f } },
-        Vertex3D{ { +size.w, -size.h, 0.0f },{ 1.0f, 1.0f, 1.0f, 1.0f },{ 1.0f, 0.0f } },
-        Vertex3D{ { +size.w, +size.h, 0.0f },{ 1.0f, 1.0f, 1.0f, 1.0f },{ 1.0f, 1.0f } }
+        Vertex3D{ Vector3D{ -size.w, -size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 0.0f, 0.0f } },
+        Vertex3D{ Vector3D{ -size.w, -size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 0.0f, 1.0f } },
+        Vertex3D{ Vector3D{ +size.w, -size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 0.0f } },
+        Vertex3D{ Vector3D{ +size.w, +size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 1.0f } }
     };
 
     _indexList = std::vector<uint16_t>{
@@ -23,10 +23,10 @@ template<>
 Square<TexVertex>::Square(Size size)
 {
     _vertexList = std::vector<TexVertex>{
-        TexVertex{ { -size.w, -size.h, 0.5f },{ 0.0f, 1.0f } },
-        TexVertex{ { -size.w, +size.h, 0.5f },{ 0.0f, 0.0f } },
-        TexVertex{ { +size.w, -size.h, 0.5f },{ 1.0f, 1.0f } },
-        TexVertex{ { +size.w, +size.h, 0.5f },{ 1.0f, 0.0f } }
+        TexVertex{ Vector3D{ -size.w, -size.h, 0.5f },Vector2D{ 0.0f, 1.0f } },
+        TexVertex{ Vector3D{ -size.w, +size.h, 0.5f },Vector2D{ 0.0f, 0.0f } },
+        TexVertex{ Vector3D{ +size.w, -size.h, 0.5f },Vector2D{ 1.0f, 1.0f } },
+        TexVertex{ Vector3D{ +size.w, +size.h, 0.5f },Vector2D{ 1.0f, 0.0f } }
     };
 
     _indexList = std::vector<uint16_t>{

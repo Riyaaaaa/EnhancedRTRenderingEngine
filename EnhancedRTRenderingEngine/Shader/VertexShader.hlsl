@@ -15,14 +15,13 @@ struct vertexOut
 
 cbuffer ConstantBuffer : register(b0)
 {
-    matrix World;
     matrix View;
     matrix Projection;
 }
 
 cbuffer ObjectBuffer : register(b1)
 {
-    matrix LocalTransMatrix;
+    matrix World;
 }
 
 vertexOut main(vertexIn IN)
@@ -30,7 +29,6 @@ vertexOut main(vertexIn IN)
     vertexOut OUT;
 
     float4 pos = float4(IN.pos, 1.0f);
-    pos = mul(pos, LocalTransMatrix);
     pos = mul(pos, World);
     pos = mul(pos, View);
     pos = mul(pos, Projection);

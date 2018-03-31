@@ -23,10 +23,10 @@ void CameraObject::SetProjParams(float fFOV, float fAspect, float fNearPlane, fl
     mProj = XMMatrixPerspectiveFovLH(fFOV, fAspect, fNearPlane, fFarPlane);
 }
 
-XMMATRIX CameraObject::GetViewProjection() {
+XMMATRIX CameraObject::GetViewProjection() const {
     return XMMatrixLookAtLH(hEye, hAt, hUp);
 }
 
-::XMMATRIX CameraObject::GetPerspectiveProjection() {
+::XMMATRIX CameraObject::GetPerspectiveProjection() const {
     return mProj;
 }

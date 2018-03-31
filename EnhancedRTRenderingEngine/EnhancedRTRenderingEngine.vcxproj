@@ -110,7 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -159,8 +159,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Algorithms\SpaceOctree.h" />
+    <ClInclude Include="Algorithms\SpaceSplits.h" />
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
+    <ClInclude Include="Constant\PrecomputedConstants.h" />
+    <ClInclude Include="D3D11\D3D11UnlitRenderer.h" />
     <ClInclude Include="D3D11\D3D11PostEffectRenderer.h" />
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="D3D11\D3D11TextureEffects.h" />
@@ -170,6 +174,8 @@
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
     <ClInclude Include="GraphicsInterface\GIDrawMesh.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
+    <ClInclude Include="Render\RayTracer.h" />
+    <ClInclude Include="Render\PhotonMapping.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITextureProxy.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
@@ -180,6 +186,10 @@
     <ClInclude Include="Scene\SkyBox.h" />
     <ClInclude Include="Scene\Enviroment\StaticCubeReflectionCapture.h" />
     <ClInclude Include="Shader\ShaderFactory.h" />
+    <ClInclude Include="Scene\StaticMeshObject.h" />
+    <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
+    <ClInclude Include="Structure\Octree.h" />
+    <ClInclude Include="Structure\Voxel.h" />
     <ClInclude Include="ThirdParty\x64\libpng\png.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngconf.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngdebug.h" />
@@ -319,6 +329,9 @@
     <ClInclude Include="WindowManager.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Algorithms\SpaceOctree.cpp" />
+    <ClCompile Include="Algorithms\SpaceSplits.cpp" />
+    <ClCompile Include="D3D11\D3D11UnlitRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11PostEffectRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffects.cpp" />
@@ -327,6 +340,8 @@
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
+    <ClCompile Include="Render\RayTracer.cpp" />
+    <ClCompile Include="Render\PhotonMapping.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="D3D11\D3D11TextureHUDRenderer.cpp" />
@@ -335,6 +350,8 @@
     <ClCompile Include="Scene\SkyBox.cpp" />
     <ClCompile Include="Scene\Enviroment\StaticCubeReflectionCapture.cpp" />
     <ClCompile Include="Shader\ShaderFactory.cpp" />
+    <ClCompile Include="Scene\StaticMeshObject.cpp" />
+    <ClCompile Include="Render\SpaceOctreeVisualizer.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />
     <ClCompile Include="Resource\X\DXModel.cpp" />

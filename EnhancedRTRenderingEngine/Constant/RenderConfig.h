@@ -65,3 +65,11 @@ enum class ResourceAccessFlag {
     W,
     RW
 };
+
+enum class RasterizerState {
+    None,
+    Default,
+    WireFrame,
+    CullNone
+};
+
