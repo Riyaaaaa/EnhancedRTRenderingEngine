@@ -9,14 +9,7 @@
 #include "WindowManager.h"
 #include <chrono>
 
-
-bool D3D11PostEffectRenderer::Initialize(const std::shared_ptr<D3D11RenderView>& view) {
-    _view = view;
-
-    return true;
-}
-
-void D3D11PostEffectRenderer::Apply(const std::string& effect) {
+void D3D11PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, const std::string& effect) {
     struct ConstantBuffer
     {
         float time;
@@ -27,16 +20,16 @@ void D3D11PostEffectRenderer::Apply(const std::string& effect) {
     AlignedBuffer<ConstantBuffer> buf;
     buf.time = timestamp++;
     //buf.time = static_cast<float>(std::chrono::system_clock::to_time_t(std::chrono::system_clock::now()));
-    buf.size = _view->GetRenderSize();
+    buf.size = view->GetRenderSize();
 
-    float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-    _view->SetViewPortSize(_view->GetRenderSize());
+    Vector4D ClearColor{ 0.7f, 0.7f, 0.7f, 1.0f };
+    cmd->SetViewPortSize(view->GetViewPortCfg());
 
-    _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), nullptr);
-    _view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView.Get(), ClearColor);
+    cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
+    cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
-    auto cb = D3D11ConstantBufferBuilder::BuildConstantBuffer(_view->hpDevice, &buf);
-    _view->hpDeviceContext->PSSetConstantBuffers(0, 1, cb.Ref());
+    auto cb = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), &buf, sizeof(buf)));
+    cmd->PSSetConstantBuffers(0, cb.get());
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
@@ -48,5 +41,5 @@ void D3D11PostEffectRenderer::Apply(const std::string& effect) {
     face.startIndex = 0;
     element.AddDrawElement(face);
     D3D11DrawElement drawer;
-    drawer.Draw(_view, element);
+    drawer.Draw(cmd, element);
 }

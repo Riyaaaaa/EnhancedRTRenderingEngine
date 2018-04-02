@@ -6,23 +6,11 @@
 #include <functional>
 
 #include "D3D11ConstantBufferBuilder.h"
-#include "D3D11OMResource.h"
-#include "D3D11RenderView.h"
 #include "D3D11SceneInfo.h"
 
 class D3D11TextureEffectRenderer
 {
 public:
-    bool Initialize(const std::shared_ptr<D3D11RenderView>& view);
-
-    template<class BufferType>
-    void SetConstantBuffer(BufferType* buffer) {
-        _constantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<BufferType>(_view->hpDevice, buffer);
-    }
-
-    D3D11TextureProxy Apply(const D3D11TextureProxy& src, const std::string& effect);
-protected:
-    std::shared_ptr<D3D11RenderView> _view;
-    ComPtr<ID3D11Buffer> _constantBuffer;
+    GITextureProxy Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect);
 };
 

@@ -6,6 +6,9 @@
 template<class Derived, class T>
 auto CastRes(T* res) 
 ->const decltype(static_cast<Derived*>(res)->resource) & {
+    if (!res) {
+        return nullptr;
+    }
     return static_cast<Derived*>(res)->resource;
 }
 
@@ -31,6 +34,10 @@ public:
 
 class D3D11SwapChain : public GISwapChain {
 public:
+    virtual void Present(unsigned int syncInterval, unsigned int flag) override {
+        resource->Present(syncInterval, flag);
+    }
+
     ComPtr<IDXGISwapChain> resource;
     ComPtr<IDXGIDevice1> dxgiDevice;
     ComPtr<IDXGIAdapter> adapter;
@@ -59,6 +66,7 @@ public:
 
 class D3D11Texture2D : public GITexture2D {
 public:
+    virtual TextureParam GetTextureParam() override;
     ComPtr<ID3D11Texture2D> resource;
 };
 
@@ -67,8 +75,4 @@ public:
     ComPtr<ID3D11ShaderResourceView> resource;
 };
 
-class D3D11SamplerState : public GISamplerState {
-public:
-    ComPtr<ID3D11SamplerState> resource;
-};
 

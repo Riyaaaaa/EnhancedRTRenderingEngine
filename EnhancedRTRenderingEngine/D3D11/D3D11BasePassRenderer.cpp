@@ -13,49 +13,30 @@
 
 using namespace DirectX;
 
-D3D11BasePassRenderer::D3D11BasePassRenderer()
-{
-}
-
-
-D3D11BasePassRenderer::~D3D11BasePassRenderer()
-{
-}
-
-bool D3D11BasePassRenderer::Initialize(const std::shared_ptr<D3D11RenderView>& view) {
-    _view = view;
-    return true; 
-}
-
-void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
-    if (!_view) {
-        return;
-    }
-
+void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
     Scene* scene = _scene->GetSourceScene();
-    _view->SetViewPortSize(_view->GetRenderSize());
-    _view->hpDeviceContext->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), _view->hpDepthStencilView.Get());
+    cmd->SetViewPortSize(view->GetViewPortCfg());
+    cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
 
-    _view->hpDeviceContext->ClearDepthStencilView(_view->hpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
-    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr), hpMaterialBuffer(nullptr);
-    
-    hpConstantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<ConstantBuffer>(_view->hpDevice, &hConstantBuffer);
-    hpMaterialBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<MaterialBuffer>(_view->hpDevice, nullptr);
 
-    _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
-    _view->hpDeviceContext->PSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
+    auto hpConstantBuffer = cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), &hConstantBuffer, sizeof(ConstantBuffer));
+    auto hpMaterialBuffer = cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float));
+
+    cmd->VSSetConstantBuffers(0, hpConstantBuffer);
+    cmd->PSSetConstantBuffers(0, hpConstantBuffer);
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {
-        _view->hpDeviceContext->PSSetShaderResources(0, 1, _scene->GetDirectionalShadow(0)->GetSubResourceView().Ref());
-        _view->hpDeviceContext->PSSetSamplers(0, 1, _scene->GetDirectionalShadow(0)->GetSampler().Ref());
+        cmd->PSSetShaderResources(0, _scene->GetDirectionalShadow(0).get());
+        cmd->PSSetSamplers(0, _scene->GetDirectionalShadow(0)->GetSampler().get());
     }
     
     if (hConstantBuffer.numPointLights > 0) {
-        _view->hpDeviceContext->PSSetShaderResources(1, 1, _scene->GetPointShadow(0)->GetSubResourceView().Ref());
-        _view->hpDeviceContext->PSSetSamplers(1, 1, _scene->GetPointShadow(0)->GetSampler().Ref());
+        cmd->PSSetShaderResources(1, _scene->GetPointShadow(0).get());
+        cmd->PSSetSamplers(1, _scene->GetPointShadow(0)->GetSampler().get());
     }
 
     for (auto && object : scene->GetViewObjects()) {
@@ -64,8 +45,8 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
-            _view->hpDeviceContext->PSSetShaderResources(2, 1, tex->GetSubResourceView().Ref());
-            _view->hpDeviceContext->PSSetSamplers(2, 1, tex->GetSampler().Ref());
+            cmd->PSSetShaderResources(2, tex.get());
+            cmd->PSSetSamplers(2, tex->GetSampler().get());
         }
 
         int index = 0;
@@ -77,12 +58,12 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
 
             TextureParam param;
             param.type = material.type;
-            D3D11TextureProxy texture = std::make_shared<D3D11TextureProxyEntity>(_view->hpDevice);
+            D3D11TextureProxy texture = D3D11TextureProxyEntity::Create();
             if (material.type == TextureType::Texture2D) {
-                texture->Initialize(param, material.texture);
+                texture->Initialize(cmd, param, material.texture);
             }
             else if (material.type == TextureType::TextureCube) {
-                texture->Initialize(param, material.cubeTexture.textures);
+                texture->Initialize(cmd, param, material.cubeTexture.textures);
             }
 
             face.RegisterShaderResource(texture, 10);
@@ -95,14 +76,14 @@ void D3D11BasePassRenderer::render(D3D11SceneInfo* _scene) {
         }
 
         D3D11DrawElement drawer;
-        drawer.Draw(_view, element);
+        drawer.Draw(cmd, element);
     }
     
-    ID3D11ShaderResourceView*   pNullSRV = nullptr;
+    /*ID3D11ShaderResourceView*   pNullSRV = nullptr;
     ID3D11SamplerState*         pNullSmp = nullptr;
-    _view->hpDeviceContext->PSSetSamplers(0, 1, &pNullSmp);
-    _view->hpDeviceContext->PSSetShaderResources(0, 1, &pNullSRV);
-    _view->hpDeviceContext->PSSetSamplers(1, 1, &pNullSmp);
-    _view->hpDeviceContext->PSSetShaderResources(1, 1, &pNullSRV);
-    _view->hpDeviceContext->PSSetShader(nullptr, nullptr, 0);
+    cmd->PSSetSamplers(0, 1, &pNullSmp);
+    cmd->PSSetShaderResources(0, 1, &pNullSRV);
+    cmd->PSSetSamplers(1, 1, &pNullSmp);
+    cmd->PSSetShaderResources(1, 1, &pNullSRV);*/
+    cmd->ResetPS();
 }

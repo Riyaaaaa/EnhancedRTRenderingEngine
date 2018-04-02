@@ -5,12 +5,14 @@
 #include "ComPtr.h"
 #include "Structure/Structure.h"
 
+#include "GraphicsInterface/GIImmediateCommands.h"
+
 class Scene;
 
 namespace D3D11ConstantBufferBuilder
 {
     template <class BufferType>
-    ComPtr<ID3D11Buffer> BuildConstantBuffer(const ComPtr<ID3D11Device>& device, BufferType* buffer) {
+    ComPtr<ID3D11Buffer> BuildConstantBuffer(GIImmediateCommands* cmd, BufferType* buffer) {
         D3D11_BUFFER_DESC bufferDesc;
         ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
 
@@ -29,7 +31,7 @@ namespace D3D11ConstantBufferBuilder
             initPtr = &srd;
         }
        
-        if (FAILED(device->CreateBuffer(&bufferDesc, initPtr, hpConstantBuffer.ToCreator()))) {
+        if (FAILED(cimd->CreateBuffer(&bufferDesc, initPtr, hpConstantBuffer.ToCreator()))) {
             return ComPtr<ID3D11Buffer>(nullptr);
         }
 

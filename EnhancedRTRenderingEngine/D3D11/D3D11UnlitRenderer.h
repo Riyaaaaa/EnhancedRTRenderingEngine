@@ -2,15 +2,15 @@
 
 #include <memory>
 
-#include "D3D11RenderView.h"
 #include "Scene/Scene.h"
 
 #include "GraphicsInterface/GIImmediateCommands.h"
+#include "GraphicsInterface/GIRenderView.h"
 
 class D3D11UnlitRenderer
 {
 public:
     template<class VertType>
-    void render(GIImmediateCommands* cmd, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes);
+    void render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes);
 };
 

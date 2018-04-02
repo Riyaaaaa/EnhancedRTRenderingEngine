@@ -1,19 +1,16 @@
 #pragma once
 
-#include <d3d11.h>
-
 #include <memory>
 
-#include "D3D11OMResource.h"
-#include "D3D11RenderView.h"
-#include "D3D11SceneInfo.h"
+#include "GraphicsInterface/GIImmediateCommands.h"
+#include "GraphicsInterface/GIRenderView.h"
+#include "GraphicsInterface/GITextureProxy.h"
+
+#include "Structure/Structure.h"
 
 class D3D11TextureHUDRenderer
 {
 public:
-    bool Initialize(const std::shared_ptr<D3D11RenderView>& view);
-    void render(Vector2D pos, Size size, const Texture2D& texture);
-    void render(Vector2D pos, Size size, const D3D11TextureProxy& texture, int index = 0);
-protected:
-    std::shared_ptr<D3D11RenderView> _view;
+    void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture);
+    void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const GITextureProxy& texture, int index = 0);
 };

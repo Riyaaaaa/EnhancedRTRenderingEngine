@@ -48,3 +48,7 @@ void GIRenderView::SetViewPortSize(GIImmediateCommands* cmd, Size size) {
     cmd->SetViewPortSize(_viewportCfg);
 }
 
+void GIRenderView::Present() {
+    _swapchain->Present(0, 0);
+}
+

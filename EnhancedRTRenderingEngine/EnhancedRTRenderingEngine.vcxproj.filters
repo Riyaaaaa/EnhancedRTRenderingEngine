@@ -423,9 +423,6 @@
     <ClInclude Include="D3D11\D3D11TextureEffects.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11\D3D11OMResource.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="D3D11\D3D11TextureProxy.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -486,9 +483,6 @@
     <ClInclude Include="ThirdParty\x64\libpng\zlib.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="D3D11\D3D11RenderView.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Structure\Voxel.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -535,6 +529,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Constant\GICommandParameter.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicsInterface\GICommandUtils.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -677,9 +674,6 @@
     <ClCompile Include="D3D11\D3D11TextureEffects.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="D3D11\D3D11OMResource.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="D3D11\D3D11TextureProxy.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -705,9 +699,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="D3D11\D3D11RenderView.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene\StaticMeshObject.cpp">
@@ -741,6 +732,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="D3D11\D3D11Resources.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GraphicsInterface\GICommandUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

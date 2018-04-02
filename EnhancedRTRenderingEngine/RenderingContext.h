@@ -26,8 +26,10 @@ struct SamplerParam {
 struct TextureParam {
     unsigned int width, height;
     TextureFormat format = TextureFormat::RGBA8_UNORM;
+    unsigned int mipLevels = 1;
     unsigned int bindFlag = TextureBindTarget::SHADER_RESOURCE;
     unsigned int arraySize = 1;
+    bool isMultiSampling = false;
     TextureType type = TextureType::Texture2D;
     TextureUsage usage = TextureUsage::Default;
     ResourceAccessFlag accessFlag = ResourceAccessFlag::None;  

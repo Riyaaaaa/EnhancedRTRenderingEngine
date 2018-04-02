@@ -173,6 +173,7 @@
     <ClInclude Include="D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="D3D11\D3D11TextureEffects.h" />
     <ClInclude Include="D3D11\D3D11TextureEffectRenderer.h" />
+    <ClInclude Include="GraphicsInterface\GICommandUtils.h" />
     <ClInclude Include="GraphicsInterface\GIRenderView.h" />
     <ClInclude Include="GraphicsInterface\GIResource.h" />
     <ClInclude Include="GraphicsInterface\GIRawResource.h" />
@@ -215,7 +216,6 @@
     <ClInclude Include="test.h" />
     <ClInclude Include="Scene\CameraController.h" />
     <ClInclude Include="Constant\RenderTag.h" />
-    <ClInclude Include="D3D11\D3D11OMResource.h" />
     <ClInclude Include="D3D11\D3D11ForwardRenderer.h" />
     <ClInclude Include="D3D11\D3D11DepthRenderer.h" />
     <ClInclude Include="D3D11\D3D11FormatUtils.h" />
@@ -238,7 +238,6 @@
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
     <ClInclude Include="D3D11\D3D11DrawElement.h" />
-    <ClInclude Include="D3D11\D3D11RenderView.h" />
     <ClInclude Include="D3D11\D3D11BasePassRenderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
     <ClInclude Include="FileManager.h" />
@@ -345,6 +344,7 @@
     <ClCompile Include="D3D11\D3D11ConstantBufferBuilder.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffects.cpp" />
     <ClCompile Include="D3D11\D3D11TextureEffectRenderer.cpp" />
+    <ClCompile Include="GraphicsInterface\GICommandUtils.cpp" />
     <ClCompile Include="GraphicsInterface\GIRenderView.cpp" />
     <ClCompile Include="GraphicsInterface\GIResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
@@ -368,7 +368,6 @@
     <ClCompile Include="Resource\X\DXParserNodes.cpp" />
     <ClCompile Include="Resource\X\StringParser.cpp" />
     <ClCompile Include="Scene\CameraController.cpp" />
-    <ClCompile Include="D3D11\D3D11OMResource.cpp" />
     <ClCompile Include="D3D11\D3D11FormatUtils.cpp" />
     <ClCompile Include="D3D11\D3D11ForwardRenderer.cpp" />
     <ClCompile Include="D3D11\D3D11DepthRenderer.cpp" />
@@ -386,7 +385,6 @@
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
     <ClCompile Include="D3D11\D3D11DrawElement.cpp" />
-    <ClCompile Include="D3D11\D3D11RenderView.cpp" />
     <ClCompile Include="D3D11\D3D11BasePassRenderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
     <ClCompile Include="FileManager.cpp" />

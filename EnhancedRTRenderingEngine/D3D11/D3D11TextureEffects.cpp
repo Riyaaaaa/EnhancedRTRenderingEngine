@@ -4,7 +4,7 @@
 
 #include "D3D11TextureEffectRenderer.h"
 
-D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3D11RenderView>& view, const D3D11TextureProxy& src) {
+GITextureProxy D3D11GaussianFilter(GIImmediateCommands* cmd, GIRenderView* view, std::shared_ptr<GITexture2D> src) {
     struct GaussianCBuffer {
         float weight[8];
         Size texsize;
@@ -29,16 +29,20 @@ D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3D11RenderView>& vi
     }
 
     D3D11_TEXTURE2D_DESC desc;
-    src->GetTexture()->GetDesc(&desc);
-    buf.texsize.w = desc.Width;
-    buf.texsize.h = desc.Height;
+    auto param = src->GetTextureParam();
+
+    SamplerParam p;
+    p.addressMode = TextureAddressMode::CLAMP;
+    GITextureProxy proxy = MakeRef(cmd->CreateTextureProxy(src, p));
+
+    buf.texsize.w = param.width;
+    buf.texsize.h = param.height;
 
     D3D11TextureEffectRenderer renderer;
-    renderer.Initialize(view);
-    renderer.SetConstantBuffer(&buf);
+    auto constantBuffer = cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), &buf, sizeof(buf));
 
-    auto XFiltered = renderer.Apply(src, "Gaussian5x5FilterX");
-    auto Final = renderer.Apply(XFiltered, "Gaussian5x5FilterY");
+    auto XFiltered = renderer.Apply(cmd, proxy, "Gaussian5x5FilterX");
+    auto Final = renderer.Apply(cmd, XFiltered, "Gaussian5x5FilterY");
 
     return Final;
 }

@@ -5,9 +5,8 @@
 #include <memory>
 #include <vector>
 
-#include "../Structure/Structure.h"
-#include "D3D11RenderView.h"
-#include "../Scene/Scene.h"
+#include "Structure/Structure.h"
+#include "Scene/Scene.h"
 
 #include "D3D11SceneInfo.h"
 #include "D3D11DepthRenderer.h"

@@ -10,20 +10,7 @@
 #include "Constant/RenderTag.h"
 #include "Common.h"
 
-bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const GIDrawMesh& element) {
-    auto& layouts = element.GetVertexLayout();
-
-    for (auto&& layout : layouts) {
-        inElemDesc.push_back(D3D11_INPUT_ELEMENT_DESC{ 
-            layout.name, layout.semanticsIndex,
-            CastToD3D11Format<DXGI_FORMAT>(layout.vProperty), 
-            layout.slot, 
-            layout.memoryOffset, 
-            D3D11_INPUT_PER_VERTEX_DATA, 0 });
-    }
-
-    primitiveTopology = CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(element.GetPrimitiveType());
-
+bool D3D11DrawElement::Draw(GIImmediateCommands* cmd, const GIDrawMesh& element) {
     bool useIndexList = false;
 
     for (auto&& psResource : element.GetShaderResources()) {
@@ -37,51 +24,36 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
 
         bufferDesc.StructureByteStride = psResource.first._structureByteStride;
 
-        ComPtr<ID3D11Buffer> buffer;
+        auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, psResource.first._structureByteStride, (void*)psResource.first._resource.get(), psResource.first._resource.size()));
 
         switch (psResource.first._type) {
         case ResourceType::VertexList: {
             UINT hOffsets = 0;
             bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->IASetVertexBuffers(0, 1, buffer.Ref(), &psResource.first._structureByteStride, &hOffsets);
+            cmd->IASetVertexBuffer(buffer.get(), psResource.first._structureByteStride, hOffsets);
             break;
         }
         case ResourceType::IndexList:
             bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->IASetIndexBuffer(buffer.Get(), DXGI_FORMAT_R16_UINT, 0);
+            cmd->IASetIndexBuffer(buffer.get(), DXGI_FORMAT_R16_UINT, 0);
             useIndexList = true;
             break;
         case ResourceType::VSConstantBuffer:
             bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->VSSetConstantBuffers(psResource.second, 1, buffer.Ref());
+            cmd->VSSetConstantBuffers(psResource.second, buffer.get());
             break;
         case ResourceType::PSConstantBuffer:
             bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->PSSetConstantBuffers(psResource.second, 1, buffer.Ref());
+            cmd->PSSetConstantBuffers(psResource.second, buffer.get());
             break;
         case ResourceType::GSConstantBuffer:
             bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-            if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->GSSetConstantBuffers(psResource.second, 1, buffer.Ref());
+            //cmd->GSSetConstantBuffers(psResource.second, buffer.get());
             break;
         }
     }
 
-    view->hpDeviceContext->IASetPrimitiveTopology(primitiveTopology);
+    cmd->IASetPrimitiveTopology(element.GetPrimitiveType());
 
     auto& drawLinks = element.GetDrawLinks();
     for (ShadingType type : { ShadingType::BasePass, ShadingType::Detph, ShadingType::Unlit } ) {
@@ -93,27 +65,16 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
         
         for (auto it = range.first; it != range.second; it++) {
             auto& shader = it->second;
-
-            if (FAILED(view->hpDevice->CreateVertexShader(shader.VS().get(), shader.VS().size(), NULL, hpVertexShader.ToCreator()))) {
-                return false;
-            }
-            view->hpDeviceContext->VSSetShader(hpVertexShader.Get(), NULL, 0);
+            auto vshader = MakeRef(cmd->CreateVertexShader(shader.VS()));
+            cmd->VSSetShader(vshader.get());
 
             if (shader.PS().isValid()) {
-                if (FAILED(view->hpDevice->CreatePixelShader(shader.PS().get(), shader.PS().size(), NULL, hpPixelShader.ToCreator()))) {
-                    return false;
-                }
-                view->hpDeviceContext->PSSetShader(hpPixelShader.Get(), NULL, 0);
+                auto pshader = MakeRef(cmd->CreatePixelShader(shader.PS()));
+                cmd->PSSetShader(pshader.get());
             }
-            else {
-                view->hpDeviceContext->PSSetShader(nullptr, NULL, 0);
-            }
-            
-            auto err = view->hpDevice->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), shader.VS().get(), shader.VS().size(), hpInputLayout.ToCreator());
-            if (FAILED(err)) {
-                return false;
-            }
-            view->hpDeviceContext->IASetInputLayout(hpInputLayout.Get());
+
+            auto inputLayout = MakeRef(cmd->CreateInputLayout(element.GetVertexLayout(), vshader.get()));
+            cmd->IASetInputLayout(inputLayout.get());
 
             TextureParam param;
             param.format = TextureFormat::RGBA8_UNORM;
@@ -121,8 +82,8 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
 
             for (auto&& texRes : shader.GetTextureResources()) {
                 auto nativeTex = std::static_pointer_cast<D3D11TextureProxyEntity>(texRes.first);
-                view->hpDeviceContext->PSSetShaderResources(texRes.second, 1, nativeTex->GetSubResourceView().Ref());
-                view->hpDeviceContext->PSSetSamplers(texRes.second, 1, nativeTex->GetSampler().Ref());
+                cmd->PSSetShaderResources(texRes.second, nativeTex.get());
+                cmd->PSSetSamplers(texRes.second, nativeTex->GetSampler().get());
             }
 
             for (auto && rawRes : shader.GetRawResources()) {
@@ -136,18 +97,15 @@ bool D3D11DrawElement::Draw(const std::shared_ptr<D3D11RenderView>& view, const 
 
                 bufferDesc.StructureByteStride = rawRes.first._structureByteStride;
                 bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-                ComPtr<ID3D11Buffer> buffer;
-                if (FAILED(view->hpDevice->CreateBuffer(&bufferDesc, &subResource, buffer.ToCreator()))) {
-                    return false;
-                }
-                view->hpDeviceContext->PSSetConstantBuffers(rawRes.second, 1, buffer.Ref());
+                auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, rawRes.first._structureByteStride, (void*)rawRes.first._resource.get(), rawRes.first._resource.size()));
+                cmd->PSSetConstantBuffers(rawRes.second, buffer.get());
             }
 
             if (useIndexList) {
-                view->hpDeviceContext->DrawIndexed(shader.faceNumVerts, shader.startIndex, 0);
+                cmd->DrawIndexed(shader.faceNumVerts, shader.startIndex, 0);
             }
             else {
-                view->hpDeviceContext->Draw(shader.faceNumVerts, shader.startIndex);
+                cmd->Draw(shader.faceNumVerts, shader.startIndex);
             }
         }
     }

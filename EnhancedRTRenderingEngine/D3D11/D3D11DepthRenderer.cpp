@@ -5,6 +5,7 @@
 #include "D3D11TextureEffects.h"
 
 #include "GraphicsInterface/GIDrawMesh.h"
+#include "GraphicsInterface/GICommandUtils.h"
 
 #include "Constant/RenderTag.h"
 
@@ -12,54 +13,39 @@
 
 using namespace DirectX;
 
-bool D3D11DepthRenderer::Initialize(const std::shared_ptr<D3D11RenderView>& view) {
-    _view = view;
-    return true;
-}
-
-void D3D11DepthRenderer::render(D3D11SceneInfo* scene)
+void D3D11DepthRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* scene)
 {
     //todo: support multi lights;
-    RenderDirectionalLightShadowMap(scene);
-    RenderPointLightShadowMap(scene);
+    RenderDirectionalLightShadowMap(cmd, view, scene);
+    RenderPointLightShadowMap(cmd, view, scene);
 }
 
-void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene) {
+void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
     auto* scene = _scene->GetSourceScene();
 
     auto& dLights = scene->GetDirectionalLights();
 
-    D3D11_BUFFER_DESC bufferDesc;
-    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
-    bufferDesc.ByteWidth = sizeof(TransformBufferParam);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = sizeof(float);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, hpConstantBuffer.ToCreator()))) {
-        return;
-    }
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), nullptr, sizeof(TransformBufferParam)));
 
     for (std::size_t i = 0; i < dLights.size(); i++) {
         auto& dLight = dLights[i];
-        D3D11OMResource target(_view->hpDevice, dLight.GetShadowResolution());
 
-        _view->SetViewPortSize(dLight.GetShadowResolution());
-        target.InitializeRenderTarget(_view->hpDeviceContext, true);
-        target.InitializeDepthStencilView(_view->hpDeviceContext, true);
+        auto rtv = GICommandUtils::CreateRenderTargetView(cmd, dLight.GetShadowResolution(), TextureFormat::RGBA16_UNORM, true);
+        auto dsv = GICommandUtils::CreateDepthStencilView(cmd, dLight.GetShadowResolution(), TextureFormat::R16_TYPELESS, true);
 
-        _view->hpDeviceContext->OMSetRenderTargets(1, target.GetRenderTargetRef(), target.GetDepthStencilView());
-        float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-        _view->hpDeviceContext->ClearRenderTargetView(target.GetRenderTarget(), color);
-        _view->hpDeviceContext->ClearDepthStencilView(target.GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        view->SetViewPortSize(cmd, dLight.GetShadowResolution());
+
+        cmd->OMSetRenderTargets(std::vector<std::shared_ptr<GIRenderTargetView>>{rtv}, dsv);
+        Vector4D color{ 1.0f, 1.0f, 1.0f, 1.0f };
+        cmd->ClearRenderTargetView(rtv.get(), color);
+        cmd->ClearDepthStencilView(dsv.get(), 1.0f, 0);
 
         TransformBufferParam hConstantBuffer;
         hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
         hConstantBuffer.Projection = XMMatrixTranspose(dLight.GetPerspectiveProjection());
 
-        _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
-        _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
+        cmd->UpdateSubresource(hpConstantBuffer.get(), &hConstantBuffer, 0);
+        cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
         for (auto && object : scene->GetViewObjects()) {
             GIDrawMesh element(&object);
@@ -74,14 +60,14 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(D3D11SceneInfo* _scene)
             }
             element.AddDrawElement(face);
             D3D11DrawElement draw;
-            draw.Draw(_view, element);
+            draw.Draw(cmd, element);
         }
 
-        _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(_view, target.GetRTVTexture());
+        _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(cmd, rtv->rtvTexture.get());
     }
 }
 
-void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
+void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
     auto* scene = _scene->GetSourceScene();
 
     D3D11_BUFFER_DESC bufferDesc;
@@ -170,11 +156,11 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(D3D11SceneInfo* _scene) {
 
         for (UINT x = 0; x < 6; x++)
         {
-            _view->hpDeviceContext->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture())->GetTexture().Get(), 0, nullptr);
+            cmd->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture())->GetTexture().Get(), 0, nullptr);
         }
 
         D3D11TextureProxy tex = D3D11TextureProxyEntity::Create(_view->hpDevice);
-        tex->Initialize(texArray);
+        tex->Initialize(cmd, texArray);
         _scene->GetPointShadow(i) = tex;
 
         pLight.SetDirty(false);

@@ -5,13 +5,15 @@ constexpr int LIGHT_MAX = 4;
 enum class VertexProperty {
     FloatRGBA,
     FloatRGB,
-    FloatRG
+    FloatRG,
+    NONE = 9999
 };
 
 enum class VertexPrimitiveType {
     LINELIST,
     TRIANGLELIST,
-    TRIANGLESTRIP
+    TRIANGLESTRIP,
+    NONE = 9999
 };
 
 enum class RenderingState {
@@ -61,7 +63,8 @@ enum class TextureAddressMode {
     WRAP,
     MIRROR,
     CLAMP,
-    BORADER
+    BORADER,
+    NONE = 9999
 };
 
 enum class ResourceAccessFlag {

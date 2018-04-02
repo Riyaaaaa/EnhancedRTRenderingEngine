@@ -12,52 +12,13 @@
 
 class D3D11TextureProxyEntity : public GITextureProxyEntity, public ResourceAttribute::Creatable<D3D11TextureProxyEntity>
 {
-    std::shared_ptr<D3D11Texture2D> mTexture;
-    std::shared_ptr<D3D11ShaderResourceView> mView;
-    std::shared_ptr<D3D11SamplerState> mSampler;
-
-    TextureParam _param;
-
 public:
     bool IsAvalable() {
         return mTexture != nullptr && mView != nullptr && mSampler != nullptr;
     }
-    bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{});
-    bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures);
-    
-    const TextureParam& GetParam() const {
-        return _param;
-    }
-
-    const std::shared_ptr<D3D11Texture2D>& GetTexture() const
-    {
-        return mTexture;
-    }
-
-    std::shared_ptr<D3D11Texture2D>& GetTexture()
-    {
-        return mTexture;
-    }
-
-    const std::shared_ptr<D3D11ShaderResourceView>& GetSubResourceView() const
-    {
-        return mView;
-    }
-
-    const std::shared_ptr<D3D11SamplerState>& GetSampler() const
-    {
-        return mSampler;
-    }
-
-    std::shared_ptr<D3D11ShaderResourceView>& GetSubResourceView()
-    {
-        return mView;
-    }
-
-    std::shared_ptr<D3D11SamplerState>& GetSampler()
-    {
-        return mSampler;
-    }
+    bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{}) override;
+    bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures) override;
+    bool Initialize(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> tex, SamplerParam param);
 };
 
 typedef std::shared_ptr<D3D11TextureProxyEntity> D3D11TextureProxy;

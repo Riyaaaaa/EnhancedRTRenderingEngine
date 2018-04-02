@@ -3,15 +3,16 @@
 #include "D3D11ImmediateCommands.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11Resources.h"
+#include "D3D11TextureProxy.h"
 
-void D3D11ImmediateCommands::OMSetRenderTargets(int numViews, std::vector<GIRenderTargetView*> rtvs, GIDepthStencilView* dsv) {
+void D3D11ImmediateCommands::OMSetRenderTargets(const std::vector<std::shared_ptr<GIRenderTargetView>>& renderTargets, std::shared_ptr<GIDepthStencilView> stv) {
     std::vector<ID3D11RenderTargetView*> rtvs_;
 
-    for (auto && rtv : rtvs) {
-        rtvs_.push_back(CastRes<D3D11RenderTargetView>(rtv).Get());
+    for (auto && rtv : renderTargets) {
+        rtvs_.push_back(CastRes<D3D11RenderTargetView>(rtv.get()).Get());
     }
 
-    _deviceContext->OMSetRenderTargets(numViews, &rtvs_[0], CastRes<D3D11DepthStencilView>(dsv).Get());
+    _deviceContext->OMSetRenderTargets(rtvs_.size(), &rtvs_[0], CastRes<D3D11DepthStencilView>(stv.get()).Get());
 }
 
 GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param) {
@@ -55,6 +56,14 @@ void D3D11ImmediateCommands::SetViewPortSize(const ViewportCfg& cfg) {
     d3d11_cfg.MaxDepth = cfg.maxDepth;
 
     _deviceContext->RSSetViewports(1, &d3d11_cfg);
+}
+
+void D3D11ImmediateCommands::UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) {
+    _deviceContext->UpdateSubresource(CastRes<D3D11Buffer>(buffer).Get(), 0, nullptr, srcData, srcRowPitch, 0);
+}
+
+void D3D11ImmediateCommands::CopyTexture2D(GITexture2D* dst, unsigned int dstIdx, unsigned int dstX, unsigned int dstY, unsigned int dstZ, GITexture2D* src, unsigned int srcIdx) {
+    _deviceContext->CopySubresourceRegion(CastRes<D3D11Texture2D>(dst).Get(), dstIdx, dstX, dstY, dstZ, CastRes<D3D11Texture2D>(src).Get(), srcIdx, nullptr);
 }
 
 GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures) {
@@ -107,29 +116,42 @@ GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, 
     return tex;
 }
 
-GIShaderResourceView* D3D11ImmediateCommands::CreateShaderResourceView(GITexture2D* tex, TextureFormat format, TextureType type, unsigned int textureNums, unsigned int mipLevels) {
+GIShaderResourceView* D3D11ImmediateCommands::CreateShaderResourceView(GITexture2D* tex) {
     D3D11ShaderResourceView* srv = new D3D11ShaderResourceView;
-    D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
-    SRVDesc.Format = GetShaderResourceFormat(CastToD3D11Format<DXGI_FORMAT>(format));
+    auto texparam = tex->GetTextureParam();
 
-    switch (type) {
-    case TextureType::Texture2D:
-        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
-        SRVDesc.Texture2D.MipLevels = 1;
-        break;
-    case TextureType::Texture2DArray:
-        SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-        SRVDesc.Texture2DArray.MipLevels = 1;
-        SRVDesc.Texture2DArray.ArraySize = textureNums;
-        break;
-    case TextureType::TextureCube:
+    D3D11_SHADER_RESOURCE_VIEW_DESC SRVDesc = {};
+    SRVDesc.Format = GetShaderResourceFormat(CastToD3D11Format<DXGI_FORMAT>(texparam.format));
+
+    if (texparam.type == TextureType::TextureCube) {
         SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
         SRVDesc.TextureCube.MostDetailedMip = 0;
-        SRVDesc.TextureCube.MipLevels = 1;
-        break;
+        SRVDesc.TextureCube.MipLevels = texparam.mipLevels;
+    }
+    else {
+        if (texparam.isMultiSampling) {
+            if (texparam.arraySize == 1) {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
+                SRVDesc.Texture2DArray.MipLevels = texparam.mipLevels;
+            }
+            else {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+                SRVDesc.Texture2DArray.MipLevels = texparam.mipLevels;
+                SRVDesc.Texture2DArray.ArraySize = texparam.arraySize;
+            }
+        }
+        else {
+            if (texparam.arraySize == 1) {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMS;
+            }
+            else {
+                SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DMSARRAY;
+            }
+        }
     }
 
     _device->CreateShaderResourceView(CastRes<D3D11Texture2D>(tex).Get(), &SRVDesc, srv->resource.ToCreator());
+    return srv;
 }
 
 GISamplerState* D3D11ImmediateCommands::CreateSamplerState(const SamplerParam& param) {
@@ -248,7 +270,7 @@ void D3D11ImmediateCommands::RSSetState(GIRasterizerState* state) {
 
 void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) {
     auto* texture_ = static_cast<D3D11TextureProxyEntity*>(texture);
-    _deviceContext->PSGetShaderResources(slot, 1, texture_->GetSubResourceView().Ref());
+    _deviceContext->PSGetShaderResources(slot, 1, CastRes<D3D11ShaderResourceView>(texture_->GetSubResourceView().get()).Ref());
 }
 
 void D3D11ImmediateCommands::PSSetSamplers(unsigned int slot, GISamplerState* sampler) {
@@ -257,6 +279,10 @@ void D3D11ImmediateCommands::PSSetSamplers(unsigned int slot, GISamplerState* sa
 
 void D3D11ImmediateCommands::PSSetShader(GIPixelShader* shader) {
     _deviceContext->PSSetShader(CastRes<D3D11PixelShader>(shader).Get(), nullptr, 0);
+}
+
+void D3D11ImmediateCommands::ResetPS() {
+    _deviceContext->PSSetShader(nullptr, nullptr, 0);
 }
 
 void D3D11ImmediateCommands::VSSetShader(GIVertexShader* shader) {
@@ -304,15 +330,25 @@ void D3D11ImmediateCommands::IASetVertexBuffer(GIBuffer* buffer, unsigned int st
     _deviceContext->IASetVertexBuffers(0, 1, CastRes<D3D11Buffer>(buffer).Ref(), &stride, &offset);
 }
 
-D3D11TextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam param, const Texture2D & tex) {
-    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity(_device);
-    proxy->Initialize(param, tex);
+void D3D11ImmediateCommands::IASetInputLayout(GIInputLayout* layout) {
+    _deviceContext->IASetInputLayout(CastRes<D3D11InputLayout>(layout).Get());
+}
+
+GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam param, const Texture2D & tex) {
+    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity();
+    proxy->Initialize(this, param, tex);
     return proxy;
 }
 
-D3D11TextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) {
-    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity(_device);
-    proxy->Initialize(param, tex);
+GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) {
+    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity();
+    proxy->Initialize(this, param, tex);
+    return proxy;
+}
+
+GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(std::shared_ptr<GITexture2D> tex, SamplerParam param) {
+    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity();
+    proxy->Initialize(this, tex, param);
     return proxy;
 }
 

@@ -14,25 +14,18 @@
 using namespace DirectX;
 
 template<class VertType>
-void D3D11UnlitRenderer::render(GIImmediateCommands* cmd, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes) {
-    if (!_view) {
-        return;
-    }
+void D3D11UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes) {
+    cmd->SetViewPortSize(view->GetViewPortCfg());
 
-    cmd->SetViewPortSize(_view->GetRenderSize());
-
-    cmd->OMSetRenderTargets(1, _view->hpRenderTargetView.Ref(), _view->hpDepthStencilView.Get());
-    cmd->ClearDepthStencilView(_view->hpDepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+    cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
+    cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get());
 
     TransformBufferParam hConstantBuffer;
     hConstantBuffer.View = XMMatrixTranspose(camera.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(camera.GetPerspectiveProjection());
 
-    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
-
-    hpConstantBuffer = D3D11ConstantBufferBuilder::BuildConstantBuffer<TransformBufferParam>(_view->hpDevice, &hConstantBuffer);
-
-    cmd->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
+    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), &hConstantBuffer, sizeof(hConstantBuffer)));
+    cmd->VSSetConstantBuffers(0, buffer.get());
 
     for (auto && object : meshes) {
         GIDrawMesh element(&object);
@@ -47,8 +40,8 @@ void D3D11UnlitRenderer::render(GIImmediateCommands* cmd, const CameraObject& ca
         }
         element.AddDrawElement(face);
         D3D11DrawElement draw;
-        draw.Draw(_view, element);
+        draw.Draw(cmd, element);
     }
 }
 
-template void D3D11UnlitRenderer::render<Vertex3D>(GIImmediateCommands* cmd, const CameraObject& camera, std::vector<MeshObject<Vertex3D>>& meshes);
+template void D3D11UnlitRenderer::render<Vertex3D>(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<Vertex3D>>& meshes);

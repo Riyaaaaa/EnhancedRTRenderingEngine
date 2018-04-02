@@ -132,6 +132,130 @@ D3D11_TEXTURE_ADDRESS_MODE CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE, Texture
     return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
 }
 
+template<>
+VertexProperty CastToGIFormat<VertexProperty, DXGI_FORMAT>(DXGI_FORMAT prop) {
+    switch (prop)
+    {
+    case DXGI_FORMAT_R32G32_FLOAT:
+        return VertexProperty::FloatRG;
+    case DXGI_FORMAT_R32G32B32_FLOAT:
+        return VertexProperty::FloatRGB;
+    case DXGI_FORMAT_R32G32B32A32_FLOAT:
+        return VertexProperty::FloatRGBA;
+    default:
+        return VertexProperty::NONE;
+    }
+}
+
+template<>
+VertexPrimitiveType CastToGIFormat<VertexPrimitiveType, D3D_PRIMITIVE_TOPOLOGY>(D3D_PRIMITIVE_TOPOLOGY prop) {
+    switch (prop)
+    {
+    case D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST:
+        return VertexPrimitiveType::TRIANGLELIST;
+    case D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP:
+        return VertexPrimitiveType::TRIANGLESTRIP;
+    case D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_LINELIST:
+        return VertexPrimitiveType::LINELIST;
+    default:
+        return VertexPrimitiveType::NONE;
+    }
+}
+
+template<>
+MSAAQualityType CastToGIFormat<MSAAQualityType, DXGI_SAMPLE_DESC>(DXGI_SAMPLE_DESC prop) {
+
+    if (prop.Quality == 1) {
+        return MSAAQualityType::RAW_QUALITY;
+    }
+    
+    return MSAAQualityType::RAW_QUALITY;
+}
+
+template<>
+TextureFormat CastToGIFormat<TextureFormat, DXGI_FORMAT>(DXGI_FORMAT prop) {
+    switch (prop)
+    {
+    case DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM:
+        return TextureFormat::RGBA8_UNORM;
+    case DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM:
+        return TextureFormat::RGBA16_UNORM;
+    case DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS:
+        return TextureFormat::R16_TYPELESS;
+    case DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS:
+        return TextureFormat::R32_TYPELESS;
+    default:
+        return TextureFormat::R16_UNORM;
+    }
+}
+
+template<>
+TextureUsage CastToGIFormat<TextureUsage, D3D11_USAGE>(D3D11_USAGE prop) {
+    switch (prop) {
+    case D3D11_USAGE::D3D11_USAGE_DEFAULT:
+        return TextureUsage::Default;
+    case D3D11_USAGE::D3D11_USAGE_IMMUTABLE:
+        return TextureUsage::Immutable;
+    case D3D11_USAGE::D3D11_USAGE_DYNAMIC:
+        return TextureUsage::Dynamic;
+    case D3D11_USAGE::D3D11_USAGE_STAGING:
+        return TextureUsage::Staging;
+    }
+
+    return TextureUsage::Default;
+}
+
+template<>
+ResourceAccessFlag CastToGIFormat<ResourceAccessFlag, unsigned int>(unsigned int prop) {
+    UINT flag = 0;
+
+    if (flag & D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ & D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE) {
+        return ResourceAccessFlag::RW;
+    }
+    else if (flag & D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_READ) {
+        return ResourceAccessFlag::R;
+    }
+    else if (flag & D3D11_CPU_ACCESS_FLAG::D3D11_CPU_ACCESS_WRITE) {
+        return ResourceAccessFlag::W;
+    }
+
+    return ResourceAccessFlag::None;
+}
+
+template<>
+unsigned int CastToGIFormat<unsigned int, unsigned int>(unsigned int prop) {
+    UINT flag = 0;
+    if (prop & D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE) {
+        flag |= TextureBindTarget::SHADER_RESOURCE;
+    }
+
+    if (prop & D3D11_BIND_FLAG::D3D11_BIND_DEPTH_STENCIL) {
+        flag |= TextureBindTarget::STENCIL;
+    }
+
+    if (prop & D3D11_BIND_FLAG::D3D11_BIND_RENDER_TARGET) {
+        flag |= TextureBindTarget::RENDER_TARGET;
+    }
+
+    return flag;
+}
+
+template<>
+TextureAddressMode CastToGIFormat<TextureAddressMode, D3D11_TEXTURE_ADDRESS_MODE>(D3D11_TEXTURE_ADDRESS_MODE mode) {
+    switch (mode) {
+    case D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP:
+        return TextureAddressMode::WRAP;
+    case D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_MIRROR:
+        return TextureAddressMode::MIRROR;
+    case D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_CLAMP:
+        return TextureAddressMode::CLAMP;
+    case D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_BORDER:
+        return TextureAddressMode::BORADER;
+    }
+
+    return TextureAddressMode::WRAP;
+}
+
 DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat) {
     switch (textureFormat)
     {

@@ -5,7 +5,8 @@
 #include <memory>
 #include <functional>
 
-#include "D3D11RenderView.h"
+#include "GraphicsInterface/GIImmediateCommands.h"
+#include "GraphicsInterface/GIRenderView.h"
 
-D3D11TextureProxy D3D11GaussianFilter(const std::shared_ptr<D3D11RenderView>& view, const D3D11TextureProxy& src);
+GITextureProxy D3D11GaussianFilter(GIImmediateCommands* cmd, GIRenderView* view, std::shared_ptr<GITexture2D> src);
 

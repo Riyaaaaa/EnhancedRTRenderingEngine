@@ -7,7 +7,7 @@ D3D11SceneInfo::~D3D11SceneInfo()
 {
 }
 
-void D3D11SceneInfo::Refresh(ComPtr<ID3D11Device> device, Scene* scene) {
+void D3D11SceneInfo::Refresh(GIImmediateCommands* cmd, Scene* scene) {
     _scene = scene;
 
     if (scene->Dirty()) {
@@ -15,8 +15,8 @@ void D3D11SceneInfo::Refresh(ComPtr<ID3D11Device> device, Scene* scene) {
             _directionalShadows.clear();
             _pointShadows.clear();
 
-            _directionalShadows.resize(scene->GetDirectionalLights().size(), D3D11TextureProxyEntity::Create(device));
-            _pointShadows.resize(scene->GetPointLights().size(), D3D11TextureProxyEntity::Create(device));
+            _directionalShadows.resize(scene->GetDirectionalLights().size());
+            _pointShadows.resize(scene->GetPointLights().size());
 
             for (auto && pLight : scene->GetPointLights()) {
                 pLight.SetDirty(true);
@@ -27,10 +27,10 @@ void D3D11SceneInfo::Refresh(ComPtr<ID3D11Device> device, Scene* scene) {
         if (scene->MeshDirty()) {
             for (auto && reflectionCapture : scene->GetReflectionCaptures()) {
                 if (_enviromentMaps.find(reflectionCapture->GetID()) == _enviromentMaps.end()) {
-                    _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), D3D11TextureProxyEntity::Create(device)));
+                    _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), D3D11TextureProxyEntity::Create()));
                 }
 
-                reflectionCapture->SetupTexture(_enviromentMaps.at(reflectionCapture->GetID()));
+                reflectionCapture->SetupTexture(cmd, _enviromentMaps.at(reflectionCapture->GetID()));
             }
 
             for (auto && viewObject : scene->GetViewObjects()) {

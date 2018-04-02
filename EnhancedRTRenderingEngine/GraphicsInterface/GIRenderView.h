@@ -12,7 +12,17 @@ public:
 
     Size GetRenderSize() const { return _renderSize; }
     MSAAQualityType GetMSAAQualityType() const { return _type; }
+
+    void Present();
     
+    const std::shared_ptr<GIOMResource>& GetOMResource() const {
+        return _OMResource;
+    }
+
+    const ViewportCfg& GetViewPortCfg() const {
+        return _viewportCfg;
+    }
+
 protected:
     MSAAQualityType _type;
     ViewportCfg _viewportCfg;

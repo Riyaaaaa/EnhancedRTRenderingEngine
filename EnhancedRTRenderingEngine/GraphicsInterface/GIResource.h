@@ -1,11 +1,15 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
+#include "Resource/RawBinary.h"
 #include "Constant/GraphicConstants.h"
-#include "GITextureProxy.h"
+#include "RenderingContext.h"
 
 template<class T>
 std::shared_ptr<T> MakeRef(T* ptr) {
-    return std::make_shared<T>(ptr);
+    return std::shared_ptr<T>(ptr);
 }
 
 class GIResource {};
@@ -17,28 +21,40 @@ public:
     ResourceType type;
 };
 
-class GIRenderTargetView : public GIResource {};
+class GITexture2D : public GIResource {
+public:
+    virtual TextureParam GetTextureParam() = 0;
+};
 
-class GIDepthStencilView : public GIResource {};
+class GISamplerState : public GIResource {};
+class GIShaderResourceView : public GIResource {};
+
+class GIRenderTargetView : public GIResource {
+public:
+    std::shared_ptr<GITexture2D> rtvTexture;
+};
+class GIDepthStencilView : public GIResource {
+public:
+    std::shared_ptr<GITexture2D> dsvTexture;
+};
 
 class GIOMResource : public GIResource
 {
 public:
+    const std::shared_ptr<GIRenderTargetView>& GetMainRTV() const {
+        return renderTargets[0];
+    }
     std::vector<std::shared_ptr<GIRenderTargetView>> renderTargets;
     std::shared_ptr<GIDepthStencilView> depthStencilView;
 };
 
-class GISwapChain : public GIResource {
-public:
-    std::shared_ptr<GITexture2D> backBuffer;
-};
-
-class GITexture2D : public GIResource {};
-class GISamplerState : public GIResource {};
-class GIShaderResourceView : public GIResource {};
-
 class GIRasterizerState : public GIResource {};
 
+class GISwapChain : public GIResource {
+public:
+    virtual void Present(unsigned int syncInterval, unsigned int flag) = 0;
+    std::shared_ptr<GITexture2D> backBuffer;
+};
 
 class GIShader : public GIResource
 {

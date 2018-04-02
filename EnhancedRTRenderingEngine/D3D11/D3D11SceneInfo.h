@@ -12,7 +12,7 @@ class D3D11SceneInfo
 public:
     ~D3D11SceneInfo();
 
-    void Refresh(ComPtr<ID3D11Device> device, Scene* scene);
+    void Refresh(GIImmediateCommands* cmd, Scene* scene);
     Scene* GetSourceScene() { return _scene; }
     D3D11TextureProxy& GetDirectionalShadow(int index) {
         return _directionalShadows[index];

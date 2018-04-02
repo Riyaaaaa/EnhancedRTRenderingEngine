@@ -2,11 +2,13 @@
 
 #include "CubeReflectionCapture.h"
 
+#include "GraphicsInterface/GIImmediateCommands.h"
+
 class StaticCubeReflectionCapture : public CubeReflectionCapture
 {
 public:
     explicit StaticCubeReflectionCapture(const TextureCube& tex);
-    void SetupTexture(GITextureProxy tex) override;
+    void SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex) override;
 
 protected:
     TextureCube reflectionSource;

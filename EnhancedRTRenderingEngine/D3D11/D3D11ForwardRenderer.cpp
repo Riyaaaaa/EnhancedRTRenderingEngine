@@ -4,10 +4,10 @@
 #include "WindowManager.h"
 
 void D3D11ForwardRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene) {
-    _scene.Refresh(_view->hpDevice, scene);
+    _scene.Refresh(cmd, scene);
 
-    float ClearColor[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-    _view->hpDeviceContext->ClearRenderTargetView(_view->hpRenderTargetView.Get(), ClearColor);
+    Vector4D ClearColor { 0.7f, 0.7f, 0.7f, 1.0f };
+    cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
     depthRenderer.render(&_scene);
     bassPassRenderer.render(&_scene);
