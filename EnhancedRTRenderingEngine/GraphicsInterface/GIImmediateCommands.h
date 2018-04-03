@@ -9,6 +9,8 @@
 class GIImmediateCommands
 {
 public:
+    virtual ~GIImmediateCommands() {}
+
     virtual GISwapChain* CreateSwapChain(const ViewportParam& param) = 0;
     virtual void SetViewport(const ViewportCfg& cfg) = 0;
 
@@ -33,7 +35,7 @@ public:
     virtual void RSSetState(GIRasterizerState* state) = 0;
 
     virtual GIPixelShader* CreatePixelShader(RawBinary byteCode) = 0;
-    virtual void PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) = 0;
+    virtual void PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) = 0;
     virtual void PSSetSamplers(unsigned int slot, GISamplerState* sampler) = 0;
     virtual void PSSetShader(GIPixelShader* shader) = 0;
     virtual void PSSetConstantBuffers(unsigned int slot, GIBuffer* buffer) = 0;

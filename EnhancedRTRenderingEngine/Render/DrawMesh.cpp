@@ -83,7 +83,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
             for (auto&& texRes : shader.GetTextureResources()) {
                 if (texRes.first->IsAvalable()) {
-                    cmd->PSSetShaderResources(texRes.second, texRes.first.get());
+                    cmd->PSSetShaderResources(texRes.second, texRes.first->GetSubResourceView().get());
                     cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
                 }
             }

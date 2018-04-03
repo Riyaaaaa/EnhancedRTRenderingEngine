@@ -8,7 +8,8 @@
 class D3D11ImmediateCommands : public GIImmediateCommands
 {
 public:
-    D3D11ImmediateCommands();
+    D3D11ImmediateCommands(bool checkDeviceObjectLeaks = false);
+    ~D3D11ImmediateCommands();
 
     virtual GISwapChain* CreateSwapChain(const ViewportParam& param) override;
     virtual void SetViewport(const ViewportCfg& cfg) override;
@@ -33,7 +34,7 @@ public:
     virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels);
 
     virtual GIPixelShader* CreatePixelShader(RawBinary byteCode) override;
-    virtual void PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) override;
+    virtual void PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) override;
     virtual void PSSetSamplers(unsigned int slot, GISamplerState* sampler) override;
     virtual void PSSetShader(GIPixelShader* shader) override;
     virtual void PSSetConstantBuffers(unsigned int slot, GIBuffer* buffer) override;
@@ -60,7 +61,9 @@ public:
     virtual GITextureProxyEntity* CreateTextureProxy(std::shared_ptr<GITexture2D> tex, SamplerParam param) override;
 
 protected:
+    bool _checkDeviceObjectLeaks;
     ComPtr<ID3D11Device> _device;
     ComPtr<ID3D11DeviceContext> _deviceContext;
+    ComPtr<ID3D11Debug> _pD3dDebug;
 };
 

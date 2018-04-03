@@ -67,8 +67,6 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
 void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
     auto* scene = _scene->GetSourceScene();
 
-    D3D11_BUFFER_DESC bufferDesc;
-
     auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(TransformBufferParam)));
 
     auto& pLights = scene->GetPointLights();

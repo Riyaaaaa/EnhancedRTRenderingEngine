@@ -28,12 +28,12 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {
-        cmd->PSSetShaderResources(0, _scene->GetDirectionalShadow(0).get());
+        cmd->PSSetShaderResources(0, _scene->GetDirectionalShadow(0)->GetSubResourceView().get());
         cmd->PSSetSamplers(0, _scene->GetDirectionalShadow(0)->GetSampler().get());
     }
     
     if (hConstantBuffer.numPointLights > 0) {
-        cmd->PSSetShaderResources(1, _scene->GetPointShadow(0).get());
+        cmd->PSSetShaderResources(1, _scene->GetPointShadow(0)->GetSubResourceView().get());
         cmd->PSSetSamplers(1, _scene->GetPointShadow(0)->GetSampler().get());
     }
 
@@ -43,7 +43,7 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
-            cmd->PSSetShaderResources(2, tex.get());
+            cmd->PSSetShaderResources(2, tex->GetSubResourceView().get());
             cmd->PSSetSamplers(2, tex->GetSampler().get());
         }
 
@@ -76,11 +76,9 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
         element.Draw(cmd);
     }
     
-    /*ID3D11ShaderResourceView*   pNullSRV = nullptr;
-    ID3D11SamplerState*         pNullSmp = nullptr;
-    cmd->PSSetSamplers(0, 1, &pNullSmp);
-    cmd->PSSetShaderResources(0, 1, &pNullSRV);
-    cmd->PSSetSamplers(1, 1, &pNullSmp);
-    cmd->PSSetShaderResources(1, 1, &pNullSRV);*/
+    cmd->PSSetSamplers(0, nullptr);
+    cmd->PSSetShaderResources(0, nullptr);
+    cmd->PSSetSamplers(1, nullptr);
+    cmd->PSSetShaderResources(1, nullptr);
     cmd->ResetPS();
 }

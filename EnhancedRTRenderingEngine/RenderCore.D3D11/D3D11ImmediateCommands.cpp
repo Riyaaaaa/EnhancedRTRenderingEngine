@@ -7,7 +7,8 @@
 #include "D3D11FormatUtils.h"
 #include "D3D11Resources.h"
 
-D3D11ImmediateCommands::D3D11ImmediateCommands() {
+D3D11ImmediateCommands::D3D11ImmediateCommands(bool checkDeviceObjectLeaks) :
+    _checkDeviceObjectLeaks(checkDeviceObjectLeaks) {
     HRESULT hr = D3D11CreateDevice(
         NULL,
         D3D_DRIVER_TYPE_HARDWARE,
@@ -22,6 +23,20 @@ D3D11ImmediateCommands::D3D11ImmediateCommands() {
     if (FAILED(hr))
     {
         throw std::runtime_error("failed initialize graphics device");
+    }
+
+    if (checkDeviceObjectLeaks) {
+        hr = _device->QueryInterface(__uuidof(ID3D11Debug), reinterpret_cast<void**>(_pD3dDebug.ToCreator()));
+        if (FAILED(hr))
+        {
+            throw std::runtime_error("failed initialize debug device");
+        }
+    }
+}
+
+D3D11ImmediateCommands::~D3D11ImmediateCommands() {
+    if (_checkDeviceObjectLeaks) {
+        _pD3dDebug->ReportLiveDeviceObjects(D3D11_RLDO_DETAIL);
     }
 }
 
@@ -302,16 +317,16 @@ void D3D11ImmediateCommands::RSSetState(GIRasterizerState* state) {
     _deviceContext->RSSetState(CastRes<D3D11RasterizerState>(state).Get());
 }
 
-void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) {
-    _deviceContext->PSGetShaderResources(slot, 1, CastRes<D3D11ShaderResourceView>(texture->GetSubResourceView().get()).Ref());
+void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) {
+    _deviceContext->PSSetShaderResources(slot, 1, NullableCastRes<D3D11ShaderResourceView>(texture).Ref());
 }
 
 void D3D11ImmediateCommands::PSSetSamplers(unsigned int slot, GISamplerState* sampler) {
-    _deviceContext->PSSetSamplers(slot, 1, CastRes<D3D11SamplerState>(sampler).Ref());
+    _deviceContext->PSSetSamplers(slot, 1, NullableCastRes<D3D11SamplerState>(sampler).Ref());
 }
 
 void D3D11ImmediateCommands::PSSetShader(GIPixelShader* shader) {
-    _deviceContext->PSSetShader(CastRes<D3D11PixelShader>(shader).Get(), nullptr, 0);
+    _deviceContext->PSSetShader(NullableCastRes<D3D11PixelShader>(shader).Get(), nullptr, 0);
 }
 
 void D3D11ImmediateCommands::ResetPS() {
