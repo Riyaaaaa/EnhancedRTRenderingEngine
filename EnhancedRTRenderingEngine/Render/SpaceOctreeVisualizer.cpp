@@ -16,8 +16,7 @@ void SpaceOctreeVisualizer::Initialize(const SpaceOctree::OctreeFactoryBase* fac
 void SpaceOctreeVisualizer::RenderOctreeBoxes(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene) {
     view->SetRasterizerState(cmd, RasterizerState::WireFrame);
 
-    UnlitRenderer renderer;
-    renderer.render(cmd, view, scene->GetMainCamera(), _spaceBoxes);
+    UnlitRenderer::render(cmd, view, scene->GetMainCamera(), _spaceBoxes);
 
     view->SetRasterizerState(cmd, RasterizerState::Default);
 }

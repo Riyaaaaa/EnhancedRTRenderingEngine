@@ -10,10 +10,10 @@
 class D3D11DepthRenderer
 {
 public:
-    void render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
+    static void render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
 
 protected:
-    void RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
-    void RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
+    static void RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
+    static void RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
 };
 

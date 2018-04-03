@@ -9,5 +9,5 @@
 class PostEffectRenderer
 {
 public:
-    void Apply(GIImmediateCommands* cmd, GIRenderView* view, const std::string& effect);
+    static void Apply(GIImmediateCommands* cmd, GIRenderView* view, const std::string& effect);
 };

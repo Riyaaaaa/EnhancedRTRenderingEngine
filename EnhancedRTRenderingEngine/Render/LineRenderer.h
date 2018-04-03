@@ -10,6 +10,6 @@
 class LineRenderer
 {
 public:
-    void render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines);
+    static void render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines);
 };
 

@@ -33,16 +33,16 @@ std::shared_ptr<GITexture2D> GaussianFilter(GIImmediateCommands* cmd, std::share
     buf.texsize.w = param.width;
     buf.texsize.h = param.height;
 
-    TextureEffectRenderer renderer;
-    auto constantBuffer = cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), &buf, sizeof(buf));
+    auto constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), &buf, sizeof(buf)));
+    cmd->PSSetConstantBuffers(0, constantBuffer.get());
 
     SamplerParam p;
     p.addressMode = TextureAddressMode::CLAMP;
     GITextureProxy proxy = MakeRef(cmd->CreateTextureProxy(src, p));
 
-    auto XFiltered = renderer.Apply(cmd, proxy, "Gaussian5x5FilterX");
+    auto XFiltered = TextureEffectRenderer::Apply(cmd, proxy, "Gaussian5x5FilterX");
     auto XFilteredProxy = MakeRef(cmd->CreateTextureProxy(XFiltered, p));
-    auto Final = renderer.Apply(cmd, XFilteredProxy, "Gaussian5x5FilterY");
+    auto Final = TextureEffectRenderer::Apply(cmd, XFilteredProxy, "Gaussian5x5FilterY");
 
     return Final;
 }

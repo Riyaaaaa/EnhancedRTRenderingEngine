@@ -11,6 +11,6 @@
 class TextureHUDRenderer
 {
 public:
-    void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture);
-    void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const GITextureProxy& texture, int index = 0);
+    static void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture);
+    static void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const GITextureProxy& texture, int index = 0);
 };
