@@ -6,6 +6,7 @@
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
 #include "WindowManager.h"
+#include "GraphicsInterface/GICommandUtils.h"
 #include <chrono>
 
 void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, const std::string& effect) {
@@ -22,7 +23,8 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     buf.size = view->GetRenderSize();
 
     Vector4D ClearColor{ 0.7f, 0.7f, 0.7f, 1.0f };
-    cmd->SetViewport(view->GetViewPortCfg());
+
+    GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);

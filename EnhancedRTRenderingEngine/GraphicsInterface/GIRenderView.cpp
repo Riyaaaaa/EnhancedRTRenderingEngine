@@ -17,6 +17,7 @@ void GIRenderView::Initialize(GIImmediateCommands* cmd, const ViewportParam& par
     cmd->RSSetState(_defaultRState.get());
 
     _type = param.MSAAQuality;
+    _renderSize = Size(param.cfg.width, param.cfg.height);
     _viewportCfg = param.cfg;
     cmd->SetViewport(_viewportCfg);
 }

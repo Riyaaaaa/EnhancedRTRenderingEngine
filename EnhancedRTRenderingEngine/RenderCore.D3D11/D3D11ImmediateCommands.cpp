@@ -169,7 +169,7 @@ GIShaderResourceView* D3D11ImmediateCommands::CreateShaderResourceView(GITexture
         SRVDesc.TextureCube.MipLevels = texparam.mipLevels;
     }
     else {
-        if (texparam.isMultiSampling) {
+        if (!texparam.isMultiSampling) {
             if (texparam.arraySize == 1) {
                 SRVDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D;
                 SRVDesc.Texture2DArray.MipLevels = texparam.mipLevels;

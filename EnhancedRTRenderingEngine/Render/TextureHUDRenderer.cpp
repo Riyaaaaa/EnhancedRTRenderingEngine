@@ -5,6 +5,7 @@
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
+#include "GraphicsInterface/GICommandUtils.h"
 #include "WindowManager.h"
 
 
@@ -16,8 +17,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    view->SetViewPortSize(cmd, view->GetRenderSize());
-
+    GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
     DrawMesh element(&mesh);
@@ -40,6 +40,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
+    GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
     DrawMesh element(&mesh);

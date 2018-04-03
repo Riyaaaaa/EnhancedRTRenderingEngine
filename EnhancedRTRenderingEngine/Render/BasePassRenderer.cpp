@@ -6,6 +6,8 @@
 #include "Constant/RenderTag.h"
 #include "Utility/SceneUtils.h"
 
+#include "GraphicsInterface/GICommandUtils.h"
+
 #include "WindowManager.h"
 #include "Common.h"
 
@@ -13,9 +15,10 @@ using namespace DirectX;
 
 void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
     Scene* scene = _scene->GetSourceScene();
-    cmd->SetViewport(view->GetViewPortCfg());
-    cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
 
+    GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
+
+    cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
