@@ -118,8 +118,8 @@ GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, 
         height = textures[0].Height();
         arraySize = textures.size();
 
-        initData.resize(param.arraySize);
-        for (int i = 0; i < param.arraySize; i++) {
+        initData.resize(arraySize);
+        for (int i = 0; i < arraySize; i++) {
             initData[i].pSysMem = textures[i].get();
             initData[i].SysMemPitch = textures[i].Stride();
         }
