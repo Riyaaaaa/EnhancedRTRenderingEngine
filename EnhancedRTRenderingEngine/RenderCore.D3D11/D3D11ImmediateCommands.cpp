@@ -235,10 +235,7 @@ GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int s
         resPtr = &srd;
     }
 
-    if (FAILED(_device->CreateBuffer(&bufferDesc, resPtr, buffer->resource.ToCreator()))) {
-        return nullptr;
-    }
-
+    _device->CreateBuffer(&bufferDesc, resPtr, buffer->resource.ToCreator());
     return buffer;
 }
 

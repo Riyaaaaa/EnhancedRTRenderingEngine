@@ -10,6 +10,5 @@ void ForwardRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Scene
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
     depthRenderer.render(cmd, view, &_scene);
-    bassPassRenderer.render(cmd, view, &_scene);
-
+    //bassPassRenderer.render(cmd, view, &_scene);
 }

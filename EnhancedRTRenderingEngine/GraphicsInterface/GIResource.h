@@ -12,7 +12,10 @@ std::shared_ptr<T> MakeRef(T* ptr) {
     return std::shared_ptr<T>(ptr);
 }
 
-class GIResource {};
+class GIResource {
+public:
+    virtual ~GIResource() {}
+};
 
 class GIBuffer : public GIResource
 {
