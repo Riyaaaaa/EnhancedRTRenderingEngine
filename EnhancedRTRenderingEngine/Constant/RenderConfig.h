@@ -5,12 +5,15 @@ constexpr int LIGHT_MAX = 4;
 enum class VertexProperty {
     FloatRGBA,
     FloatRGB,
-    FloatRG
+    FloatRG,
+    NONE = 9999
 };
 
 enum class VertexPrimitiveType {
+    LINELIST,
     TRIANGLELIST,
-    TRIANGLESTRIP
+    TRIANGLESTRIP,
+    NONE = 9999
 };
 
 enum class RenderingState {
@@ -27,9 +30,15 @@ enum MSAAQualityType {
 
 enum class TextureFormat {
     RGBA8_UNORM,
+    RGBA8_UNORM_SRGB,
     RGBA16_UNORM,
+    D16_UNORM,
+    D24_UNORM_S8_UINT,
     R16_TYPELESS,
-    R32_TYPELESS
+    R16_UNORM,
+    R24G8_TYPELESS,
+    R32_TYPELESS,
+    R32_UINT
 };
 
 enum TextureBindTarget : unsigned int {
@@ -56,7 +65,8 @@ enum class TextureAddressMode {
     WRAP,
     MIRROR,
     CLAMP,
-    BORADER
+    BORADER,
+    NONE = 9999
 };
 
 enum class ResourceAccessFlag {

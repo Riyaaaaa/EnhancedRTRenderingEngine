@@ -10,7 +10,7 @@ class CubeReflectionCapture : public SceneObject
 public:
     CubeReflectionCapture() : dirty(true) {}
     CubeReflectionCapture(float size);
-    virtual void SetupTexture(GITextureProxy tex);
+    virtual void SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex);
     virtual bool Contains(Vector3D pos);
     virtual float PrecisionSize() { return box.w; }
 

@@ -5,7 +5,7 @@
 
 #include "Scene/Scene.h"
 
-#include "D3D11/D3D11UnlitRenderer.h"
+#include "UnlitRenderer.h"
 
 using namespace SpaceOctree;
 
@@ -13,15 +13,12 @@ void SpaceOctreeVisualizer::Initialize(const SpaceOctree::OctreeFactoryBase* fac
     _spaceBoxes = GenerateOcreeBoxMeshes(factory);
 }
 
-void SpaceOctreeVisualizer::RenderOctreeBoxes(const std::shared_ptr<D3D11RenderView>& view, Scene* scene) {
-    view->SetRasterizerState(RasterizerState::WireFrame);
+void SpaceOctreeVisualizer::RenderOctreeBoxes(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene) {
+    view->SetRasterizerState(cmd, RasterizerState::WireFrame);
 
-    // TODO: abstract by graphics API
-    D3D11UnlitRenderer renderer;
-    renderer.Initialize(view);
-    renderer.render(scene->GetMainCamera(), _spaceBoxes);
+    UnlitRenderer::render(cmd, view, scene->GetMainCamera(), _spaceBoxes);
 
-    view->SetRasterizerState(RasterizerState::Default);
+    view->SetRasterizerState(cmd, RasterizerState::Default);
 }
 
 std::vector<MeshObject<Vertex3D>> SpaceOctreeVisualizer::GenerateOcreeBoxMeshes

@@ -8,7 +8,7 @@ StaticCubeReflectionCapture::StaticCubeReflectionCapture(const TextureCube& tex)
     box.w = box.h = box.d = reflectionSource.Size();
 }
 
-void StaticCubeReflectionCapture::SetupTexture(GITextureProxy tex) {
+void StaticCubeReflectionCapture::SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex) {
     TextureParam param;
     param.arraySize = 6;
     param.width = reflectionSource.Size();
@@ -16,5 +16,5 @@ void StaticCubeReflectionCapture::SetupTexture(GITextureProxy tex) {
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
     param.type = TextureType::TextureCube;
     param.format = TextureFormat::RGBA8_UNORM;
-    tex->Initialize(param, reflectionSource.textures);
+    tex->Initialize(cmd, param, reflectionSource.textures);
 }

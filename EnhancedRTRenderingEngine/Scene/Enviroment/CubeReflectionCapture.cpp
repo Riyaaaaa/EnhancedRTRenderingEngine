@@ -9,7 +9,7 @@ CubeReflectionCapture::CubeReflectionCapture(float size) {
     dirty = true;
 }
 
-void CubeReflectionCapture::SetupTexture(GITextureProxy tex) {
+void CubeReflectionCapture::SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex) {
     TextureParam param;
     param.arraySize = 6;
     param.width = box.w;
@@ -17,7 +17,7 @@ void CubeReflectionCapture::SetupTexture(GITextureProxy tex) {
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
     param.type = TextureType::Texture2DArray;
     param.format = TextureFormat::RGBA8_UNORM;
-    tex->Initialize(param);
+    tex->Initialize(cmd, param);
 }
 
 bool CubeReflectionCapture::Contains(Vector3D pos) {
