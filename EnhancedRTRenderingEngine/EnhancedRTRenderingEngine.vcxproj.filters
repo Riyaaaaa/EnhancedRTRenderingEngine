@@ -417,9 +417,6 @@
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicsInterface\GIDrawMesh.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="ThirdParty\x64\libpng\png.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -504,9 +501,6 @@
     <ClInclude Include="Render\DepthRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Render\DrawElement.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Render\ForwardRenderer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -529,6 +523,9 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Render\BasePassRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\DrawMesh.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
   </ItemGroup>
@@ -659,9 +656,6 @@
     <ClCompile Include="GraphicsInterface\GIResource.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Scene\StaticMeshObject.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -701,9 +695,6 @@
     <ClCompile Include="Render\DepthRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Render\DrawElement.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Render\ForwardRenderer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -732,6 +723,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\DrawMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,7 +7,7 @@
 #include "GraphicsInterface/GIImmediateCommands.h"
 #include "GraphicsInterface/GIRenderView.h"
 
-class D3D11UnlitRenderer
+class UnlitRenderer
 {
 public:
     template<class VertType>

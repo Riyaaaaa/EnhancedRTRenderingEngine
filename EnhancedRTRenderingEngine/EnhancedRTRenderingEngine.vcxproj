@@ -178,7 +178,7 @@
     <ClInclude Include="GraphicsInterface\GIResource.h" />
     <ClInclude Include="GraphicsInterface\GIRawResource.h" />
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
-    <ClInclude Include="GraphicsInterface\GIDrawMesh.h" />
+    <ClInclude Include="Render\DrawMesh.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
     <ClInclude Include="Render\RayTracer.h" />
     <ClInclude Include="Render\PhotonMapping.h" />
@@ -236,7 +236,6 @@
     <ClInclude Include="Scene\CameraObject.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
-    <ClInclude Include="Render\DrawElement.h" />
     <ClInclude Include="Render\BasePassRenderer.h" />
     <ClInclude Include="EnhancedRTRenderingEngine.h" />
     <ClInclude Include="FileManager.h" />
@@ -348,7 +347,7 @@
     <ClCompile Include="GraphicsInterface\GIRenderView.cpp" />
     <ClCompile Include="GraphicsInterface\GIResource.cpp" />
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
-    <ClCompile Include="GraphicsInterface\GIDrawMesh.cpp" />
+    <ClCompile Include="Render\DrawMesh.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
     <ClCompile Include="Render\RayTracer.cpp" />
     <ClCompile Include="Render\PhotonMapping.cpp" />
@@ -383,7 +382,6 @@
     <ClCompile Include="Utility\SceneUtils.cpp" />
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common.cpp" />
-    <ClCompile Include="Render\DrawElement.cpp" />
     <ClCompile Include="Render\BasePassRenderer.cpp" />
     <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
     <ClCompile Include="FileManager.cpp" />

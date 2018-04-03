@@ -3,11 +3,11 @@
 
 #include "Constant/RenderConfig.h"
 
-D3D11SceneInfo::~D3D11SceneInfo()
+RenderScene::~RenderScene()
 {
 }
 
-void D3D11SceneInfo::Refresh(GIImmediateCommands* cmd, Scene* scene) {
+void RenderScene::Refresh(GIImmediateCommands* cmd, Scene* scene) {
     _scene = scene;
 
     if (scene->Dirty()) {

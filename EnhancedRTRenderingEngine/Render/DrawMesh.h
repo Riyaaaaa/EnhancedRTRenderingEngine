@@ -13,19 +13,19 @@
 
 #include "Shader/ShaderFactory.h"
 
-#include "GIRawResource.h"
+#include "GraphicsInterface/GIRawResource.h"
 
-class GIDrawElement
+class DrawElement
 {
 public:
-    GIDrawElement(Shader ps, Shader vs, Shader gs = Shader(ShadingType::Geometry, RawBinary())) :
+    DrawElement(Shader ps, Shader vs, Shader gs = Shader(ShadingType::Geometry, RawBinary())) :
         _shadingType(ps.type),
         _pshader(ps),
         _vshader(vs),
         _gshader(gs)
     {}
 
-    GIDrawElement(const Material& material) :
+    DrawElement(const Material& material) :
         _shadingType(material.shadingType),
         _pshader(material.shadingType, material.pShader),
         _vshader(ShadingType::Vertex, material.vShader)
@@ -93,10 +93,10 @@ protected:
     ShadingType _shadingType;
 };
 
-class GIDrawMesh {
+class DrawMesh {
 public:
     template<class VertType>
-    GIDrawMesh(MeshObject<VertType>* element) {
+    DrawMesh(MeshObject<VertType>* element) {
         _vertexLayout = GenerateVertexLayout<VertType>();
         auto& vertexList = element->GetMesh()->GetVertexList();
         shaderResources.emplace_back(GIRawResource(
@@ -136,15 +136,15 @@ public:
         return shaderResources;
     }
 
-    void AddDrawElement(const GIDrawElement& face) {
+    void AddDrawElement(const DrawElement& face) {
         _drawLinks.insert(std::make_pair(face.GetShadingType(), face));
     }
 
-    const std::unordered_multimap<ShadingType, GIDrawElement>& GetDrawLinks() const {
+    const std::unordered_multimap<ShadingType, DrawElement>& GetDrawLinks() const {
         return _drawLinks;
     }
-protected:
-    void Init();
+
+    void Draw(GIImmediateCommands* cmd);
 
 private:
     template<class VertType>
@@ -155,7 +155,7 @@ private:
     std::vector<VertexLayout> _vertexLayout;
     std::vector<std::shared_ptr<void>> _dataHandles;
     std::vector<std::pair<GIRawResource, unsigned int>> shaderResources;
-    std::unordered_multimap<ShadingType, GIDrawElement> _drawLinks;
+    std::unordered_multimap<ShadingType, DrawElement> _drawLinks;
 };
 
 

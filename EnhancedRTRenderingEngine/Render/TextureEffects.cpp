@@ -4,7 +4,7 @@
 
 #include "TextureEffectRenderer.h"
 
-std::shared_ptr<GITexture2D> D3D11GaussianFilter(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> src) {
+std::shared_ptr<GITexture2D> GaussianFilter(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> src) {
     struct GaussianCBuffer {
         float weight[8];
         Size texsize;
@@ -33,7 +33,7 @@ std::shared_ptr<GITexture2D> D3D11GaussianFilter(GIImmediateCommands* cmd, std::
     buf.texsize.w = param.width;
     buf.texsize.h = param.height;
 
-    D3D11TextureEffectRenderer renderer;
+    TextureEffectRenderer renderer;
     auto constantBuffer = cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), &buf, sizeof(buf));
 
     SamplerParam p;

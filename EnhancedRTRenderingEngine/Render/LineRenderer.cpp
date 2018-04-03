@@ -1,17 +1,15 @@
 #include "stdafx.h"
 #include "LineRenderer.h"
-#include "DrawElement.h"
 #include "TextureEffects.h"
 
-#include "GraphicsInterface/GIDrawMesh.h"
-#include "DrawElement.h"
+#include "DrawMesh.h"
 #include "Constant/RenderTag.h"
 
 #include "Common.h"
 
 using namespace DirectX;
 
-void D3D11LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines) {
+void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines) {
 
     cmd->SetViewport(view->GetViewPortCfg());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
@@ -39,11 +37,10 @@ void D3D11LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, con
     lineMesh->SetPrimitiveType(VertexPrimitiveType::LINELIST);
 
     MeshObject<Vertex3D> mesh(lineMesh);
-    GIDrawMesh element(&mesh);
-    GIDrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::HUDVertexShader());
+    DrawMesh element(&mesh);
+    DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     element.AddDrawElement(face);
-    D3D11DrawElement drawer;
-    drawer.Draw(cmd, element);
+    element.Draw(cmd);
 }

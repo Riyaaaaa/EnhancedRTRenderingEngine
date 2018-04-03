@@ -1,9 +1,8 @@
 #include "stdafx.h"
 #include "DepthRenderer.h"
-#include "DrawElement.h"
 #include "TextureEffects.h"
 
-#include "GraphicsInterface/GIDrawMesh.h"
+#include "DrawMesh.h"
 #include "GraphicsInterface/GICommandUtils.h"
 
 #include "Constant/RenderTag.h"
@@ -12,14 +11,14 @@
 
 using namespace DirectX;
 
-void D3D11DepthRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* scene)
+void D3D11DepthRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene)
 {
     //todo: support multi lights;
     RenderDirectionalLightShadowMap(cmd, view, scene);
     RenderPointLightShadowMap(cmd, view, scene);
 }
 
-void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
+void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
     auto* scene = _scene->GetSourceScene();
 
     auto& dLights = scene->GetDirectionalLights();
@@ -47,8 +46,8 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
         cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
         for (auto && object : scene->GetViewObjects()) {
-            GIDrawMesh element(&object);
-            GIDrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+            DrawMesh element(&object);
+            DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
             face.startIndex = 0;
             if (object.GetMesh()->HasIndexList()) {
@@ -58,15 +57,14 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
                 face.faceNumVerts = object.GetMesh()->GetVertexList().size();
             }
             element.AddDrawElement(face);
-            D3D11DrawElement draw;
-            draw.Draw(cmd, element);
+            element.Draw(cmd);
         }
 
         _scene->GetDirectionalShadow(i) = MakeRef(cmd->CreateTextureProxy(rtv->rtvTexture, SamplerParam()));
     }
 }
 
-void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
+void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
     auto* scene = _scene->GetSourceScene();
 
     D3D11_BUFFER_DESC bufferDesc;
@@ -106,8 +104,8 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
             for (auto && object : scene->GetViewObjects()) {
-                GIDrawMesh element(&object);
-                GIDrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+                DrawMesh element(&object);
+                DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
                 face.startIndex = 0;
                 if (object.GetMesh()->HasIndexList()) {
@@ -117,8 +115,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
                     face.faceNumVerts = object.GetMesh()->GetVertexList().size();
                 }
                 element.AddDrawElement(face);
-                D3D11DrawElement draw;
-                draw.Draw(cmd, element);
+                element.Draw(cmd);
             }
         }
 
@@ -141,7 +138,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
         auto texCube = MakeRef(cmd->CreateTexture2D(texArrayDesc));
         for (UINT x = 0; x < 6; x++)
         {
-            auto filtered = D3D11GaussianFilter(cmd, target[x].renderTargets[0]->rtvTexture);
+            auto filtered = GaussianFilter(cmd, target[x].renderTargets[0]->rtvTexture);
             cmd->CopyTexture2D(texCube.get(), x, texArrayDesc.mipLevels, filtered.get());
         }
 

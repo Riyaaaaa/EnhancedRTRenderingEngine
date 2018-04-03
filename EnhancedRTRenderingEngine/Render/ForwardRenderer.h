@@ -13,15 +13,15 @@
 #include "GraphicsInterface/GIImmediateCommands.h"
 #include "GraphicsInterface/GIRenderView.h"
 
-class D3D11ForwardRenderer
+class ForwardRenderer
 {
 public:
     void render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene);
 
-    D3D11SceneInfo& GetSceneInfo() { return _scene; }
+    RenderScene& GetSceneInfo() { return _scene; }
 
 protected:
-    D3D11SceneInfo _scene;
+    RenderScene _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;
 };

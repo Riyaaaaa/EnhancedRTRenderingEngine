@@ -5,10 +5,10 @@
 #include "GraphicsInterface/GITextureProxy.h"
 #include "Scene/Scene.h"
 
-class D3D11SceneInfo
+class RenderScene
 {
 public:
-    ~D3D11SceneInfo();
+    ~RenderScene();
 
     void Refresh(GIImmediateCommands* cmd, Scene* scene);
     Scene* GetSourceScene() { return _scene; }

@@ -5,7 +5,7 @@
 
 #include "RenderScene.h"
 
-class D3D11TextureEffectRenderer
+class TextureEffectRenderer
 {
 public:
     std::shared_ptr<GITexture2D> Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect);

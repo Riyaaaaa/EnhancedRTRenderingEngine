@@ -8,7 +8,7 @@
 
 #include "Structure/Structure.h"
 
-class D3D11TextureHUDRenderer
+class TextureHUDRenderer
 {
 public:
     void render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture);

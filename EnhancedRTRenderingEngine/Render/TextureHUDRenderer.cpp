@@ -1,7 +1,6 @@
 #include "stdafx.h"
 #include "TextureHUDRenderer.h"
-#include "DrawElement.h"
-#include "GraphicsInterface/GIDrawMesh.h"
+#include "DrawMesh.h"
 #include "Shader/ShaderFactory.h"
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
@@ -9,7 +8,7 @@
 #include "WindowManager.h"
 
 
-void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture)
+void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture)
 {
     Size viewportSize = Size{ size.w / view->GetRenderSize().w, size.h / view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / view->GetRenderSize().w - 0.5f, pos.y / view->GetRenderSize().h - 0.5f } *2.0f;
@@ -21,8 +20,8 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
-    GIDrawMesh element(&mesh);
-    GIDrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
+    DrawMesh element(&mesh);
+    DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 
@@ -30,12 +29,10 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
     face.RegisterShaderResource(textureProxy, 10);
 
     element.AddDrawElement(face);
-
-    D3D11DrawElement drawer;
-    drawer.Draw(cmd, element);
+    element.Draw(cmd);
 }
 
-void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const GITextureProxy& texture, int index)
+void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const GITextureProxy& texture, int index)
 {
     Size viewportSize = Size{ size.w / view->GetRenderSize().w, size.h / view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / view->GetRenderSize().w - 0.5f, pos.y / view->GetRenderSize().h - 0.5f } *2.0f;
@@ -45,8 +42,8 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
-    GIDrawMesh element(&mesh);
-    GIDrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
+    DrawMesh element(&mesh);
+    DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 
@@ -69,7 +66,5 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
     }
 
     element.AddDrawElement(face);
-
-    D3D11DrawElement drawer;
-    drawer.Draw(cmd, element);
+    element.Draw(cmd);
 }

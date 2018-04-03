@@ -10,6 +10,6 @@
 class D3D11BasePassRenderer
 {
 public:
-    void render(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* scene);
+    void render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
 };
 

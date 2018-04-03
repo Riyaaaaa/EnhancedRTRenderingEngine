@@ -1,8 +1,7 @@
 #include "stdafx.h"
 #include "BasePassRenderer.h"
-#include "DrawElement.h"
 
-#include "GraphicsInterface/GIDrawMesh.h"
+#include "DrawMesh.h"
 
 #include "Constant/RenderTag.h"
 #include "Utility/SceneUtils.h"
@@ -12,7 +11,7 @@
 
 using namespace DirectX;
 
-void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
+void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
     Scene* scene = _scene->GetSourceScene();
     cmd->SetViewport(view->GetViewPortCfg());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
@@ -40,7 +39,7 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
     for (auto && object : scene->GetViewObjects()) {
         auto& mesh = object.GetMesh();
-        GIDrawMesh element(&object);
+        DrawMesh element(&object);
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
@@ -51,7 +50,7 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
         int index = 0;
         for (auto && drawface : mesh->GetDrawFacesMap()) {
             auto& material = object.GetMaterials()[drawface.materialIdx];
-            GIDrawElement face(material);
+            DrawElement face(material);
             face.faceNumVerts = drawface.faceNumVerts;
             face.startIndex = index;
 
@@ -74,8 +73,7 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
             index += drawface.faceNumVerts;
         }
 
-        D3D11DrawElement drawer;
-        drawer.Draw(cmd, element);
+        element.Draw(cmd);
     }
     
     /*ID3D11ShaderResourceView*   pNullSRV = nullptr;

@@ -1,17 +1,16 @@
 #include "stdafx.h"
 #include "TextureEffectRenderer.h"
 #include "Mesh/Primitive/Square.h"
-#include "DrawElement.h"
 
 #include "GraphicsInterface/GIImmediateCommands.h"
-#include "GraphicsInterface/GIDrawMesh.h"
+#include "DrawMesh.h"
 
 #include "Shader/ShaderFactory.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
 #include "WindowManager.h"
 
-std::shared_ptr<GITexture2D> D3D11TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect) {
+std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect) {
     auto param = src->GetTexture()->GetTextureParam();
     
     param.bindFlag |= TextureBindTarget::RENDER_TARGET;
@@ -40,14 +39,13 @@ std::shared_ptr<GITexture2D> D3D11TextureEffectRenderer::Apply(GIImmediateComman
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    GIDrawMesh element(&mesh);
-    GIDrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    DrawMesh element(&mesh);
+    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     face.RegisterShaderResource(src, 0);
     element.AddDrawElement(face);
-    D3D11DrawElement drawer;
-    drawer.Draw(cmd, element);
+    element.Draw(cmd);
 
     return dstTex;
 }
