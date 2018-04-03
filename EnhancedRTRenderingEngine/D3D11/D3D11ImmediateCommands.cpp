@@ -1,9 +1,30 @@
 #include "stdafx.h"
 
+#include <d3d11.h>
+#pragma comment(lib, "d3d11.lib")
+
 #include "D3D11ImmediateCommands.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11Resources.h"
 #include "D3D11TextureProxy.h"
+
+D3D11ImmediateCommands::D3D11ImmediateCommands() {
+    HRESULT hr = D3D11CreateDevice(
+        NULL,
+        D3D_DRIVER_TYPE_HARDWARE,
+        NULL,
+        D3D11_CREATE_DEVICE_DEBUG,
+        NULL,
+        0,
+        D3D11_SDK_VERSION,
+        _device.ToCreator(),
+        NULL,
+        _deviceContext.ToCreator());
+    if (FAILED(hr))
+    {
+        throw std::runtime_error("failed initialize graphics device");
+    }
+}
 
 void D3D11ImmediateCommands::OMSetRenderTargets(const std::vector<std::shared_ptr<GIRenderTargetView>>& renderTargets, std::shared_ptr<GIDepthStencilView> stv) {
     std::vector<ID3D11RenderTargetView*> rtvs_;
@@ -12,7 +33,7 @@ void D3D11ImmediateCommands::OMSetRenderTargets(const std::vector<std::shared_pt
         rtvs_.push_back(CastRes<D3D11RenderTargetView>(rtv.get()).Get());
     }
 
-    _deviceContext->OMSetRenderTargets(rtvs_.size(), &rtvs_[0], CastRes<D3D11DepthStencilView>(stv.get()).Get());
+    _deviceContext->OMSetRenderTargets(rtvs_.size(), &rtvs_[0], NullableCastRes<D3D11DepthStencilView>(stv.get()).Get());
 }
 
 GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param) {
@@ -40,12 +61,12 @@ GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param)
     swapchain->factory->CreateSwapChain(_device.Get(), &hDXGISwapChainDesc, swapchain->resource.ToCreator());
     
     swapchain->backBuffer = std::make_shared<D3D11Texture2D>();
-    swapchain->resource->GetBuffer(0, __uuidof(ID3D11Texture2D), CastRes<D3D11Texture2D>(swapchain->backBuffer.get()).ToCreator());
+    swapchain->resource->GetBuffer(0, __uuidof(ID3D11Texture2D), (void**)CastRes<D3D11Texture2D>(swapchain->backBuffer.get()).ToCreator());
 
     return swapchain;
 }
 
-void D3D11ImmediateCommands::SetViewPortSize(const ViewportCfg& cfg) {
+void D3D11ImmediateCommands::SetViewport(const ViewportCfg& cfg) {
     D3D11_VIEWPORT d3d11_cfg;
 
     d3d11_cfg.TopLeftX = cfg.topLeftX;
@@ -62,8 +83,12 @@ void D3D11ImmediateCommands::UpdateSubresource(GIBuffer* buffer, void* srcData, 
     _deviceContext->UpdateSubresource(CastRes<D3D11Buffer>(buffer).Get(), 0, nullptr, srcData, srcRowPitch, 0);
 }
 
-void D3D11ImmediateCommands::CopyTexture2D(GITexture2D* dst, unsigned int dstIdx, unsigned int dstX, unsigned int dstY, unsigned int dstZ, GITexture2D* src, unsigned int srcIdx) {
-    _deviceContext->CopySubresourceRegion(CastRes<D3D11Texture2D>(dst).Get(), dstIdx, dstX, dstY, dstZ, CastRes<D3D11Texture2D>(src).Get(), srcIdx, nullptr);
+void D3D11ImmediateCommands::CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src) {
+    _deviceContext->CopySubresourceRegion(CastRes<D3D11Texture2D>(dst).Get(), D3D11CalcSubresource(0, idx, mipLevels), 0, 0, 0, CastRes<D3D11Texture2D>(src).Get(), 0, nullptr);
+}
+
+void D3D11ImmediateCommands::CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels) {
+    _deviceContext->CopySubresourceRegion(CastRes<D3D11Texture2D>(dst).Get(), 0, 0, 0, 0, CastRes<D3D11Texture2D>(src).Get(), D3D11CalcSubresource(0, srcIdx, srcMipLevels), nullptr);
 }
 
 GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures) {
@@ -352,7 +377,7 @@ GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(std::shared_ptr
     return proxy;
 }
 
-void D3D11ImmediateCommands::DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0) {
+void D3D11ImmediateCommands::DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex) {
     _deviceContext->DrawIndexed(indexCount, startIndex, baseIndex);
 }
 

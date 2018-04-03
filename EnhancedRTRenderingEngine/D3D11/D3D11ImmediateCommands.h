@@ -8,12 +8,10 @@
 class D3D11ImmediateCommands : public GIImmediateCommands
 {
 public:
-    D3D11ImmediateCommands(ComPtr<ID3D11Device> device, ComPtr<ID3D11DeviceContext> context) :
-        _device(device),
-        _deviceContext(context) {}
+    D3D11ImmediateCommands();
 
     virtual GISwapChain* CreateSwapChain(const ViewportParam& param) override;
-    virtual void SetViewPortSize(const ViewportCfg& cfg) override;
+    virtual void SetViewport(const ViewportCfg& cfg) override;
 
     virtual void OMSetRenderTargets(const std::vector<std::shared_ptr<GIRenderTargetView>>& renderTargets, std::shared_ptr<GIDepthStencilView> stv) override;
 
@@ -32,7 +30,8 @@ public:
     virtual void RSSetState(GIRasterizerState* state);
 
     virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) override;
-    virtual void CopyTexture2D(GITexture2D* dst, unsigned int dstIdx, unsigned int dstX, unsigned int dstY, unsigned int dstZ, GITexture2D* src, unsigned int srcIdx);
+    virtual void CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src);
+    virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels);
 
     virtual GIPixelShader* CreatePixelShader(RawBinary byteCode) override;
     virtual void PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) override;

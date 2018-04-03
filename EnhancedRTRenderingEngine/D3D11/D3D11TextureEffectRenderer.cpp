@@ -8,7 +8,7 @@
 #include "Utility/SceneUtils.h"
 #include "WindowManager.h"
 
-GITextureProxy D3D11TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect) {
+std::shared_ptr<GITexture2D> D3D11TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect) {
     auto param = src->GetTexture()->GetTextureParam();
     
     param.bindFlag |= TextureBindTarget::RENDER_TARGET;
@@ -17,9 +17,6 @@ GITextureProxy D3D11TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const
 
     SamplerParam sparam;
     sparam.addressMode = TextureAddressMode::CLAMP;
-
-    D3D11TextureProxy dst = D3D11TextureProxyEntity::Create();
-    dst->Initialize(cmd, param);
 
     ViewportCfg vcfg;
     vcfg.height = param.height;
@@ -30,7 +27,7 @@ GITextureProxy D3D11TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const
     vcfg.minDepth = 0.0f;
 
     Vector4D ClearColor{ 0.7f, 0.7f, 0.7f, 1.0f };
-    cmd->SetViewPortSize(vcfg);
+    cmd->SetViewport(vcfg);
     auto rtv = MakeRef(cmd->CreateRenderTargetView(dstTex.get()));
 
     cmd->OMSetRenderTargets(std::vector<std::shared_ptr<GIRenderTargetView>>{rtv}, nullptr);
@@ -49,6 +46,6 @@ GITextureProxy D3D11TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const
     D3D11DrawElement drawer;
     drawer.Draw(cmd, element);
 
-    return dst;
+    return dstTex;
 }
 

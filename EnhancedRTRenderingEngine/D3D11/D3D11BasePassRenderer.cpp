@@ -15,7 +15,7 @@ using namespace DirectX;
 
 void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, D3D11SceneInfo* _scene) {
     Scene* scene = _scene->GetSourceScene();
-    cmd->SetViewPortSize(view->GetViewPortCfg());
+    cmd->SetViewport(view->GetViewPortCfg());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
 
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);

@@ -15,7 +15,7 @@ using namespace DirectX;
 
 void D3D11LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines) {
 
-    cmd->SetViewPortSize(view->GetViewPortCfg()));
+    cmd->SetViewport(view->GetViewPortCfg());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);
 

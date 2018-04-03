@@ -8,5 +8,5 @@
 #include "GraphicsInterface/GIImmediateCommands.h"
 #include "GraphicsInterface/GIRenderView.h"
 
-GITextureProxy D3D11GaussianFilter(GIImmediateCommands* cmd, GIRenderView* view, std::shared_ptr<GITexture2D> src);
+std::shared_ptr<GITexture2D> D3D11GaussianFilter(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> src);
 

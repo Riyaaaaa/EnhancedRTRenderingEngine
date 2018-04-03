@@ -10,7 +10,7 @@ class GIImmediateCommands
 {
 public:
     virtual GISwapChain* CreateSwapChain(const ViewportParam& param) = 0;
-    virtual void SetViewPortSize(const ViewportCfg& cfg) = 0;
+    virtual void SetViewport(const ViewportCfg& cfg) = 0;
 
     virtual void OMSetRenderTargets(const std::vector<std::shared_ptr<GIRenderTargetView>>& renderTargets, std::shared_ptr<GIDepthStencilView> stv) = 0;
 
@@ -28,7 +28,8 @@ public:
     virtual GISamplerState* CreateSamplerState(const SamplerParam& param) = 0;
     
     virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) = 0;
-    virtual void CopyTexture2D(GITexture2D* dst, unsigned int dstIdx, unsigned int dstX, unsigned int dstY, unsigned int dstZ, GITexture2D* src, unsigned int srcIdx) = 0;
+    virtual void CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src) = 0;
+    virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels) = 0;
 
     virtual void RSSetState(GIRasterizerState* state) = 0;
 

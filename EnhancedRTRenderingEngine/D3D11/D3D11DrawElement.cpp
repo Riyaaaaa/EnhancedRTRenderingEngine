@@ -35,7 +35,7 @@ bool D3D11DrawElement::Draw(GIImmediateCommands* cmd, const GIDrawMesh& element)
         }
         case ResourceType::IndexList:
             bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
-            cmd->IASetIndexBuffer(buffer.get(), DXGI_FORMAT_R16_UINT, 0);
+            cmd->IASetIndexBuffer(buffer.get(), DXGI_FORMAT_R16_UINT);
             useIndexList = true;
             break;
         case ResourceType::VSConstantBuffer:

@@ -11,6 +11,6 @@
 class D3D11TextureEffectRenderer
 {
 public:
-    GITextureProxy Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect);
+    std::shared_ptr<GITexture2D> Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect);
 };
 

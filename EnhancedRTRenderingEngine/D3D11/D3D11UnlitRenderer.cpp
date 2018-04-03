@@ -15,7 +15,7 @@ using namespace DirectX;
 
 template<class VertType>
 void D3D11UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes) {
-    cmd->SetViewPortSize(view->GetViewPortCfg());
+    cmd->SetViewport(view->GetViewPortCfg());
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get());

@@ -14,19 +14,19 @@ public:
 
     void Refresh(GIImmediateCommands* cmd, Scene* scene);
     Scene* GetSourceScene() { return _scene; }
-    D3D11TextureProxy& GetDirectionalShadow(int index) {
+    GITextureProxy& GetDirectionalShadow(int index) {
         return _directionalShadows[index];
     }
-    D3D11TextureProxy& GetPointShadow(int index) {
+    GITextureProxy& GetPointShadow(int index) {
         return _pointShadows[index];
     }
-    D3D11TextureProxy& GetEnviromentMap(std::size_t index) {
+    GITextureProxy& GetEnviromentMap(std::size_t index) {
         return _enviromentMaps.at(index);
     }
 protected:
     Scene * _scene;
-    std::vector<D3D11TextureProxy> _directionalShadows;
-    std::vector<D3D11TextureProxy> _pointShadows;
-    std::unordered_map<std::size_t, D3D11TextureProxy> _enviromentMaps;
+    std::vector<GITextureProxy> _directionalShadows;
+    std::vector<GITextureProxy> _pointShadows;
+    std::unordered_map<std::size_t, GITextureProxy> _enviromentMaps;
 };
 

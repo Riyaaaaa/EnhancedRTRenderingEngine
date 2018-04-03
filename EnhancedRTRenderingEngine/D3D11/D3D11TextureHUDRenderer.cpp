@@ -63,10 +63,7 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
         param.type = TextureType::Texture2D;
 
         auto faceTextureSrc = MakeRef(cmd->CreateTexture2D(param));
-
-        cmd->CopyTexture2D(faceTextureSrc.get(), 
-            0, 0, 0, 0, texture->GetTexture().get(), 
-            D3D11CalcSubresource(0, index, param.mipLevels));
+        cmd->CopyTexture2DFromArray(faceTextureSrc.get(), texture->GetTexture().get(), index, param.mipLevels);
 
         faceTexture->Initialize(cmd, faceTextureSrc, SamplerParam());
         face.RegisterShaderResource(faceTexture, 0);

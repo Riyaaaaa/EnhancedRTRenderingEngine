@@ -5,9 +5,15 @@
 
 template<class Derived, class T>
 auto CastRes(T* res) 
+->decltype(static_cast<Derived*>(res)->resource) & {
+    return static_cast<Derived*>(res)->resource;
+}
+
+template<class Derived, class T>
+auto NullableCastRes(T* res)
 ->const decltype(static_cast<Derived*>(res)->resource) & {
     if (!res) {
-        return nullptr;
+        return decltype(static_cast<Derived*>(res)->resource)(nullptr);
     }
     return static_cast<Derived*>(res)->resource;
 }

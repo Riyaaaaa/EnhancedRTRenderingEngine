@@ -41,6 +41,11 @@ public:
 class GIOMResource : public GIResource
 {
 public:
+    GIOMResource() = default;
+    GIOMResource(std::shared_ptr<GIRenderTargetView> rtv, std::shared_ptr<GIDepthStencilView> dsv) :
+        renderTargets({ rtv }),
+        depthStencilView(dsv) {}
+
     const std::shared_ptr<GIRenderTargetView>& GetMainRTV() const {
         return renderTargets[0];
     }

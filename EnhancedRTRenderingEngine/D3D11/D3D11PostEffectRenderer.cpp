@@ -23,7 +23,7 @@ void D3D11PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view
     buf.size = view->GetRenderSize();
 
     Vector4D ClearColor{ 0.7f, 0.7f, 0.7f, 1.0f };
-    cmd->SetViewPortSize(view->GetViewPortCfg());
+    cmd->SetViewport(view->GetViewPortCfg());
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);

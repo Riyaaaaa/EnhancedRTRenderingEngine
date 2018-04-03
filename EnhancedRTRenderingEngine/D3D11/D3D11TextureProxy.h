@@ -18,7 +18,7 @@ public:
     }
     bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{}) override;
     bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures) override;
-    bool Initialize(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> tex, SamplerParam param);
+    bool Initialize(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> tex, SamplerParam param = SamplerParam());
 };
 
 typedef std::shared_ptr<D3D11TextureProxyEntity> D3D11TextureProxy;

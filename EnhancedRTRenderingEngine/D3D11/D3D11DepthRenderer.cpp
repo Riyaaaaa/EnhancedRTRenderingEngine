@@ -63,7 +63,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
             draw.Draw(cmd, element);
         }
 
-        _scene->GetDirectionalShadow(i) =  D3D11GaussianFilter(cmd, rtv->rtvTexture.get());
+        _scene->GetDirectionalShadow(i) = MakeRef(cmd->CreateTextureProxy(rtv->rtvTexture, SamplerParam()));
     }
 }
 
@@ -71,16 +71,8 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
     auto* scene = _scene->GetSourceScene();
 
     D3D11_BUFFER_DESC bufferDesc;
-    ComPtr<ID3D11Buffer> hpConstantBuffer(nullptr);
-    bufferDesc.ByteWidth = sizeof(TransformBufferParam);
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = sizeof(float);
-    if (FAILED(_view->hpDevice->CreateBuffer(&bufferDesc, NULL, hpConstantBuffer.ToCreator()))) {
-        return;
-    }
+
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), nullptr, sizeof(TransformBufferParam)));
 
     auto& pLights = scene->GetPointLights();
     for (std::size_t i = 0; i < pLights.size(); i++) {
@@ -91,25 +83,28 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
         }
 
         Size resolution = pLight.GetShadowResolution();
-        _view->SetViewPortSize(resolution);
-        std::vector<D3D11OMResource> target;
-        for (int j = 0; j < 6; j++) {
-            target.push_back(D3D11OMResource(_view->hpDevice, resolution));
-            target[j].InitializeRenderTarget(_view->hpDeviceContext, true);
-            target[j].InitializeDepthStencilView(_view->hpDeviceContext, true);
+        GICommandUtils::SetViewportSize(cmd, resolution);
 
-            _view->hpDeviceContext->OMSetRenderTargets(1, target[j].GetRenderTargetRef(), target[j].GetDepthStencilView());
-            float color[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-            _view->hpDeviceContext->ClearRenderTargetView(target[j].GetRenderTarget(), color);
-            _view->hpDeviceContext->ClearDepthStencilView(target[j].GetDepthStencilView(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+        std::vector<GIOMResource> target;
+
+        for (int j = 0; j < 6; j++) {
+            auto rtv = GICommandUtils::CreateRenderTargetView(cmd, resolution, TextureFormat::RGBA16_UNORM, true);
+            auto dsv = GICommandUtils::CreateDepthStencilView(cmd, resolution, TextureFormat::R16_TYPELESS, true);
+
+            target.push_back(GIOMResource(rtv, dsv));
+
+            cmd->OMSetRenderTargets(target[j].renderTargets, target[j].depthStencilView);
+            Vector4D color { 1.0f, 1.0f, 1.0f, 1.0f };
+            cmd->ClearRenderTargetView(target[j].renderTargets[0].get(), color);
+            cmd->ClearDepthStencilView(target[j].depthStencilView.get(), 1.0f, 0);
 
             TransformBufferParam hConstantBuffer;
 
             hConstantBuffer.View = XMMatrixTranspose(pLight.GetViewMatrix(static_cast<CUBE_DIRECTION>(j)));
             hConstantBuffer.Projection = XMMatrixTranspose(pLight.GetShadowPerspectiveMatrix());
 
-            _view->hpDeviceContext->UpdateSubresource(hpConstantBuffer.Get(), 0, NULL, &hConstantBuffer, 0, 0);
-            _view->hpDeviceContext->VSSetConstantBuffers(0, 1, hpConstantBuffer.Ref());
+            cmd->UpdateSubresource(hpConstantBuffer.get(), &hConstantBuffer, 0);
+            cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
             for (auto && object : scene->GetViewObjects()) {
                 GIDrawMesh element(&object);
@@ -124,7 +119,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
                 }
                 element.AddDrawElement(face);
                 D3D11DrawElement draw;
-                draw.Draw(_view, element);
+                draw.Draw(cmd, element);
             }
         }
 
@@ -134,34 +129,24 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
         param.type = TextureType::TextureCube;
 
         // Each element in the texture array has the same format/dimensions.
-        D3D11_TEXTURE2D_DESC texElementDesc;
-        target[0].GetRTVTexture()->GetTexture().Get()->GetDesc(&texElementDesc);
+        auto srcParam = target[0].renderTargets[0]->rtvTexture->GetTextureParam();
 
-        D3D11_TEXTURE2D_DESC texArrayDesc;
-        texArrayDesc.Width = texElementDesc.Width;
-        texArrayDesc.Height = texElementDesc.Height;
-        texArrayDesc.MipLevels = texElementDesc.MipLevels;
-        texArrayDesc.ArraySize = 6;
-        texArrayDesc.Format = texElementDesc.Format;
-        texArrayDesc.SampleDesc.Count = 1;
-        texArrayDesc.SampleDesc.Quality = 0;
-        texArrayDesc.Usage = D3D11_USAGE_DEFAULT;
-        texArrayDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        texArrayDesc.CPUAccessFlags = 0;
-        texArrayDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+        TextureParam texArrayDesc;
+        texArrayDesc.width = srcParam.width;
+        texArrayDesc.height = srcParam.height;
+        texArrayDesc.mipLevels = srcParam.mipLevels;
+        texArrayDesc.arraySize = 6;
+        texArrayDesc.format = srcParam.format;
+        texArrayDesc.type = TextureType::TextureCube;
 
-        ComPtr<ID3D11Texture2D> texArray(nullptr);
-        if (FAILED(_view->hpDevice->CreateTexture2D(&texArrayDesc, 0, texArray.ToCreator())))
-            return;
-
+        auto texCube = MakeRef(cmd->CreateTexture2D(texArrayDesc));
         for (UINT x = 0; x < 6; x++)
         {
-            cmd->CopySubresourceRegion(texArray.Get(), D3D11CalcSubresource(0, x, texArrayDesc.MipLevels), 0, 0, 0, D3D11GaussianFilter(_view, target[x].GetRTVTexture())->GetTexture().Get(), 0, nullptr);
+            auto filtered = D3D11GaussianFilter(cmd, target[x].renderTargets[0]->rtvTexture);
+            cmd->CopyTexture2D(texCube.get(), x, texArrayDesc.mipLevels, filtered.get());
         }
 
-        D3D11TextureProxy tex = D3D11TextureProxyEntity::Create(_view->hpDevice);
-        tex->Initialize(cmd, texArray);
-        _scene->GetPointShadow(i) = tex;
+        _scene->GetPointShadow(i) = MakeRef(cmd->CreateTextureProxy(texCube, SamplerParam()));
 
         pLight.SetDirty(false);
     }

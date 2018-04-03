@@ -14,7 +14,7 @@ class GITextureProxyEntity
 public:
     virtual bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{}) = 0;
     virtual bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures) = 0;
-    virtual bool Initialize(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> tex, SamplerParam param) = 0;
+    virtual bool Initialize(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> tex, SamplerParam param = SamplerParam()) = 0;
 
     std::shared_ptr<GITexture2D> mTexture;
     std::shared_ptr<GIShaderResourceView> mView;

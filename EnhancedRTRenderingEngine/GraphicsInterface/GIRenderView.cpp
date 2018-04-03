@@ -25,7 +25,7 @@ void GIRenderView::Initialize(GIImmediateCommands* cmd, const ViewportParam& par
 
     _type = param.MSAAQuality;
     _viewportCfg = param.cfg;
-    cmd->SetViewPortSize(_viewportCfg);
+    cmd->SetViewport(_viewportCfg);
 }
 
 void GIRenderView::SetRasterizerState(GIImmediateCommands* cmd, RasterizerState state) {
@@ -45,7 +45,7 @@ void GIRenderView::SetRasterizerState(GIImmediateCommands* cmd, RasterizerState 
 void GIRenderView::SetViewPortSize(GIImmediateCommands* cmd, Size size) {
     _viewportCfg.width = size.w;
     _viewportCfg.height = size.h;
-    cmd->SetViewPortSize(_viewportCfg);
+    cmd->SetViewport(_viewportCfg);
 }
 
 void GIRenderView::Present() {
