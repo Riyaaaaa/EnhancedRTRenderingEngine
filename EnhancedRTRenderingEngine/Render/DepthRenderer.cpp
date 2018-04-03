@@ -1,8 +1,7 @@
 #include "stdafx.h"
-#include "D3D11DepthRenderer.h"
-#include "D3D11FormatUtils.h"
-#include "D3D11DrawElement.h"
-#include "D3D11TextureEffects.h"
+#include "DepthRenderer.h"
+#include "DrawElement.h"
+#include "TextureEffects.h"
 
 #include "GraphicsInterface/GIDrawMesh.h"
 #include "GraphicsInterface/GICommandUtils.h"

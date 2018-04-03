@@ -1,12 +1,9 @@
 #include "stdafx.h"
-#include "D3D11UnlitRenderer.h"
-#include "D3D11FormatUtils.h"
-#include "D3D11DrawElement.h"
-#include "D3D11TextureEffects.h"
+#include "UnlitRenderer.h"
+#include "DrawElement.h"
 
 #include "GraphicsInterface/GIDrawMesh.h"
-#include "D3D11DrawElement.h"
-#include "D3D11ConstantBufferBuilder.h"
+
 #include "Constant/RenderTag.h"
 
 #include "Common.h"

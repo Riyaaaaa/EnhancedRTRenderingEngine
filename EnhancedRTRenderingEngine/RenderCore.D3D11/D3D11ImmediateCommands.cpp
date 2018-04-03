@@ -6,7 +6,6 @@
 #include "D3D11ImmediateCommands.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11Resources.h"
-#include "D3D11TextureProxy.h"
 
 D3D11ImmediateCommands::D3D11ImmediateCommands() {
     HRESULT hr = D3D11CreateDevice(
@@ -294,8 +293,7 @@ void D3D11ImmediateCommands::RSSetState(GIRasterizerState* state) {
 }
 
 void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GITextureProxyEntity* texture) {
-    auto* texture_ = static_cast<D3D11TextureProxyEntity*>(texture);
-    _deviceContext->PSGetShaderResources(slot, 1, CastRes<D3D11ShaderResourceView>(texture_->GetSubResourceView().get()).Ref());
+    _deviceContext->PSGetShaderResources(slot, 1, CastRes<D3D11ShaderResourceView>(texture->GetSubResourceView().get()).Ref());
 }
 
 void D3D11ImmediateCommands::PSSetSamplers(unsigned int slot, GISamplerState* sampler) {
@@ -360,19 +358,19 @@ void D3D11ImmediateCommands::IASetInputLayout(GIInputLayout* layout) {
 }
 
 GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam param, const Texture2D & tex) {
-    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity();
+    GITextureProxyEntity* proxy = new GITextureProxyEntity();
     proxy->Initialize(this, param, tex);
     return proxy;
 }
 
 GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) {
-    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity();
+    GITextureProxyEntity* proxy = new GITextureProxyEntity();
     proxy->Initialize(this, param, tex);
     return proxy;
 }
 
 GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(std::shared_ptr<GITexture2D> tex, SamplerParam param) {
-    D3D11TextureProxyEntity* proxy = new D3D11TextureProxyEntity();
+    GITextureProxyEntity* proxy = new GITextureProxyEntity();
     proxy->Initialize(this, tex, param);
     return proxy;
 }

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "D3D11SceneInfo.h"
+#include "RenderScene.h"
 
 #include "Constant/RenderConfig.h"
 
@@ -27,7 +27,7 @@ void D3D11SceneInfo::Refresh(GIImmediateCommands* cmd, Scene* scene) {
         if (scene->MeshDirty()) {
             for (auto && reflectionCapture : scene->GetReflectionCaptures()) {
                 if (_enviromentMaps.find(reflectionCapture->GetID()) == _enviromentMaps.end()) {
-                    _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), D3D11TextureProxyEntity::Create()));
+                    _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), std::make_shared<GITextureProxyEntity>()));
                 }
 
                 reflectionCapture->SetupTexture(cmd, _enviromentMaps.at(reflectionCapture->GetID()));

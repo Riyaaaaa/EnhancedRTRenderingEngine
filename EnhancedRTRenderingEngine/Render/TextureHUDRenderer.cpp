@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "D3D11TextureHUDRenderer.h"
-#include "D3D11DrawElement.h"
+#include "TextureHUDRenderer.h"
+#include "DrawElement.h"
 #include "GraphicsInterface/GIDrawMesh.h"
 #include "Shader/ShaderFactory.h"
 #include "Mesh/Primitive/Square.h"
@@ -26,9 +26,7 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 
-    D3D11TextureProxy textureProxy = D3D11TextureProxyEntity::Create();
-    textureProxy->Initialize(cmd, TextureParam(), texture);
-
+    auto textureProxy = MakeRef(cmd->CreateTextureProxy(TextureParam(), texture));
     face.RegisterShaderResource(textureProxy, 10);
 
     element.AddDrawElement(face);
@@ -56,8 +54,6 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
     TextureType type = param.type;
 
     if (type == TextureType::TextureCube) {
-        D3D11TextureProxy faceTexture = D3D11TextureProxyEntity::Create();
-
         param.arraySize = 1;
         param.bindFlag = D3D11_BIND_FLAG::D3D11_BIND_SHADER_RESOURCE;
         param.type = TextureType::Texture2D;
@@ -65,7 +61,7 @@ void D3D11TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* vie
         auto faceTextureSrc = MakeRef(cmd->CreateTexture2D(param));
         cmd->CopyTexture2DFromArray(faceTextureSrc.get(), texture->GetTexture().get(), index, param.mipLevels);
 
-        faceTexture->Initialize(cmd, faceTextureSrc, SamplerParam());
+        auto faceTexture = MakeRef(cmd->CreateTextureProxy(faceTextureSrc, SamplerParam()));
         face.RegisterShaderResource(faceTexture, 0);
     }
     else {

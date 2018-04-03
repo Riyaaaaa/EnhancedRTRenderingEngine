@@ -1,6 +1,6 @@
 #include "stdafx.h"
-#include "D3D11PostEffectRenderer.h"
-#include "D3D11DrawElement.h"
+#include "PostEffectRenderer.h"
+#include "DrawElement.h"
 #include "GraphicsInterface/GIDrawMesh.h"
 #include "Shader/ShaderFactory.h"
 #include "Mesh/Primitive/Square.h"

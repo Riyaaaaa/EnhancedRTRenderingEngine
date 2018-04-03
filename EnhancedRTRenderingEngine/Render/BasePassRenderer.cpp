@@ -1,7 +1,6 @@
 #include "stdafx.h"
-#include "D3D11BasePassRenderer.h"
-#include "D3D11DrawElement.h"
-#include "D3D11ConstantBufferBuilder.h"
+#include "BasePassRenderer.h"
+#include "DrawElement.h"
 
 #include "GraphicsInterface/GIDrawMesh.h"
 
@@ -58,12 +57,12 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
             TextureParam param;
             param.type = material.type;
-            D3D11TextureProxy texture = D3D11TextureProxyEntity::Create();
+            GITextureProxy texture;
             if (material.type == TextureType::Texture2D) {
-                texture->Initialize(cmd, param, material.texture);
+                texture = MakeRef(cmd->CreateTextureProxy(param, material.texture));
             }
             else if (material.type == TextureType::TextureCube) {
-                texture->Initialize(cmd, param, material.cubeTexture.textures);
+                texture = MakeRef(cmd->CreateTextureProxy(param, material.cubeTexture.textures));
             }
 
             face.RegisterShaderResource(texture, 10);

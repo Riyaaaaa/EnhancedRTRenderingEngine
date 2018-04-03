@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "D3D11SceneInfo.h"
+#include "RenderScene.h"
 
 #include "GraphicsInterface/GIImmediateCommands.h"
 #include "GraphicsInterface/GIRenderView.h"

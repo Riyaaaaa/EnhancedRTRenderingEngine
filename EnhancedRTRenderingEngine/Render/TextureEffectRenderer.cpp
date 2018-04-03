@@ -1,8 +1,11 @@
 #include "stdafx.h"
-#include "D3D11TextureEffectRenderer.h"
+#include "TextureEffectRenderer.h"
 #include "Mesh/Primitive/Square.h"
-#include "D3D11DrawElement.h"
+#include "DrawElement.h"
+
+#include "GraphicsInterface/GIImmediateCommands.h"
 #include "GraphicsInterface/GIDrawMesh.h"
+
 #include "Shader/ShaderFactory.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"

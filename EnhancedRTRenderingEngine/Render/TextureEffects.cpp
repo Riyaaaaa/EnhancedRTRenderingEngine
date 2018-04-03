@@ -1,8 +1,8 @@
 #include "stdafx.h"
 
-#include "D3D11TextureEffects.h"
+#include "TextureEffects.h"
 
-#include "D3D11TextureEffectRenderer.h"
+#include "TextureEffectRenderer.h"
 
 std::shared_ptr<GITexture2D> D3D11GaussianFilter(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> src) {
     struct GaussianCBuffer {

@@ -1,12 +1,9 @@
 #pragma once
 
-#include <d3d11.h>
-
 #include <memory>
 #include <functional>
 
-#include "D3D11ConstantBufferBuilder.h"
-#include "D3D11SceneInfo.h"
+#include "RenderScene.h"
 
 class D3D11TextureEffectRenderer
 {

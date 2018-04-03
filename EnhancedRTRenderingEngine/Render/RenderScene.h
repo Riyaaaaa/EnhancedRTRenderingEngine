@@ -1,10 +1,8 @@
 #pragma once
 
-#include <d3d11.h>
 #include <unordered_map>
 
-#include "D3D11TextureProxy.h"
-#include "ComPtr.h"
+#include "GraphicsInterface/GITextureProxy.h"
 #include "Scene/Scene.h"
 
 class D3D11SceneInfo

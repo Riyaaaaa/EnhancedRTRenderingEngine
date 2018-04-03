@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "D3D11ForwardRenderer.h"
+#include "ForwardRenderer.h"
 
 #include "WindowManager.h"
 

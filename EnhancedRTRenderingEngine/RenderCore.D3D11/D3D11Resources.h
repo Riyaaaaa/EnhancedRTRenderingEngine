@@ -1,6 +1,6 @@
 #pragma once
 
-#include "D3D11/ComPtr.h"
+#include "RenderCore.D3D11/ComPtr.h"
 #include "GraphicsInterface/GIResource.h"
 
 template<class Derived, class T>

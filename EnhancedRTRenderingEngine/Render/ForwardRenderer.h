@@ -1,16 +1,14 @@
 #pragma once
 
-#include <d3d11.h>
-
 #include <memory>
 #include <vector>
 
 #include "Structure/Structure.h"
 #include "Scene/Scene.h"
 
-#include "D3D11SceneInfo.h"
-#include "D3D11DepthRenderer.h"
-#include "D3D11BasePassRenderer.h"
+#include "RenderScene.h"
+#include "DepthRenderer.h"
+#include "BasePassRenderer.h"
 
 #include "GraphicsInterface/GIImmediateCommands.h"
 #include "GraphicsInterface/GIRenderView.h"

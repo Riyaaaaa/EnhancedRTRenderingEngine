@@ -1,9 +1,7 @@
 #include "stdafx.h"
-#include "D3D11DrawElement.h"
 
-#include "D3D11TextureProxy.h"
-#include "D3D11FormatUtils.h"
-
+#include "DrawElement.h"
+#include "GraphicsInterface/GIImmediateCommands.h"
 #include "Structure/Structure.h"
 #include "Resource/ResourceLoader.h"
 #include "Resource/RawBinary.h"
@@ -81,9 +79,8 @@ bool D3D11DrawElement::Draw(GIImmediateCommands* cmd, const GIDrawMesh& element)
             param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
             for (auto&& texRes : shader.GetTextureResources()) {
-                auto nativeTex = std::static_pointer_cast<D3D11TextureProxyEntity>(texRes.first);
-                cmd->PSSetShaderResources(texRes.second, nativeTex.get());
-                cmd->PSSetSamplers(texRes.second, nativeTex->GetSampler().get());
+                cmd->PSSetShaderResources(texRes.second, texRes.first.get());
+                cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
             }
 
             for (auto && rawRes : shader.GetRawResources()) {
