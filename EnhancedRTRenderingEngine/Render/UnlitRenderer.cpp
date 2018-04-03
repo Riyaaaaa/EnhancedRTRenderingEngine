@@ -20,7 +20,7 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     hConstantBuffer.View = XMMatrixTranspose(camera.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(camera.GetPerspectiveProjection());
 
-    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), &hConstantBuffer, sizeof(hConstantBuffer)));
+    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(hConstantBuffer), &hConstantBuffer));
     cmd->VSSetConstantBuffers(0, buffer.get());
 
     for (auto && object : meshes) {

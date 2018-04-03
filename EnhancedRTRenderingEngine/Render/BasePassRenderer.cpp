@@ -20,11 +20,11 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
 
-    auto hpConstantBuffer = cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), &hConstantBuffer, sizeof(ConstantBuffer));
-    auto hpMaterialBuffer = cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float));
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(ConstantBuffer), &hConstantBuffer));
+    auto hpMaterialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), sizeof(MaterialBuffer)));
 
-    cmd->VSSetConstantBuffers(0, hpConstantBuffer);
-    cmd->PSSetConstantBuffers(0, hpConstantBuffer);
+    cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
+    cmd->PSSetConstantBuffers(0, hpConstantBuffer.get());
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {

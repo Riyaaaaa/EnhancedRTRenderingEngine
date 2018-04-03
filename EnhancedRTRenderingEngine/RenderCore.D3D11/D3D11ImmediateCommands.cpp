@@ -32,7 +32,8 @@ void D3D11ImmediateCommands::OMSetRenderTargets(const std::vector<std::shared_pt
         rtvs_.push_back(CastRes<D3D11RenderTargetView>(rtv.get()).Get());
     }
 
-    _deviceContext->OMSetRenderTargets(rtvs_.size(), &rtvs_[0], NullableCastRes<D3D11DepthStencilView>(stv.get()).Get());
+    auto res = NullableCastRes<D3D11DepthStencilView>(stv.get());
+    _deviceContext->OMSetRenderTargets(rtvs_.size(), &rtvs_[0], res.Get());
 }
 
 GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param) {
@@ -201,20 +202,30 @@ GISamplerState* D3D11ImmediateCommands::CreateSamplerState(const SamplerParam& p
     return state;
 }
 
-GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int stride) {
-    return CreateBuffer(type, stride, nullptr, 0);
-}
 
-GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int stride, void* initPtr, float byteWidth) {
+GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr) {
     D3D11_BUFFER_DESC bufferDesc;
     D3D11Buffer* buffer = new D3D11Buffer;
 
     bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
     bufferDesc.CPUAccessFlags = 0;
     bufferDesc.MiscFlags = 0;
     bufferDesc.StructureByteStride = stride;
     bufferDesc.ByteWidth = byteWidth;
+
+    switch (type) {
+    case ResourceType::VertexList: 
+        bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+        break;
+    case ResourceType::IndexList:
+        bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+        break;
+    case ResourceType::VSConstantBuffer:
+    case ResourceType::PSConstantBuffer:
+    case ResourceType::GSConstantBuffer:
+        bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+        break;
+    }
 
     D3D11_SUBRESOURCE_DATA srd;
     D3D11_SUBRESOURCE_DATA* resPtr = nullptr;
@@ -255,11 +266,11 @@ GIRenderTargetView* D3D11ImmediateCommands::CreateRenderTargetView(GITexture2D* 
     return rtv;
 }
 
-GIDepthStencilView* D3D11ImmediateCommands::CreateDepthStencilView(GITexture2D* tex) {
+GIDepthStencilView* D3D11ImmediateCommands::CreateDepthStencilView(GITexture2D* tex, TextureFormat format) {
     D3D11DepthStencilView* dsv = new D3D11DepthStencilView;
 
     D3D11_DEPTH_STENCIL_VIEW_DESC hDepthStencilViewDesc;
-    hDepthStencilViewDesc.Format = DXGI_FORMAT::DXGI_FORMAT_D16_UNORM;
+    hDepthStencilViewDesc.Format = CastToD3D11Format<DXGI_FORMAT>(format);
     hDepthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DMS;
     hDepthStencilViewDesc.Flags = 0;
 
@@ -279,12 +290,14 @@ void D3D11ImmediateCommands::ClearDepthStencilView(GIDepthStencilView* view, flo
 GIPixelShader* D3D11ImmediateCommands::CreatePixelShader(RawBinary byteCode) {
     D3D11PixelShader* shader = new D3D11PixelShader;
     _device->CreatePixelShader(byteCode.get(), byteCode.size(), nullptr, shader->resource.ToCreator());
+    shader->byteCode = byteCode;
     return shader;
 }
 
 GIVertexShader* D3D11ImmediateCommands::CreateVertexShader(RawBinary byteCode) {
     D3D11VertexShader* shader = new D3D11VertexShader;
     _device->CreateVertexShader(byteCode.get(), byteCode.size(), nullptr, shader->resource.ToCreator());
+    shader->byteCode = byteCode;
     return shader;
 }
 

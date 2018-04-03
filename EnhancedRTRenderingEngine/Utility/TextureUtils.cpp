@@ -43,3 +43,15 @@ TextureFormat TextureUtils::GetShaderResourceFormat(TextureFormat textureFormat)
         return textureFormat;
     }
 }
+
+TextureFormat TextureUtils::ZBufferFormatToTextureFormat(TextureFormat textureFormat) {
+    switch (textureFormat)
+    {
+    case TextureFormat::D16_UNORM:
+        return TextureFormat::R16_TYPELESS;
+    case TextureFormat::D24_UNORM_S8_UINT:
+        return TextureFormat::R24G8_TYPELESS;
+    default:
+        return textureFormat;
+    }
+}

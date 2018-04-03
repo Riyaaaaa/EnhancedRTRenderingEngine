@@ -50,12 +50,20 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
     {
     case TextureFormat::RGBA8_UNORM:
         return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+    case TextureFormat::RGBA8_UNORM_SRGB:
+        return DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
     case TextureFormat::RGBA16_UNORM:
         return DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM;
     case TextureFormat::R16_TYPELESS:
         return DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS;
     case TextureFormat::R32_TYPELESS:
         return DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS;
+    case TextureFormat::R24G8_TYPELESS:
+        return DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS;
+    case TextureFormat::D16_UNORM:
+        return DXGI_FORMAT::DXGI_FORMAT_D16_UNORM;
+    case TextureFormat::D24_UNORM_S8_UINT:
+        return DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT;
     default:
         return DXGI_FORMAT_UNKNOWN;
     }
@@ -180,10 +188,14 @@ TextureFormat CastToGIFormat<TextureFormat, DXGI_FORMAT>(DXGI_FORMAT prop) {
         return TextureFormat::RGBA8_UNORM;
     case DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_UNORM:
         return TextureFormat::RGBA16_UNORM;
+    case DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM_SRGB:
+        return TextureFormat::RGBA8_UNORM_SRGB;
     case DXGI_FORMAT::DXGI_FORMAT_R16_TYPELESS:
         return TextureFormat::R16_TYPELESS;
     case DXGI_FORMAT::DXGI_FORMAT_R32_TYPELESS:
         return TextureFormat::R32_TYPELESS;
+    case DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS:
+        return TextureFormat::R24G8_TYPELESS;
     default:
         return TextureFormat::R16_UNORM;
     }

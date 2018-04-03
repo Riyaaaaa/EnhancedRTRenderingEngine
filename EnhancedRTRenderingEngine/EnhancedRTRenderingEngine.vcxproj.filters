@@ -483,9 +483,6 @@
     <ClInclude Include="RenderCore.D3D11\ComPtr.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="RenderCore.D3D11\D3D11ConstantBufferBuilder.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="RenderCore.D3D11\D3D11FormatUtils.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -678,9 +675,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsInterface\GICommandUtils.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="RenderCore.D3D11\D3D11ConstantBufferBuilder.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="RenderCore.D3D11\D3D11FormatUtils.cpp">

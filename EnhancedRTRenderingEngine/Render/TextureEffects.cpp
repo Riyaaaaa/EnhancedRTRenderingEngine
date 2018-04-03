@@ -33,7 +33,7 @@ std::shared_ptr<GITexture2D> GaussianFilter(GIImmediateCommands* cmd, std::share
     buf.texsize.w = param.width;
     buf.texsize.h = param.height;
 
-    auto constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), &buf, sizeof(buf)));
+    auto constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), sizeof(buf), &buf));
     cmd->PSSetConstantBuffers(0, constantBuffer.get());
 
     SamplerParam p;

@@ -8,5 +8,6 @@ namespace TextureUtils
     Texture2D CreateUniformTexture(std::size_t width, std::size_t height, Color4B color);
 
     TextureFormat GetShaderResourceFormat(TextureFormat textureFormat);
+    TextureFormat ZBufferFormatToTextureFormat(TextureFormat textureFormat);
 };
 

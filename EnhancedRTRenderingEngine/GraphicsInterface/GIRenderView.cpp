@@ -1,21 +1,14 @@
 #include "stdafx.h"
 #include "GIRenderView.h"
 
+#include "GICommandUtils.h"
 
 void GIRenderView::Initialize(GIImmediateCommands* cmd, const ViewportParam& param) {
     _swapchain = MakeRef(cmd->CreateSwapChain(param));
 
     _OMResource = std::make_shared<GIOMResource>();
     _OMResource->renderTargets.push_back(MakeRef(cmd->CreateRenderTargetView(_swapchain->backBuffer.get())));
-
-    TextureParam dsvTexParam;
-    dsvTexParam.width = param.cfg.width;
-    dsvTexParam.height = param.cfg.height;
-    dsvTexParam.bindFlag = TextureBindTarget::STENCIL | TextureBindTarget::SHADER_RESOURCE;
-    dsvTexParam.format = TextureFormat::R24G8_TYPELESS;
-
-    _dsvTexture = MakeRef(cmd->CreateTexture2D(dsvTexParam, std::vector<Texture2D>()));
-    _OMResource->depthStencilView = MakeRef(cmd->CreateDepthStencilView(_dsvTexture.get()));
+    _OMResource->depthStencilView = GICommandUtils::CreateDepthStencilView(cmd, Size(param.cfg.width, param.cfg.height), TextureFormat::D24_UNORM_S8_UINT, false);
 
     _defaultRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::Defalt));
     _doubleSidedRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::DoubleSided));

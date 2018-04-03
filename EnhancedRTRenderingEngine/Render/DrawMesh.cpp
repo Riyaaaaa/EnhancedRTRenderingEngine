@@ -25,7 +25,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
         bufferDesc.StructureByteStride = psResource.first._structureByteStride;
 
-        auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, psResource.first._structureByteStride, (void*)psResource.first._resource.get(), psResource.first._resource.size()));
+        auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, psResource.first._structureByteStride, psResource.first._resource.size(), (void*)psResource.first._resource.get()));
 
         switch (psResource.first._type) {
         case ResourceType::VertexList: {
@@ -97,7 +97,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
                 bufferDesc.StructureByteStride = rawRes.first._structureByteStride;
                 bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-                auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, rawRes.first._structureByteStride, (void*)rawRes.first._resource.get(), rawRes.first._resource.size()));
+                auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, rawRes.first._structureByteStride, rawRes.first._resource.size(), (void*)rawRes.first._resource.get()));
                 cmd->PSSetConstantBuffers(rawRes.second, buffer.get());
             }
 

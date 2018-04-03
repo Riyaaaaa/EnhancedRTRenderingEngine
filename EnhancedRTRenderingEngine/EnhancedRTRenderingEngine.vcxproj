@@ -170,7 +170,6 @@
     <ClInclude Include="Render\LineRenderer.h" />
     <ClInclude Include="Render\UnlitRenderer.h" />
     <ClInclude Include="Render\PostEffectRenderer.h" />
-    <ClInclude Include="RenderCore.D3D11\D3D11ConstantBufferBuilder.h" />
     <ClInclude Include="Render\TextureEffects.h" />
     <ClInclude Include="Render\TextureEffectRenderer.h" />
     <ClInclude Include="GraphicsInterface\GICommandUtils.h" />
@@ -340,7 +339,6 @@
     <ClCompile Include="Render\LineRenderer.cpp" />
     <ClCompile Include="Render\UnlitRenderer.cpp" />
     <ClCompile Include="Render\PostEffectRenderer.cpp" />
-    <ClCompile Include="RenderCore.D3D11\D3D11ConstantBufferBuilder.cpp" />
     <ClCompile Include="Render\TextureEffects.cpp" />
     <ClCompile Include="Render\TextureEffectRenderer.cpp" />
     <ClCompile Include="GraphicsInterface\GICommandUtils.cpp" />

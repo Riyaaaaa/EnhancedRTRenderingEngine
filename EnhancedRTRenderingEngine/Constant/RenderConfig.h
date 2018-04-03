@@ -32,6 +32,8 @@ enum class TextureFormat {
     RGBA8_UNORM,
     RGBA8_UNORM_SRGB,
     RGBA16_UNORM,
+    D16_UNORM,
+    D24_UNORM_S8_UINT,
     R16_TYPELESS,
     R16_UNORM,
     R24G8_TYPELESS,

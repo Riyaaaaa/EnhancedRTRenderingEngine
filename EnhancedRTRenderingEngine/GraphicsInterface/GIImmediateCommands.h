@@ -15,13 +15,12 @@ public:
     virtual void OMSetRenderTargets(const std::vector<std::shared_ptr<GIRenderTargetView>>& renderTargets, std::shared_ptr<GIDepthStencilView> stv) = 0;
 
     virtual GIRenderTargetView* CreateRenderTargetView(GITexture2D* tex) = 0;
-    virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex) = 0;
+    virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex, TextureFormat format) = 0;
 
     virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) = 0;
     virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) = 0;
 
-    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride) = 0;
-    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, void* initPtr, float byteWidth) = 0;
+    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr = nullptr) = 0;
 
     virtual GITexture2D* CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures = std::vector<Texture2D>()) = 0;
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex) = 0;

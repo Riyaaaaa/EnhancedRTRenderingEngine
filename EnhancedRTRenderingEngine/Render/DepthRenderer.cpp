@@ -23,13 +23,13 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
 
     auto& dLights = scene->GetDirectionalLights();
 
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), nullptr, sizeof(TransformBufferParam)));
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(TransformBufferParam)));
 
     for (std::size_t i = 0; i < dLights.size(); i++) {
         auto& dLight = dLights[i];
 
         auto rtv = GICommandUtils::CreateRenderTargetView(cmd, dLight.GetShadowResolution(), TextureFormat::RGBA16_UNORM, true);
-        auto dsv = GICommandUtils::CreateDepthStencilView(cmd, dLight.GetShadowResolution(), TextureFormat::R16_TYPELESS, true);
+        auto dsv = GICommandUtils::CreateDepthStencilView(cmd, dLight.GetShadowResolution(), TextureFormat::D16_UNORM, true);
 
         view->SetViewPortSize(cmd, dLight.GetShadowResolution());
 
@@ -69,7 +69,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
 
     D3D11_BUFFER_DESC bufferDesc;
 
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), nullptr, sizeof(TransformBufferParam)));
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(TransformBufferParam)));
 
     auto& pLights = scene->GetPointLights();
     for (std::size_t i = 0; i < pLights.size(); i++) {
@@ -86,7 +86,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
 
         for (int j = 0; j < 6; j++) {
             auto rtv = GICommandUtils::CreateRenderTargetView(cmd, resolution, TextureFormat::RGBA16_UNORM, true);
-            auto dsv = GICommandUtils::CreateDepthStencilView(cmd, resolution, TextureFormat::R16_TYPELESS, true);
+            auto dsv = GICommandUtils::CreateDepthStencilView(cmd, resolution, TextureFormat::D16_UNORM, true);
 
             target.push_back(GIOMResource(rtv, dsv));
 

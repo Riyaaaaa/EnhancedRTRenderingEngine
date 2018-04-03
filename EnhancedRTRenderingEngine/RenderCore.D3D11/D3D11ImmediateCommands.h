@@ -16,7 +16,7 @@ public:
     virtual void OMSetRenderTargets(const std::vector<std::shared_ptr<GIRenderTargetView>>& renderTargets, std::shared_ptr<GIDepthStencilView> stv) override;
 
     virtual GIRenderTargetView* CreateRenderTargetView(GITexture2D* tex) override;
-    virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex) override;
+    virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex, TextureFormat format) override;
     virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) override;
     virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) override;
 
@@ -24,8 +24,7 @@ public:
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex);
     virtual GISamplerState* CreateSamplerState(const SamplerParam& param);
 
-    GIBuffer* CreateBuffer(ResourceType type, unsigned int stride) override;
-    GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, void* initPtr, float byteWidth) override;
+    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr = nullptr) override;
 
     virtual void RSSetState(GIRasterizerState* state);
 

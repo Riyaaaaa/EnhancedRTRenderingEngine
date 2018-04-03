@@ -19,7 +19,7 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     hConstantBuffer.View = XMMatrixTranspose(camera.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(camera.GetPerspectiveProjection());
 
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), &hConstantBuffer, sizeof(hConstantBuffer)));
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(hConstantBuffer), &hConstantBuffer));
 
     cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
