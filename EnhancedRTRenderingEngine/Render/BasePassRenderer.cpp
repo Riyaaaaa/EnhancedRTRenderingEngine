@@ -56,12 +56,12 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
             TextureParam param;
             param.type = material.type;
-            GITextureProxy texture;
+            GITextureProxy texture = GITextureProxyEntity::Create();
             if (material.type == TextureType::Texture2D) {
-                texture = MakeRef(cmd->CreateTextureProxy(param, material.texture));
+                texture->Initialize(cmd, param, material.texture);
             }
             else if (material.type == TextureType::TextureCube) {
-                texture = MakeRef(cmd->CreateTextureProxy(param, material.cubeTexture.textures));
+                texture->Initialize(cmd, param, material.cubeTexture.textures);
             }
 
             face.RegisterShaderResource(texture, 10);

@@ -14,7 +14,7 @@ bool GITextureProxyEntity::Initialize(GIImmediateCommands* cmd, TextureParam par
 
 bool GITextureProxyEntity::Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures) {
 
-    cmd->CreateTexture2D(param, textures);
+    mTexture = MakeRef(cmd->CreateTexture2D(param, textures));
 
     if (!(param.bindFlag & TextureBindTarget::SHADER_RESOURCE)) {
         return true;

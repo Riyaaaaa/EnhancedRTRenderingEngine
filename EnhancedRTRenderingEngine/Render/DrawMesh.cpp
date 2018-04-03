@@ -82,8 +82,10 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
             param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
 
             for (auto&& texRes : shader.GetTextureResources()) {
-                cmd->PSSetShaderResources(texRes.second, texRes.first.get());
-                cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
+                if (texRes.first->IsAvalable()) {
+                    cmd->PSSetShaderResources(texRes.second, texRes.first.get());
+                    cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
+                }
             }
 
             for (auto && rawRes : shader.GetRawResources()) {

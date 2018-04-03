@@ -2,6 +2,7 @@
 
 #include <memory>
 #include "Resource/Texture2D.h"
+#include "GraphicsInterface/GIResourceAttribute.h"
 #include "RenderingContext.h"
 
 #include "GIResource.h"
@@ -9,7 +10,7 @@
 class GIImmediateCommands;
 class GITexture2D;
 
-class GITextureProxyEntity
+class GITextureProxyEntity : public ResourceAttribute::Creatable<GITextureProxyEntity>
 {
 public:
     bool Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex = Texture2D{});
