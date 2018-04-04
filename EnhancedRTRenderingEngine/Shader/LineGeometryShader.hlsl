@@ -46,7 +46,7 @@ void main(
         output.RestartStrip();
     }*/
 
-	for (uint i = 0; i < 2; i++)
+	for (int i = 0; i < 2; i++)
 	{
         float offset = input[i].thickness / 2.0f;
 
@@ -64,7 +64,8 @@ void main(
         }
         {
             GSOutput element;
-            element.pos = input[(i + 1) % 2].pos + float4(offset * pow(-1, i), 0.0f, 0.0f, 0.0f);
+            element.pos = input[(i + 1) % 2].pos + float4(offset * sign(i - 1), 0.0f, 0.0f, 0.0f);
+
             element.col = input[(i + 1) % 2].col;
             output.Append(element);
         }
