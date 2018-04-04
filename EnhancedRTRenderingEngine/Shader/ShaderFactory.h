@@ -36,8 +36,20 @@ namespace ShaderFactory
         return Shader(ShadingType::Vertex, ResourceLoader::LoadShader("VertexShader"));
     }
 
+    inline Shader MinPixelShader() {
+        return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("MinPixelShader"));
+    }
+
     inline Shader MinPixelColor() {
         return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("PixelShader"));
+    }
+
+    inline Shader LineVertexShader() {
+        return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("LineVertexShader"));
+    }
+
+    inline Shader LineGeometryShader() {
+        return Shader(ShadingType::Geometry, ResourceLoader::LoadShader("LineGeometryShader"));
     }
 };
 

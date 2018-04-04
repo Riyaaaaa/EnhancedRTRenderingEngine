@@ -46,6 +46,9 @@ public:
     virtual void VSSetShader(GIVertexShader* shader) = 0;
     virtual void VSSetConstantBuffers(unsigned int slot, GIBuffer* buffer) = 0;
 
+    virtual GIGeometryShader* CreateGeometryShader(RawBinary byteCode) = 0;
+    virtual void GSSetShader(GIGeometryShader* shader) = 0;
+
     virtual void IASetPrimitiveTopology(VertexPrimitiveType primitiveType) = 0;
     virtual void IASetIndexBuffer(GIBuffer* buffer, unsigned int offset) = 0;
     virtual void IASetVertexBuffer(GIBuffer* buffer, unsigned int stride, unsigned int offset) = 0;

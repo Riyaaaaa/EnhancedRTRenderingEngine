@@ -7,6 +7,12 @@ class Triangle : public MeshBase<Vertex3D>
 {
 public:
     Triangle();
-    ~Triangle();
 };
+
+class TrianglePMD : public MeshBase<PMDVertex>
+{
+public:
+    TrianglePMD();
+};
+
 

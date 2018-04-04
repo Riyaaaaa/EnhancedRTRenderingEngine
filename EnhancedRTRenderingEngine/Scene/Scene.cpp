@@ -32,13 +32,6 @@ void Scene::CreateTestScene() {
     cameraObjects.push_back(camera);
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    //test code
-    //viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Square>());
-    //viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<Box>());
-
-    //viewObjects[0].SetLocation(Vector3D{ -1.0f, 0.0f, 0.0f });
-    //viewObjects[1].SetLocation(Vector3D{ +1.0f, 0.0f, 0.0f });
-
     Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.2f, 0.0f });
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
@@ -47,6 +40,7 @@ void Scene::CreateTestScene() {
     //viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     auto model2 = ResourceLoader::LoadDXModel("sphere");
     auto model = ResourceLoader::LoadDXModel("coin");
+
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ -2.0f, 1.0f, -2.0f });
@@ -65,7 +59,7 @@ void Scene::CreateTestScene() {
     viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 11.0f, -0.4f });
-    viewObjects.back().SetMaterial(std::move(materials));
+    viewObjects.back().SetMaterial(materials);
 
     auto skybox = SkyBox("Storforsen4");
     viewObjects.push_back(skybox);

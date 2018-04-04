@@ -1,0 +1,97 @@
+
+struct VSOutput
+{
+    float4 pos : SV_POSITION;
+    float4 col : COLOR;
+    float thickness : THICKNESS;
+};
+
+struct GSOutput
+{
+	float4 pos : SV_POSITION;
+    float4 col : COLOR;
+};
+
+[maxvertexcount(6)]
+void main(
+	line VSOutput input[2],
+	inout TriangleStream< GSOutput > output
+)
+{
+    {
+        GSOutput element;
+        element.pos = input[0].pos;
+        element.col = float4(1.0f, 0.0f, 0.0f, 1.0f);
+        output.Append(element);
+    }
+
+    {
+        GSOutput element;
+        element.pos = input[1].pos;
+        element.col = float4(0.0f, 1.0f, 0.0f, 1.0f);
+        output.Append(element);
+    }
+
+    {
+        GSOutput element;
+        element.pos = input[0].pos + input[1].pos + float4(1.0f, 0.0f, 0.0f, 0.0f);
+        element.col = float4(0.0f, 0.0f, 1.0f, 1.0f);
+        output.Append(element);
+    }
+
+    output.RestartStrip();
+
+    /*for (uint i = 0; i < 2; i++)
+    {
+        float offset = input[i].thickness / 2.0f;
+
+        {
+            GSOutput element;
+            element.pos = input[i].pos + float4(-offset, 0.0f, 0.0f, 0.0f);
+            element.col = input[i].col;
+            output.Append(element);
+        }
+
+        {
+            GSOutput element;
+            element.pos = input[i].pos + float4(0.0f, input[i].thickness, 0.0f, 0.0f);
+            element.col = input[i].col;
+            output.Append(element);
+        }
+
+        {
+            GSOutput element;
+            element.pos = input[i].pos + float4(offset, 0.0f, 0.0f, 0.0f);
+            element.col = input[i].col;
+            output.Append(element);
+        }
+
+        output.RestartStrip();
+    }*/
+
+	/*for (uint i = 0; i < 2; i++)
+	{
+        float offset = input[i].thickness / 2.0f;
+
+        {
+            GSOutput element;
+            element.pos = input[i].pos + float4(0.0f, offset, 0.0f, 0.0f);
+            element.col = input[i].col;
+            output.Append(element);
+        }
+        {
+            GSOutput element;
+            element.pos = input[i].pos + float4(0.0f, -offset, 0.0f, 0.0f);
+            element.col = input[i].col;
+            output.Append(element);
+        }
+        {
+            GSOutput element;
+            element.pos = input[(i + 1) % 2].pos + float4(0.0f, offset * pow(-1, i), 0.0f, 0.0f);
+            element.col = input[(i + 1) % 2].col;
+            output.Append(element);
+        }
+
+        output.RestartStrip();
+	}*/
+}

@@ -65,6 +65,11 @@ public:
     ComPtr<ID3D11VertexShader> resource;
 };
 
+class D3D11GeometryShader : public GIGeometryShader {
+public:
+    ComPtr<ID3D11GeometryShader> resource;
+};
+
 class D3D11InputLayout : public GIInputLayout {
 public:
     ComPtr<ID3D11InputLayout> resource;
@@ -80,5 +85,8 @@ class D3D11ShaderResourceView : public GIShaderResourceView {
 public:
     ComPtr<ID3D11ShaderResourceView> resource;
 };
+
+
+
 
 

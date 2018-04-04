@@ -6,6 +6,7 @@ enum class VertexProperty {
     FloatRGBA,
     FloatRGB,
     FloatRG,
+    FloatR,
     NONE = 9999
 };
 

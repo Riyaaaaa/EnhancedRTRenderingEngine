@@ -71,5 +71,6 @@ public:
 };
 class GIPixelShader : public GIShader {};
 class GIVertexShader : public GIShader {};
+class GIGeometryShader : public GIShader {};
 
 class GIInputLayout : public GIResource {};

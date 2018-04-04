@@ -23,6 +23,9 @@ public:
 
     const std::shared_ptr<MeshBase<VertType>>& GetMesh() const { return _mesh; }
 
+    void SetMaterial(const std::vector<Material>& materials) {
+        _materials = materials;
+    }
     void SetMaterial(std::vector<Material>&& materials) {
         _materials.swap(materials);
     }

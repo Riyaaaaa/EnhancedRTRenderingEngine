@@ -16,7 +16,7 @@ class MeshBase
 public:
     typedef VertType Type;
 
-    MeshBase() : _materialNum(1), _vertexCount(0) {};
+    MeshBase() : _materialNum(1), _vertexCount(0), _primitiveType(VertexPrimitiveType::TRIANGLELIST){};
     virtual ~MeshBase() {};
 
     void AddVertex(const VertType& vert) {

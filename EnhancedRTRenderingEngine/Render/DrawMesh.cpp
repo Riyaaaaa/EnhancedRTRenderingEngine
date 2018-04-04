@@ -74,6 +74,11 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
                 cmd->PSSetShader(pshader.get());
             }
 
+            if (shader.GS().isValid()) {
+                auto gshader = MakeRef(cmd->CreateGeometryShader(shader.GS()));
+                cmd->GSSetShader(gshader.get());
+            }
+
             auto inputLayout = MakeRef(cmd->CreateInputLayout(GetVertexLayout(), vshader.get()));
             cmd->IASetInputLayout(inputLayout.get());
 
@@ -131,5 +136,10 @@ std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<TexVertex>() {
 template<>
 std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<PMDVertex>() {
     return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB, 0, 0, 0  }, { "TEXCOORD", VertexProperty::FloatRG, 0, 0, 12 }, { "NORMAL", VertexProperty::FloatRGB, 0,0,20 }, { "COLOR", VertexProperty::FloatRGBA,0,0,32 } };
+}
+
+template<>
+std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<LineVertex>() {
+    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB, 0, 0, 0  }, { "COLOR", VertexProperty::FloatRGBA, 0, 0, 12 }, { "THICKNESS", VertexProperty::FloatR, 0, 0, 28 } };
 }
 

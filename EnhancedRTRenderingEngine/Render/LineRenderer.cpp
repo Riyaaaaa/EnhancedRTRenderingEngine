@@ -15,6 +15,8 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);
 
+    view->SetRasterizerState(cmd, RasterizerState::CullNone);
+
     TransformBufferParam hConstantBuffer;
     hConstantBuffer.View = XMMatrixTranspose(camera.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(camera.GetPerspectiveProjection());
@@ -23,12 +25,12 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
-    auto lineMesh = std::make_shared<MeshBase<Vertex3D>>();
+    auto lineMesh = std::make_shared<MeshBase<LineVertex>>();
     
     for (auto && line : lines) {
         Vector4D color = Vector4D(line.color.r, line.color.g, line.color.b);
-        Vertex3D bvert{ line.bpos, color, Vector2D(0, 0) };
-        Vertex3D evert{ line.epos, color, Vector2D(0, 0) };
+        LineVertex bvert{ line.bpos, color, line.thickness };
+        LineVertex evert{ line.epos, color, line.thickness };
 
         lineMesh->AddVertex(bvert);
         lineMesh->AddVertex(evert);
@@ -36,11 +38,15 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     lineMesh->SetPrimitiveType(VertexPrimitiveType::LINELIST);
 
-    MeshObject<Vertex3D> mesh(lineMesh);
+    MeshObject<LineVertex> mesh(lineMesh);
     DrawMesh element(&mesh);
-    DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::HUDVertexShader());
+    DrawElement face(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     element.AddDrawElement(face);
     element.Draw(cmd);
+
+    cmd->PSSetShader(nullptr);
+    cmd->GSSetShader(nullptr);
+    view->SetRasterizerState(cmd, RasterizerState::Default);
 }

@@ -45,6 +45,9 @@ public:
     virtual void VSSetShader(GIVertexShader* shader) override;
     virtual void VSSetConstantBuffers(unsigned int slot, GIBuffer* buffer) override;
 
+    virtual GIGeometryShader* CreateGeometryShader(RawBinary byteCode) override;
+    virtual void GSSetShader(GIGeometryShader* shader) override;
+
     virtual void IASetPrimitiveTopology(VertexPrimitiveType primitiveType) override;
     virtual void IASetIndexBuffer(GIBuffer* buffer, unsigned int offset) override;
     virtual void IASetVertexBuffer(GIBuffer* buffer, unsigned int stride, unsigned int offset) override;

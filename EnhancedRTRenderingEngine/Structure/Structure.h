@@ -79,6 +79,12 @@ struct Vertex3D {
     Vector2D tex;    //x-y
 };
 
+struct LineVertex {
+    Vector3D pos;    //x-y-z
+    Vector4D col;    //r-g-b-a
+    float thickess;
+};
+
 struct PMDVertex {
     Vector3D pos;    //x-y-z
     Vector2D tex;    //x-y

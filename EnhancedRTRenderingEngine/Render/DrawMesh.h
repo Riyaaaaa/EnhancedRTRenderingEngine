@@ -121,7 +121,7 @@ public:
 
         _dataHandles.push_back(buffer);
 
-        _primitiveType = VertexPrimitiveType::TRIANGLELIST;
+        _primitiveType = element->GetMesh()->GetPrimitiveType();
     }
 
     VertexPrimitiveType GetPrimitiveType() const { 

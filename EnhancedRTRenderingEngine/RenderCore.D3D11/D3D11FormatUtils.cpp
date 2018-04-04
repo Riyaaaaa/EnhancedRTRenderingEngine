@@ -6,6 +6,8 @@ template<>
 DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, VertexProperty>(VertexProperty prop) {
     switch (prop)
     {
+    case VertexProperty::FloatR:
+        return DXGI_FORMAT_R32_FLOAT;
     case VertexProperty::FloatRG:
         return DXGI_FORMAT_R32G32_FLOAT;
     case VertexProperty::FloatRGB:

@@ -30,3 +30,4 @@ void MeshObject<VertType>::DirtyWorldMatrix() {
 template MeshObject<PMDVertex>;
 template MeshObject<TexVertex>;
 template MeshObject<Vertex3D>;
+template MeshObject<LineVertex>;

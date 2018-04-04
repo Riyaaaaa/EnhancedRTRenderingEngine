@@ -754,6 +754,8 @@
     <FxCompile Include="Shader\Filter\Gaussian5x5FilterY.hlsl" />
     <FxCompile Include="Shader\RenderShadowMapShader.hlsl" />
     <FxCompile Include="Shader\PostEffects.hlsl" />
+    <FxCompile Include="Shader\LineGeometryShader.hlsl" />
+    <FxCompile Include="Shader\LineVertexShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

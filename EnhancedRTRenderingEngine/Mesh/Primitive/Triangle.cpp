@@ -14,7 +14,14 @@ Triangle::Triangle()
     _drawFacesMap.push_back(Face{ 0, _vertexList.size(), 0 });
 }
 
-
-Triangle::~Triangle()
+TrianglePMD::TrianglePMD()
 {
+    _vertexList = std::vector<PMDVertex>{
+        PMDVertex{ Vector3D{ +0.0f, +0.5f, +0.5f },Vector2D{ 0.0f, 1.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) },
+        PMDVertex{ Vector3D{ +0.5f, -0.5f, +0.5f },Vector2D{ 0.0f, 0.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) },
+        PMDVertex{ Vector3D{ -0.5f, -0.5f, +0.5f },Vector2D{ 1.0f, 0.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) }
+    };
+
+    _vertexCount = _vertexList.size();
+    _drawFacesMap.push_back(Face{ 0,_vertexList.size(), 0 });
 }

@@ -345,6 +345,17 @@ void D3D11ImmediateCommands::VSSetConstantBuffers(unsigned int slot, GIBuffer* b
     _deviceContext->VSSetConstantBuffers(slot, 1, CastRes<D3D11Buffer>(buffer).Ref());
 }
 
+GIGeometryShader* D3D11ImmediateCommands::CreateGeometryShader(RawBinary byteCode) {
+    D3D11GeometryShader* shader = new D3D11GeometryShader;
+    _device->CreateGeometryShader(byteCode.get(), byteCode.size(), nullptr, shader->resource.ToCreator());
+    shader->byteCode = byteCode;
+    return shader;
+}
+
+void D3D11ImmediateCommands::GSSetShader(GIGeometryShader* shader) {
+    _deviceContext->GSSetShader(NullableCastRes<D3D11GeometryShader>(shader).Get(), nullptr, 0);
+}
+
 GIRasterizerState* D3D11ImmediateCommands::CreateRasterizerState(RasterizerType type) {
     D3D11RasterizerState* state = new D3D11RasterizerState;
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
