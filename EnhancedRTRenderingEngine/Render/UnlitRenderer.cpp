@@ -1,9 +1,10 @@
 #include "stdafx.h"
-#include "UnlitRenderer.h"
 
+#include "UnlitRenderer.h"
 #include "DrawMesh.h"
 
 #include "Constant/RenderTag.h"
+#include "GraphicsInterface/GICommandUtils.h"
 
 #include "Common.h"
 
@@ -11,7 +12,8 @@ using namespace DirectX;
 
 template<class VertType>
 void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes) {
-    cmd->SetViewport(view->GetViewPortCfg());
+    
+    GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get());

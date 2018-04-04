@@ -22,6 +22,7 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer ObjectBuffer : register(b1)
 {
     matrix World;
+    matrix NormalWorld;
 }
 
 vertexOut main(vertexIn IN)

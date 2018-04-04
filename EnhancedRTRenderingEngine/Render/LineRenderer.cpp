@@ -5,13 +5,15 @@
 #include "DrawMesh.h"
 #include "Constant/RenderTag.h"
 
+#include "GraphicsInterface/GICommandUtils.h"
+
 #include "Common.h"
 
 using namespace DirectX;
 
 void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines) {
 
-    cmd->SetViewport(view->GetViewPortCfg());
+    GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);
 
