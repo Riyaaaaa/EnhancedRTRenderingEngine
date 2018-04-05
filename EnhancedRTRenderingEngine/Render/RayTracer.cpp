@@ -5,40 +5,46 @@
 #include "Structure/Primitive.h"
 #include "Constant/PrecomputedConstants.h"
 
-std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray) {
+std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray, unsigned int traceLevel) {
     std::vector<Segment> rayRoutes;
-    auto clist = GetColliderMortonList(factory, ray);
 
-    bool hitted = false;
-    Hit hit;
-    hit.distance = FLT_MAX;
-    for (auto && idx : clist) {
-        auto box = factory->GetOctreeBox(idx).get();
-        
-        auto it = box->nodes.begin();
-        while(it != box->nodes.end()) {
-            auto& node = *it;
-            it++;
+    for (int i = 0; i < traceLevel; i++) {
+        auto clist = GetColliderMortonList(factory, ray);
+        bool hitted = false;
+        Hit hit;
+        hit.distance = FLT_MAX;
+        for (auto && idx : clist) {
+            auto box = factory->GetOctreeBox(idx).get();
 
-            std::vector<Hit> ret = node->object->IntersectPositions(ray);
+            auto it = box->nodes.begin();
+            while (it != box->nodes.end()) {
+                auto& node = *it;
+                it++;
 
-            if (ret.empty()) {
-                continue;
-            }
+                std::vector<Hit> ret = node->object->IntersectPositions(ray);
 
-            Hit nearest = *std::min_element(ret.begin(), ret.end(), [](const Hit& lhs, const Hit& rhs) { return lhs.distance < rhs.distance; });
+                if (ret.empty()) {
+                    continue;
+                }
 
-            if (hit.distance > nearest.distance) {
-                hit = nearest;
-                hitted = true;
+                Hit nearest = *std::min_element(ret.begin(), ret.end(), [](const Hit& lhs, const Hit& rhs) { return lhs.distance < rhs.distance; });
+
+                if (hit.distance > nearest.distance) {
+                    hit = nearest;
+                    hitted = true;
+                }
             }
         }
-    }
-    
-    if (hitted) {
+
+        if (!hitted) {
+            break;
+        }
         rayRoutes.push_back(Segment(ray.pos, hit.pos));
-        rayRoutes.push_back(Segment(hit.pos, hit.nextDir * 100));
+        ray.dir = hit.nextDir;
+        ray.pos = hit.pos;
     }
+
+    rayRoutes.push_back(Segment(ray.pos, ray.dir * 100));
     return rayRoutes;
 }
 

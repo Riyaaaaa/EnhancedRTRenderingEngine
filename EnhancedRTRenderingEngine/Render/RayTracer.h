@@ -14,7 +14,7 @@ class RayTracer
 public:
 };
 
-std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray);
+std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray, unsigned int traceLevel);
 
 std::set<uint32_t> GetColliderMortonList(SpaceOctree::OctreeFactoryBase* factory, Ray ray);
 //void RayTrace(Vector3D bpos, Vector3D dir) {}
