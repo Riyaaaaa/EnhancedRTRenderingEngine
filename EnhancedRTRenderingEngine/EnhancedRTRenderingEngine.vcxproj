@@ -195,6 +195,7 @@
     <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
     <ClInclude Include="Structure\Octree.h" />
     <ClInclude Include="Structure\Primitive.h" />
+    <ClInclude Include="Structure\RaytraceStructures.h" />
     <ClInclude Include="Structure\Voxel.h" />
     <ClInclude Include="ThirdParty\x64\libpng\png.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngconf.h" />

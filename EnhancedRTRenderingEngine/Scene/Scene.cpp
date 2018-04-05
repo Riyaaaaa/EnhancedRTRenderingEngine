@@ -72,7 +72,7 @@ void Scene::CreateTestScene() {
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
     pointLights[0].SetPoint(Vector3D{ 0.0, 2.0f, 0.0f });
 
-    captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
+    //captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
     mainCameraIdx = 0;
 
     meshDirty = true;

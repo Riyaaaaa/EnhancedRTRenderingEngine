@@ -7,12 +7,17 @@
 #include "RenderingContext.h"
 #include "Scene/Enviroment/CubeReflectionCapture.h"
 
+#include "Structure/RaytraceStructures.h"
+
 #include <memory>
 
 class IMeshObject {
 public:
     // add if necessary
     virtual AABB GetAABB() = 0;
+    virtual Vector3D GetVertexPosition(unsigned int idx) = 0;
+    virtual unsigned int GetVertexNums() = 0;
+    virtual std::vector<Hit> IntersectPositions(Ray ray) = 0;
 };
 
 template<class VertType>
@@ -37,6 +42,9 @@ public:
     std::size_t GetReflectionSourceId() { return _reflectionSourceId; }
 
     virtual AABB GetAABB() override;
+    virtual Vector3D GetVertexPosition(unsigned int idx) override;
+    virtual unsigned int GetVertexNums() override;
+    virtual std::vector<Hit> IntersectPositions(Ray ray) override;
 
 protected:
     virtual void DirtyWorldMatrix() override;
@@ -44,6 +52,9 @@ protected:
     MeshObject() = default;
     bool AABBDirty = true;
     bool _hasReflectionSource = false;
+
+    std::vector<DirectX::XMVECTOR> _vertexTransformedCache;
+
     std::size_t _reflectionSourceId;
     std::vector<Material> _materials;
     std::shared_ptr<MeshBase<VertType>> _mesh;

@@ -12,6 +12,9 @@
 using namespace DirectX;
 
 void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, const std::vector<Line>& lines) {
+    if (lines.empty()) {
+        return;
+    }
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
@@ -31,8 +34,8 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     
     for (auto && line : lines) {
         Vector4D color = Vector4D(line.color.r, line.color.g, line.color.b);
-        LineVertex bvert{ line.bpos, color, line.thickness };
-        LineVertex evert{ line.epos, color, line.thickness };
+        LineVertex bvert{ line.seg.bpos, color, line.thickness };
+        LineVertex evert{ line.seg.epos, color, line.thickness };
 
         lineMesh->AddVertex(bvert);
         lineMesh->AddVertex(evert);

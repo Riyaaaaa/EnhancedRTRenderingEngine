@@ -89,7 +89,7 @@ namespace SpaceOctree {
 
         void IterateEnableBox(std::function<void(const std::pair<uint32_t, OctreeBox*>&)> callback) const override {
             for (auto && pair : _tree) {
-                if (pair.second->head) {
+                if (!pair.second->nodes.empty()) {
                     callback(std::make_pair(pair.first, pair.second.get()));
                 }
             }
@@ -129,7 +129,7 @@ namespace SpaceOctree {
         void IterateEnableBox(std::function<void(const std::pair<uint32_t, OctreeBox*>&)> callback) const override {
             for (int i = 0; i < GetTree().size(); i++) {
                 auto& box = GetTree()[i];
-                if (box && box->head) {
+                if (box && !box->nodes.empty()) {
                     callback(std::make_pair(i, box.get()));
                 }
             }

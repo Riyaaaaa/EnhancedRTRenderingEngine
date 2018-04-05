@@ -6,12 +6,16 @@
 
 #include "Structure/Octree.h"
 #include "Structure/Vector.h"
+#include "Structure/Primitive.h"
+#include "Structure/RaytraceStructures.h"
 
 class RayTracer
 {
 public:
 };
 
-std::set<uint32_t> GetColliderMeshList(SpaceOctree::OctreeFactoryBase* factory, Vector3D bpos, Vector3D dir);
+std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray);
+
+std::set<uint32_t> GetColliderMortonList(SpaceOctree::OctreeFactoryBase* factory, Ray ray);
 //void RayTrace(Vector3D bpos, Vector3D dir) {}
 

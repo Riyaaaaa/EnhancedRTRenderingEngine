@@ -2,18 +2,56 @@
 
 #include "RayTracer.h"
 
+#include "Structure/Primitive.h"
 #include "Constant/PrecomputedConstants.h"
 
-std::set<uint32_t> GetColliderMeshList(SpaceOctree::OctreeFactoryBase* factory, Vector3D bpos, Vector3D dir) {
+std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray) {
+    std::vector<Segment> rayRoutes;
+    auto clist = GetColliderMortonList(factory, ray);
+
+    bool hitted = false;
+    Hit hit;
+    hit.distance = FLT_MAX;
+    for (auto && idx : clist) {
+        auto box = factory->GetOctreeBox(idx).get();
+        
+        auto it = box->nodes.begin();
+        while(it != box->nodes.end()) {
+            auto& node = *it;
+            it++;
+
+            std::vector<Hit> ret = node->object->IntersectPositions(ray);
+
+            if (ret.empty()) {
+                continue;
+            }
+
+            Hit nearest = *std::min_element(ret.begin(), ret.end(), [](const Hit& lhs, const Hit& rhs) { return lhs.distance < rhs.distance; });
+
+            if (hit.distance > nearest.distance) {
+                hit = nearest;
+                hitted = true;
+            }
+        }
+    }
+    
+    if (hitted) {
+        rayRoutes.push_back(Segment(ray.pos, hit.pos));
+        rayRoutes.push_back(Segment(hit.pos, hit.nextDir * 100));
+    }
+    return rayRoutes;
+}
+
+std::set<uint32_t> GetColliderMortonList(SpaceOctree::OctreeFactoryBase* factory, Ray ray) {
     auto size = factory->GetMinBoxSize();
-    auto rayForward = Vector3D(dir.x * size.w, dir.y * size.h, dir.z * size.d);
+    auto rayForward = Vector3D(ray.dir.x * size.w, ray.dir.y * size.h, ray.dir.z * size.d);
     auto rootAABB = factory->GetRootAABB();
     
-    _Vector3D<int16_t> grid = factory->CalculateGridCoordinate(bpos);
+    _Vector3D<int16_t> grid = factory->CalculateGridCoordinate(ray.pos);
     _Vector3D<int8_t> gridForward = _Vector3D<int8_t>(
-        dir.x >= 0.0f ? 1 : -1,
-        dir.y >= 0.0f ? 1 : -1,
-        dir.z >= 0.0f ? 1 : -1
+        ray.dir.x >= 0.0f ? 1 : -1,
+        ray.dir.y >= 0.0f ? 1 : -1,
+        ray.dir.z >= 0.0f ? 1 : -1
         );
 
     Vector3D pos = Vector3D(grid.x * size.w, grid.y * size.h, grid.z * size.h) + rootAABB.bpos;
@@ -33,9 +71,9 @@ std::set<uint32_t> GetColliderMeshList(SpaceOctree::OctreeFactoryBase* factory, 
         nextGrid = grid + gridForward;
         Vector3D nextpos = Vector3D(nextGrid.x * size.w, nextGrid.y * size.h, nextGrid.z * size.h) + rootAABB.bpos;
 
-        float ax = dir.x != 0.0f ? std::abs((nextpos.x - pos.x) / rayForward.x) : FLT_MAX;
-        float ay = dir.y != 0.0f ? std::abs((nextpos.y - pos.y) / rayForward.y) : FLT_MAX;
-        float az = dir.z != 0.0f ? std::abs((nextpos.z - pos.z) / rayForward.z) : FLT_MAX;
+        float ax = ray.dir.x != 0.0f ? std::abs((nextpos.x - pos.x) / rayForward.x) : FLT_MAX;
+        float ay = ray.dir.y != 0.0f ? std::abs((nextpos.y - pos.y) / rayForward.y) : FLT_MAX;
+        float az = ray.dir.z != 0.0f ? std::abs((nextpos.z - pos.z) / rayForward.z) : FLT_MAX;
 
         if (ax < ay && ax < az) {
             pos += rayForward * ax;
