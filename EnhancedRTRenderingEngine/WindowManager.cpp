@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Windowsx.h"
 #include "WindowManager.h"
-#include "Common.h"
+#include "Common/Common.h"
 
 #include <iostream>
 

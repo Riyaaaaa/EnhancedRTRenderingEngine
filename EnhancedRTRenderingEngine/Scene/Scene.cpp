@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Scene.h"
 
-#include "Common.h"
+#include "Common/Common.h"
 
 #include "Algorithms/SpaceSplits.h"
 

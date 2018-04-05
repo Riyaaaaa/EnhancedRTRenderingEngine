@@ -9,7 +9,7 @@
 #include "GraphicsInterface/GICommandUtils.h"
 
 #include "WindowManager.h"
-#include "Common.h"
+#include "Common/Common.h"
 
 using namespace DirectX;
 
