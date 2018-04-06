@@ -537,6 +537,18 @@
     <ClInclude Include="Utility\TransformUtils.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="GUI\HUDCanvas.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\HUDCanvasRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\NuklearContexts.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\NuklearWrapper.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -854,6 +866,15 @@
     <ClCompile Include="Utility\TransformUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="GUI\HUDCanvas.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\HUDCanvasRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\NuklearWrapper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -878,7 +899,6 @@
     <FxCompile Include="Shader\DepthVertexShader.hlsl" />
     <FxCompile Include="Shader\LightingPSTextureColor.hlsl" />
     <FxCompile Include="Shader\LightingPSMain.hlsl" />
-    <FxCompile Include="Shader\HUDVertexShader.hlsl" />
     <FxCompile Include="Shader\MinTextureColor.hlsl" />
     <FxCompile Include="Shader\UnlitPixelShader.hlsl" />
     <FxCompile Include="Shader\UnlitCubeTexturePixelShader.hlsl" />
@@ -888,6 +908,9 @@
     <FxCompile Include="Shader\PostEffects.hlsl" />
     <FxCompile Include="Shader\LineGeometryShader.hlsl" />
     <FxCompile Include="Shader\LineVertexShader.hlsl" />
+    <FxCompile Include="Shader\TextureVertexShader.hlsl" />
+    <FxCompile Include="Shader\HUD\HUDVertexShader.hlsl" />
+    <FxCompile Include="Shader\HUD\HUDPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

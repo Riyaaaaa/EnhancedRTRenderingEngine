@@ -9,6 +9,14 @@
 #include "Structure/Structure.h"
 
 struct VertexLayout {
+    VertexLayout() = default;
+    VertexLayout(const char* name, VertexProperty vProperty, unsigned int semanticsIndex, unsigned int slot, unsigned int memoryOffset) :
+        name(name),
+        vProperty(vProperty),
+        semanticsIndex(semanticsIndex),
+        slot(slot),
+        memoryOffset(memoryOffset) {}
+
     const char* name;
     VertexProperty vProperty;
     unsigned int semanticsIndex;
@@ -16,8 +24,7 @@ struct VertexLayout {
     unsigned int memoryOffset;
 };
 
-template<class VertType>
-std::vector<VertexLayout> CreateVertexLayout();
+UINT GetMemoryBlockSize(VertexProperty prop);
 
 struct SamplerParam {
     TextureAddressMode addressMode = TextureAddressMode::WRAP;

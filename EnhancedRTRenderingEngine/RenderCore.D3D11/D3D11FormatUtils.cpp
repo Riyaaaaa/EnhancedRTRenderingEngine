@@ -14,7 +14,8 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, VertexProperty>(VertexProperty prop) 
         return DXGI_FORMAT_R32G32B32_FLOAT;
     case VertexProperty::FloatRGBA:
         return DXGI_FORMAT_R32G32B32A32_FLOAT;
-        break;
+    case VertexProperty::UnormRGBA:
+        return DXGI_FORMAT_R8G8B8A8_UNORM;
     default:
         return DXGI_FORMAT_UNKNOWN;
     }
@@ -284,18 +285,5 @@ DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat) {
     }
 }
 
-UINT GetMemoryBlockSize(VertexProperty prop) {
-    switch (prop)
-    {
-    case VertexProperty::FloatRG:
-        return 4 * 2;
-    case VertexProperty::FloatRGB:
-        return 4 * 3;
-    case VertexProperty::FloatRGBA:
-        return 4 * 4;
-        break;
-    default:
-        return 0;
-    }
-}
+
 

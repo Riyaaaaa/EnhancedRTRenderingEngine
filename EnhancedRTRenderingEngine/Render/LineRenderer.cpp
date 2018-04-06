@@ -45,6 +45,9 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     MeshObject<LineVertex> mesh(lineMesh);
     DrawMesh element(&mesh);
+    ObjectBuffer* buffer = new ObjectBuffer;
+    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
+    element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
     DrawElement face(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;

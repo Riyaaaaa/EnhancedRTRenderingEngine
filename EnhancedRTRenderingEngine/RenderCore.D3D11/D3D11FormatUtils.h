@@ -9,5 +9,3 @@ template<class T, class U = void>
 T CastToGIFormat(U prop);
 
 DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat);
-
-UINT GetMemoryBlockSize(VertexProperty prop);

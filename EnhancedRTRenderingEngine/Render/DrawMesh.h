@@ -110,18 +110,26 @@ public:
                 ResourceType::IndexList, sizeof(uint16_t)), -1);
         }
         
-        ObjectBuffer* pBuffer = new ObjectBuffer;
-        std::shared_ptr<void> buffer(pBuffer);
-
-        pBuffer->World = XMMatrixTranspose(element->GetMatrix());
-        pBuffer->NormalWorld = XMMatrixInverse(nullptr, element->GetMatrix());
-
-        shaderResources.emplace_back(GIRawResource(RawBinary(pBuffer, sizeof(ObjectBuffer)),
-            ResourceType::VSConstantBuffer, -1), 1);
-
-        _dataHandles.push_back(buffer);
-
         _primitiveType = element->GetMesh()->GetPrimitiveType();
+    }
+
+    template<class BufferType>
+    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId, ShaderType shaderType) {
+        ResourceType resType;
+
+        switch (shaderType) {
+        case ShaderType::PS:
+            resType = ResourceType::PSConstantBuffer;
+            break;
+        case ShaderType::VS:
+            resType = ResourceType::VSConstantBuffer;
+            break;
+        case ShaderType::GS:
+            resType = ResourceType::GSConstantBuffer;
+            break;
+        }
+        shaderResources.emplace_back(GIRawResource(RawBinary(ptr, sizeof(BufferType)), resType, sizeof(float)), regsiterId);
+        _dataHandles.emplace_back(ptr);
     }
 
     VertexPrimitiveType GetPrimitiveType() const { 

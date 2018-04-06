@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -110,7 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_FONT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
@@ -168,6 +168,10 @@
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="Constant\PrecomputedConstants.h" />
+    <ClInclude Include="GUI\HUDCanvas.h" />
+    <ClInclude Include="GUI\NuklearContexts.h" />
+    <ClInclude Include="GUI\NuklearWrapper.h" />
+    <ClInclude Include="Render\HUDCanvasRenderer.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11Resources.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11ImmediateCommands.h" />
     <ClInclude Include="Render\LineRenderer.h" />
@@ -340,6 +344,9 @@
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
+    <ClCompile Include="GUI\HUDCanvas.cpp" />
+    <ClCompile Include="GUI\NuklearWrapper.cpp" />
+    <ClCompile Include="Render\HUDCanvasRenderer.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11Resources.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11ImmediateCommands.cpp" />
     <ClCompile Include="Render\LineRenderer.cpp" />
@@ -550,7 +557,19 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
     </FxCompile>
-    <FxCompile Include="Shader\HUDVertexShader.hlsl">
+    <FxCompile Include="Shader\HUD\HUDPixelShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\HUD\HUDVertexShader.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\TextureVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>

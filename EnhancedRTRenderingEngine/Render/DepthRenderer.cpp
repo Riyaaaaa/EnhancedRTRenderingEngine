@@ -47,6 +47,10 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
 
         for (auto && object : scene->GetViewObjects()) {
             DrawMesh element(&object);
+            ObjectBuffer* buffer = new ObjectBuffer;
+            buffer->World = XMMatrixTranspose(object.GetMatrix());
+            buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+            element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
             DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
             face.startIndex = 0;
@@ -103,6 +107,10 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
 
             for (auto && object : scene->GetViewObjects()) {
                 DrawMesh element(&object);
+                ObjectBuffer* buffer = new ObjectBuffer;
+                buffer->World = XMMatrixTranspose(object.GetMatrix());
+                buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+                element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
                 DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
 
                 face.startIndex = 0;

@@ -21,7 +21,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
     DrawMesh element(&mesh);
-    DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
+    DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::TextureVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 
@@ -44,7 +44,12 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
     DrawMesh element(&mesh);
-    DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::HUDVertexShader());
+
+    ObjectBuffer* buffer = new ObjectBuffer;
+    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
+    element.RegisterConstantBuffer(buffer, 0, ShaderType::VS);
+
+    DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::TextureVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
 

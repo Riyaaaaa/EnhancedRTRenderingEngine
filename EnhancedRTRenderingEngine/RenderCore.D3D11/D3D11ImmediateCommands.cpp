@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
 
+#include "Common/Defines.h"
 #include "D3D11ImmediateCommands.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11Resources.h"

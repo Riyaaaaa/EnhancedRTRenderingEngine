@@ -12,7 +12,7 @@ class Texture2D : public RawBinary
 public:
     Texture2D() {}
     Texture2D(png_info_def* info, void* ptr, std::size_t size);
-    Texture2D(std::size_t width, std::size_t height, std::size_t channels, void* ptr, std::size_t size);
+    Texture2D(std::size_t width, std::size_t height, std::size_t channels, const void* ptr, std::size_t size);
     Texture2D(std::size_t width, std::size_t height, std::size_t channels);
 
     std::size_t Width() const { return width; }

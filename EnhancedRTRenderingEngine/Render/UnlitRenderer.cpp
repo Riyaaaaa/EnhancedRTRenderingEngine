@@ -27,6 +27,10 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
 
     for (auto && object : meshes) {
         DrawMesh element(&object);
+        ObjectBuffer* buffer = new ObjectBuffer;
+        buffer->World = XMMatrixTranspose(object.GetMatrix());
+        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
         DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
 
         face.startIndex = 0;

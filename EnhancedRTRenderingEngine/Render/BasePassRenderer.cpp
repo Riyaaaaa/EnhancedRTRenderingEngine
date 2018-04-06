@@ -43,6 +43,10 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     for (auto && object : scene->GetViewObjects()) {
         auto& mesh = object.GetMesh();
         DrawMesh element(&object);
+        ObjectBuffer* buffer = new ObjectBuffer;
+        buffer->World = XMMatrixTranspose(object.GetMatrix());
+        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
