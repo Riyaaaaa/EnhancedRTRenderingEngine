@@ -56,6 +56,9 @@ public:
     GIInputLayout* CreateInputLayout(const std::vector<VertexLayout>& layouts, GIVertexShader* shader) override;
     GIRasterizerState* CreateRasterizerState(RasterizerType type) override;
 
+    virtual GIBlendState* CreateBlendState(BlendDesc desc) override;
+    virtual void OMSetBlendState(GIBlendState* state, Vector4D blendFactor, unsigned int sampleMask = 0xffffffff) override;
+
     virtual void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0) override;
     virtual void Draw(unsigned int vertexCount, unsigned int startIndex) override;
 

@@ -388,6 +388,31 @@ GIRasterizerState* D3D11ImmediateCommands::CreateRasterizerState(RasterizerType 
     return state;
 }
 
+GIBlendState* D3D11ImmediateCommands::CreateBlendState(BlendDesc desc) {
+    D3D11BlendState* state = new D3D11BlendState;
+
+    D3D11_BLEND_DESC ddesc;
+
+    ddesc.AlphaToCoverageEnable = desc.AlphaToCoverageEnable;
+    ddesc.IndependentBlendEnable = desc.IndependentBlendEnable;
+
+    ddesc.RenderTarget[0].BlendEnable = desc.RenderTarget[0].BlendEnable;
+    ddesc.RenderTarget[0].SrcBlend = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].SrcBlend);
+    ddesc.RenderTarget[0].DestBlend = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].DestBlend);
+    ddesc.RenderTarget[0].BlendOp = CastToD3D11Format<D3D11_BLEND_OP>(desc.RenderTarget[0].BlendOp);
+    ddesc.RenderTarget[0].SrcBlendAlpha = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].SrcBlendAlpha);
+    ddesc.RenderTarget[0].DestBlendAlpha = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].DestBlendAlpha);
+    ddesc.RenderTarget[0].BlendOpAlpha = CastToD3D11Format<D3D11_BLEND_OP>(desc.RenderTarget[0].BlendOpAlpha);
+    ddesc.RenderTarget[0].RenderTargetWriteMask = desc.RenderTarget[0].RenderTargetWriteMask;
+
+    _device->CreateBlendState(&ddesc, state->resource.ToCreator());
+
+    return state;
+}
+
+void D3D11ImmediateCommands::OMSetBlendState(GIBlendState* state, Vector4D blendFactor, unsigned int sampleMask) {
+    _deviceContext->OMSetBlendState(CastRes<D3D11BlendState>(state).Get(), &blendFactor.x, sampleMask);
+}
 
 void D3D11ImmediateCommands::IASetPrimitiveTopology(VertexPrimitiveType primitiveType) {
     _deviceContext->IASetPrimitiveTopology(CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(primitiveType));

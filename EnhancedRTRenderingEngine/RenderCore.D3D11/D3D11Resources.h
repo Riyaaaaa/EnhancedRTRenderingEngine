@@ -86,7 +86,10 @@ public:
     ComPtr<ID3D11ShaderResourceView> resource;
 };
 
-
+class D3D11BlendState : public GIBlendState {
+public:
+    ComPtr<ID3D11BlendState> resource;
+};
 
 
 

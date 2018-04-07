@@ -144,6 +144,66 @@ D3D11_TEXTURE_ADDRESS_MODE CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE, Texture
 }
 
 template<>
+D3D11_BLEND CastToD3D11Format <D3D11_BLEND, BlendType>(BlendType t) {
+    switch(t) 
+    {
+    case BlendType::ZERO:
+        return D3D11_BLEND_ZERO;
+    case BlendType::ONE:
+        return D3D11_BLEND_ONE;
+    case BlendType::SRC_COLOR:
+        return D3D11_BLEND_SRC_COLOR;
+    case BlendType::INV_SRC_COLOR:
+        return D3D11_BLEND_INV_SRC_COLOR;
+    case BlendType::SRC_ALPHA:
+        return D3D11_BLEND_SRC_ALPHA;
+    case BlendType::INV_SRC_ALPHA:
+        return D3D11_BLEND_INV_SRC_ALPHA;
+    case BlendType::DEST_ALPHA:
+        return D3D11_BLEND_DEST_ALPHA;
+    case BlendType::INV_DEST_ALPHA:
+        return D3D11_BLEND_INV_DEST_ALPHA;
+    case BlendType::DEST_COLOR:
+        return D3D11_BLEND_DEST_COLOR;
+    case BlendType::INV_DEST_COLOR:
+        return D3D11_BLEND_INV_DEST_COLOR;
+    case BlendType::SRC_ALPHA_SAT:
+        return D3D11_BLEND_SRC_ALPHA_SAT;
+    case BlendType::BLEND_FACTOR:
+        return D3D11_BLEND_BLEND_FACTOR;
+    case BlendType::INV_BLEND_FACTOR:
+        return D3D11_BLEND_INV_BLEND_FACTOR;
+    case BlendType::SRC1_COLOR:
+        return D3D11_BLEND_SRC1_COLOR;
+    case BlendType::INV_SRC1_COLOR:
+        return D3D11_BLEND_INV_SRC1_COLOR;
+    case BlendType::SRC1_ALPHA:
+        return D3D11_BLEND_SRC1_ALPHA;
+    case BlendType::INV_SRC1_ALPHA:
+        return D3D11_BLEND_INV_SRC1_ALPHA;
+    }
+
+    return D3D11_BLEND_ZERO;
+}
+
+template<>
+D3D11_BLEND_OP CastToD3D11Format<D3D11_BLEND_OP, BlendTypeOp>(BlendTypeOp t)
+{
+    switch (t) {
+    case BlendTypeOp::ADD:
+        return D3D11_BLEND_OP_ADD;
+    case BlendTypeOp::SUBTRACT:
+        return D3D11_BLEND_OP_SUBTRACT;
+    case BlendTypeOp::REV_SUBTRACT:
+        return D3D11_BLEND_OP_REV_SUBTRACT;
+    case BlendTypeOp::MIN:
+        return D3D11_BLEND_OP_MIN;
+    case BlendTypeOp::MAX:
+        return D3D11_BLEND_OP_MAX;
+    }
+}
+
+template<>
 VertexProperty CastToGIFormat<VertexProperty, DXGI_FORMAT>(DXGI_FORMAT prop) {
     switch (prop)
     {

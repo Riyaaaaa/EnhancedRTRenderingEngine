@@ -27,3 +27,21 @@ struct BufferDesc {
     unsigned int byteWidth;
     unsigned int stride;
 };
+
+struct RenderTargetBlendDesc {
+    bool BlendEnable = false;
+    BlendType SrcBlend = BlendType::ONE;
+    BlendType DestBlend = BlendType::ZERO;
+    BlendTypeOp BlendOp = BlendTypeOp::ADD;
+    BlendType SrcBlendAlpha = BlendType::ONE;
+    BlendType DestBlendAlpha = BlendType::ZERO;
+    BlendTypeOp BlendOpAlpha = BlendTypeOp::ADD;
+    unsigned int RenderTargetWriteMask = COLOR_WRITE_ENABLE_ALL;
+};
+
+struct BlendDesc {
+    bool AlphaToCoverageEnable = false;
+    bool IndependentBlendEnable = false;
+    RenderTargetBlendDesc RenderTarget[8];
+};
+
