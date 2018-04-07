@@ -25,7 +25,7 @@ public:
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex);
     virtual GISamplerState* CreateSamplerState(const SamplerParam& param);
 
-    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr = nullptr) override;
+    virtual GIBuffer* CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr = nullptr) override;
 
     virtual void RSSetState(GIRasterizerState* state);
 

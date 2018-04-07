@@ -29,7 +29,10 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
-    auto cb = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), sizeof(buf), &buf));
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(buf);
+    auto cb = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &buf));
     cmd->PSSetConstantBuffers(0, cb.get());
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };

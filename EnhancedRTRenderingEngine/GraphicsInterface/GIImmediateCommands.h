@@ -22,7 +22,7 @@ public:
     virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) = 0;
     virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) = 0;
 
-    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr = nullptr) = 0;
+    virtual GIBuffer* CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr = nullptr) = 0;
 
     virtual GITexture2D* CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures = std::vector<Texture2D>()) = 0;
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex) = 0;

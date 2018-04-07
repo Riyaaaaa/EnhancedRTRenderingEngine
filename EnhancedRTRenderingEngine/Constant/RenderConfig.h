@@ -56,7 +56,7 @@ enum class TextureType {
     TextureCube
 };
 
-enum class TextureUsage {
+enum class ResourceUsage {
     Default,
     Immutable,
     Dynamic,

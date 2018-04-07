@@ -73,17 +73,17 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
 }
 
 template<>
-D3D11_USAGE CastToD3D11Format<D3D11_USAGE, TextureUsage>(TextureUsage prop) {
+D3D11_USAGE CastToD3D11Format<D3D11_USAGE, ResourceUsage>(ResourceUsage prop) {
     D3D11_USAGE usage;
 
     switch (prop) {
-    case TextureUsage::Default:
+    case ResourceUsage::Default:
         return D3D11_USAGE::D3D11_USAGE_DEFAULT;
-    case TextureUsage::Immutable:
+    case ResourceUsage::Immutable:
         return D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
-    case TextureUsage::Dynamic:
+    case ResourceUsage::Dynamic:
         return D3D11_USAGE::D3D11_USAGE_DYNAMIC;
-    case TextureUsage::Staging:
+    case ResourceUsage::Staging:
         return D3D11_USAGE::D3D11_USAGE_STAGING;
     }
 
@@ -205,19 +205,19 @@ TextureFormat CastToGIFormat<TextureFormat, DXGI_FORMAT>(DXGI_FORMAT prop) {
 }
 
 template<>
-TextureUsage CastToGIFormat<TextureUsage, D3D11_USAGE>(D3D11_USAGE prop) {
+ResourceUsage CastToGIFormat<ResourceUsage, D3D11_USAGE>(D3D11_USAGE prop) {
     switch (prop) {
     case D3D11_USAGE::D3D11_USAGE_DEFAULT:
-        return TextureUsage::Default;
+        return ResourceUsage::Default;
     case D3D11_USAGE::D3D11_USAGE_IMMUTABLE:
-        return TextureUsage::Immutable;
+        return ResourceUsage::Immutable;
     case D3D11_USAGE::D3D11_USAGE_DYNAMIC:
-        return TextureUsage::Dynamic;
+        return ResourceUsage::Dynamic;
     case D3D11_USAGE::D3D11_USAGE_STAGING:
-        return TextureUsage::Staging;
+        return ResourceUsage::Staging;
     }
 
-    return TextureUsage::Default;
+    return ResourceUsage::Default;
 }
 
 template<>

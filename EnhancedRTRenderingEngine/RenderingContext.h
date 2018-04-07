@@ -38,7 +38,7 @@ struct TextureParam {
     unsigned int arraySize = 1;
     bool isMultiSampling = false;
     TextureType type = TextureType::Texture2D;
-    TextureUsage usage = TextureUsage::Default;
+    ResourceUsage usage = ResourceUsage::Default;
     ResourceAccessFlag accessFlag = ResourceAccessFlag::None;  
     SamplerParam samplerParam;
     // ...add as neecesary

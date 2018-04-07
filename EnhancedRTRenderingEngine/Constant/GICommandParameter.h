@@ -20,3 +20,9 @@ struct ViewportParam {
     void* runtimeWindowHandle;
 };
 
+struct BufferDesc {
+    ResourceUsage usage = ResourceUsage::Default;
+    ResourceAccessFlag accessFlag = ResourceAccessFlag::R;
+    unsigned int byteWidth;
+    unsigned int stride;
+};

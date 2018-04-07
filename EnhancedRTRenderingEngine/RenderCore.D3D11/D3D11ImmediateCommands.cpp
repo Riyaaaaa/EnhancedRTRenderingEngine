@@ -219,15 +219,14 @@ GISamplerState* D3D11ImmediateCommands::CreateSamplerState(const SamplerParam& p
 }
 
 
-GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr) {
+GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr) {
     D3D11_BUFFER_DESC bufferDesc;
     D3D11Buffer* buffer = new D3D11Buffer;
 
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.CPUAccessFlags = 0;
-    bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = stride;
-    bufferDesc.ByteWidth = byteWidth;
+    bufferDesc.Usage = CastToD3D11Format<D3D11_USAGE>(desc.usage);
+    bufferDesc.CPUAccessFlags = CastToD3D11Format<unsigned int>(desc.accessFlag);
+    bufferDesc.StructureByteStride = desc.stride;
+    bufferDesc.ByteWidth = desc.byteWidth;
 
     switch (type) {
     case ResourceType::VertexList: 
