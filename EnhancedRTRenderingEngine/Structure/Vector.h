@@ -142,11 +142,14 @@ struct _Vector3D {
 
 using Vector3D = _Vector3D<float>;
 
-struct Vector4D {
-    Vector4D() {}
-    constexpr Vector4D(float x, float y, float z, float w = 1.0f) : x(x), y(y), z(z), w(w) {}
-    constexpr Vector4D(const Vector3D vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1.0f) {}
-    float x, y, z, w;
+template <class T>
+struct _Vector4D {
+    _Vector4D() {}
+    constexpr _Vector4D(T x, T y, T z, T w = 1) : x(x), y(y), z(z), w(w) {}
+    constexpr _Vector4D(const _Vector3D<T> vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1) {}
+    T x, y, z, w;
 
-    static constexpr Vector4D Zero() { return Vector4D(0.0f, 0.0f, 0.0f); }
+    static constexpr _Vector4D Zero() { return _Vector4D(0, 0, 0); }
 };
+
+using Vector4D = _Vector4D<float>;

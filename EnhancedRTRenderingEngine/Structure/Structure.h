@@ -73,6 +73,12 @@ struct TexVertex {
     Vector2D tex;    //r-g-b-a
 };
 
+struct Vertex2D {
+    Vector2D pos;
+    Vector2D tex;
+    _Vector4D<unsigned char> col;
+};
+
 struct Vertex3D {
     Vector3D pos;    //x-y-z
     Vector4D col;    //r-g-b-a

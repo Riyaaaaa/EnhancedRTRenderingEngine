@@ -370,6 +370,18 @@ GIRasterizerState* D3D11ImmediateCommands::CreateRasterizerState(RasterizerType 
         desc.CullMode = D3D11_CULL_NONE;
         desc.FillMode = D3D11_FILL_WIREFRAME;
         break;
+    case RasterizerType::HUD:
+        desc.FillMode = D3D11_FILL_SOLID;
+        desc.CullMode = D3D11_CULL_NONE;
+        desc.FrontCounterClockwise = FALSE;
+        desc.DepthBias = 0;
+        desc.DepthBiasClamp = 0;
+        desc.SlopeScaledDepthBias = 0.0f;
+        desc.DepthClipEnable = TRUE;
+        desc.ScissorEnable = TRUE;
+        desc.MultisampleEnable = FALSE;
+        desc.AntialiasedLineEnable = FALSE;
+        break;
     }
     
     _device->CreateRasterizerState(&desc, state->resource.ToCreator());

@@ -5,7 +5,8 @@
 enum class RasterizerType {
     Defalt,
     DoubleSided,
-    WireFrame
+    WireFrame,
+    HUD
 };
 
 struct ViewportCfg {
