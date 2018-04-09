@@ -137,6 +137,8 @@ void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUD
 void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, const NuklearWrapper& nuklear) {
     const Vector4D blend_factor(0.0f, 0.0f, 0.0f, 0.0f);
 
+    cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
+
     cmd->IASetInputLayout(_layout.get());
     cmd->IASetVertexBuffer(_vertexBuffer.get(), sizeof(Vertex2D), 0);
     cmd->IASetIndexBuffer(_indexBuffer.get(), 0);
