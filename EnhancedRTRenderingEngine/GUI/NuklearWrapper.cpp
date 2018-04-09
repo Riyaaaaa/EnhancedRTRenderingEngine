@@ -10,6 +10,10 @@
 
 NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
 {
+    _contexts.atlas = new nk_font_atlas;
+    _contexts.nkCmds = new nk_buffer;
+    _contexts.context = new nk_context;
+
     nk_init_default(_contexts.context, 0);
     //_context.clip.copy
     //_context.clip.pase
@@ -42,4 +46,8 @@ NuklearWrapper::~NuklearWrapper()
     nk_font_atlas_clear(_contexts.atlas);
     nk_buffer_free(_contexts.nkCmds);
     nk_free(_contexts.context);
+
+    delete _contexts.atlas;
+    delete _contexts.nkCmds;
+    delete _contexts.context;
 }
