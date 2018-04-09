@@ -25,7 +25,7 @@ NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
     buf = nk_font_atlas_bake(_contexts.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
 
     Texture2D atlasTexture((std::size_t)w, (std::size_t)h, 4ul, buf, w * h * 4);
-    FileManager::getInstance()->AddCache<Texture2D>("FontAtlas_HUD", atlasTexture);
+    //FileManager::getInstance()->AddCache<Texture2D>("FontAtlas_HUD", atlasTexture);
 
     TextureParam param;
     param.width = w;

@@ -32,7 +32,7 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
     offset += GetMemoryBlockSize(layout.back().vProperty);
     layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 0, 0, offset);
     offset += GetMemoryBlockSize(layout.back().vProperty);
-    layout.emplace_back("POSITION", VertexProperty::UnormRGBA, 0, 0, offset);
+    layout.emplace_back("COLOR", VertexProperty::UnormRGBA, 0, 0, offset);
 
     _rstate = MakeRef(cmd->CreateRasterizerState(RasterizerType::HUD));
 

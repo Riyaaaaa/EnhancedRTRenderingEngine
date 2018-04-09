@@ -23,7 +23,7 @@ struct ViewportParam {
 
 struct BufferDesc {
     ResourceUsage usage = ResourceUsage::Default;
-    ResourceAccessFlag accessFlag = ResourceAccessFlag::R;
+    ResourceAccessFlag accessFlag = ResourceAccessFlag::None;
     unsigned int byteWidth;
     unsigned int stride;
 };

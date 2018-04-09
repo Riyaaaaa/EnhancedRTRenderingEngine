@@ -19,7 +19,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
         bufferDesc.byteWidth = psResource.first._resource.size();
         bufferDesc.usage = ResourceUsage::Default;
-        bufferDesc.accessFlag = ResourceAccessFlag::R;
+        bufferDesc.accessFlag = ResourceAccessFlag::None;
         bufferDesc.stride = psResource.first._structureByteStride;
 
         auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, bufferDesc, (void*)psResource.first._resource.get()));
@@ -89,7 +89,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
                 BufferDesc bufferDesc;
                 bufferDesc.byteWidth = rawRes.first._resource.size();
                 bufferDesc.usage = ResourceUsage::Default;
-                bufferDesc.accessFlag = ResourceAccessFlag::R;
+                bufferDesc.accessFlag = ResourceAccessFlag::None;
                 bufferDesc.stride = rawRes.first._structureByteStride;
 
                 auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, bufferDesc, (void*)rawRes.first._resource.get()));

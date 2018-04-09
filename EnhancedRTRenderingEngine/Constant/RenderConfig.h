@@ -72,7 +72,7 @@ enum class TextureAddressMode {
 };
 
 enum class ResourceAccessFlag {
-    None,
+    None = 0,
     R,
     W,
     RW
