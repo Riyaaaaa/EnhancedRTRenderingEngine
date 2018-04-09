@@ -6,6 +6,8 @@
 #include "nuklear/nuklear.h"
 #include "GraphicsInterface/GICommandUtils.h"
 
+#include "Common/Common.h"
+
 static void
 SetScreenProjection(int width, int height, float *result)
 {
@@ -179,7 +181,20 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUD
             struct nk_buffer vbuf, ibuf;
             nk_buffer_init_fixed(&vbuf, mapped_vertex_buffer.pData, (size_t)MAX_VERTEX_BUFFER);
             nk_buffer_init_fixed(&ibuf, mapped_index_buffer.pData, (size_t)MAX_INDEX_BUFFER);
-            nk_convert(nuklear.Context(), nuklear.Commands(), &vbuf, &ibuf, &config); }
+            nk_convert(nuklear.Context(), nuklear.Commands(), &vbuf, &ibuf, &config); 
+
+            /*Vertex2D* vertPtr = (Vertex2D*)vbuf.memory.ptr;
+            for (int i = 0; i < vbuf.memory.size / sizeof(Vertex2D); i++) {
+                auto ptr = vertPtr + i;
+                ERTREDebug(L"%f %f", ptr->pos.x, ptr->pos.y);
+            }*/
+
+           /* unsigned short* idxPtr = (unsigned short*)ibuf.memory.ptr;
+            for (int i = 0; i < ibuf.memory.size / sizeof(Vertex2D); i++) {
+                auto ptr = idxPtr + i;
+                ERTREDebug(L"%u", *ptr);
+            }*/
+        }
     }
 
     cmd->UnmapBuffer(_vertexBuffer.get(), 0);

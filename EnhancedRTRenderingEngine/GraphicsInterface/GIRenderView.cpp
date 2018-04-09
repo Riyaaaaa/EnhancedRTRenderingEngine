@@ -10,7 +10,7 @@ void GIRenderView::Initialize(GIImmediateCommands* cmd, const ViewportParam& par
     _OMResource->renderTargets.push_back(MakeRef(cmd->CreateRenderTargetView(_swapchain->backBuffer.get())));
     _OMResource->depthStencilView = GICommandUtils::CreateDepthStencilView(cmd, Size(param.cfg.width, param.cfg.height), TextureFormat::D24_UNORM_S8_UINT, false);
 
-    _defaultRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::Defalt));
+    _defaultRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::Default));
     _doubleSidedRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::DoubleSided));
     _wireframeRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::WireFrame));
 

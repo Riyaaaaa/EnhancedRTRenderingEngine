@@ -3,7 +3,7 @@
 #include "RenderConfig.h"
 
 enum class RasterizerType {
-    Defalt,
+    Default,
     DoubleSided,
     WireFrame,
     HUD

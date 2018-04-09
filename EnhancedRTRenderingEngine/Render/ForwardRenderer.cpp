@@ -9,6 +9,8 @@ void ForwardRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Scene
     Vector4D ClearColor { 0.7f, 0.7f, 0.7f, 1.0f };
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
+    view->SetRasterizerState(cmd, RasterizerState::Default);
+
     depthRenderer.render(cmd, view, &_scene);
     bassPassRenderer.render(cmd, view, &_scene);
 }

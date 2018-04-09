@@ -372,7 +372,7 @@ GIRasterizerState* D3D11ImmediateCommands::CreateRasterizerState(RasterizerType 
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
 
     switch (type) {
-    case RasterizerType::Defalt:
+    case RasterizerType::Default:
         break;
     case RasterizerType::DoubleSided:
         desc.CullMode = D3D11_CULL_NONE;
