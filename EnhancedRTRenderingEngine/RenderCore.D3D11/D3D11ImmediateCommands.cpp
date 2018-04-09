@@ -227,6 +227,7 @@ GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, BufferDesc des
     bufferDesc.CPUAccessFlags = CastToD3D11Format<unsigned int>(desc.accessFlag);
     bufferDesc.StructureByteStride = desc.stride;
     bufferDesc.ByteWidth = desc.byteWidth;
+    bufferDesc.MiscFlags = 0;
 
     switch (type) {
     case ResourceType::VertexList: 
