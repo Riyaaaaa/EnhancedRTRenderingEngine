@@ -52,6 +52,12 @@ namespace ShaderFactory
         return Shader(ShadingType::Geometry, ResourceLoader::LoadShader("LineGeometryShader"));
     }
 
+    inline Shader HUDVertexShader() {
+        return Shader(ShadingType::Vertex, ResourceLoader::LoadShader("HUDVertexShader"));
+    }
 
+    inline Shader HUDPixelShader() {
+        return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("HUDPixelShader"));
+    }
 };
 

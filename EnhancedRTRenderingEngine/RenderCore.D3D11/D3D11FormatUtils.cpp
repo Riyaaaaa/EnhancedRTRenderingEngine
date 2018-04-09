@@ -74,8 +74,6 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
 
 template<>
 D3D11_USAGE CastToD3D11Format<D3D11_USAGE, ResourceUsage>(ResourceUsage prop) {
-    D3D11_USAGE usage;
-
     switch (prop) {
     case ResourceUsage::Default:
         return D3D11_USAGE::D3D11_USAGE_DEFAULT;
@@ -201,6 +199,28 @@ D3D11_BLEND_OP CastToD3D11Format<D3D11_BLEND_OP, BlendTypeOp>(BlendTypeOp t)
     case BlendTypeOp::MAX:
         return D3D11_BLEND_OP_MAX;
     }
+
+    return D3D11_BLEND_OP_ADD;
+}
+
+template<>
+D3D11_MAP CastToD3D11Format<D3D11_MAP, MapType>(MapType t)
+{
+    switch (t)
+    {
+    case MapType::READ:
+        return D3D11_MAP::D3D11_MAP_READ;
+    case MapType::WRITE:
+        return D3D11_MAP::D3D11_MAP_WRITE;
+    case MapType::READ_WRITE:
+        return D3D11_MAP::D3D11_MAP_READ_WRITE;
+    case MapType::WRITE_DISCARD:
+        return D3D11_MAP::D3D11_MAP_WRITE_DISCARD;
+    case MapType::WRITE_NO_OVERWRITE:
+        return D3D11_MAP::D3D11_MAP_WRITE_NO_OVERWRITE;
+    }
+
+    return D3D11_MAP_READ;
 }
 
 template<>

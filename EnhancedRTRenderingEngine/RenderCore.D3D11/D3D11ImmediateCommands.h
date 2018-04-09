@@ -27,7 +27,8 @@ public:
 
     virtual GIBuffer* CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr = nullptr) override;
 
-    virtual void RSSetState(GIRasterizerState* state);
+    virtual void RSSetState(GIRasterizerState* state) override;
+    virtual void RSSetScissorRect(const ScissorRect& rect) override;
 
     virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) override;
     virtual void CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src);
@@ -61,6 +62,9 @@ public:
 
     virtual void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0) override;
     virtual void Draw(unsigned int vertexCount, unsigned int startIndex) override;
+
+    virtual GIMappedResource MapBuffer(GIBuffer* buffer, unsigned int idx, MapType mapType) override;
+    virtual void UnmapBuffer(GIBuffer* buffer, unsigned int idx) override;
 
     virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const Texture2D & tex) override;
     virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) override;

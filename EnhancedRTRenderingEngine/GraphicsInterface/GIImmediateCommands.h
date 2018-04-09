@@ -33,6 +33,7 @@ public:
     virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels) = 0;
 
     virtual void RSSetState(GIRasterizerState* state) = 0;
+    virtual void RSSetScissorRect(const ScissorRect& rect) = 0;
 
     virtual GIPixelShader* CreatePixelShader(RawBinary byteCode) = 0;
     virtual void PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) = 0;
@@ -62,6 +63,9 @@ public:
 
     virtual void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0) = 0;
     virtual void Draw(unsigned int vertexCount, unsigned int startIndex) = 0;
+
+    virtual GIMappedResource MapBuffer(GIBuffer* buffer, unsigned int idx, MapType mapType) = 0;
+    virtual void UnmapBuffer(GIBuffer* buffer, unsigned int idx) = 0;
 
     virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const Texture2D & tex) = 0;
     virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) = 0;

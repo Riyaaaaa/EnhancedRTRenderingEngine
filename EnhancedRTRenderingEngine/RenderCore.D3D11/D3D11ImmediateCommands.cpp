@@ -317,6 +317,16 @@ void D3D11ImmediateCommands::RSSetState(GIRasterizerState* state) {
     _deviceContext->RSSetState(CastRes<D3D11RasterizerState>(state).Get());
 }
 
+void D3D11ImmediateCommands::RSSetScissorRect(const ScissorRect& rect) {
+    D3D11_RECT drect;
+    drect.left = rect.left;
+    drect.right = rect.right;
+    drect.top = rect.top;
+    drect.bottom = rect.bottom;
+
+    _deviceContext->RSSetScissorRects(1, &drect);
+}
+
 void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) {
     _deviceContext->PSSetShaderResources(slot, 1, NullableCastRes<D3D11ShaderResourceView>(texture).Ref());
 }
@@ -440,6 +450,23 @@ GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam pa
     GITextureProxyEntity* proxy = new GITextureProxyEntity();
     proxy->Initialize(this, param, tex);
     return proxy;
+}
+
+GIMappedResource D3D11ImmediateCommands::MapBuffer(GIBuffer* buffer, unsigned int idx, MapType mapType) {
+    D3D11_MAPPED_SUBRESOURCE mapped;
+
+    _deviceContext->Map(CastRes<D3D11Buffer>(buffer).Get(), idx, CastToD3D11Format<D3D11_MAP>(mapType), 0, &mapped);
+
+    GIMappedResource dst;
+    dst.pData = mapped.pData;
+    dst.DepthPitch = mapped.DepthPitch;
+    dst.RowPitch = mapped.RowPitch;
+
+    return dst;
+}
+
+void D3D11ImmediateCommands::UnmapBuffer(GIBuffer* buffer, unsigned int idx) {
+    _deviceContext->Unmap(CastRes<D3D11Buffer>(buffer).Get(), idx);
 }
 
 GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(std::shared_ptr<GITexture2D> tex, SamplerParam param) {

@@ -3,11 +3,12 @@
 
 #include "Resource/Texture2D.h"
 #include "nuklear/nuklear.h"
-
+#include "GraphicsInterface/GIImmediateCommands.h"
+#include "GraphicsInterface/GIResource.h"
 #include "FileManager.h"
 
 
-NuklearWrapper::NuklearWrapper()
+NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
 {
     nk_init_default(_contexts.context, 0);
     //_context.clip.copy
@@ -21,6 +22,16 @@ NuklearWrapper::NuklearWrapper()
 
     Texture2D atlasTexture((std::size_t)w, (std::size_t)h, 4ul, buf, w * h * 4);
     FileManager::getInstance()->AddCache<Texture2D>("FontAtlas_HUD", atlasTexture);
+
+    TextureParam param;
+    param.width = w;
+    param.height = h;
+    param.type = TextureType::Texture2D;
+    _atlasTexture = MakeRef(cmd->CreateTexture2D(param, std::vector<Texture2D>{atlasTexture}));
+    _atlasTextureSRV = MakeRef(cmd->CreateShaderResourceView(_atlasTexture.get()));
+
+    nk_draw_null_texture null;
+    nk_font_atlas_end(_contexts.atlas, nk_handle_ptr(_atlasTextureSRV.get()), &null);
     if (_contexts.atlas->default_font)
         nk_style_set_font(_contexts.context, &_contexts.atlas->default_font->handle);
 }

@@ -45,3 +45,10 @@ struct BlendDesc {
     RenderTargetBlendDesc RenderTarget[8];
 };
 
+struct ScissorRect {
+    long left;
+    long top;
+    long right;
+    long bottom;
+};
+
