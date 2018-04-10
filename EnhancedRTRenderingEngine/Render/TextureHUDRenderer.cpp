@@ -6,7 +6,7 @@
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
 #include "GraphicsInterface/GICommandUtils.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 
 
 void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size size, const Texture2D& texture)

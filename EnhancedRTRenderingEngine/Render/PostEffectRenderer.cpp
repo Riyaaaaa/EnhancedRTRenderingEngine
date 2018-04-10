@@ -5,7 +5,7 @@
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 #include "GraphicsInterface/GICommandUtils.h"
 #include <chrono>
 

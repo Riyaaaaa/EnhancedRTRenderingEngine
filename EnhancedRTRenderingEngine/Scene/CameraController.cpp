@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CameraController.h"
 
-#include "WindowManager.h"
+#include "WindowsApp.h"
 
 #include <cmath>
 
@@ -10,8 +10,8 @@ using namespace DirectX;
 CameraController::CameraController(CameraObject* camera)
 {
     _camera = camera;
-    WindowManager::getInstance()->RegisterPressListener("CameraController", std::bind<void (CameraController::*)(InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1));
-    WindowManager::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Vector2D, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+    WindowsApp::getInstance()->RegisterPressListener("CameraController", std::bind<void (CameraController::*)(InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1));
+    WindowsApp::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Vector2D, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 

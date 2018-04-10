@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "ForwardRenderer.h"
 
-#include "WindowManager.h"
+#include "WindowsApp.h"
 
 void ForwardRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene) {
     _scene.Refresh(cmd, scene);

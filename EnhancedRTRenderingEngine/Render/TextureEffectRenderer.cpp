@@ -8,7 +8,7 @@
 #include "Shader/ShaderFactory.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 
 std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect) {
     auto param = src->GetTexture()->GetTextureParam();

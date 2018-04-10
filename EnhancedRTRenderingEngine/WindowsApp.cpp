@@ -1,13 +1,13 @@
 #include "stdafx.h"
 #include "Windowsx.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 #include "Common/Common.h"
 
 #include <iostream>
 
 using namespace libspiral;
 
-bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
+bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_LBUTTONDOWN: {
         Vector2D pos = Vector2D{ (float)GET_X_LPARAM(lParam), (float)GET_Y_LPARAM(lParam) };
@@ -64,19 +64,19 @@ bool WindowManager::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam
     return false;
 }
 
-void WindowManager::RegisterPressListener(std::string key, const std::function<void(InputKey key)>& listener) {
+void WindowsApp::RegisterPressListener(std::string key, const std::function<void(InputKey key)>& listener) {
     pressedKeyListeners.insert(std::make_pair(key, listener));
 }
 
-void WindowManager::RegisterReleaseListener(std::string key, const std::function<void(InputKey key)>& listener) {
+void WindowsApp::RegisterReleaseListener(std::string key, const std::function<void(InputKey key)>& listener) {
     releasedKeyListeners.insert(std::make_pair(key, listener));
 }
 
-void WindowManager::RegisterDragListener(std::string key, const std::function<void(Vector2D Delta, InputKey key)>& listener) {
+void WindowsApp::RegisterDragListener(std::string key, const std::function<void(Vector2D Delta, InputKey key)>& listener) {
     dragListeners.insert(std::make_pair(key, listener));
 }
 
-void WindowManager::DispatchInputEvent(InputEvent e, InputKey key) {
+void WindowsApp::DispatchInputEvent(InputEvent e, InputKey key) {
     switch (e)
     {
     case InputEvent::PRESS:
@@ -94,7 +94,7 @@ void WindowManager::DispatchInputEvent(InputEvent e, InputKey key) {
     }
 }
 
-void WindowManager::DispathDragEvent(InputKey key, Vector2D Delta) {
+void WindowsApp::DispathDragEvent(InputKey key, Vector2D Delta) {
     for (auto && listener : dragListeners) {
         listener.second(Delta, key);
     }

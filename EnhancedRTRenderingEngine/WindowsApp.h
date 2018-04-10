@@ -7,7 +7,7 @@
 #include "Structure/Structure.h"
 
 
-class WindowManager : public libspiral::SingletonBase<WindowManager>
+class WindowsApp : public libspiral::SingletonBase<WindowsApp>
 {
 public:
     void RegisterWindow(HWND hWnd, Size size) { 

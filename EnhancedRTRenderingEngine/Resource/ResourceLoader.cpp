@@ -3,7 +3,7 @@
 #include "FileManager.h"
 
 #include "Common/Common.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 #include "Utility/StringUtils.h"
 #include "X/StringParser.h"
 
