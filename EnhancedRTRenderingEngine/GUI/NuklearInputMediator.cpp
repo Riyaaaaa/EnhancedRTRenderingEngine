@@ -46,6 +46,7 @@ bool NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index>
     }
 
     if (pos && _nuklear->currentWindowRect.Contains(Vector2D(pos->x, pos->y))) {
+        _swallows = true;
         return true;
     }
 
@@ -87,7 +88,8 @@ bool NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> p
         break;
     }
 
-    if (pos && _nuklear->currentWindowRect.Contains(Vector2D(pos->x, pos->y))) {
+    if (_swallows) {
+        _swallows = false;
         return true;
     }
 
@@ -109,7 +111,7 @@ bool NuklearInputMediator::ProcessInputMotion(Index Delta, Index pos, InputKey k
         break;
     }
 
-    if (_nuklear->currentWindowRect.Contains(Vector2D(pos.x, pos.y))) {
+    if (_swallows) {
         return true;
     }
 
