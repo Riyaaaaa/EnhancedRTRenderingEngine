@@ -26,7 +26,7 @@ SetScreenProjection(int width, int height, Matrix* result)
 }
 
 
-HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, const NuklearWrapper& nuklear)
+HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear)
 {
     std::vector<VertexLayout> layout;
     unsigned int offset = 0;
@@ -87,20 +87,24 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
 
     _layout = MakeRef(cmd->CreateInputLayout(layout, _vs.get()));
 
+    ;
+
+
+    _nuklear = &nuklear;
 }
 
 HUDCanvasRenderer::~HUDCanvasRenderer() 
 {
 }
 
-void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, const NuklearWrapper& nuklear) {
-    auto* ctx = nuklear.Context();
+BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
+    auto* ctx = _nuklear->Context();
 
     struct nk_colorf bg;
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
 
     // TODO: create layout from HUDCanvas
-    if (nk_begin(ctx, "Demo", nk_rect(50, 50, 400, 500),
+    if (nk_begin(nuklear.Context(), "Settings", nk_rect(50, 50, 400, 500),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
     {
@@ -112,8 +116,8 @@ void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUD
         if (nk_button_label(ctx, "button"))
             fprintf(stdout, "button pressed\n");
         nk_layout_row_dynamic(ctx, 60, 2);
-        if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
-        if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
+        if (nk_option_label(ctx, "Low quality", op == EASY)) op = EASY;
+        if (nk_option_label(ctx, "High quality", op == HARD)) op = HARD;
         nk_layout_row_dynamic(ctx, 50, 1);
         nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
 
@@ -131,10 +135,22 @@ void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUD
             nk_combo_end(ctx);
         }
     }
+    BoundingBox2D box;
+    auto rect = nk_window_get_bounds(ctx);
+
+    box.pos.x = rect.x;
+    box.pos.y = rect.y;
+    box.size.w = rect.w;
+    box.size.h = rect.h;
+
+    _nuklear->currentWindowRect = box;
+
     nk_end(ctx);
+
+    return box;
 }
 
-void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, const NuklearWrapper& nuklear) {
+void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
     const Vector4D blend_factor(0.0f, 0.0f, 0.0f, 0.0f);
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);

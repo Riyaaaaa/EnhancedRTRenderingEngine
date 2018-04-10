@@ -12,9 +12,9 @@ class NuklearInputMediator
 public:
     NuklearInputMediator(NuklearWrapper* nuklear);
 
-    void ProcessInputDown(InputKey key, boost::optional<Index> pos);
-    void ProcessInputUp(InputKey key, boost::optional<Index> pos);
-    void ProcessInputMotion(Index Delta, Index pos, InputKey key);
+    bool ProcessInputDown(InputKey key, boost::optional<Index> pos);
+    bool ProcessInputUp(InputKey key, boost::optional<Index> pos);
+    bool ProcessInputMotion(Index Delta, Index pos, InputKey key);
 
     void BeginInput();
     void EndInput();

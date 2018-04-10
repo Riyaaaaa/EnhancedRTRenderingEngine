@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 #include "NuklearContexts.h"
+#include "Structure/Structure.h"
 
 class GIImmediateCommands;
 class GITexture2D;
@@ -35,6 +36,7 @@ public:
     }
 
     void SetFontStyle(std::string key);
+    BoundingBox2D currentWindowRect;
 
     NuklearContexts _contexts;
 

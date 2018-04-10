@@ -74,6 +74,9 @@ nk_input_button(struct nk_context *ctx, enum nk_buttons id, int x, int y, int do
     in = &ctx->input;
     if (in->mouse.buttons[id].down == down) return;
 
+    in->mouse.pos.x = (float)x;
+    in->mouse.pos.y = (float)y;
+
     btn = &in->mouse.buttons[id];
     btn->clicked_pos.x = (float)x;
     btn->clicked_pos.y = (float)y;

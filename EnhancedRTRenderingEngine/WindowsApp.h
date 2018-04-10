@@ -1,7 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <functional>
-#include <unordered_map>
+#include <map>
 #include "SpiralLibrary/GameSystem/SingletonBase.hpp"
 #include "boost/optional.hpp"
 #include "Constant/InputKey.h"
@@ -16,9 +16,9 @@ public:
     HWND GetActiveWindow() { return _hWnd;  }
     Size GetWindowSize() { return _windowSize; }
 
-    void RegisterPressListener(std::string key, const std::function<void(InputKey key, boost::optional<Index>)>& listener);
-    void RegisterReleaseListener(std::string key, const std::function<void(InputKey key, boost::optional<Index>)>& listener);
-    void RegisterDragListener(std::string key, const std::function<void(Index Delta, Index pos, InputKey key)>& listener);
+    void RegisterPressListener(int priority, const std::function<bool(InputKey key, boost::optional<Index>)>& listener);
+    void RegisterReleaseListener(int priority, const std::function<bool(InputKey key, boost::optional<Index>)>& listener);
+    void RegisterDragListener(int priority, const std::function<bool(Index Delta, Index pos, InputKey key)>& listener);
 
     bool ProcessInput(unsigned int umsg, WPARAM wParam, LPARAM lParam);
     void DispatchInputEvent(InputEvent e, InputKey key, boost::optional<Index> pos);
@@ -29,8 +29,8 @@ protected:
     Index oldClickedPos;
     InputKey handleKey;
 
-    std::unordered_map<std::string, std::function<void(InputKey key, boost::optional<Index>)>> pressedKeyListeners;
-    std::unordered_map<std::string, std::function<void(InputKey key, boost::optional<Index>)>> releasedKeyListeners;
-    std::unordered_map<std::string, std::function<void(Index Delta, Index pos, InputKey key)>> dragListeners;
+    std::map<int, std::function<bool(InputKey key, boost::optional<Index>)>, std::greater<int>> pressedKeyListeners;
+    std::map<int, std::function<bool(InputKey key, boost::optional<Index>)>, std::greater<int>> releasedKeyListeners;
+    std::map<int, std::function<bool(Index Delta, Index pos, InputKey key)>, std::greater<int>> dragListeners;
 };
 

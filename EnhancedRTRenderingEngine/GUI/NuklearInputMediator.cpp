@@ -10,7 +10,7 @@ NuklearInputMediator::NuklearInputMediator(NuklearWrapper* nuklear) :
 {
 }
 
-void NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index> pos) {
+bool NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index> pos) {
     if (pos) {
         ERTREDebug(L"pos: %d %d\n", pos->x, pos->y);
     }
@@ -44,9 +44,18 @@ void NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index>
     default:
         break;
     }
+
+    if (pos && _nuklear->currentWindowRect.Contains(Vector2D(pos->x, pos->y))) {
+        return true;
+    }
+
+    return false;
 }
 
-void NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> pos) {
+bool NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> pos) {
+    if (pos) {
+        ERTREDebug(L"released pos: %d %d\n", pos->x, pos->y);
+    }
     switch (key)
     {
     case InputKey::None:
@@ -57,6 +66,7 @@ void NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> p
         break;
     case InputKey::LMOUSE:
         if (pos) {
+            nk_input_button(_nuklear->Context(), NK_BUTTON_DOUBLE, pos->x, pos->y, 0);
             nk_input_button(_nuklear->Context(), NK_BUTTON_LEFT, pos->x, pos->y, 0);
         }
         break;
@@ -76,9 +86,15 @@ void NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> p
     default:
         break;
     }
+
+    if (pos && _nuklear->currentWindowRect.Contains(Vector2D(pos->x, pos->y))) {
+        return true;
+    }
+
+    return false;
 }
 
-void NuklearInputMediator::ProcessInputMotion(Index Delta, Index pos, InputKey key) {
+bool NuklearInputMediator::ProcessInputMotion(Index Delta, Index pos, InputKey key) {
     ERTREDebug(L"move pos: %d %d\n", pos.x, pos.y);
 
     switch (key)
@@ -92,6 +108,12 @@ void NuklearInputMediator::ProcessInputMotion(Index Delta, Index pos, InputKey k
     default:
         break;
     }
+
+    if (_nuklear->currentWindowRect.Contains(Vector2D(pos.x, pos.y))) {
+        return true;
+    }
+
+    return false;
 }
 
 void NuklearInputMediator::BeginInput() {

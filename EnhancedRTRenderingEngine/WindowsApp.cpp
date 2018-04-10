@@ -26,7 +26,7 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
     }
         break;
     case WM_MOUSEMOVE: {
-        if (handleKey != InputKey::None && oldClickedPos.x != -1) {
+        if (handleKey != InputKey::None) {
             Index pos = Index{ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
             DispathDragEvent(handleKey, oldClickedPos - pos, pos);
             oldClickedPos = pos;
@@ -80,16 +80,16 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
     return false;
 }
 
-void WindowsApp::RegisterPressListener(std::string key, const std::function<void(InputKey key, boost::optional<Index>)>& listener) {
-    pressedKeyListeners.insert(std::make_pair(key, listener));
+void WindowsApp::RegisterPressListener(int priority, const std::function<bool(InputKey key, boost::optional<Index>)>& listener) {
+    pressedKeyListeners.insert(std::make_pair(priority, listener));
 }
 
-void WindowsApp::RegisterReleaseListener(std::string key, const std::function<void(InputKey key, boost::optional<Index>)>& listener) {
-    releasedKeyListeners.insert(std::make_pair(key, listener));
+void WindowsApp::RegisterReleaseListener(int priority, const std::function<bool(InputKey key, boost::optional<Index>)>& listener) {
+    releasedKeyListeners.insert(std::make_pair(priority, listener));
 }
 
-void WindowsApp::RegisterDragListener(std::string key, const std::function<void(Index Delta, Index pos, InputKey key)>& listener) {
-    dragListeners.insert(std::make_pair(key, listener));
+void WindowsApp::RegisterDragListener(int priority, const std::function<bool(Index Delta, Index pos, InputKey key)>& listener) {
+    dragListeners.insert(std::make_pair(priority, listener));
 }
 
 void WindowsApp::DispatchInputEvent(InputEvent e, InputKey key, boost::optional<Index> pos) {
@@ -97,12 +97,16 @@ void WindowsApp::DispatchInputEvent(InputEvent e, InputKey key, boost::optional<
     {
     case InputEvent::PRESS:
         for (auto && listener : pressedKeyListeners) {
-            listener.second(key, pos);
+            if (listener.second(key, pos)) {
+                break;
+            }
         }
         break;
     case InputEvent::RELEASE:
         for (auto && listener : releasedKeyListeners) {
-            listener.second(key, pos);
+            if (listener.second(key, pos)) {
+                break;
+            }
         }
         break;
     default:
@@ -112,7 +116,9 @@ void WindowsApp::DispatchInputEvent(InputEvent e, InputKey key, boost::optional<
 
 void WindowsApp::DispathDragEvent(InputKey key, Index Delta, Index pos) {
     for (auto && listener : dragListeners) {
-        listener.second(Delta, pos, key);
+        if (listener.second(Delta, pos, key)) {
+            break;
+        }
     }
 }
 
