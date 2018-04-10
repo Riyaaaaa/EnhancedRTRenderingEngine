@@ -22,7 +22,7 @@ public:
     virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) = 0;
     virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) = 0;
 
-    virtual GIBuffer* CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr = nullptr) = 0;
+    virtual GIBuffer* CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr = nullptr) = 0;
 
     virtual GITexture2D* CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures = std::vector<Texture2D>()) = 0;
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex) = 0;
@@ -33,6 +33,7 @@ public:
     virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels) = 0;
 
     virtual void RSSetState(GIRasterizerState* state) = 0;
+    virtual void RSSetScissorRect(const ScissorRect& rect) = 0;
 
     virtual GIPixelShader* CreatePixelShader(RawBinary byteCode) = 0;
     virtual void PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) = 0;
@@ -57,8 +58,14 @@ public:
     virtual GIInputLayout* CreateInputLayout(const std::vector<VertexLayout>& layouts, GIVertexShader* shader) = 0;
     virtual GIRasterizerState* CreateRasterizerState(RasterizerType type) = 0;
 
+    virtual GIBlendState* CreateBlendState(BlendDesc desc) = 0;
+    virtual void OMSetBlendState(GIBlendState* state, Vector4D blendFactor, unsigned int sampleMask = 0xffffffff) = 0;
+
     virtual void DrawIndexed(unsigned int indexCount, unsigned int startIndex, unsigned int baseIndex = 0) = 0;
     virtual void Draw(unsigned int vertexCount, unsigned int startIndex) = 0;
+
+    virtual GIMappedResource MapBuffer(GIBuffer* buffer, unsigned int idx, MapType mapType) = 0;
+    virtual void UnmapBuffer(GIBuffer* buffer, unsigned int idx) = 0;
 
     virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const Texture2D & tex) = 0;
     virtual GITextureProxyEntity* CreateTextureProxy(TextureParam param, const std::vector<Texture2D> & tex) = 0;

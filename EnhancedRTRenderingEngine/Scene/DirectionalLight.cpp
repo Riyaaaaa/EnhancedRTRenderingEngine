@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "DirectionalLight.h"
 
-#include "Common.h"
+#include "Common/Common.h"
 
 using namespace DirectX;
 

@@ -1,7 +1,7 @@
 #include "stdafx.h"
 
 #include "StringParser.h"
-#include "Common.h"
+#include "Common/Common.h"
 
 #include "DXParserNodes.h"
 

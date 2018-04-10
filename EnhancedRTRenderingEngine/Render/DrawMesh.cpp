@@ -15,40 +15,32 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
     bool useIndexList = false;
 
     for (auto&& psResource : GetShaderResources()) {
-        D3D11_BUFFER_DESC bufferDesc;
-        D3D11_SUBRESOURCE_DATA subResource;
-        subResource.pSysMem = psResource.first._resource.get();
-        bufferDesc.ByteWidth = psResource.first._resource.size();
-        bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-        bufferDesc.CPUAccessFlags = 0;
-        bufferDesc.MiscFlags = 0;
+        BufferDesc bufferDesc;
 
-        bufferDesc.StructureByteStride = psResource.first._structureByteStride;
+        bufferDesc.byteWidth = psResource.first._resource.size();
+        bufferDesc.usage = ResourceUsage::Default;
+        bufferDesc.accessFlag = ResourceAccessFlag::None;
+        bufferDesc.stride = psResource.first._structureByteStride;
 
-        auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, psResource.first._structureByteStride, psResource.first._resource.size(), (void*)psResource.first._resource.get()));
+        auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, bufferDesc, (void*)psResource.first._resource.get()));
 
         switch (psResource.first._type) {
         case ResourceType::VertexList: {
             UINT hOffsets = 0;
-            bufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
             cmd->IASetVertexBuffer(buffer.get(), psResource.first._structureByteStride, hOffsets);
             break;
         }
         case ResourceType::IndexList:
-            bufferDesc.BindFlags = D3D11_BIND_INDEX_BUFFER;
             cmd->IASetIndexBuffer(buffer.get(), DXGI_FORMAT_R16_UINT);
             useIndexList = true;
             break;
         case ResourceType::VSConstantBuffer:
-            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
             cmd->VSSetConstantBuffers(psResource.second, buffer.get());
             break;
         case ResourceType::PSConstantBuffer:
-            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
             cmd->PSSetConstantBuffers(psResource.second, buffer.get());
             break;
         case ResourceType::GSConstantBuffer:
-            bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
             //cmd->GSSetConstantBuffers(psResource.second, buffer.get());
             break;
         }
@@ -94,17 +86,13 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
             }
 
             for (auto && rawRes : shader.GetRawResources()) {
-                D3D11_BUFFER_DESC bufferDesc;
-                D3D11_SUBRESOURCE_DATA subResource;
-                subResource.pSysMem = rawRes.first._resource.get();
-                bufferDesc.ByteWidth = rawRes.first._resource.size();
-                bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-                bufferDesc.CPUAccessFlags = 0;
-                bufferDesc.MiscFlags = 0;
+                BufferDesc bufferDesc;
+                bufferDesc.byteWidth = rawRes.first._resource.size();
+                bufferDesc.usage = ResourceUsage::Default;
+                bufferDesc.accessFlag = ResourceAccessFlag::None;
+                bufferDesc.stride = rawRes.first._structureByteStride;
 
-                bufferDesc.StructureByteStride = rawRes.first._structureByteStride;
-                bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-                auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, rawRes.first._structureByteStride, rawRes.first._resource.size(), (void*)rawRes.first._resource.get()));
+                auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, bufferDesc, (void*)rawRes.first._resource.get()));
                 cmd->PSSetConstantBuffers(rawRes.second, buffer.get());
             }
 

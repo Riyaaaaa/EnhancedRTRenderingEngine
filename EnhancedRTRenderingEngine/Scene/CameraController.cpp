@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CameraController.h"
 
-#include "WindowManager.h"
+#include "WindowsApp.h"
 
 #include <cmath>
 
@@ -10,8 +10,8 @@ using namespace DirectX;
 CameraController::CameraController(CameraObject* camera)
 {
     _camera = camera;
-    WindowManager::getInstance()->RegisterPressListener("CameraController", std::bind<void (CameraController::*)(InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1));
-    WindowManager::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Vector2D, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+    WindowsApp::getInstance()->RegisterPressListener(0, std::bind<bool (CameraController::*)(InputKey, boost::optional<Index>)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+    WindowsApp::getInstance()->RegisterDragListener(0, std::bind<bool (CameraController::*)(Index, Index, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 
@@ -19,7 +19,7 @@ CameraController::~CameraController()
 {
 }
 
-void CameraController::ControllCamera(InputKey key) {
+bool CameraController::ControllCamera(InputKey key, boost::optional<Index> pos) {
     auto dir = _camera->hAt - _camera->hEye;
     dir = XMVector3Normalize(dir);
     Vector3D norDir{ XMVectorGetByIndex(dir, 0),XMVectorGetByIndex(dir, 1), XMVectorGetByIndex(dir, 2),};
@@ -52,9 +52,11 @@ void CameraController::ControllCamera(InputKey key) {
         _camera->hAt -= XMVectorSet(verticalXZ_x / 5, 0.0f, verticalXZ_z / 5, 0.0f);
         break;
     }
+
+    return false;
 }
 
-void CameraController::ControllCamera(Vector2D Delta, InputKey key) {
+bool CameraController::ControllCamera(Index Delta, Index pos, InputKey key) {
     switch (key) {
     case InputKey::LMOUSE:
     case InputKey::RMOUSE:
@@ -68,4 +70,6 @@ void CameraController::ControllCamera(Vector2D Delta, InputKey key) {
         _camera->hUp = XMVector3Rotate(_camera->hUp, qt);
         break;
     }
+
+    return false;
 }

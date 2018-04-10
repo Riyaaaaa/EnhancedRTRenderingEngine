@@ -74,3 +74,11 @@ class GIVertexShader : public GIShader {};
 class GIGeometryShader : public GIShader {};
 
 class GIInputLayout : public GIResource {};
+
+class GIBlendState : public GIResource {};
+
+class GIMappedResource : public GIResource {
+public:
+    void* pData;
+    unsigned int RowPitch, DepthPitch;
+};

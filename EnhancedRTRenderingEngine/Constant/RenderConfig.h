@@ -7,6 +7,7 @@ enum class VertexProperty {
     FloatRGB,
     FloatRG,
     FloatR,
+    UnormRGBA,
     NONE = 9999
 };
 
@@ -55,7 +56,7 @@ enum class TextureType {
     TextureCube
 };
 
-enum class TextureUsage {
+enum class ResourceUsage {
     Default,
     Immutable,
     Dynamic,
@@ -71,7 +72,7 @@ enum class TextureAddressMode {
 };
 
 enum class ResourceAccessFlag {
-    None,
+    None = 0,
     R,
     W,
     RW
@@ -82,5 +83,53 @@ enum class RasterizerState {
     Default,
     WireFrame,
     CullNone
+};
+
+enum class BlendType
+{
+    ZERO = 1,
+    ONE = 2,
+    SRC_COLOR = 3,
+    INV_SRC_COLOR = 4,
+    SRC_ALPHA = 5,
+    INV_SRC_ALPHA = 6,
+    DEST_ALPHA = 7,
+    INV_DEST_ALPHA = 8,
+    DEST_COLOR = 9,
+    INV_DEST_COLOR = 10,
+    SRC_ALPHA_SAT = 11,
+    BLEND_FACTOR = 14,
+    INV_BLEND_FACTOR = 15,
+    SRC1_COLOR = 16,
+    INV_SRC1_COLOR = 17,
+    SRC1_ALPHA = 18,
+    INV_SRC1_ALPHA = 19,
+};
+
+enum class BlendTypeOp
+{
+    ADD = 1,
+    SUBTRACT = 2,
+    REV_SUBTRACT = 3,
+    MIN = 4,
+    MAX = 5,
+};
+
+enum ColorWriteEnable
+{
+    COLOR_WRITE_ENABLE_RED = 1,
+    COLOR_WRITE_ENABLE_GREEN = 2,
+    COLOR_WRITE_ENABLE_BLUE = 4,
+    COLOR_WRITE_ENABLE_ALPHA = 8,
+    COLOR_WRITE_ENABLE_ALL = (COLOR_WRITE_ENABLE_RED | COLOR_WRITE_ENABLE_GREEN | COLOR_WRITE_ENABLE_BLUE | COLOR_WRITE_ENABLE_ALPHA),
+};
+
+enum class MapType
+{
+    READ,
+    WRITE,
+    READ_WRITE,
+    WRITE_DISCARD,
+    WRITE_NO_OVERWRITE
 };
 

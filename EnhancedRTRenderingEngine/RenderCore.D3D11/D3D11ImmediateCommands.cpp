@@ -3,6 +3,7 @@
 #include <d3d11.h>
 #pragma comment(lib, "d3d11.lib")
 
+#include "Common/Defines.h"
 #include "D3D11ImmediateCommands.h"
 #include "D3D11FormatUtils.h"
 #include "D3D11Resources.h"
@@ -218,15 +219,15 @@ GISamplerState* D3D11ImmediateCommands::CreateSamplerState(const SamplerParam& p
 }
 
 
-GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, unsigned int stride, float byteWidth, void* initPtr) {
+GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr) {
     D3D11_BUFFER_DESC bufferDesc;
     D3D11Buffer* buffer = new D3D11Buffer;
 
-    bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-    bufferDesc.CPUAccessFlags = 0;
+    bufferDesc.Usage = CastToD3D11Format<D3D11_USAGE>(desc.usage);
+    bufferDesc.CPUAccessFlags = CastToD3D11Format<unsigned int>(desc.accessFlag);
+    bufferDesc.StructureByteStride = desc.stride;
+    bufferDesc.ByteWidth = desc.byteWidth;
     bufferDesc.MiscFlags = 0;
-    bufferDesc.StructureByteStride = stride;
-    bufferDesc.ByteWidth = byteWidth;
 
     switch (type) {
     case ResourceType::VertexList: 
@@ -317,6 +318,16 @@ void D3D11ImmediateCommands::RSSetState(GIRasterizerState* state) {
     _deviceContext->RSSetState(CastRes<D3D11RasterizerState>(state).Get());
 }
 
+void D3D11ImmediateCommands::RSSetScissorRect(const ScissorRect& rect) {
+    D3D11_RECT drect;
+    drect.left = rect.left;
+    drect.right = rect.right;
+    drect.top = rect.top;
+    drect.bottom = rect.bottom;
+
+    _deviceContext->RSSetScissorRects(1, &drect);
+}
+
 void D3D11ImmediateCommands::PSSetShaderResources(unsigned int slot, GIShaderResourceView* texture) {
     _deviceContext->PSSetShaderResources(slot, 1, NullableCastRes<D3D11ShaderResourceView>(texture).Ref());
 }
@@ -361,7 +372,7 @@ GIRasterizerState* D3D11ImmediateCommands::CreateRasterizerState(RasterizerType 
     CD3D11_RASTERIZER_DESC desc(D3D11_DEFAULT);
 
     switch (type) {
-    case RasterizerType::Defalt:
+    case RasterizerType::Default:
         break;
     case RasterizerType::DoubleSided:
         desc.CullMode = D3D11_CULL_NONE;
@@ -370,12 +381,49 @@ GIRasterizerState* D3D11ImmediateCommands::CreateRasterizerState(RasterizerType 
         desc.CullMode = D3D11_CULL_NONE;
         desc.FillMode = D3D11_FILL_WIREFRAME;
         break;
+    case RasterizerType::HUD:
+        desc.FillMode = D3D11_FILL_SOLID;
+        desc.CullMode = D3D11_CULL_NONE;
+        desc.FrontCounterClockwise = FALSE;
+        desc.DepthBias = 0;
+        desc.DepthBiasClamp = 0;
+        desc.SlopeScaledDepthBias = 0.0f;
+        desc.DepthClipEnable = TRUE;
+        desc.ScissorEnable = TRUE;
+        desc.MultisampleEnable = FALSE;
+        desc.AntialiasedLineEnable = FALSE;
+        break;
     }
     
     _device->CreateRasterizerState(&desc, state->resource.ToCreator());
     return state;
 }
 
+GIBlendState* D3D11ImmediateCommands::CreateBlendState(BlendDesc desc) {
+    D3D11BlendState* state = new D3D11BlendState;
+
+    D3D11_BLEND_DESC ddesc;
+
+    ddesc.AlphaToCoverageEnable = desc.AlphaToCoverageEnable;
+    ddesc.IndependentBlendEnable = desc.IndependentBlendEnable;
+
+    ddesc.RenderTarget[0].BlendEnable = desc.RenderTarget[0].BlendEnable;
+    ddesc.RenderTarget[0].SrcBlend = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].SrcBlend);
+    ddesc.RenderTarget[0].DestBlend = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].DestBlend);
+    ddesc.RenderTarget[0].BlendOp = CastToD3D11Format<D3D11_BLEND_OP>(desc.RenderTarget[0].BlendOp);
+    ddesc.RenderTarget[0].SrcBlendAlpha = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].SrcBlendAlpha);
+    ddesc.RenderTarget[0].DestBlendAlpha = CastToD3D11Format<D3D11_BLEND>(desc.RenderTarget[0].DestBlendAlpha);
+    ddesc.RenderTarget[0].BlendOpAlpha = CastToD3D11Format<D3D11_BLEND_OP>(desc.RenderTarget[0].BlendOpAlpha);
+    ddesc.RenderTarget[0].RenderTargetWriteMask = desc.RenderTarget[0].RenderTargetWriteMask;
+
+    _device->CreateBlendState(&ddesc, state->resource.ToCreator());
+
+    return state;
+}
+
+void D3D11ImmediateCommands::OMSetBlendState(GIBlendState* state, Vector4D blendFactor, unsigned int sampleMask) {
+    _deviceContext->OMSetBlendState(CastRes<D3D11BlendState>(state).Get(), &blendFactor.x, sampleMask);
+}
 
 void D3D11ImmediateCommands::IASetPrimitiveTopology(VertexPrimitiveType primitiveType) {
     _deviceContext->IASetPrimitiveTopology(CastToD3D11Format<D3D_PRIMITIVE_TOPOLOGY>(primitiveType));
@@ -403,6 +451,23 @@ GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(TextureParam pa
     GITextureProxyEntity* proxy = new GITextureProxyEntity();
     proxy->Initialize(this, param, tex);
     return proxy;
+}
+
+GIMappedResource D3D11ImmediateCommands::MapBuffer(GIBuffer* buffer, unsigned int idx, MapType mapType) {
+    D3D11_MAPPED_SUBRESOURCE mapped;
+
+    _deviceContext->Map(CastRes<D3D11Buffer>(buffer).Get(), idx, CastToD3D11Format<D3D11_MAP>(mapType), 0, &mapped);
+
+    GIMappedResource dst;
+    dst.pData = mapped.pData;
+    dst.DepthPitch = mapped.DepthPitch;
+    dst.RowPitch = mapped.RowPitch;
+
+    return dst;
+}
+
+void D3D11ImmediateCommands::UnmapBuffer(GIBuffer* buffer, unsigned int idx) {
+    _deviceContext->Unmap(CastRes<D3D11Buffer>(buffer).Get(), idx);
 }
 
 GITextureProxyEntity* D3D11ImmediateCommands::CreateTextureProxy(std::shared_ptr<GITexture2D> tex, SamplerParam param) {

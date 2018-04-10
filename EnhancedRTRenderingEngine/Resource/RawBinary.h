@@ -8,7 +8,7 @@ public:
     using ResourceEntity<RawBinary>::ResourceEntity;
 
     RawBinary() : _ptr(nullptr), _size(0) {}
-    RawBinary(void* ptr, std::size_t size) : _ptr(ptr), _size(size) {}
+    RawBinary(const void* ptr, std::size_t size) : _ptr(ptr), _size(size) {}
 
 
     void Dispose() {

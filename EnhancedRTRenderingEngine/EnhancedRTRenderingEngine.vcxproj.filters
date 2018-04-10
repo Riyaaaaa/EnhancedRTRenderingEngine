@@ -267,9 +267,6 @@
     <ClInclude Include="Mesh\MeshBase.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Common.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="FileManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -286,9 +283,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Scene\MeshObject.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="WindowManager.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Scene\CameraObject.h">
@@ -343,9 +337,6 @@
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Constant\InputKey.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="TransformUtils.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
     <ClInclude Include="Shader\BasePassCommon.hlsl">
@@ -528,6 +519,42 @@
     <ClInclude Include="Structure\RaytraceStructures.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ThirdParty\include\nuklear\nuklear.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\src\nuklear\nuklear_internal.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Common.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Common\Defines.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Utility\TransformUtils.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\HUDCanvas.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Render\HUDCanvasRenderer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\NuklearContexts.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\NuklearWrapper.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="GUI\NuklearInputMediator.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowsApp.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Structure\Aliases.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -548,9 +575,6 @@
     <ClCompile Include="Mesh\MeshBase.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
-    <ClCompile Include="Common.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="FileManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -561,9 +585,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene\MeshObject.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="WindowManager.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene\CameraObject.cpp">
@@ -603,9 +624,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Scene\CameraController.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="TransformUtils.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Resource\X\StringParser.cpp">
@@ -725,6 +743,147 @@
     <ClCompile Include="Render\DrawMesh.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_buffer.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_button.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_chart.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_color.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_color_picker.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_combo.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_context.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_contextual.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_draw.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_edit.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_font.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_group.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_image.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_input.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_layout.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_list_view.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_math.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_menu.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_page_element.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_panel.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_pool.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_popup.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_progress.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_property.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_scrollbar.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_selectable.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_slider.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_string.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_style.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_table.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_text.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_text_editor.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_toggle.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_tooltip.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_tree.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_utf8.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_util.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_vertex.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_widget.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\src\nuklear\nuklear_window.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Common\Common.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Utility\TransformUtils.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\HUDCanvas.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Render\HUDCanvasRenderer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\NuklearWrapper.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="GUI\NuklearInputMediator.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="WindowsApp.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -749,7 +908,6 @@
     <FxCompile Include="Shader\DepthVertexShader.hlsl" />
     <FxCompile Include="Shader\LightingPSTextureColor.hlsl" />
     <FxCompile Include="Shader\LightingPSMain.hlsl" />
-    <FxCompile Include="Shader\HUDVertexShader.hlsl" />
     <FxCompile Include="Shader\MinTextureColor.hlsl" />
     <FxCompile Include="Shader\UnlitPixelShader.hlsl" />
     <FxCompile Include="Shader\UnlitCubeTexturePixelShader.hlsl" />
@@ -759,6 +917,9 @@
     <FxCompile Include="Shader\PostEffects.hlsl" />
     <FxCompile Include="Shader\LineGeometryShader.hlsl" />
     <FxCompile Include="Shader\LineVertexShader.hlsl" />
+    <FxCompile Include="Shader\TextureVertexShader.hlsl" />
+    <FxCompile Include="Shader\HUD\HUDVertexShader.hlsl" />
+    <FxCompile Include="Shader\HUD\HUDPixelShader.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -767,5 +928,18 @@
   <ItemGroup>
     <Library Include="ThirdParty\x64\libpng\libpng16.lib" />
     <Library Include="ThirdParty\x64\libpng\zlib.lib" />
+  </ItemGroup>
+  <ItemGroup>
+    <Font Include="Asset\Font\Cousine-Regular.ttf" />
+    <Font Include="Asset\Font\DroidSans.ttf" />
+    <Font Include="Asset\Font\Karla-Regular.ttf" />
+    <Font Include="Asset\Font\kenvector_future.ttf" />
+    <Font Include="Asset\Font\kenvector_future_thin.ttf" />
+    <Font Include="Asset\Font\ProggyClean.ttf" />
+    <Font Include="Asset\Font\ProggyTiny.ttf" />
+    <Font Include="Asset\Font\Raleway-Bold.ttf" />
+    <Font Include="Asset\Font\Roboto-Bold.ttf" />
+    <Font Include="Asset\Font\Roboto-Light.ttf" />
+    <Font Include="Asset\Font\Roboto-Regular.ttf" />
   </ItemGroup>
 </Project>

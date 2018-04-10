@@ -7,7 +7,7 @@
 
 #include "GraphicsInterface/GICommandUtils.h"
 
-#include "Common.h"
+#include "Common/Common.h"
 
 using namespace DirectX;
 
@@ -26,7 +26,10 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     hConstantBuffer.View = XMMatrixTranspose(camera.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(camera.GetPerspectiveProjection());
 
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(hConstantBuffer), &hConstantBuffer));
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(TransformBufferParam);
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
 
     cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
@@ -45,6 +48,9 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     MeshObject<LineVertex> mesh(lineMesh);
     DrawMesh element(&mesh);
+    ObjectBuffer* buffer = new ObjectBuffer;
+    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
+    element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
     DrawElement face(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;

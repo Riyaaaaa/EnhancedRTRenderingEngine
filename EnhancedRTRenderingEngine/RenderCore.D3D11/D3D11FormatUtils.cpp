@@ -14,7 +14,8 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, VertexProperty>(VertexProperty prop) 
         return DXGI_FORMAT_R32G32B32_FLOAT;
     case VertexProperty::FloatRGBA:
         return DXGI_FORMAT_R32G32B32A32_FLOAT;
-        break;
+    case VertexProperty::UnormRGBA:
+        return DXGI_FORMAT_R8G8B8A8_UNORM;
     default:
         return DXGI_FORMAT_UNKNOWN;
     }
@@ -72,17 +73,15 @@ DXGI_FORMAT CastToD3D11Format<DXGI_FORMAT, TextureFormat>(TextureFormat prop) {
 }
 
 template<>
-D3D11_USAGE CastToD3D11Format<D3D11_USAGE, TextureUsage>(TextureUsage prop) {
-    D3D11_USAGE usage;
-
+D3D11_USAGE CastToD3D11Format<D3D11_USAGE, ResourceUsage>(ResourceUsage prop) {
     switch (prop) {
-    case TextureUsage::Default:
+    case ResourceUsage::Default:
         return D3D11_USAGE::D3D11_USAGE_DEFAULT;
-    case TextureUsage::Immutable:
+    case ResourceUsage::Immutable:
         return D3D11_USAGE::D3D11_USAGE_IMMUTABLE;
-    case TextureUsage::Dynamic:
+    case ResourceUsage::Dynamic:
         return D3D11_USAGE::D3D11_USAGE_DYNAMIC;
-    case TextureUsage::Staging:
+    case ResourceUsage::Staging:
         return D3D11_USAGE::D3D11_USAGE_STAGING;
     }
 
@@ -140,6 +139,88 @@ D3D11_TEXTURE_ADDRESS_MODE CastToD3D11Format<D3D11_TEXTURE_ADDRESS_MODE, Texture
     }
 
     return D3D11_TEXTURE_ADDRESS_MODE::D3D11_TEXTURE_ADDRESS_WRAP;
+}
+
+template<>
+D3D11_BLEND CastToD3D11Format <D3D11_BLEND, BlendType>(BlendType t) {
+    switch(t) 
+    {
+    case BlendType::ZERO:
+        return D3D11_BLEND_ZERO;
+    case BlendType::ONE:
+        return D3D11_BLEND_ONE;
+    case BlendType::SRC_COLOR:
+        return D3D11_BLEND_SRC_COLOR;
+    case BlendType::INV_SRC_COLOR:
+        return D3D11_BLEND_INV_SRC_COLOR;
+    case BlendType::SRC_ALPHA:
+        return D3D11_BLEND_SRC_ALPHA;
+    case BlendType::INV_SRC_ALPHA:
+        return D3D11_BLEND_INV_SRC_ALPHA;
+    case BlendType::DEST_ALPHA:
+        return D3D11_BLEND_DEST_ALPHA;
+    case BlendType::INV_DEST_ALPHA:
+        return D3D11_BLEND_INV_DEST_ALPHA;
+    case BlendType::DEST_COLOR:
+        return D3D11_BLEND_DEST_COLOR;
+    case BlendType::INV_DEST_COLOR:
+        return D3D11_BLEND_INV_DEST_COLOR;
+    case BlendType::SRC_ALPHA_SAT:
+        return D3D11_BLEND_SRC_ALPHA_SAT;
+    case BlendType::BLEND_FACTOR:
+        return D3D11_BLEND_BLEND_FACTOR;
+    case BlendType::INV_BLEND_FACTOR:
+        return D3D11_BLEND_INV_BLEND_FACTOR;
+    case BlendType::SRC1_COLOR:
+        return D3D11_BLEND_SRC1_COLOR;
+    case BlendType::INV_SRC1_COLOR:
+        return D3D11_BLEND_INV_SRC1_COLOR;
+    case BlendType::SRC1_ALPHA:
+        return D3D11_BLEND_SRC1_ALPHA;
+    case BlendType::INV_SRC1_ALPHA:
+        return D3D11_BLEND_INV_SRC1_ALPHA;
+    }
+
+    return D3D11_BLEND_ZERO;
+}
+
+template<>
+D3D11_BLEND_OP CastToD3D11Format<D3D11_BLEND_OP, BlendTypeOp>(BlendTypeOp t)
+{
+    switch (t) {
+    case BlendTypeOp::ADD:
+        return D3D11_BLEND_OP_ADD;
+    case BlendTypeOp::SUBTRACT:
+        return D3D11_BLEND_OP_SUBTRACT;
+    case BlendTypeOp::REV_SUBTRACT:
+        return D3D11_BLEND_OP_REV_SUBTRACT;
+    case BlendTypeOp::MIN:
+        return D3D11_BLEND_OP_MIN;
+    case BlendTypeOp::MAX:
+        return D3D11_BLEND_OP_MAX;
+    }
+
+    return D3D11_BLEND_OP_ADD;
+}
+
+template<>
+D3D11_MAP CastToD3D11Format<D3D11_MAP, MapType>(MapType t)
+{
+    switch (t)
+    {
+    case MapType::READ:
+        return D3D11_MAP::D3D11_MAP_READ;
+    case MapType::WRITE:
+        return D3D11_MAP::D3D11_MAP_WRITE;
+    case MapType::READ_WRITE:
+        return D3D11_MAP::D3D11_MAP_READ_WRITE;
+    case MapType::WRITE_DISCARD:
+        return D3D11_MAP::D3D11_MAP_WRITE_DISCARD;
+    case MapType::WRITE_NO_OVERWRITE:
+        return D3D11_MAP::D3D11_MAP_WRITE_NO_OVERWRITE;
+    }
+
+    return D3D11_MAP_READ;
 }
 
 template<>
@@ -204,19 +285,19 @@ TextureFormat CastToGIFormat<TextureFormat, DXGI_FORMAT>(DXGI_FORMAT prop) {
 }
 
 template<>
-TextureUsage CastToGIFormat<TextureUsage, D3D11_USAGE>(D3D11_USAGE prop) {
+ResourceUsage CastToGIFormat<ResourceUsage, D3D11_USAGE>(D3D11_USAGE prop) {
     switch (prop) {
     case D3D11_USAGE::D3D11_USAGE_DEFAULT:
-        return TextureUsage::Default;
+        return ResourceUsage::Default;
     case D3D11_USAGE::D3D11_USAGE_IMMUTABLE:
-        return TextureUsage::Immutable;
+        return ResourceUsage::Immutable;
     case D3D11_USAGE::D3D11_USAGE_DYNAMIC:
-        return TextureUsage::Dynamic;
+        return ResourceUsage::Dynamic;
     case D3D11_USAGE::D3D11_USAGE_STAGING:
-        return TextureUsage::Staging;
+        return ResourceUsage::Staging;
     }
 
-    return TextureUsage::Default;
+    return ResourceUsage::Default;
 }
 
 template<>
@@ -284,18 +365,5 @@ DXGI_FORMAT GetShaderResourceFormat(DXGI_FORMAT textureFormat) {
     }
 }
 
-UINT GetMemoryBlockSize(VertexProperty prop) {
-    switch (prop)
-    {
-    case VertexProperty::FloatRG:
-        return 4 * 2;
-    case VertexProperty::FloatRGB:
-        return 4 * 3;
-    case VertexProperty::FloatRGBA:
-        return 4 * 4;
-        break;
-    default:
-        return 0;
-    }
-}
+
 

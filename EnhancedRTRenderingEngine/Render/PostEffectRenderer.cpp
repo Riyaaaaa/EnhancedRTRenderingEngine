@@ -5,7 +5,7 @@
 #include "Mesh/Primitive/Square.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 #include "GraphicsInterface/GICommandUtils.h"
 #include <chrono>
 
@@ -29,7 +29,10 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
-    auto cb = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), sizeof(buf), &buf));
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(buf);
+    auto cb = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &buf));
     cmd->PSSetConstantBuffers(0, cb.get());
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };
@@ -37,7 +40,10 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     DrawMesh element(&mesh);
-    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    ObjectBuffer* buffer = new ObjectBuffer;
+    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
+    element.RegisterConstantBuffer(buffer, 0, ShaderType::VS);
+    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     element.AddDrawElement(face);

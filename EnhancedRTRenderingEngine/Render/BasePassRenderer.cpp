@@ -8,8 +8,8 @@
 
 #include "GraphicsInterface/GICommandUtils.h"
 
-#include "WindowManager.h"
-#include "Common.h"
+#include "WindowsApp.h"
+#include "Common/Common.h"
 
 using namespace DirectX;
 
@@ -23,8 +23,12 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
 
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(ConstantBuffer), &hConstantBuffer));
-    auto hpMaterialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, sizeof(float), sizeof(MaterialBuffer)));
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(ConstantBuffer);
+    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
+    desc.byteWidth = sizeof(MaterialBuffer);
+    auto hpMaterialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc));
 
     cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
     cmd->PSSetConstantBuffers(0, hpConstantBuffer.get());
@@ -43,6 +47,10 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     for (auto && object : scene->GetViewObjects()) {
         auto& mesh = object.GetMesh();
         DrawMesh element(&object);
+        ObjectBuffer* buffer = new ObjectBuffer;
+        buffer->World = XMMatrixTranspose(object.GetMatrix());
+        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());

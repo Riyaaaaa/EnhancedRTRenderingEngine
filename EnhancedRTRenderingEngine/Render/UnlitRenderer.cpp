@@ -6,7 +6,7 @@
 #include "Constant/RenderTag.h"
 #include "GraphicsInterface/GICommandUtils.h"
 
-#include "Common.h"
+#include "Common/Common.h"
 
 using namespace DirectX;
 
@@ -22,11 +22,18 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     hConstantBuffer.View = XMMatrixTranspose(camera.GetViewProjection());
     hConstantBuffer.Projection = XMMatrixTranspose(camera.GetPerspectiveProjection());
 
-    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, sizeof(float), sizeof(hConstantBuffer), &hConstantBuffer));
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(hConstantBuffer);
+    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
     cmd->VSSetConstantBuffers(0, buffer.get());
 
     for (auto && object : meshes) {
         DrawMesh element(&object);
+        ObjectBuffer* buffer = new ObjectBuffer;
+        buffer->World = XMMatrixTranspose(object.GetMatrix());
+        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
         DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
 
         face.startIndex = 0;

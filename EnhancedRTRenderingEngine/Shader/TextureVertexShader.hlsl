@@ -11,7 +11,7 @@ struct vertexOut
     float2 viewpos : TEXCOORD1;
 };
 
-cbuffer ObjectBuffer : register(b1)
+cbuffer ObjectBuffer : register(b0)
 {
     matrix World;
     matrix NormalWorld;

@@ -8,7 +8,7 @@
 #include "Shader/ShaderFactory.h"
 #include "Scene/MeshObject.h"
 #include "Utility/SceneUtils.h"
-#include "WindowManager.h"
+#include "WindowsApp.h"
 
 std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* cmd, const GITextureProxy& src, const std::string& effect) {
     auto param = src->GetTexture()->GetTextureParam();
@@ -40,7 +40,10 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     DrawMesh element(&mesh);
-    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::HUDVertexShader());
+    ObjectBuffer* buffer = new ObjectBuffer;
+    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
+    element.RegisterConstantBuffer(buffer, 0, ShaderType::VS);
+    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
     face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
     face.startIndex = 0;
     face.RegisterShaderResource(src, 0);

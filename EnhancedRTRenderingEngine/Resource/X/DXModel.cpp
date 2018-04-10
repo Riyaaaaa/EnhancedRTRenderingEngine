@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Common.h"
+#include "Common/Common.h"
 #include "DXModel.h"
 
 #include "Utility/MathUtils.h"

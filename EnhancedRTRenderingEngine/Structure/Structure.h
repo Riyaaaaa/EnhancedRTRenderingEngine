@@ -33,6 +33,11 @@ struct Color4B {
 struct BoundingBox2D {
     Vector2D pos;
     Size size;
+
+    bool Contains(Vector2D p) const {
+        return p.x >= pos.x && p.x <= pos.x + size.w &&
+            p.y >= pos.y && p.y <= pos.y + size.h;
+    }
 };
 
 struct BoundingBox3D {
@@ -71,6 +76,12 @@ struct SimpleVertex {
 struct TexVertex {
     Vector3D pos;    //x-y-z
     Vector2D tex;    //r-g-b-a
+};
+
+struct Vertex2D {
+    Vector2D pos;
+    Vector2D tex;
+    _Vector4D<uint8_t> col;
 };
 
 struct Vertex3D {

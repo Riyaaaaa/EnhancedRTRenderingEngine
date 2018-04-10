@@ -1,22 +1,18 @@
 #include "stdafx.h"
 #include "RenderingContext.h"
 
-template<>
-std::vector<VertexLayout> CreateVertexLayout<Vertex3D>() {
-    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB }, { "COLOR", VertexProperty::FloatRGBA }, { "TEXCOORD", VertexProperty::FloatRG } };
-}
-
-template<>
-std::vector<VertexLayout> CreateVertexLayout<SimpleVertex>() {
-    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB }, { "COLOR", VertexProperty::FloatRGBA } };
-}
-
-template<>
-std::vector<VertexLayout> CreateVertexLayout<TexVertex>() {
-    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB }, { "TEXCOORD", VertexProperty::FloatRG } };
-}
-
-template<>
-std::vector<VertexLayout> CreateVertexLayout<PMDVertex>() {
-    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB }, { "TEXCOORD", VertexProperty::FloatRG }, { "NORMAL", VertexProperty::FloatRGB }, { "COLOR", VertexProperty::FloatRGBA } };
+UINT GetMemoryBlockSize(VertexProperty prop) {
+    switch (prop)
+    {
+    case VertexProperty::FloatRG:
+        return 4 * 2;
+    case VertexProperty::FloatRGB:
+        return 4 * 3;
+    case VertexProperty::FloatRGBA:
+        return 4 * 4;
+    case VertexProperty::UnormRGBA:
+        return 4;
+    default:
+        return 0;
+    }
 }

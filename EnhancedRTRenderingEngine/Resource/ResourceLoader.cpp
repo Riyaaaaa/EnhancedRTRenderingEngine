@@ -2,8 +2,8 @@
 #include "ResourceLoader.h"
 #include "FileManager.h"
 
-#include "Common.h"
-#include "WindowManager.h"
+#include "Common/Common.h"
+#include "WindowsApp.h"
 #include "Utility/StringUtils.h"
 #include "X/StringParser.h"
 
