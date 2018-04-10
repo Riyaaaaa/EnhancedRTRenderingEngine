@@ -7,12 +7,12 @@
 #include "GraphicsInterface/GIResource.h"
 #include "FileManager.h"
 
-
 NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
 {
     _contexts.atlas = new nk_font_atlas;
     _contexts.nkCmds = new nk_buffer;
     _contexts.context = new nk_context;
+    _contexts.null = new nk_draw_null_texture;
 
     nk_init_default(_contexts.context, 0);
     //_context.clip.copy
@@ -34,8 +34,7 @@ NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
     _atlasTexture = MakeRef(cmd->CreateTexture2D(param, std::vector<Texture2D>{atlasTexture}));
     _atlasTextureSRV = MakeRef(cmd->CreateShaderResourceView(_atlasTexture.get()));
 
-    nk_draw_null_texture null;
-    nk_font_atlas_end(_contexts.atlas, nk_handle_ptr(_atlasTextureSRV.get()), &null);
+    nk_font_atlas_end(_contexts.atlas, nk_handle_ptr(_atlasTextureSRV.get()), _contexts.null);
     if (_contexts.atlas->default_font)
         nk_style_set_font(_contexts.context, &_contexts.atlas->default_font->handle);
 }
@@ -50,4 +49,5 @@ NuklearWrapper::~NuklearWrapper()
     delete _contexts.atlas;
     delete _contexts.nkCmds;
     delete _contexts.context;
+    delete _contexts.null;
 }

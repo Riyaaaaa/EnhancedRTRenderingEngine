@@ -30,11 +30,9 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
 {
     std::vector<VertexLayout> layout;
     unsigned int offset = 0;
-    layout.emplace_back("POSITION", VertexProperty::FloatRGBA, 0, 0, 0);
-    offset += GetMemoryBlockSize(layout.back().vProperty);
-    layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 0, 0, offset);
-    offset += GetMemoryBlockSize(layout.back().vProperty);
-    layout.emplace_back("COLOR", VertexProperty::UnormRGBA, 0, 0, offset);
+    layout.emplace_back("POSITION", VertexProperty::FloatRGBA, 0, 0, offsetof(Vertex2D, pos));
+    layout.emplace_back("COLOR", VertexProperty::UnormRGBA, 0, 0, offsetof(Vertex2D, col));
+    layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 0, 0, offsetof(Vertex2D, tex));
 
     _rstate = MakeRef(cmd->CreateRasterizerState(RasterizerType::HUD));
 
@@ -101,7 +99,7 @@ void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUD
     struct nk_colorf bg;
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
     // TODO: create layout from HUDCanvas
-    if (nk_begin(ctx, "Demo", nk_rect(50, 50, 230, 250),
+    if (nk_begin(ctx, "Demo", nk_rect(50, 50, 400, 500),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
         NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
     {
@@ -112,10 +110,10 @@ void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUD
         nk_layout_row_static(ctx, 30, 80, 1);
         if (nk_button_label(ctx, "button"))
             fprintf(stdout, "button pressed\n");
-        nk_layout_row_dynamic(ctx, 30, 2);
+        nk_layout_row_dynamic(ctx, 60, 2);
         if (nk_option_label(ctx, "easy", op == EASY)) op = EASY;
         if (nk_option_label(ctx, "hard", op == HARD)) op = HARD;
-        nk_layout_row_dynamic(ctx, 22, 1);
+        nk_layout_row_dynamic(ctx, 50, 1);
         nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
 
         nk_layout_row_dynamic(ctx, 20, 1);
@@ -160,8 +158,8 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUD
         struct nk_convert_config config;
         NK_STORAGE const struct nk_draw_vertex_layout_element vertex_layout[] = {
             { NK_VERTEX_POSITION, NK_FORMAT_FLOAT, NK_OFFSETOF(Vertex2D, pos) },
-        { NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(Vertex2D, tex) },
-        { NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(Vertex2D, col) },
+            { NK_VERTEX_TEXCOORD, NK_FORMAT_FLOAT, NK_OFFSETOF(Vertex2D, tex) },
+            { NK_VERTEX_COLOR, NK_FORMAT_R8G8B8A8, NK_OFFSETOF(Vertex2D, col) },
         { NK_VERTEX_LAYOUT_END }
         };
         memset(&config, 0, sizeof(config));
@@ -174,7 +172,7 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUD
         config.circle_segment_count = 22;
         config.curve_segment_count = 22;
         config.arc_segment_count = 22;
-        config.null;
+        config.null = *nuklear.Nulltexture();
 
         {/* setup buffers to load vertices and elements */
             struct nk_buffer vbuf, ibuf;

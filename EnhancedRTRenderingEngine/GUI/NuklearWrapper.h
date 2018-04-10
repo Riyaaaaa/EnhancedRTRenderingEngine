@@ -26,6 +26,10 @@ public:
         return _contexts.nkCmds;
     }
 
+    nk_draw_null_texture* Nulltexture() const {
+        return _contexts.null;
+    }
+
     NuklearContexts _contexts;
     std::shared_ptr<GITexture2D> _atlasTexture;
     std::shared_ptr<GIShaderResourceView> _atlasTextureSRV;

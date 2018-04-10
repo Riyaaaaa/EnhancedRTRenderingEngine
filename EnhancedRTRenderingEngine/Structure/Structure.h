@@ -76,7 +76,7 @@ struct TexVertex {
 struct Vertex2D {
     Vector2D pos;
     Vector2D tex;
-    _Vector4D<unsigned char> col;
+    _Vector4D<uint8_t> col;
 };
 
 struct Vertex3D {
