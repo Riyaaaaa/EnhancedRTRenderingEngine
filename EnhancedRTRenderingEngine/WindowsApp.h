@@ -3,7 +3,9 @@
 #include <functional>
 #include <unordered_map>
 #include "SpiralLibrary/GameSystem/SingletonBase.hpp"
+#include "boost/optional.hpp"
 #include "Constant/InputKey.h"
+#include "Structure/Aliases.h"
 #include "Structure/Structure.h"
 
 
@@ -17,21 +19,21 @@ public:
     HWND GetActiveWindow() { return _hWnd;  }
     Size GetWindowSize() { return _windowSize; }
 
-    void RegisterPressListener(std::string key, const std::function<void(InputKey key)>& listener);
-    void RegisterReleaseListener(std::string key, const std::function<void(InputKey key)>& listener);
-    void RegisterDragListener(std::string key, const std::function<void(Vector2D Delta, InputKey key)>& listener);
+    void RegisterPressListener(std::string key, const std::function<void(InputKey key, boost::optional<Index>)>& listener);
+    void RegisterReleaseListener(std::string key, const std::function<void(InputKey key, boost::optional<Index>)>& listener);
+    void RegisterDragListener(std::string key, const std::function<void(Index Delta, InputKey key)>& listener);
 
     bool ProcessInput(unsigned int umsg, WPARAM wParam, LPARAM lParam);
-    void DispatchInputEvent(InputEvent e, InputKey key);
-    void DispathDragEvent(InputKey key, Vector2D Delta);
+    void DispatchInputEvent(InputEvent e, InputKey key, boost::optional<Index> pos);
+    void DispathDragEvent(InputKey key, Index Delta);
 protected:
     HWND _hWnd;
     Size _windowSize;
-    Vector2D oldClickedPos;
+    Index oldClickedPos;
     InputKey handleKey;
 
-    std::unordered_map<std::string, std::function<void(InputKey key)>> pressedKeyListeners;
-    std::unordered_map<std::string, std::function<void(InputKey key)>> releasedKeyListeners;
-    std::unordered_map<std::string, std::function<void(Vector2D Delta, InputKey key)>> dragListeners;
+    std::unordered_map<std::string, std::function<void(InputKey key, boost::optional<Index>)>> pressedKeyListeners;
+    std::unordered_map<std::string, std::function<void(InputKey key, boost::optional<Index>)>> releasedKeyListeners;
+    std::unordered_map<std::string, std::function<void(Index Delta, InputKey key)>> dragListeners;
 };
 

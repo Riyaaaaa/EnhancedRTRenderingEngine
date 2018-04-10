@@ -201,6 +201,7 @@
     <ClInclude Include="Shader\ShaderFactory.h" />
     <ClInclude Include="Scene\StaticMeshObject.h" />
     <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
+    <ClInclude Include="Structure\Aliases.h" />
     <ClInclude Include="Structure\Octree.h" />
     <ClInclude Include="Structure\Primitive.h" />
     <ClInclude Include="Structure\RaytraceStructures.h" />

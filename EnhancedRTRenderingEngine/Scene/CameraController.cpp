@@ -10,8 +10,8 @@ using namespace DirectX;
 CameraController::CameraController(CameraObject* camera)
 {
     _camera = camera;
-    WindowsApp::getInstance()->RegisterPressListener("CameraController", std::bind<void (CameraController::*)(InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1));
-    WindowsApp::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Vector2D, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+    WindowsApp::getInstance()->RegisterPressListener("CameraController", std::bind<void (CameraController::*)(InputKey, boost::optional<Index>)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+    WindowsApp::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Index, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 
@@ -19,7 +19,7 @@ CameraController::~CameraController()
 {
 }
 
-void CameraController::ControllCamera(InputKey key) {
+void CameraController::ControllCamera(InputKey key, boost::optional<Index> pos) {
     auto dir = _camera->hAt - _camera->hEye;
     dir = XMVector3Normalize(dir);
     Vector3D norDir{ XMVectorGetByIndex(dir, 0),XMVectorGetByIndex(dir, 1), XMVectorGetByIndex(dir, 2),};
@@ -54,7 +54,7 @@ void CameraController::ControllCamera(InputKey key) {
     }
 }
 
-void CameraController::ControllCamera(Vector2D Delta, InputKey key) {
+void CameraController::ControllCamera(Index Delta, InputKey key) {
     switch (key) {
     case InputKey::LMOUSE:
     case InputKey::RMOUSE:
