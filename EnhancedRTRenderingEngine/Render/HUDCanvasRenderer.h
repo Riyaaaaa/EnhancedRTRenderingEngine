@@ -30,6 +30,8 @@ protected:
     std::shared_ptr<GIRasterizerState> _rstate;
     std::shared_ptr<GISamplerState> _samplerState;
     std::shared_ptr<GIInputLayout> _layout;
+
+    Matrix _screenProjection;
 };
 
 

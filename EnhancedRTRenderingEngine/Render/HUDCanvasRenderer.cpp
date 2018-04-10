@@ -9,7 +9,7 @@
 #include "Common/Common.h"
 
 static void
-SetScreenProjection(int width, int height, float *result)
+SetScreenProjection(int width, int height, Matrix* result)
 {
     const float L = 0.0f;
     const float R = (float)width;
@@ -67,14 +67,13 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
     }
 
     {
-        float matrix[4 * 4];
         BufferDesc desc;
-        desc.byteWidth = sizeof(matrix);
+        desc.byteWidth = sizeof(_screenProjection);
         desc.usage = ResourceUsage::Dynamic;
         desc.accessFlag = ResourceAccessFlag::W;
 
-        SetScreenProjection(view->GetRenderSize().w, view->GetRenderSize().h, matrix);
-        _cbuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, matrix));
+        SetScreenProjection(view->GetRenderSize().w, view->GetRenderSize().h, &_screenProjection);
+        _cbuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &_screenProjection));
     }
 
     {
@@ -184,15 +183,31 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUD
             nk_convert(nuklear.Context(), nuklear.Commands(), &vbuf, &ibuf, &config); 
 
             /*Vertex2D* vertPtr = (Vertex2D*)vbuf.memory.ptr;
+            int count = 0;
             for (int i = 0; i < vbuf.memory.size / sizeof(Vertex2D); i++) {
                 auto ptr = vertPtr + i;
-                ERTREDebug(L"%f %f", ptr->pos.x, ptr->pos.y);
-            }*/
 
-           /* unsigned short* idxPtr = (unsigned short*)ibuf.memory.ptr;
-            for (int i = 0; i < ibuf.memory.size / sizeof(Vertex2D); i++) {
+                Vector4D v(ptr->pos.x, ptr->pos.y, 0, 0);
+                Vector4D projected = v * _screenProjection;
+
+                if (projected.x == 0 && projected.y == 0) 
+                {
+                    break;
+                }
+
+                ERTREDebug(L"%f %f\n", projected.x, projected.y);
+                count++;
+            }
+            ERTREDebug(L"nums: %d\n", count);
+
+
+            unsigned short* idxPtr = (unsigned short*)ibuf.memory.ptr;
+            for (int i = 0; i < ibuf.memory.size / sizeof(Vertex2D) - 1; i++) {
                 auto ptr = idxPtr + i;
-                ERTREDebug(L"%u", *ptr);
+                if (*ptr == 0 && *(ptr + 1) == 0) {
+                    break;
+                }
+                ERTREDebug(L"%u, ", *ptr);
             }*/
         }
     }

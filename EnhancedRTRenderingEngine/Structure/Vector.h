@@ -3,14 +3,17 @@
 #include <cmath>
 
 template <class T, std::size_t dim>
+struct _Matrix;
+
+using Matrix = _Matrix<float, 4>;
+
+template <class T, std::size_t dim>
 struct _Vector {
     float operator[](unsigned int idx) const {
-        T* ptr = reinterpret_cast<T*>(this);
-        return *(ptr + idx);
+        return _elems[idx];
     }
     float& operator[](unsigned int idx) {
-        T* ptr = reinterpret_cast<T*>(this);
-        return *(ptr + idx);
+        return _elems[idx];
     }
 private:
     T _elems[dim];
@@ -169,14 +172,38 @@ using _Vector3D = _Vector<T, 3>;
 template <class T>
 struct _Vector<T, 4> {
     _Vector() {}
-    float operator[](unsigned int idx) const {
-        T* ptr = reinterpret_cast<T*>(this);
+    T operator[](unsigned int idx) const {
+        const T* ptr = &x;
         return *(ptr + idx);
     }
-    float& operator[](unsigned int idx) {
-        T* ptr = reinterpret_cast<T*>(this);
+
+    T& operator[](unsigned int idx) {
+        T* ptr = &x;
         return *(ptr + idx);
     }
+
+    _Vector operator*(const Matrix& mat) {
+        _Vector ret(0,0,0,0);
+
+        for (int i = 0; i < 4; i++) {
+            ret.x += (*this)[i] * mat[i][0];
+        }
+
+        for (int i = 0; i < 4; i++) {
+            ret.y += (*this)[i] * mat[i][1];
+        }
+
+        for (int i = 0; i < 4; i++) {
+            ret.z += (*this)[i] * mat[i][2];
+        }
+
+        for (int i = 0; i < 4; i++) {
+            ret.w += (*this)[i] * mat[i][3];
+        }
+
+        return ret;
+    }
+
     constexpr _Vector(T x, T y, T z, T w = 1) : x(x), y(y), z(z), w(w) {}
     constexpr _Vector(const _Vector<T, 3> vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1) {}
     T x, y, z, w;
@@ -188,15 +215,16 @@ using Vector4D = _Vector<float, 4>;
 template<class T>
 using _Vector4D = _Vector<T, 4>;
 
-struct Matrix {
-    const Vector4D& operator[](unsigned int idx) const {
+template <class T, std::size_t dim>
+struct _Matrix {
+    const _Vector<T, dim>& operator[](unsigned int idx) const {
         return _elems[idx];
     }
 
-    Vector4D& operator[](unsigned int idx) {
+    _Vector<T, dim>& operator[](unsigned int idx) {
         return _elems[idx];
     }
 
 private:
-    Vector4D _elems[4];
+    _Vector<T, dim> _elems[4];
 };
