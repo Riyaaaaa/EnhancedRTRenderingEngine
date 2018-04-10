@@ -98,6 +98,7 @@ void HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUD
 
     struct nk_colorf bg;
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
+
     // TODO: create layout from HUDCanvas
     if (nk_begin(ctx, "Demo", nk_rect(50, 50, 400, 500),
         NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |

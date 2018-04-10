@@ -684,6 +684,19 @@
     <Library Include="ThirdParty\x64\libpng\libpng16.lib" />
     <Library Include="ThirdParty\x64\libpng\zlib.lib" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="Asset\Font\Cousine-Regular.ttf" />
+    <Font Include="Asset\Font\DroidSans.ttf" />
+    <Font Include="Asset\Font\Karla-Regular.ttf" />
+    <Font Include="Asset\Font\kenvector_future.ttf" />
+    <Font Include="Asset\Font\kenvector_future_thin.ttf" />
+    <Font Include="Asset\Font\ProggyClean.ttf" />
+    <Font Include="Asset\Font\ProggyTiny.ttf" />
+    <Font Include="Asset\Font\Raleway-Bold.ttf" />
+    <Font Include="Asset\Font\Roboto-Bold.ttf" />
+    <Font Include="Asset\Font\Roboto-Light.ttf" />
+    <Font Include="Asset\Font\Roboto-Regular.ttf" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="..\packages\boost.1.66.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.66.0.0\build\native\boost.targets')" />

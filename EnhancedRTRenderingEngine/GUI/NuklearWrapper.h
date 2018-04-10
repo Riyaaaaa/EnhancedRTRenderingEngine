@@ -1,12 +1,16 @@
 #pragma once
 
+#include <string>
 #include <memory>
+#include <unordered_map>
 
 #include "NuklearContexts.h"
 
 class GIImmediateCommands;
 class GITexture2D;
 class GIShaderResourceView;
+
+struct nk_font;
 
 class NuklearWrapper
 {
@@ -30,7 +34,12 @@ public:
         return _contexts.null;
     }
 
+    void SetFontStyle(std::string key);
+
     NuklearContexts _contexts;
+
+    std::unordered_map<std::string, nk_font*> _fontHandles;
+
     std::shared_ptr<GITexture2D> _atlasTexture;
     std::shared_ptr<GIShaderResourceView> _atlasTextureSRV;
 };

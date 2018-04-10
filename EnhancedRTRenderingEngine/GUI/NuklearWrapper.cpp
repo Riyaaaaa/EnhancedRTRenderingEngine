@@ -20,10 +20,14 @@ NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
     nk_buffer_init_default(_contexts.nkCmds);
     nk_font_atlas_init_default(_contexts.atlas);
     nk_font_atlas_begin(_contexts.atlas);
+
+    /* ------ FONT ADD CODES ------- */
     //nk_font_atlas_add_from_file(_atlas, "../../extra_font/DroidSans.ttf", 14, 0);
+    nk_font* default_font = nk_font_atlas_add_default(_contexts.atlas, 20.0f, nullptr);
+    /* ------ FONT ADD CODES ------- */
+
     const void *buf; int w, h;
     buf = nk_font_atlas_bake(_contexts.atlas, &w, &h, NK_FONT_ATLAS_RGBA32);
-
     Texture2D atlasTexture((std::size_t)w, (std::size_t)h, 4ul, buf, w * h * 4);
     //FileManager::getInstance()->AddCache<Texture2D>("FontAtlas_HUD", atlasTexture);
 
@@ -34,9 +38,10 @@ NuklearWrapper::NuklearWrapper(GIImmediateCommands* cmd)
     _atlasTexture = MakeRef(cmd->CreateTexture2D(param, std::vector<Texture2D>{atlasTexture}));
     _atlasTextureSRV = MakeRef(cmd->CreateShaderResourceView(_atlasTexture.get()));
 
+    //nk_font_atlas_add_from_file(_contexts.context, "Asset\\Font\\DroidSans.ttf", 14, 0);
+
     nk_font_atlas_end(_contexts.atlas, nk_handle_ptr(_atlasTextureSRV.get()), _contexts.null);
-    if (_contexts.atlas->default_font)
-        nk_style_set_font(_contexts.context, &_contexts.atlas->default_font->handle);
+    nk_style_set_font(_contexts.context, &default_font->handle);
 }
 
 
@@ -50,4 +55,10 @@ NuklearWrapper::~NuklearWrapper()
     delete _contexts.nkCmds;
     delete _contexts.context;
     delete _contexts.null;
+}
+
+void NuklearWrapper::SetFontStyle(std::string key) {
+    if (_fontHandles.count(key) == 1) {
+        nk_style_set_font(_contexts.context, &_fontHandles.at(key)->handle);
+    }
 }
