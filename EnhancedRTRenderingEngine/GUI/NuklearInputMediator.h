@@ -21,5 +21,7 @@ public:
 
 protected:
     NuklearWrapper* _nuklear;
+
+    bool _swallows = false;
 };
 

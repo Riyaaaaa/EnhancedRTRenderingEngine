@@ -23,6 +23,7 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
         handleKey = InputKey::LMOUSE;
         oldClickedPos = pos;
         DispatchInputEvent(InputEvent::PRESS, InputKey::LMOUSE, pos);
+        SetCapture(_hWnd);
     }
         break;
     case WM_MOUSEMOVE: {
@@ -38,6 +39,7 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
         handleKey = InputKey::None;
         oldClickedPos = Index{ -1, -1 };
         DispatchInputEvent(InputEvent::RELEASE, InputKey::LMOUSE, pos);
+        ReleaseCapture();
     }
         break;
     case WM_RBUTTONDOWN: {
@@ -45,7 +47,7 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
         handleKey = InputKey::RMOUSE;
         oldClickedPos = pos;
         DispatchInputEvent(InputEvent::PRESS, InputKey::RMOUSE, pos);
-        break;
+        SetCapture(_hWnd);
     }
         break;
     case WM_RBUTTONUP: {
@@ -53,6 +55,7 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
         handleKey = InputKey::None;
         oldClickedPos = Index{ -1, -1 };
         DispatchInputEvent(InputEvent::RELEASE, InputKey::RMOUSE, pos);
+        ReleaseCapture();
     }
         break;
     case WM_CHAR:
