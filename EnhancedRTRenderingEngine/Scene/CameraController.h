@@ -13,7 +13,7 @@ public:
     CameraController(CameraObject* camera);
 
     void ControllCamera(InputKey key, boost::optional<Index> pos);
-    void ControllCamera(Index Delta, InputKey key);
+    void ControllCamera(Index Delta, Index pos, InputKey key);
 
     ~CameraController();
 

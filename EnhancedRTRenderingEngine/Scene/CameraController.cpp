@@ -11,7 +11,7 @@ CameraController::CameraController(CameraObject* camera)
 {
     _camera = camera;
     WindowsApp::getInstance()->RegisterPressListener("CameraController", std::bind<void (CameraController::*)(InputKey, boost::optional<Index>)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
-    WindowsApp::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Index, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+    WindowsApp::getInstance()->RegisterDragListener("CameraController", std::bind<void (CameraController::*)(Index, Index, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 
@@ -54,7 +54,7 @@ void CameraController::ControllCamera(InputKey key, boost::optional<Index> pos) 
     }
 }
 
-void CameraController::ControllCamera(Index Delta, InputKey key) {
+void CameraController::ControllCamera(Index Delta, Index pos, InputKey key) {
     switch (key) {
     case InputKey::LMOUSE:
     case InputKey::RMOUSE:

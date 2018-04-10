@@ -7,11 +7,19 @@
 
 using namespace libspiral;
 
+static Size FixClientSize(HWND hWnd, LONG sx, LONG sy);
+
+void WindowsApp::RegisterWindow(HWND hWnd, Size size) {
+    _hWnd = hWnd;
+    _windowSize = size;
+
+    FixClientSize(_hWnd, size.w, size.h);
+}
+
 bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
     switch (uMsg) {
     case WM_LBUTTONDOWN: {
-        Index pos = Index{ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-        ERTREDebug(_T("pos: %f"), oldClickedPos.x);
+        Index pos = Index( GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) );
         handleKey = InputKey::LMOUSE;
         oldClickedPos = pos;
         DispatchInputEvent(InputEvent::PRESS, InputKey::LMOUSE, pos);
@@ -20,25 +28,32 @@ bool WindowsApp::ProcessInput(unsigned int uMsg, WPARAM wParam, LPARAM lParam) {
     case WM_MOUSEMOVE: {
         if (handleKey != InputKey::None && oldClickedPos.x != -1) {
             Index pos = Index{ GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
-            DispathDragEvent(handleKey, oldClickedPos - pos);
+            DispathDragEvent(handleKey, oldClickedPos - pos, pos);
             oldClickedPos = pos;
         }
     }
         break;
-    case WM_LBUTTONUP:
+    case WM_LBUTTONUP: {
+        Index pos = Index( GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) );
         handleKey = InputKey::None;
         oldClickedPos = Index{ -1, -1 };
+        DispatchInputEvent(InputEvent::RELEASE, InputKey::LMOUSE, pos);
+    }
         break;
     case WM_RBUTTONDOWN: {
-        Index pos = Index{ GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) };
+        Index pos = Index( GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) );
         handleKey = InputKey::RMOUSE;
         oldClickedPos = pos;
+        DispatchInputEvent(InputEvent::PRESS, InputKey::RMOUSE, pos);
         break;
     }
         break;
-    case WM_RBUTTONUP:
+    case WM_RBUTTONUP: {
+        Index pos = Index( GET_X_LPARAM(lParam),  GET_Y_LPARAM(lParam) );
         handleKey = InputKey::None;
         oldClickedPos = Index{ -1, -1 };
+        DispatchInputEvent(InputEvent::RELEASE, InputKey::RMOUSE, pos);
+    }
         break;
     case WM_CHAR:
         if (L'e' == (wchar_t)wParam) {
@@ -73,7 +88,7 @@ void WindowsApp::RegisterReleaseListener(std::string key, const std::function<vo
     releasedKeyListeners.insert(std::make_pair(key, listener));
 }
 
-void WindowsApp::RegisterDragListener(std::string key, const std::function<void(Index Delta, InputKey key)>& listener) {
+void WindowsApp::RegisterDragListener(std::string key, const std::function<void(Index Delta, Index pos, InputKey key)>& listener) {
     dragListeners.insert(std::make_pair(key, listener));
 }
 
@@ -95,8 +110,26 @@ void WindowsApp::DispatchInputEvent(InputEvent e, InputKey key, boost::optional<
     }
 }
 
-void WindowsApp::DispathDragEvent(InputKey key, Index Delta) {
+void WindowsApp::DispathDragEvent(InputKey key, Index Delta, Index pos) {
     for (auto && listener : dragListeners) {
-        listener.second(Delta, key);
+        listener.second(Delta, pos, key);
     }
+}
+
+static Size FixClientSize(HWND hWnd, LONG sx, LONG sy)
+{
+    Size fixedSize;
+    RECT rc1;
+    RECT rc2;
+
+    GetWindowRect(hWnd, &rc1);
+    GetClientRect(hWnd, &rc2);
+
+    fixedSize.w = ((rc1.right - rc1.left) - (rc2.right - rc2.left));
+    fixedSize.h = ((rc1.bottom - rc1.top) - (rc2.bottom - rc2.top));
+    sx += fixedSize.w;
+    sy += fixedSize.h;
+    SetWindowPos(hWnd, NULL, 0, 0, sx, sy, (SWP_NOZORDER | SWP_NOOWNERZORDER | SWP_NOMOVE));
+
+    return fixedSize;
 }
