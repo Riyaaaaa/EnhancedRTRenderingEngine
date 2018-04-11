@@ -8,7 +8,7 @@ void GIRenderView::Initialize(GIImmediateCommands* cmd, const ViewportParam& par
 
     _OMResource = std::make_shared<GIOMResource>();
     _OMResource->renderTargets.push_back(MakeRef(cmd->CreateRenderTargetView(_swapchain->backBuffer.get())));
-    _OMResource->depthStencilView = GICommandUtils::CreateDepthStencilView(cmd, Size(param.cfg.width, param.cfg.height), TextureFormat::D24_UNORM_S8_UINT, false);
+    _OMResource->depthStencilView = GICommandUtils::CreateDepthStencilView(cmd, Size2D(param.cfg.width, param.cfg.height), TextureFormat::D24_UNORM_S8_UINT, false);
 
     _defaultRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::Default));
     _doubleSidedRState = MakeRef(cmd->CreateRasterizerState(RasterizerType::DoubleSided));
@@ -17,7 +17,7 @@ void GIRenderView::Initialize(GIImmediateCommands* cmd, const ViewportParam& par
     cmd->RSSetState(_defaultRState.get());
 
     _type = param.MSAAQuality;
-    _renderSize = Size(param.cfg.width, param.cfg.height);
+    _renderSize = Size2D(param.cfg.width, param.cfg.height);
     _viewportCfg = param.cfg;
     cmd->SetViewport(_viewportCfg);
 }
@@ -36,7 +36,7 @@ void GIRenderView::SetRasterizerState(GIImmediateCommands* cmd, RasterizerState 
     }
 }
 
-void GIRenderView::SetViewPortSize(GIImmediateCommands* cmd, Size size) {
+void GIRenderView::SetViewPortSize(GIImmediateCommands* cmd, Size2D size) {
     _viewportCfg.width = size.w;
     _viewportCfg.height = size.h;
     cmd->SetViewport(_viewportCfg);

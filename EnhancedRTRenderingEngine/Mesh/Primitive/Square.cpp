@@ -2,13 +2,15 @@
 #include "Square.h"
 
 template<>
-Square<Vertex3D>::Square(Size size)
+Square<Vertex3D>::Square(Size2D size)
 {
+    float w = static_cast<float>(size.w);
+    float h = static_cast<float>(size.h);
     _vertexList = std::vector<Vertex3D>{
-        Vertex3D{ Vector3D{ -size.w, -size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 0.0f, 0.0f } },
-        Vertex3D{ Vector3D{ -size.w, -size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 0.0f, 1.0f } },
-        Vertex3D{ Vector3D{ +size.w, -size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 0.0f } },
-        Vertex3D{ Vector3D{ +size.w, +size.h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 1.0f } }
+        Vertex3D{ Vector3D{ -w, -h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 0.0f, 0.0f } },
+        Vertex3D{ Vector3D{ -w, -h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 0.0f, 1.0f } },
+        Vertex3D{ Vector3D{ +w, -h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 0.0f } },
+        Vertex3D{ Vector3D{ +w, +h, 0.0f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 1.0f } }
     };
 
     _indexList = std::vector<uint16_t>{
@@ -20,13 +22,15 @@ Square<Vertex3D>::Square(Size size)
 }
 
 template<>
-Square<TexVertex>::Square(Size size)
+Square<TexVertex>::Square(Size2D size)
 {
+    float w = static_cast<float>(size.w);
+    float h = static_cast<float>(size.h);
     _vertexList = std::vector<TexVertex>{
-        TexVertex{ Vector3D{ -size.w, -size.h, 0.5f },Vector2D{ 0.0f, 1.0f } },
-        TexVertex{ Vector3D{ -size.w, +size.h, 0.5f },Vector2D{ 0.0f, 0.0f } },
-        TexVertex{ Vector3D{ +size.w, -size.h, 0.5f },Vector2D{ 1.0f, 1.0f } },
-        TexVertex{ Vector3D{ +size.w, +size.h, 0.5f },Vector2D{ 1.0f, 0.0f } }
+        TexVertex{ Vector3D{ -w, -h, 0.5f },Vector2D{ 0.0f, 1.0f } },
+        TexVertex{ Vector3D{ -w, +h, 0.5f },Vector2D{ 0.0f, 0.0f } },
+        TexVertex{ Vector3D{ +w, -h, 0.5f },Vector2D{ 1.0f, 1.0f } },
+        TexVertex{ Vector3D{ +w, +h, 0.5f },Vector2D{ 1.0f, 0.0f } }
     };
 
     _indexList = std::vector<uint16_t>{

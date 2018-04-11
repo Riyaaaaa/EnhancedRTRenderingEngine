@@ -100,7 +100,7 @@ HUDCanvasRenderer::~HUDCanvasRenderer()
 BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
     auto* ctx = _nuklear->Context();
 
-    struct nk_colorf bg;
+    static struct nk_colorf bg;
     bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
 
     // TODO: create layout from HUDCanvas

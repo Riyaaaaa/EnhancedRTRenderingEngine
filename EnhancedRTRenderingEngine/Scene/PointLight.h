@@ -16,7 +16,7 @@ public:
     const Vector3D& GetAttenuation() { return _attenuation; }
 
     ResourceHandle<Texture2D> GetShadowTexture(CUBE_DIRECTION dir) { return _shodowTextures[dir]; }
-    Size GetShadowResolution() { return _shadowResolution; }
+    Size2D GetShadowResolution() { return _shadowResolution; }
 
     DirectX::XMMATRIX* GetViewMatrixes();
     DirectX::XMMATRIX GetViewMatrix(CUBE_DIRECTION dir);
@@ -33,6 +33,6 @@ protected:
     bool _isDirtyShadow;
     DirectX::XMMATRIX _viewMatrixes[6];
     TextureCube _shodowTextures;
-    Size _shadowResolution;
+    Size2D _shadowResolution;
 };
 

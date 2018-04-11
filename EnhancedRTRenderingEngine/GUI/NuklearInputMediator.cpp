@@ -11,10 +11,6 @@ NuklearInputMediator::NuklearInputMediator(NuklearWrapper* nuklear) :
 }
 
 bool NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index> pos) {
-    if (pos) {
-        ERTREDebug(L"pos: %d %d\n", pos->x, pos->y);
-    }
-
     switch (key)
     {
     case InputKey::None:
@@ -54,9 +50,6 @@ bool NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index>
 }
 
 bool NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> pos) {
-    if (pos) {
-        ERTREDebug(L"released pos: %d %d\n", pos->x, pos->y);
-    }
     switch (key)
     {
     case InputKey::None:
@@ -97,8 +90,6 @@ bool NuklearInputMediator::ProcessInputUp(InputKey key, boost::optional<Index> p
 }
 
 bool NuklearInputMediator::ProcessInputMotion(Index Delta, Index pos, InputKey key) {
-    ERTREDebug(L"move pos: %d %d\n", pos.x, pos.y);
-
     switch (key)
     {
     case InputKey::LMOUSE:

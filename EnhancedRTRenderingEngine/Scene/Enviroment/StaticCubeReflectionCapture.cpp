@@ -2,6 +2,8 @@
 #include "StaticCubeReflectionCapture.h"
 #include "GraphicsInterface/GITextureProxy.h"
 
+#include "Utility/TextureUtils.h"
+
 StaticCubeReflectionCapture::StaticCubeReflectionCapture(const TextureCube& tex) :
     reflectionSource(tex)
 {
@@ -10,11 +12,14 @@ StaticCubeReflectionCapture::StaticCubeReflectionCapture(const TextureCube& tex)
 
 void StaticCubeReflectionCapture::SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex) {
     TextureParam param;
+    param.mipLevels = std::floor(std::log2(reflectionSource.Size())) + 1;
     param.arraySize = 6;
     param.width = reflectionSource.Size();
     param.height = reflectionSource.Size();
     param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
     param.type = TextureType::TextureCube;
     param.format = TextureFormat::RGBA8_UNORM;
-    tex->Initialize(cmd, param, reflectionSource.textures);
+    
+    auto mipmaps = TextureUtils::CreateMipmaps(reflectionSource, 0);
+    tex->Initialize(cmd, param, mipmaps);
 }

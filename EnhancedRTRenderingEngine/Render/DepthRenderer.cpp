@@ -87,7 +87,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             return;
         }
 
-        Size resolution = pLight.GetShadowResolution();
+        Size2D resolution = pLight.GetShadowResolution();
         GICommandUtils::SetViewportSize(cmd, resolution);
 
         std::vector<GIOMResource> target;
