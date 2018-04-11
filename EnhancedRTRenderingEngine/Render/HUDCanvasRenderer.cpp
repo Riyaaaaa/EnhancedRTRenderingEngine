@@ -6,6 +6,8 @@
 #include "nuklear/nuklear.h"
 #include "GraphicsInterface/GICommandUtils.h"
 
+#include "UserData/UserConfig.h"
+
 #include "Common/Common.h"
 
 static void
@@ -100,8 +102,9 @@ HUDCanvasRenderer::~HUDCanvasRenderer()
 BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
     auto* ctx = _nuklear->Context();
 
-    static struct nk_colorf bg;
-    bg.r = 0.10f, bg.g = 0.18f, bg.b = 0.24f, bg.a = 1.0f;
+    auto& color = UserConfig::getInstance()->GetBGColor();
+    struct nk_colorf bg;
+    bg.r = color.x, bg.g = color.y, bg.b = color.z, bg.a = color.w;
 
     // TODO: create layout from HUDCanvas
     if (nk_begin(nuklear.Context(), "Settings", nk_rect(50, 50, 400, 500),
@@ -128,10 +131,10 @@ BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* 
             nk_layout_row_dynamic(ctx, 120, 1);
             bg = nk_color_picker(ctx, bg, NK_RGBA);
             nk_layout_row_dynamic(ctx, 25, 1);
-            bg.r = nk_propertyf(ctx, "#R:", 0, bg.r, 1.0f, 0.01f, 0.005f);
-            bg.g = nk_propertyf(ctx, "#G:", 0, bg.g, 1.0f, 0.01f, 0.005f);
-            bg.b = nk_propertyf(ctx, "#B:", 0, bg.b, 1.0f, 0.01f, 0.005f);
-            bg.a = nk_propertyf(ctx, "#A:", 0, bg.a, 1.0f, 0.01f, 0.005f);
+            color.x = nk_propertyf(ctx, "#R:", 0, bg.r, 1.0f, 0.01f, 0.005f);
+            color.y = nk_propertyf(ctx, "#G:", 0, bg.g, 1.0f, 0.01f, 0.005f);
+            color.z = nk_propertyf(ctx, "#B:", 0, bg.b, 1.0f, 0.01f, 0.005f);
+            color.w = nk_propertyf(ctx, "#A:", 0, bg.a, 1.0f, 0.01f, 0.005f);
             nk_combo_end(ctx);
         }
     }
