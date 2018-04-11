@@ -7,9 +7,9 @@
 
 using namespace libspiral;
 
-static Size FixClientSize(HWND hWnd, LONG sx, LONG sy);
+static Size2D FixClientSize(HWND hWnd, LONG sx, LONG sy);
 
-void WindowsApp::RegisterWindow(HWND hWnd, Size size) {
+void WindowsApp::RegisterWindow(HWND hWnd, Size2D size) {
     _hWnd = hWnd;
     _windowSize = size;
 
@@ -125,9 +125,9 @@ void WindowsApp::DispathDragEvent(InputKey key, Index Delta, Index pos) {
     }
 }
 
-static Size FixClientSize(HWND hWnd, LONG sx, LONG sy)
+static Size2D FixClientSize(HWND hWnd, LONG sx, LONG sy)
 {
-    Size fixedSize;
+    Size2D fixedSize;
     RECT rc1;
     RECT rc2;
 

@@ -23,7 +23,7 @@ public:
     TextureParam GetParam() const;
 
     void SetTextureName(std::string name) { textureName = name; }
-
+    std::string GetTextureName() { return textureName; }
 protected:
     std::size_t width, height, channels, stride;
     std::string textureName;

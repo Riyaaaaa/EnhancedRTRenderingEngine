@@ -7,20 +7,31 @@
 #include "Vector.h"
 #include "Constant/RenderConfig.h"
 
-struct Size {
-    Size(){}
-    Size(float _w, float _h) : w(_w), h(_h) {}
-    float w, h;
-};
-
-struct Size3D {
-    float w, h, d;
-    Size3D() = default;
-    Size3D(float _w, float _h, float _d) : w(_w), h(_h), d(_d) {}
-    Size3D operator/(float s) {
-        return Size3D(w/s, h/s, d/s);
+template<class T>
+struct _Size2D {
+    _Size2D(){}
+    _Size2D(T _w, T _h) : w(_w), h(_h) {}
+    T w, h;
+    _Size2D operator/(T s) {
+        return _Size2D(w / s, h / s);
     }
 };
+
+using Size2D = _Size2D<float>;
+using Size2Dd = _Size2D<std::size_t>;
+
+template<class T>
+struct _Size3D {
+    T w, h, d;
+    _Size3D() = default;
+    _Size3D(T _w, T _h, T _d) : w(_w), h(_h), d(_d) {}
+    _Size3D operator/(T s) {
+        return _Size3D(w/s, h/s, d/s);
+    }
+};
+
+using Size3D = _Size3D<float>;
+using Size3Dd = _Size3D<std::size_t>;
 
 struct Color3B {
     unsigned char r, g, b;
@@ -32,7 +43,7 @@ struct Color4B {
 
 struct BoundingBox2D {
     Vector2D pos;
-    Size size;
+    Size2D size;
 
     bool Contains(Vector2D p) const {
         return p.x >= pos.x && p.x <= pos.x + size.w &&

@@ -2,6 +2,7 @@
 #define PI 3.14159265359
 
 #define LIGHT_MAX 4
+#define MAX_REFLECTION_MIPLEVEL 10
 
 struct pixcelIn
 {
@@ -165,7 +166,7 @@ float SpecularBRDF(float3 normalizedLightDir, float4 posw, float4 norw, float4 e
     return (F * G * D) / (4.0 * dotNL * dotNV + EPSILON);
 }
 
-float3 ReflectionFrensel(float4 posw, float4 norw, float4 eye, float eta)
+float3 ReflectionFrensel(float4 posw, float4 norw, float4 eye, float eta, float roughness)
 {
     float3 N = norw;
     float3 I = normalize(posw.xyz - eye);
@@ -173,8 +174,10 @@ float3 ReflectionFrensel(float4 posw, float4 norw, float4 eye, float eta)
     float3 T = refract(I, N, eta);
     float fresnel = FrenselEquations(pow(eta - 1 / eta + 1, 2), N, I);
 
-    float3 reflecColor = EnviromentMap.Sample(EnviromentSampler, R);
-    float3 refracColor = EnviromentMap.Sample(EnviromentSampler, T);
+    float Mip = MAX_REFLECTION_MIPLEVEL * roughness;
+
+    float3 reflecColor = EnviromentMap.SampleLevel(EnviromentSampler, R, Mip);
+    float3 refracColor = EnviromentMap.SampleLevel(EnviromentSampler, T, Mip);
 
     float3 col = lerp(refracColor, reflecColor, fresnel);
 

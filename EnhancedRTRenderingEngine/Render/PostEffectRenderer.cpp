@@ -13,7 +13,7 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     struct ConstantBuffer
     {
         float time;
-        Size size;
+        Size2D size;
     };
 
     static float timestamp = 0;
@@ -36,7 +36,7 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     cmd->PSSetConstantBuffers(0, cb.get());
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
+    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size2D(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     DrawMesh element(&mesh);

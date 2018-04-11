@@ -7,7 +7,7 @@
 std::shared_ptr<GITexture2D> GaussianFilter(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> src) {
     struct GaussianCBuffer {
         float weight[8];
-        Size texsize;
+        Size2D texsize;
     };
     AlignedBuffer<GaussianCBuffer> buf;
 

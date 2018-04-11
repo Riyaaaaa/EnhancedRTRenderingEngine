@@ -7,7 +7,7 @@ template<class VertType>
 class Square : public MeshBase<VertType>
 {
 public:
-    Square(Size size);
+    Square(Size2D size);
 };
 
 class SquarePMD : public MeshBase<PMDVertex>

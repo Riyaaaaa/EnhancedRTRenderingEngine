@@ -114,13 +114,14 @@ GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, 
     D3D11_SUBRESOURCE_DATA* initDataPtr = nullptr;
 
     unsigned int width, height, arraySize;
+    arraySize = param.arraySize;
+
     if (!textures.empty()) {
         width = textures[0].Width();
         height = textures[0].Height();
-        arraySize = textures.size();
 
-        initData.resize(arraySize);
-        for (int i = 0; i < arraySize; i++) {
+        initData.resize(textures.size());
+        for (int i = 0; i < textures.size(); i++) {
             initData[i].pSysMem = textures[i].get();
             initData[i].SysMemPitch = textures[i].Stride();
         }
@@ -130,13 +131,12 @@ GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, 
     else {
         width = param.width;
         height = param.height;
-        arraySize = param.arraySize;
     }
 
     D3D11_TEXTURE2D_DESC desc;
     desc.Width = width;
     desc.Height = height;
-    desc.MipLevels = 1;
+    desc.MipLevels = param.mipLevels;
     desc.ArraySize = arraySize;
     desc.Format = CastToD3D11Format<DXGI_FORMAT>(param.format);
     desc.SampleDesc.Count = 1;
@@ -152,7 +152,9 @@ GITexture2D* D3D11ImmediateCommands::CreateTexture2D(const TextureParam& param, 
         break;
     }
 
-    _device->CreateTexture2D(&desc, initDataPtr, tex->resource.ToCreator());
+    if (FAILED(_device->CreateTexture2D(&desc, initDataPtr, tex->resource.ToCreator()))) {
+        assert("Failed create texture2D");
+    }
 
     return tex;
 }
@@ -191,7 +193,10 @@ GIShaderResourceView* D3D11ImmediateCommands::CreateShaderResourceView(GITexture
         }
     }
 
-    _device->CreateShaderResourceView(CastRes<D3D11Texture2D>(tex).Get(), &SRVDesc, srv->resource.ToCreator());
+    if (FAILED(_device->CreateShaderResourceView(CastRes<D3D11Texture2D>(tex).Get(), &SRVDesc, srv->resource.ToCreator()))) {
+        assert("Failed create texture2D");
+    }
+    
     return srv;
 }
 

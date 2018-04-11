@@ -7,10 +7,10 @@ class GIRenderView
 {
 public:
     void Initialize(GIImmediateCommands* cmd, const ViewportParam& param);
-    void SetViewPortSize(GIImmediateCommands* cmd, Size size);
+    void SetViewPortSize(GIImmediateCommands* cmd, Size2D size);
     void SetRasterizerState(GIImmediateCommands* cmd, RasterizerState state);
 
-    Size GetRenderSize() const { return _renderSize; }
+    Size2D GetRenderSize() const { return _renderSize; }
     MSAAQualityType GetMSAAQualityType() const { return _type; }
 
     void Present();
@@ -26,7 +26,7 @@ public:
 protected:
     MSAAQualityType _type;
     ViewportCfg _viewportCfg;
-    Size _renderSize;
+    Size2D _renderSize;
 
     std::shared_ptr<GISwapChain> _swapchain;
     std::shared_ptr<GIOMResource> _OMResource;

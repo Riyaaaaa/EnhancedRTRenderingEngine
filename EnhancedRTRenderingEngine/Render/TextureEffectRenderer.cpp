@@ -36,7 +36,7 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     cmd->ClearRenderTargetView(rtv.get(), ClearColor);
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size(1.0f, 1.0f));
+    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size2D(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     DrawMesh element(&mesh);

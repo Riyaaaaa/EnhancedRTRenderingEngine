@@ -69,9 +69,11 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
             param.type = material.type;
             GITextureProxy texture = GITextureProxyEntity::Create();
             if (material.type == TextureType::Texture2D) {
+                param.arraySize = 1;
                 texture->Initialize(cmd, param, material.texture);
             }
             else if (material.type == TextureType::TextureCube) {
+                param.arraySize = 6;
                 texture->Initialize(cmd, param, material.cubeTexture.textures);
             }
 

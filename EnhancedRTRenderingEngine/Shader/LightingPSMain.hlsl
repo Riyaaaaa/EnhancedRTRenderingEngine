@@ -45,7 +45,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
         }
     }
 
-    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f) * materialParameters.metallic;
+    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f, materialParameters.roughness * materialParameters.roughness) * materialParameters.metallic;
 
     float3 col = saturate(diffuse + specular);
     return float4(col, 1.0f);

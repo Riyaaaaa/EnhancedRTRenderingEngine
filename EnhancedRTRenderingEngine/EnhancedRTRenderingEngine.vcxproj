@@ -164,6 +164,7 @@
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
     <ClInclude Include="Common\Defines.h" />
+    <ClInclude Include="Algorithms\CompressTexture.h" />
     <ClInclude Include="Constant\GICommandParameter.h" />
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
@@ -216,6 +217,7 @@
     <ClInclude Include="ThirdParty\x64\libpng\pngstruct.h" />
     <ClInclude Include="ThirdParty\x64\libpng\zconf.h" />
     <ClInclude Include="ThirdParty\x64\libpng\zlib.h" />
+    <ClInclude Include="UserData\UserConfig.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
     <ClInclude Include="Utility\MathUtils.h" />
     <ClInclude Include="Resource\X\DXGrammers.h" />
@@ -345,6 +347,7 @@
   <ItemGroup>
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
+    <ClCompile Include="Algorithms\CompressTexture.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
     <ClCompile Include="GUI\HUDCanvas.cpp" />
     <ClCompile Include="GUI\NuklearWrapper.cpp" />
@@ -495,6 +498,7 @@
     <ClCompile Include="ThirdParty\src\nuklear\nuklear_window.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="UserData\UserConfig.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />
     <ClCompile Include="Resource\X\DXModel.cpp" />
@@ -588,6 +592,7 @@
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DisableOptimizations>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">ps_main</EntryPointName>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.1</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\LightingPSTextureColor.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -596,6 +601,7 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</DisableOptimizations>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.1</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\LightingVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

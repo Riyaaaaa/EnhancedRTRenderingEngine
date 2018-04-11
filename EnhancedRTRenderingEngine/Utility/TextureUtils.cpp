@@ -1,6 +1,10 @@
 #include "stdafx.h"
 #include "TextureUtils.h"
 
+#include "Algorithms/CompressTexture.h"
+
+#include "FileManager.h"
+
 Texture2D TextureUtils::CreateColorPalletTexture(std::size_t width, std::size_t height) {
     unsigned char* buffer = new unsigned char[width * height * 4 * sizeof(unsigned char)];
 
@@ -30,6 +34,44 @@ Texture2D TextureUtils::CreateUniformTexture(std::size_t width, std::size_t heig
     }
 
     return Texture2D(width, height, 4, buffer, sizeof(buffer));
+}
+
+std::vector<Texture2D> TextureUtils::CreateMipmaps(Texture2D srcTex, unsigned int miplevels) {
+    if (miplevels == 0) {
+        miplevels = std::floor(std::log2(srcTex.Width())) + 1;
+    }
+
+    std::vector<Texture2D> mipmaps;
+    mipmaps.reserve(miplevels);
+
+    mipmaps.push_back(srcTex);
+
+    Texture2D compressed = srcTex;
+    Size2Dd size(srcTex.Width(), srcTex.Height());
+    for (int i = 1; i < miplevels; i++) {
+        size = size / 2;
+        compressed = CompressTexture::NearestNeighbor(compressed, size);
+        mipmaps.push_back(compressed);
+        FileManager::getInstance()->AddCache<Texture2D>(srcTex.GetTextureName() + std::to_string(i), compressed);
+    }
+
+    return mipmaps;
+}
+
+std::vector<Texture2D> TextureUtils::CreateMipmaps(TextureCube srcTex, unsigned int miplevels) {
+    if (miplevels == 0) {
+        miplevels = std::floor(std::log2(srcTex.Size())) + 1;
+    }
+
+    std::vector<Texture2D> mipmaps;
+    mipmaps.reserve(miplevels * 6);
+
+    for (int j = 0; j < 6; j++) {
+        std::vector<Texture2D> compresseds = CreateMipmaps(srcTex.textures[j], miplevels);
+        std::copy(compresseds.begin(), compresseds.end(), std::back_inserter(mipmaps));
+    }
+
+    return mipmaps;
 }
 
 TextureFormat TextureUtils::GetShaderResourceFormat(TextureFormat textureFormat) {
