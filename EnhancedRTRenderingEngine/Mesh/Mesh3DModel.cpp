@@ -109,7 +109,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
 
     // Set vertex color from face color
     for (std::size_t  i = 0; i < mesh.meshMaterialList.nFaceIndexes; i++) {
-        int matIdx = _drawFacesMap[i].materialIdx;
+        int matIdx = static_cast<int>(_drawFacesMap[i].materialIdx);
         for (std::size_t  j = 0; j < mesh.faces[i].size(); j++) {
             _vertexList[mesh.faces[i][j]].col = mesh.meshMaterialList.materials[matIdx].faceColor;
         }
@@ -132,7 +132,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
             if (oldMatIdx != -1) {
                 dist.push_back(Face{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
             }
-            oldMatIdx = _drawFacesMap[i].materialIdx;
+            oldMatIdx = static_cast<int>(_drawFacesMap[i].materialIdx);
             indexCount = 0;
         }
         indexCount += _drawFacesMap[i].faceNumVerts;

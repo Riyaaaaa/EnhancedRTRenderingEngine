@@ -5,12 +5,12 @@
 
 #include "FileManager.h"
 
-Texture2D TextureUtils::CreateColorPalletTexture(std::size_t width, std::size_t height) {
+Texture2D TextureUtils::CreateColorPalletTexture(unsigned int width, unsigned int height) {
     unsigned char* buffer = new unsigned char[width * height * 4 * sizeof(unsigned char)];
 
-    for (std::size_t i = 0; i < height; i++) {
+    for (unsigned int i = 0; i < height; i++) {
         char g = static_cast<unsigned char>(255 * i / height);
-        for (std::size_t j = 0; j < width; j++) {
+        for (unsigned int j = 0; j < width; j++) {
             *(buffer + i * width * 4 + j * 4) = static_cast<char>(255 * j / width);
             *(buffer + i * width * 4 + j * 4 + 1) = g;
             *(buffer + i * width * 4 + j * 4 + 2) = 0;
@@ -21,11 +21,11 @@ Texture2D TextureUtils::CreateColorPalletTexture(std::size_t width, std::size_t 
     return Texture2D(width, height, 4, buffer, sizeof(buffer));
 }
 
-Texture2D TextureUtils::CreateUniformTexture(std::size_t width, std::size_t height, Color4B color) {
+Texture2D TextureUtils::CreateUniformTexture(unsigned int width, unsigned int height, Color4B color) {
     unsigned char* buffer = new unsigned char[width * height * 4 * sizeof(unsigned char)];
 
-    for (std::size_t i = 0; i < height; i++) {
-        for (std::size_t j = 0; j < width; j++) {
+    for (unsigned int i = 0; i < height; i++) {
+        for (unsigned int j = 0; j < width; j++) {
             *(buffer + i * width * 4 + j * 4) = color.r;
             *(buffer + i * width * 4 + j * 4 + 1) = color.g;
             *(buffer + i * width * 4 + j * 4 + 2) = color.b;
@@ -38,7 +38,7 @@ Texture2D TextureUtils::CreateUniformTexture(std::size_t width, std::size_t heig
 
 std::vector<Texture2D> TextureUtils::CreateMipmaps(Texture2D srcTex, unsigned int miplevels) {
     if (miplevels == 0) {
-        miplevels = std::floor(std::log2(srcTex.Width())) + 1;
+        miplevels = static_cast<unsigned int>(std::floor(std::log2(srcTex.Width())) + 1);
     }
 
     std::vector<Texture2D> mipmaps;
@@ -48,7 +48,7 @@ std::vector<Texture2D> TextureUtils::CreateMipmaps(Texture2D srcTex, unsigned in
 
     Texture2D compressed = srcTex;
     Size2Dd size(srcTex.Width(), srcTex.Height());
-    for (int i = 1; i < miplevels; i++) {
+    for (unsigned int i = 1; i < miplevels; i++) {
         size = size / 2;
         compressed = CompressTexture::NearestNeighbor(compressed, size);
         mipmaps.push_back(compressed);
@@ -60,7 +60,7 @@ std::vector<Texture2D> TextureUtils::CreateMipmaps(Texture2D srcTex, unsigned in
 
 std::vector<Texture2D> TextureUtils::CreateMipmaps(TextureCube srcTex, unsigned int miplevels) {
     if (miplevels == 0) {
-        miplevels = std::floor(std::log2(srcTex.Size())) + 1;
+        miplevels = static_cast<unsigned int>(std::floor(std::log2(srcTex.Size())) + 1);
     }
 
     std::vector<Texture2D> mipmaps;

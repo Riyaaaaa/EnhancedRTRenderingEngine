@@ -12,20 +12,20 @@ class Texture2D : public RawBinary
 public:
     Texture2D() {}
     Texture2D(png_info_def* info, void* ptr, std::size_t size);
-    Texture2D(std::size_t width, std::size_t height, std::size_t channels, const void* ptr, std::size_t size);
-    Texture2D(std::size_t width, std::size_t height, std::size_t channels);
+    Texture2D(unsigned int width, unsigned int height, unsigned int channels, const void* ptr, std::size_t size);
+    Texture2D(unsigned int width, unsigned int height, unsigned int channels);
 
-    std::size_t Width() const { return width; }
-    std::size_t Height() const { return height; }
-    std::size_t Channels() const { return channels; }
-    std::size_t Stride() const { return stride; }
+    unsigned int Width() const { return width; }
+    unsigned int Height() const { return height; }
+    unsigned int Channels() const { return channels; }
+    unsigned int Stride() const { return stride; }
 
     TextureParam GetParam() const;
 
     void SetTextureName(std::string name) { textureName = name; }
     std::string GetTextureName() { return textureName; }
 protected:
-    std::size_t width, height, channels, stride;
+    unsigned int width, height, channels, stride;
     std::string textureName;
 };
 

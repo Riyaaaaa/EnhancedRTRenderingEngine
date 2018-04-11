@@ -44,7 +44,7 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     buffer->World = XMMatrixTranspose(mesh.GetMatrix());
     element.RegisterConstantBuffer(buffer, 0, ShaderType::VS);
     DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
+    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
     face.startIndex = 0;
     element.AddDrawElement(face);
     element.Draw(cmd);

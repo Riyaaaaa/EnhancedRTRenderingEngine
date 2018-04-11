@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "GIRawResource.h"
 
-GIRawResource::GIRawResource(const RawBinary& res, ResourceType type, float stride) :
+GIRawResource::GIRawResource(const RawBinary& res, ResourceType type, unsigned int stride) :
 _resource(res),
 _type(type),
 _structureByteStride(stride) {

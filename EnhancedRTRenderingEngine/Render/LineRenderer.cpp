@@ -52,7 +52,7 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     buffer->World = XMMatrixTranspose(mesh.GetMatrix());
     element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
     DrawElement face(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
-    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
+    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
     face.startIndex = 0;
     element.AddDrawElement(face);
     element.Draw(cmd);

@@ -5,8 +5,8 @@
 
 namespace TextureUtils
 {
-    Texture2D CreateColorPalletTexture(std::size_t width, std::size_t height);
-    Texture2D CreateUniformTexture(std::size_t width, std::size_t height, Color4B color);
+    Texture2D CreateColorPalletTexture(unsigned int width, unsigned int height);
+    Texture2D CreateUniformTexture(unsigned int width, unsigned int height, Color4B color);
 
     std::vector<Texture2D> CreateMipmaps(Texture2D srcTex, unsigned int miplevels);
     std::vector<Texture2D> CreateMipmaps(TextureCube srcTex, unsigned int miplevels);

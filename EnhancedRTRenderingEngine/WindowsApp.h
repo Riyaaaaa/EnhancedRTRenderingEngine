@@ -12,9 +12,9 @@
 class WindowsApp : public libspiral::SingletonBase<WindowsApp>
 {
 public:
-    void RegisterWindow(HWND hWnd, Size2D size);
+    void RegisterWindow(HWND hWnd, Size2Dd size);
     HWND GetActiveWindow() { return _hWnd;  }
-    Size2D GetWindowSize() { return _windowSize; }
+    Size2Dd GetWindowSize() { return _windowSize; }
 
     void RegisterPressListener(int priority, const std::function<bool(InputKey key, boost::optional<Index>)>& listener);
     void RegisterReleaseListener(int priority, const std::function<bool(InputKey key, boost::optional<Index>)>& listener);
@@ -25,7 +25,7 @@ public:
     void DispathDragEvent(InputKey key, Index Delta, Index pos);
 protected:
     HWND _hWnd;
-    Size2D _windowSize;
+    Size2Dd _windowSize;
     Index oldClickedPos;
     InputKey handleKey;
 

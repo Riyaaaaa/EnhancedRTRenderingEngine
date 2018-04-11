@@ -12,10 +12,10 @@ public:
     CubeReflectionCapture(float size);
     virtual void SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex);
     virtual bool Contains(Vector3D pos);
-    virtual float PrecisionSize() { return box.w; }
+    virtual unsigned int PrecisionSize() { return box.w; }
 
 protected:
     bool dirty;
-    Size3D box;
+    Size3Dd box;
 };
 

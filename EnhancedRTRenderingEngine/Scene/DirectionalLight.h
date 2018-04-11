@@ -12,7 +12,7 @@ public:
     void SetDirection(const Vector3D& dir) { _direction = dir; }
     const Vector3D& GetDirection() { return _direction; }
 
-    Size2D GetShadowResolution() { return _shadowResolution; }
+    Size2Dd GetShadowResolution() { return _shadowResolution; }
 
     DirectX::XMMATRIX GetViewProjection();
     DirectX::XMMATRIX GetPerspectiveProjection();
@@ -20,6 +20,6 @@ public:
     Vector3D _direction;
 
 protected:
-    Size2D _shadowResolution;
+    Size2Dd _shadowResolution;
 };
 

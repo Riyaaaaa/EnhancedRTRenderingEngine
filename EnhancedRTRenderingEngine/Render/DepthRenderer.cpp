@@ -28,7 +28,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
     desc.byteWidth = sizeof(TransformBufferParam);
     auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
-    for (std::size_t i = 0; i < dLights.size(); i++) {
+    for (int i = 0; i < static_cast<int>(dLights.size()); i++) {
         auto& dLight = dLights[i];
 
         auto rtv = GICommandUtils::CreateRenderTargetView(cmd, dLight.GetShadowResolution(), TextureFormat::RGBA16_UNORM, true);
@@ -58,10 +58,10 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
 
             face.startIndex = 0;
             if (object.GetMesh()->HasIndexList()) {
-                face.faceNumVerts = object.GetMesh()->GetIndexList().size();
+                face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
             }
             else {
-                face.faceNumVerts = object.GetMesh()->GetVertexList().size();
+                face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
             }
             element.AddDrawElement(face);
             element.Draw(cmd);
@@ -80,7 +80,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
     auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
     auto& pLights = scene->GetPointLights();
-    for (std::size_t i = 0; i < pLights.size(); i++) {
+    for (int i = 0; i < static_cast<int>(pLights.size()); i++) {
         auto& pLight = scene->GetPointLights()[i];
 
         if (!pLight.Dirty()) {
@@ -121,10 +121,10 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
 
                 face.startIndex = 0;
                 if (object.GetMesh()->HasIndexList()) {
-                    face.faceNumVerts = object.GetMesh()->GetIndexList().size();
+                    face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
                 }
                 else {
-                    face.faceNumVerts = object.GetMesh()->GetVertexList().size();
+                    face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
                 }
                 element.AddDrawElement(face);
                 element.Draw(cmd);

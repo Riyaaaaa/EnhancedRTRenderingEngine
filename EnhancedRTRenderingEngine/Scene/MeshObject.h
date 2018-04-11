@@ -62,7 +62,7 @@ protected:
 
 template<class VertType>
 void MeshObject<VertType>::FindPrecisionReflectionSource(const std::vector<CubeReflectionCapture*>& captures) {
-    float precision = FLT_MAX;
+    unsigned int precision = INT_MAX;
     
     _hasReflectionSource = false;
     for (auto&& capture: captures) {

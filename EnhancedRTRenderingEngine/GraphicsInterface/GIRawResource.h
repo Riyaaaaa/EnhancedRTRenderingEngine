@@ -9,7 +9,7 @@
 class GIRawResource
 {
 public:
-    GIRawResource(const RawBinary& res, ResourceType type, float stride);
+    GIRawResource(const RawBinary& res, ResourceType type, unsigned int stride);
 
     unsigned int _structureByteStride;
     ResourceType _type;

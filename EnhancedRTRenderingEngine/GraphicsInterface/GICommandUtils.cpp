@@ -3,7 +3,7 @@
 
 #include "Utility/TextureUtils.h"
 
-std::shared_ptr<GIRenderTargetView> GICommandUtils::CreateRenderTargetView(GIImmediateCommands* cmd, Size2D size, TextureFormat format, bool useAsResource) {
+std::shared_ptr<GIRenderTargetView> GICommandUtils::CreateRenderTargetView(GIImmediateCommands* cmd, Size2Dd size, TextureFormat format, bool useAsResource) {
     TextureParam param;
     param.width = size.w;
     param.height = size.h;
@@ -17,7 +17,7 @@ std::shared_ptr<GIRenderTargetView> GICommandUtils::CreateRenderTargetView(GIImm
     return rtv;
 }
 
-std::shared_ptr<GIDepthStencilView> GICommandUtils::CreateDepthStencilView(GIImmediateCommands* cmd, Size2D size, TextureFormat format, bool useAsResource) {
+std::shared_ptr<GIDepthStencilView> GICommandUtils::CreateDepthStencilView(GIImmediateCommands* cmd, Size2Dd size, TextureFormat format, bool useAsResource) {
     TextureParam param;
     param.width = size.w;
     param.height = size.h;
@@ -31,11 +31,11 @@ std::shared_ptr<GIDepthStencilView> GICommandUtils::CreateDepthStencilView(GIImm
     return dsv;
 }
 
-void GICommandUtils::SetViewportSize(GIImmediateCommands* cmd, Size2D size) {
+void GICommandUtils::SetViewportSize(GIImmediateCommands* cmd, Size2Dd size) {
     ViewportCfg cfg;
 
-    cfg.height = size.h;
-    cfg.width = size.w;
+    cfg.height = static_cast<float>(size.h);
+    cfg.width = static_cast<float>(size.w);
     cfg.maxDepth = 1.0f;
     cfg.minDepth = 0.0f;
     cfg.topLeftX = 0;
