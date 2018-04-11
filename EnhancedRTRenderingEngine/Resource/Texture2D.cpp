@@ -10,17 +10,17 @@ Texture2D::Texture2D(png_info_def* info, void* ptr, std::size_t size) : RawBinar
     width = info->width;
     height = info->height;
     channels = info->channels;
-    stride = info->rowbytes;
+    stride = static_cast<unsigned int>(info->rowbytes);
 }
 
-Texture2D::Texture2D(std::size_t width, std::size_t height, std::size_t channels, const void* ptr, std::size_t size) :
+Texture2D::Texture2D(unsigned int width, unsigned int height, unsigned int channels, const void* ptr, std::size_t size) :
     width(width),
     height(height),
     channels(channels),
     stride(width * channels),
     RawBinary(ptr, size) {}
 
-Texture2D::Texture2D(std::size_t width, std::size_t height, std::size_t channels) : width(width),
+Texture2D::Texture2D(unsigned int width, unsigned int height, unsigned int channels) : width(width),
 height(height),
 channels(channels),
 stride(width * channels) {

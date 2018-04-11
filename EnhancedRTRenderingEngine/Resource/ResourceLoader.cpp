@@ -275,7 +275,7 @@ int ResourceLoader::LoadBMP(const std::string& filename, Texture2D& outTex) {
         ifs.seekg(16, std::fstream::cur);
     }
 
-    char* buf = new char[w * h * 24]; // R8G8B8A8
+    unsigned char* buf = new unsigned char[w * h * 24]; // R8G8B8A8
     char* rows = new char[w * h * bit_depth / 8 * 4];
     ifs.read(rows, w * h * bit_depth / 8 * 4);
 

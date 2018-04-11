@@ -11,7 +11,7 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
     hConstantBuffer.Eye = scene->GetEyePoint();
 
     // Only support one light.
-    hConstantBuffer.numDirecitonalLights = scene->GetDirectionalLights().size();
+    hConstantBuffer.numDirecitonalLights = static_cast<float>(scene->GetDirectionalLights().size());
     for (int i = 0; i < LIGHT_MAX; i++) {
         if (i >= hConstantBuffer.numDirecitonalLights) {
             break;
@@ -22,7 +22,7 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
         hConstantBuffer.DirectionalLight[i] = dLight.GetDirection();
     }
 
-    hConstantBuffer.numPointLights = scene->GetPointLights().size();
+    hConstantBuffer.numPointLights = static_cast<float>(scene->GetPointLights().size());
     for (int i = 0; i < LIGHT_MAX; i++) {
         if (i >= hConstantBuffer.numPointLights) {
             break;

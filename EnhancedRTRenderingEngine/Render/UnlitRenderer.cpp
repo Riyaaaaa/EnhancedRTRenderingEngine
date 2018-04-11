@@ -38,10 +38,10 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
 
         face.startIndex = 0;
         if (object.GetMesh()->HasIndexList()) {
-            face.faceNumVerts = object.GetMesh()->GetIndexList().size();
+            face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
         }
         else {
-            face.faceNumVerts = object.GetMesh()->GetVertexList().size();
+            face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
         }
         element.AddDrawElement(face);
         element.Draw(cmd);

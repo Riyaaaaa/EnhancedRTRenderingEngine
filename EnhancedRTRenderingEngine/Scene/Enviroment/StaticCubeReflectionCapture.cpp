@@ -12,7 +12,7 @@ StaticCubeReflectionCapture::StaticCubeReflectionCapture(const TextureCube& tex)
 
 void StaticCubeReflectionCapture::SetupTexture(GIImmediateCommands* cmd, GITextureProxy tex) {
     TextureParam param;
-    param.mipLevels = std::floor(std::log2(reflectionSource.Size())) + 1;
+    param.mipLevels = static_cast<unsigned int>(std::floor(std::log2(reflectionSource.Size())) + 1);
     param.arraySize = 6;
     param.width = reflectionSource.Size();
     param.height = reflectionSource.Size();

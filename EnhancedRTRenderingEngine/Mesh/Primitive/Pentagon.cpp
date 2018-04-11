@@ -12,8 +12,8 @@ Pentagon::Pentagon()
         Vertex3D{ Vector3D{ -0.5f, -0.5f, +0.5f },Vector4D{ 1.0f, 1.0f, 1.0f, 1.0f },Vector2D{ 1.0f, 1.0f } }
     };
 
-    _vertexCount = _vertexList.size();
-    _drawFacesMap.push_back(Face{ 0,_vertexList.size(), 0 });
+    _vertexCount = static_cast<unsigned int>(_vertexList.size());
+    _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
 }
 
 

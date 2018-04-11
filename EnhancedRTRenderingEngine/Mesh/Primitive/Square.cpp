@@ -17,8 +17,8 @@ Square<Vertex3D>::Square(Size2D size)
         0, 1, 2, 1, 3, 2
     };
 
-    _drawFacesMap.push_back(Face{ 0, _indexList.size(), 0 });
-    _vertexCount = _indexList.size();
+    _vertexCount = static_cast<unsigned int>(_indexList.size());
+    _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
 }
 
 template<>
@@ -37,8 +37,9 @@ Square<TexVertex>::Square(Size2D size)
         0, 1, 2, 1, 3, 2
     };
 
-    _drawFacesMap.push_back(Face{ 0, _indexList.size(), 0 });
-    _vertexCount = _indexList.size();
+    _vertexCount = static_cast<unsigned int>(_indexList.size());
+    _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
+    
 }
 
 SquarePMD::SquarePMD() {
@@ -53,6 +54,6 @@ SquarePMD::SquarePMD() {
         0, 1, 2, 1, 3, 2
     };
 
-    _drawFacesMap.push_back(Face{ 0,_indexList.size(), 0 });
-    _vertexCount = _indexList.size();
+    _vertexCount = static_cast<unsigned int>(_indexList.size());
+    _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
 }

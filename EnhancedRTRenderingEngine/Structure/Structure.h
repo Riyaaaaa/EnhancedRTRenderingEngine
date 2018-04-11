@@ -15,10 +15,18 @@ struct _Size2D {
     _Size2D operator/(T s) {
         return _Size2D(w / s, h / s);
     }
+
+    template<class U>
+    operator _Size2D<U>() {
+        return _Size2D<U>(
+            static_cast<U>(w),
+            static_cast<U>(h)
+            );
+    }
 };
 
 using Size2D = _Size2D<float>;
-using Size2Dd = _Size2D<std::size_t>;
+using Size2Dd = _Size2D<unsigned int>;
 
 template<class T>
 struct _Size3D {
@@ -28,10 +36,19 @@ struct _Size3D {
     _Size3D operator/(T s) {
         return _Size3D(w/s, h/s, d/s);
     }
+
+    template<class U>
+    operator _Size3D<U>() {
+        return _Size3D<U>(
+            static_cast<U>(w),
+            static_cast<U>(h),
+            static_cast<U>(d)
+            );
+    }
 };
 
 using Size3D = _Size3D<float>;
-using Size3Dd = _Size3D<std::size_t>;
+using Size3Dd = _Size3D<unsigned int>;
 
 struct Color3B {
     unsigned char r, g, b;

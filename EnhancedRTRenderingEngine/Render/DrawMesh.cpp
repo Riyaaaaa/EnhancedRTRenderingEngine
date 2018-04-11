@@ -17,7 +17,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
     for (auto&& psResource : GetShaderResources()) {
         BufferDesc bufferDesc;
 
-        bufferDesc.byteWidth = psResource.first._resource.size();
+        bufferDesc.byteWidth = static_cast<unsigned int>(psResource.first._resource.size());
         bufferDesc.usage = ResourceUsage::Default;
         bufferDesc.accessFlag = ResourceAccessFlag::None;
         bufferDesc.stride = psResource.first._structureByteStride;
@@ -87,7 +87,7 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
             for (auto && rawRes : shader.GetRawResources()) {
                 BufferDesc bufferDesc;
-                bufferDesc.byteWidth = rawRes.first._resource.size();
+                bufferDesc.byteWidth = static_cast<unsigned int>(rawRes.first._resource.size());
                 bufferDesc.usage = ResourceUsage::Default;
                 bufferDesc.accessFlag = ResourceAccessFlag::None;
                 bufferDesc.stride = rawRes.first._structureByteStride;

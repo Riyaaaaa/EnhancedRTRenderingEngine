@@ -20,7 +20,7 @@ public:
     virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex, TextureFormat format) = 0;
 
     virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) = 0;
-    virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) = 0;
+    virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, uint8_t stencilClearVal = 0) = 0;
 
     virtual GIBuffer* CreateBuffer(ResourceType type, BufferDesc desc, void* initPtr = nullptr) = 0;
 

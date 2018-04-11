@@ -22,7 +22,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
 
     DrawMesh element(&mesh);
     DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
+    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
     face.startIndex = 0;
 
     auto textureProxy = MakeRef(cmd->CreateTextureProxy(TextureParam(), texture));
@@ -50,7 +50,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     element.RegisterConstantBuffer(buffer, 0, ShaderType::VS);
 
     DrawElement face(ShaderFactory::MinTextureColor(), ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
+    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
     face.startIndex = 0;
 
     auto param = texture->GetTexture()->GetTextureParam();

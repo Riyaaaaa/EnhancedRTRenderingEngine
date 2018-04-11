@@ -30,9 +30,9 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
 {
     std::vector<VertexLayout> layout;
     unsigned int offset = 0;
-    layout.emplace_back("POSITION", VertexProperty::FloatRGBA, 0, 0, offsetof(Vertex2D, pos));
-    layout.emplace_back("COLOR", VertexProperty::UnormRGBA, 0, 0, offsetof(Vertex2D, col));
-    layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 0, 0, offsetof(Vertex2D, tex));
+    layout.emplace_back("POSITION", VertexProperty::FloatRGBA, 0, 0, static_cast<unsigned int>(offsetof(Vertex2D, pos)));
+    layout.emplace_back("COLOR", VertexProperty::UnormRGBA, 0, 0, static_cast<unsigned int>(offsetof(Vertex2D, col)));
+    layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 0, 0, static_cast<unsigned int>(offsetof(Vertex2D, tex)));
 
     _rstate = MakeRef(cmd->CreateRasterizerState(RasterizerType::HUD));
 

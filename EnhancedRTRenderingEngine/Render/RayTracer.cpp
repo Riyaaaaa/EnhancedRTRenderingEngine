@@ -8,7 +8,7 @@
 std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray, unsigned int traceLevel) {
     std::vector<Segment> rayRoutes;
 
-    for (int i = 0; i < traceLevel; i++) {
+    for (unsigned int i = 0; i < traceLevel; i++) {
         auto clist = GetColliderMortonList(factory, ray);
         bool hitted = false;
         Hit hit;
@@ -68,7 +68,7 @@ std::set<uint32_t> GetColliderMortonList(SpaceOctree::OctreeFactoryBase* factory
         uint32_t number = SpaceOctree::Get3DMortonOrder(grid);
 
         for (int i = 0; i <= factory->GetSplitLevel(); i++) {
-            uint32_t idx = (number >> i * 3) + PrecomputedConstants::PowNumbers<8, 8>::Get(factory->GetSplitLevel() - i) / 7;
+            uint32_t idx = static_cast<uint32_t>((number >> i * 3) + PrecomputedConstants::PowNumbers<8, 8>::Get(factory->GetSplitLevel() - i) / 7);
             if (factory->BoxExists(idx)) {
                 colliderList.insert(idx);
             }

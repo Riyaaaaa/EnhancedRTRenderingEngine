@@ -4,7 +4,7 @@
 #include "GraphicsInterface/GITextureProxy.h"
 
 
-CubeReflectionCapture::CubeReflectionCapture(float size) {
+CubeReflectionCapture::CubeReflectionCapture(unsigned int size) {
     box.h = box.w = box.d = size;
     dirty = true;
 }

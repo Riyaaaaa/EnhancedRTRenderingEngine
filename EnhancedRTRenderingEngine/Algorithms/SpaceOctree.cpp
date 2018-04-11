@@ -27,9 +27,9 @@ uint32_t SpaceOctree::Get3DMortonOrder(_Vector3D<uint8_t> coordinate)
 OctreeFactoryBase::OctreeFactoryBase(AABB RootAABB, int splitLevel) :
 _rootAABB(RootAABB),
 _splitLevel(splitLevel),
-_splitNums(std::pow(8, splitLevel + 1) / 7) {
+_splitNums(static_cast<int>(std::pow(8, splitLevel + 1) / 7)) {
     
-    _minBoxSize = RootAABB.size() / (1 << splitLevel);
+    _minBoxSize = RootAABB.size() / static_cast<float>((1 << splitLevel));
 }
 
 int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
@@ -38,7 +38,7 @@ int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
 
     uint32_t Def = index1 ^ index2;
     unsigned int HiLevel = 1;
-    unsigned int i;
+    int i;
     for (i = 0; i < _splitLevel; i++)
     {
         uint32_t Check = (Def >> (i * 3)) & 0x7;
@@ -46,7 +46,7 @@ int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
             HiLevel = i + 1;
     }
     uint32_t SpaceNum = index2 >> (HiLevel * 3);
-    uint32_t AddNum = (PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(_splitLevel - HiLevel) - 1) / 7;
+    uint32_t AddNum = static_cast<uint32_t>((PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(_splitLevel - HiLevel) - 1) / 7);
     SpaceNum += AddNum;
 
     if (SpaceNum > _splitNums)
@@ -64,7 +64,7 @@ _Vector3D<uint8_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& po
 
 int OctreeFactoryBase::CalculateMortonNumber(const Vector3D& pos, int splitLevel) {
     uint32_t index = CalculateIndexFromPoint(pos);
-    uint32_t AddNum = (PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(splitLevel) - 1) / 7;
+    uint32_t AddNum = static_cast<uint32_t>((PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(splitLevel) - 1) / 7);
 
     return index + AddNum;
 }
@@ -76,31 +76,31 @@ int OctreeFactoryBase::CalculateIndexFromPoint(const Vector3D& pos) {
 AABB OctreeFactoryBase::CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const {
     int level = 0;
     while (number >= PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level)) {
-        number -= PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level);
+        number -= static_cast<uint32_t>(PrecomputedConstants::PowNumbers<8, MaxSpaceSeparateNums>::Get(level));
         level++;
     }
 
     uint32_t s = 0;
 
     for (int i = level; i > 0; i--) {
-        auto tmp = (number >> (3 * i - 2 - i) & (1 << i - 1));
+        auto tmp = (number >> (3 * i - 2 - i) & (1 << (i - 1)));
         s = s | tmp;
     }
     uint32_t x = s;
 
     s = 0;
     for (int i = level; i > 0; i--) {
-        s = s | (number >> (3 * i - 1 - i) & (1 << i - 1));
+        s = s | (number >> (3 * i - 1 - i) & (1 << (i - 1)));
     }
     uint32_t y = s;
 
     s = 0;
     for (int i = level; i > 0; i--) {
-        s = s | (number >> (3 * i - i) & (1 << i - 1));
+        s = s | (number >> (3 * i - i) & (1 << (i - 1)));
     }
     uint32_t z = s;
 
-    Size3D boxSize = _rootAABB.size() / (1 << level);;
+    Size3D boxSize = _rootAABB.size() / static_cast<float>((1 << level));
     Vector3D bpos = Vector3D(x * boxSize.w, y * boxSize.h, z * boxSize.d) + _rootAABB.bpos;
     
     return AABB(bpos, Vector3D(bpos.x + boxSize.w, bpos.y + boxSize.h, bpos.z + boxSize.d));

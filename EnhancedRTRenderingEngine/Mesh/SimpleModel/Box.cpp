@@ -48,8 +48,8 @@ Box::Box(float size)
     { { -size,-size,-size },{ 0.0f,0.0f,0.0f,1.0f },{ 1.0f,1.0f } },
     };
 
-    _vertexCount = _vertexList.size();
-    _drawFacesMap.push_back(Face{ 0, _vertexList.size(), 0 });
+    _vertexCount = static_cast<unsigned int>(_vertexList.size());
+    _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
 }
 
 Box::Box(Size3D size) {
@@ -100,8 +100,8 @@ Box::Box(Size3D size) {
     { { -w,-h,-d },{ 0.0f,0.0f,0.0f,1.0f },{ 1.0f,1.0f } },
     };
 
-    _vertexCount = _vertexList.size();
-    _drawFacesMap.push_back(Face{ 0, _vertexList.size(), 0 });
+    _vertexCount = static_cast<unsigned int>(_vertexList.size());
+    _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
 }
 
 

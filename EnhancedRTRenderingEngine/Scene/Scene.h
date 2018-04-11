@@ -45,7 +45,7 @@ public:
 
     void SetMainCamera(const CameraObject& camera) {
         cameraObjects.push_back(camera);
-        mainCameraIdx = cameraObjects.size() - 1;
+        mainCameraIdx = static_cast<int>(cameraObjects.size() - 1);
     }
 
     CameraObject GetMainCamera() const {

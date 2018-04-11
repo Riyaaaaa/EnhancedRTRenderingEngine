@@ -9,7 +9,7 @@ void DXModel::CalcVertexNormals() {
     mesh.meshNormals.normals.clear();
     mesh.meshNormals.normals.resize(mesh.nFaces);
     mesh.meshNormals.faceNormals.resize(mesh.nFaces);
-    for (std::size_t i = 0; i < mesh.nFaces; i++) {
+    for (unsigned long i = 0; i < mesh.nFaces; i++) {
         Vector3D& v0 = mesh.vertices[mesh.faces[i][0]];
         Vector3D& v1 = mesh.vertices[mesh.faces[i][1]];
         Vector3D& v2 = mesh.vertices[mesh.faces[i][2]];
