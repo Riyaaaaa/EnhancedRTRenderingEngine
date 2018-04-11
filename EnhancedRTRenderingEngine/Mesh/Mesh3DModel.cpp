@@ -34,7 +34,9 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
             _vertexList[idx].col.w = model.materials[i].alpha;
         }
 
-        _drawFacesMap[i] = Face{ i, model.materials[i].face_vert_count, i };
+        _drawFacesMap[i] = Face{ static_cast<unsigned int>(i), 
+            static_cast<unsigned int>(model.materials[i].face_vert_count), 
+            static_cast<unsigned int>(i) };
         _materialTextures[i] = model.materials[i].texture_file_name;
         _speculars[i] = Vector3D{ model.materials[i].specular_color[0],model.materials[i].specular_color[1],model.materials[i].specular_color[2] };
     }
@@ -74,13 +76,13 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     _materialNum = mesh.meshMaterialList.nMaterials;
 
     for (std::size_t i = 0; i < mesh.meshMaterialList.faceIndexes.size(); i++) {
-        std::size_t primitiveVerts = mesh.faces[i].size();
+        unsigned int primitiveVerts = static_cast<unsigned int>(mesh.faces[i].size());
         if (primitiveVerts == 4) {
             // TRIANGLE STRIP DRAW
-            _drawFacesMap[i] = Face{ i, 6 , mesh.meshMaterialList.faceIndexes[i] };
+            _drawFacesMap[i] = Face{ static_cast<unsigned int>(i), 6 , static_cast<unsigned int>(mesh.meshMaterialList.faceIndexes[i]) };
         }
         else {
-            _drawFacesMap[i] = Face{ i, primitiveVerts , mesh.meshMaterialList.faceIndexes[i] };
+            _drawFacesMap[i] = Face{ static_cast<unsigned int>(i), primitiveVerts , static_cast<unsigned int>(mesh.meshMaterialList.faceIndexes[i]) };
         }
         
     }
@@ -125,7 +127,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
     }
 
     int oldMatIdx = -1;
-    std::size_t indexCount = 0;
+    unsigned int indexCount = 0;
     std::vector<Face> dist;
     for (int i = 0; i < _drawFacesMap.size(); i++) {
         if (oldMatIdx != _drawFacesMap[i].materialIdx) {
@@ -137,10 +139,10 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
         }
         indexCount += _drawFacesMap[i].faceNumVerts;
     }
-    dist.push_back(Face{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
+    dist.push_back(Face{ 0, indexCount, static_cast<unsigned int>(oldMatIdx) });
     _drawFacesMap.swap(dist);
 
-    _vertexCount = _indexList.size();
+    _vertexCount = static_cast<unsigned int>(_indexList.size());
 }
 
 std::vector<Material> Mesh3DModel::CreatePMDDefaultMaterials() {

@@ -5,9 +5,9 @@
 #include "Constant/RenderConfig.h"
 
 struct Face {
-    std::size_t faceIdx;
-    std::size_t faceNumVerts;
-    std::size_t materialIdx;
+    unsigned int faceIdx;
+    unsigned int faceNumVerts;
+    unsigned int materialIdx;
 };
 
 template<class VertType>

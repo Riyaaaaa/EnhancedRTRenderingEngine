@@ -10,8 +10,8 @@ enum class RasterizerType {
 };
 
 struct ViewportCfg {
-    float topLeftX, topLeftY;
-    float width, height;
+    unsigned int topLeftX, topLeftY;
+    unsigned int width, height;
     float minDepth, maxDepth;
 };
 

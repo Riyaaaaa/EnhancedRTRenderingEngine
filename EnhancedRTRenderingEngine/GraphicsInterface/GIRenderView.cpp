@@ -37,8 +37,8 @@ void GIRenderView::SetRasterizerState(GIImmediateCommands* cmd, RasterizerState 
 }
 
 void GIRenderView::SetViewPortSize(GIImmediateCommands* cmd, Size2Dd size) {
-    _viewportCfg.width = static_cast<float>(size.w);
-    _viewportCfg.height = static_cast<float>(size.h);
+    _viewportCfg.width = size.w;
+    _viewportCfg.height = size.h;
     cmd->SetViewport(_viewportCfg);
 }
 

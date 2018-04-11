@@ -19,7 +19,7 @@ public:
     virtual GIRenderTargetView* CreateRenderTargetView(GITexture2D* tex) override;
     virtual GIDepthStencilView* CreateDepthStencilView(GITexture2D* tex, TextureFormat format) override;
     virtual void ClearRenderTargetView(GIRenderTargetView* view, Vector4D color) override;
-    virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, float stencilClearVal = 0.0f) override;
+    virtual void ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal = 1.0f, uint8_t stencilClearVal = 0) override;
 
     virtual GITexture2D* CreateTexture2D(const TextureParam& param, const std::vector<Texture2D>& textures = std::vector<Texture2D>());
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex);

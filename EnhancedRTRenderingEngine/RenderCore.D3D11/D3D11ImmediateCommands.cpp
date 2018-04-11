@@ -49,7 +49,7 @@ void D3D11ImmediateCommands::OMSetRenderTargets(const std::vector<std::shared_pt
     }
 
     auto res = NullableCastRes<D3D11DepthStencilView>(stv.get());
-    _deviceContext->OMSetRenderTargets(rtvs_.size(), &rtvs_[0], res.Get());
+    _deviceContext->OMSetRenderTargets(static_cast<unsigned int>(rtvs_.size()), &rtvs_[0], res.Get());
 }
 
 GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param) {
@@ -85,10 +85,10 @@ GISwapChain* D3D11ImmediateCommands::CreateSwapChain(const ViewportParam& param)
 void D3D11ImmediateCommands::SetViewport(const ViewportCfg& cfg) {
     D3D11_VIEWPORT d3d11_cfg;
 
-    d3d11_cfg.TopLeftX = cfg.topLeftX;
-    d3d11_cfg.TopLeftY = cfg.topLeftY;
-    d3d11_cfg.Width = cfg.width;
-    d3d11_cfg.Height = cfg.height;
+    d3d11_cfg.TopLeftX = static_cast<float>(cfg.topLeftX);
+    d3d11_cfg.TopLeftY = static_cast<float>(cfg.topLeftY);
+    d3d11_cfg.Width = static_cast<float>(cfg.width);
+    d3d11_cfg.Height = static_cast<float>(cfg.height);
     d3d11_cfg.MinDepth = cfg.minDepth;
     d3d11_cfg.MaxDepth = cfg.maxDepth;
 
@@ -272,7 +272,8 @@ GIInputLayout* D3D11ImmediateCommands::CreateInputLayout(const std::vector<Verte
     }
 
     D3D11InputLayout* inputLayout = new D3D11InputLayout;
-    _device->CreateInputLayout(&inElemDesc[0], inElemDesc.size(), shader->byteCode.get(), shader->byteCode.size(), inputLayout->resource.ToCreator());
+    auto layout_size = static_cast<unsigned int>(inElemDesc.size());
+    _device->CreateInputLayout(&inElemDesc[0], layout_size, shader->byteCode.get(), shader->byteCode.size(), inputLayout->resource.ToCreator());
     return inputLayout;
 }
 
@@ -301,7 +302,7 @@ void D3D11ImmediateCommands::ClearRenderTargetView(GIRenderTargetView* view, Vec
     _deviceContext->ClearRenderTargetView(CastRes<D3D11RenderTargetView>(view).Get(), reinterpret_cast<float*>(&color));
 }
 
-void D3D11ImmediateCommands::ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal, float stencilClearVal) {
+void D3D11ImmediateCommands::ClearDepthStencilView(GIDepthStencilView* view, float depthClearVal, uint8_t stencilClearVal) {
     _deviceContext->ClearDepthStencilView(CastRes<D3D11DepthStencilView>(view).Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, depthClearVal, stencilClearVal);
 }
 
