@@ -6,7 +6,7 @@
 #include "UIWidgets.h"
 
 UIWindow GUIFactory::CreateGlobalSettingsWindow() {
-    UIWindow window;
+    UIWindow window("Settings");
     auto* config = UserConfig::getInstance();
 
     {

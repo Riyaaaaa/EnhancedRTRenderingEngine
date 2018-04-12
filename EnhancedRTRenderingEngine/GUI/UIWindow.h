@@ -6,6 +6,8 @@
 class UIWindow
 {
 public:
+    UIWindow(std::string title) : _title(title) {}
+
     std::string Title() const {
         return _title;
     }
