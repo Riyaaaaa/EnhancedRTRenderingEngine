@@ -7,7 +7,7 @@
 #include "WindowsApp.h"
 
 UIWindow GUIFactory::CreateGlobalSettingsWindow() {
-    UIWindow window("Settings");
+    UIWindow window("Settings", Size2Dd(400, 400));
     auto* config = UserConfig::getInstance();
 
     {
@@ -60,9 +60,9 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
 }
 
 UIWindow GUIFactory::CreateApplicationMonitor() {
-    UIWindow window("Monitor");
+    UIWindow window("Monitor", Size2D(200.0f, 100.0f));
 
-    UIRowLayout row(LayoutAttribute::Static, 30, 400);
+    UIRowLayout row(LayoutAttribute::Dynamic, 50);
     row.AddWidget(std::make_shared<UIDynamicLabel>(
         []() { return std::to_string(WindowsApp::getInstance()->FPS()) + " fps";  },
         UIAlign::CENTER));

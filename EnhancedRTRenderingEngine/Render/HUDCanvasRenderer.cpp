@@ -209,7 +209,7 @@ static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklea
 
 static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
     for (auto&& window : canvas->Windows()) {
-        if (nk_begin(nuklear.Context(), window.Title().c_str(), nk_rect(50, 50, 400, 500),
+        if (nk_begin(nuklear.Context(), window.Title().c_str(), nk_rect(50, 50, window.Size().w, window.Size().h),
             NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
             NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
             for (auto&& row : window.Rows()) {
