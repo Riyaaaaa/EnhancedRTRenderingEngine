@@ -36,7 +36,7 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
 
     {
         UIRowLayout row(LayoutAttribute::Dynamic, 25);
-        auto combo_color = std::make_shared<UIComboColor>(100.0f, &config->GetBGColor());
+        auto combo_color = std::make_shared<UIComboColor>(400.0f, &config->GetBGColor());
 
         UIRowLayout contain_row1(LayoutAttribute::Dynamic, 120);
         contain_row1.AddWidget(std::make_shared<UIColorPicker>(&config->GetBGColor(), true));
@@ -47,6 +47,7 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
         contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#G:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().y));
         contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#B:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().z));
         contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#A:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().w));
+        contain_row2.SetCols(1);
         combo_color->AddRow(contain_row2);
 
         row.AddWidget(combo_color);

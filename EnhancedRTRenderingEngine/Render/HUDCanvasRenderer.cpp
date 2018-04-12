@@ -196,10 +196,10 @@ static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklea
 
     switch (row.Attribute()) {
     case LayoutAttribute::Dynamic:
-        nk_layout_row_dynamic(ctx, row.Height(), row.ItemWidth());
+        nk_layout_row_dynamic(ctx, row.Height(), row.Cols());
         break;
     case LayoutAttribute::Static:
-        nk_layout_row_static(ctx, row.Height(), row.ItemWidth(), static_cast<int>(row.Widgets().size()));
+        nk_layout_row_static(ctx, row.Height(), row.ItemWidth(), row.Cols());
         break;
     }
 

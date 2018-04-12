@@ -4,6 +4,7 @@
 UIRowLayout::UIRowLayout(LayoutAttribute att, float height, int itemWidth) :
 _attribute(att),
 _height(height),
-_itemWidth(itemWidth) {
+_itemWidth(itemWidth),
+_cols(-1) {
 
 }
