@@ -209,23 +209,23 @@ static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklea
 
 static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
     for (auto&& window : canvas->Windows()) {
-        if (!nk_begin(nuklear.Context(), window.Title().c_str(), nk_rect(50, 50, 400, 500),
+        if (nk_begin(nuklear.Context(), window.Title().c_str(), nk_rect(50, 50, 400, 500),
             NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-            NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) continue;
+            NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
+            for (auto&& row : window.Rows()) {
+                GenerateNuklearLayout(row, nuklear);
+            }
 
-        for (auto&& row : window.Rows()) {
-            GenerateNuklearLayout(row, nuklear);
+            BoundingBox2D box;
+            auto rect = nk_window_get_bounds(nuklear.Context());
+
+            box.pos.x = rect.x;
+            box.pos.y = rect.y;
+            box.size.w = rect.w;
+            box.size.h = rect.h;
+
+            nuklear.AddWindowRects(box);
         }
-
-        BoundingBox2D box;
-        auto rect = nk_window_get_bounds(nuklear.Context());
-
-        box.pos.x = rect.x;
-        box.pos.y = rect.y;
-        box.size.w = rect.w;
-        box.size.h = rect.h;
-
-        nuklear.AddWindowRects(box);
 
         nk_end(nuklear.Context());
     }
