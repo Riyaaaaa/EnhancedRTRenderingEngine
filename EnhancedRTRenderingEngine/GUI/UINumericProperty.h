@@ -10,7 +10,7 @@ template<class T>
 class UINumericProperty : public UIWidget
 {
 public:
-    UINumericProperty(std::string text, T min, T max, T step, T perPixel, T* prop) :
+    UINumericProperty(std::string text, T min, T max, T step, float perPixel, T* prop) :
         _text(text),
         _min(min),
         _max(max),
@@ -36,8 +36,12 @@ public:
         return _step;
     }
 
-    T PerPixel() const {
+    float PerPixel() const {
         return _perPixel;
+    }
+
+    std::string Text() const {
+        return _text;
     }
 
 protected:
@@ -55,7 +59,8 @@ protected:
     }
 
     std::string _text;
-    T _min, _max, _step, _perPixel;
+    T _min, _max, _step;
+    float _perPixel;
     T * _property;
 };
 

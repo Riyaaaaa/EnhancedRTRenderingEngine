@@ -5,6 +5,9 @@
 class UIWidget
 {
 public:
+    UIWidgetType WidgetType() const {
+        return _type;
+    }
 
 protected:
     UIWidget() {}

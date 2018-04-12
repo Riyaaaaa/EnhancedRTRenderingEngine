@@ -43,10 +43,10 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
         combo_color->AddRow(contain_row1);
 
         UIRowLayout contain_row2(LayoutAttribute::Dynamic, 25);
-        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#R:", 0, 1.0f, 0.01f, 0.005f, &config->GetBGColor().x));
-        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#G:", 0, 1.0f, 0.01f, 0.005f, &config->GetBGColor().y));
-        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#B:", 0, 1.0f, 0.01f, 0.005f, &config->GetBGColor().z));
-        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#A:", 0, 1.0f, 0.01f, 0.005f, &config->GetBGColor().w));
+        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#R:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().x));
+        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#G:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().y));
+        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#B:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().z));
+        contain_row2.AddWidget(std::make_shared<UINumericProperty<float>>("#A:", 0.0f, 1.0f, 0.01f, 0.005f, &config->GetBGColor().w));
         combo_color->AddRow(contain_row2);
 
         row.AddWidget(combo_color);

@@ -16,8 +16,20 @@ public:
         _widgets.push_back(widget);
     }
 
-    LayoutAttribute Attribute() {
+    LayoutAttribute Attribute() const {
         return _attribute;
+    }
+
+    const std::vector<std::shared_ptr<UIWidget>>& Widgets() const {
+        return _widgets;
+    }
+
+    float Height() const {
+        return _height;
+    }
+
+    int ItemWidth() const {
+        return _itemWidth;
     }
 
 protected:

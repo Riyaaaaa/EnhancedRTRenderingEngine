@@ -7,6 +7,15 @@
 class HUDCanvas
 {
 public:
-    std::vector<UIWindow> _rows;
+    const std::vector<UIWindow>& Windows() const {
+        return _windows;
+    }
+
+    void AddWindow(const UIWindow& window) {
+        _windows.push_back(window);
+    }
+
+protected:
+    std::vector<UIWindow> _windows;
 };
 

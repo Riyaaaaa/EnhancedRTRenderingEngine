@@ -176,6 +176,7 @@
     <ClInclude Include="GUI\NuklearWrapper.h" />
     <ClInclude Include="GUI\NuklearInputMediator.h" />
     <ClInclude Include="GUI\UIWidgets.h" />
+    <ClInclude Include="GUI\NuklearFormatUtils.h" />
     <ClInclude Include="Render\HUDCanvasRenderer.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11Resources.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11ImmediateCommands.h" />
@@ -401,6 +402,7 @@
     <ClCompile Include="GUI\HUDCanvas.cpp" />
     <ClCompile Include="GUI\NuklearWrapper.cpp" />
     <ClCompile Include="GUI\NuklearInputMediator.cpp" />
+    <ClCompile Include="GUI\NuklearFormatUtils.cpp" />
     <ClCompile Include="Render\HUDCanvasRenderer.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11Resources.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11ImmediateCommands.cpp" />

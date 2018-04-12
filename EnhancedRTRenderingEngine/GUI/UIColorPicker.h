@@ -13,8 +13,8 @@ public:
         _color(color),
     _useAlpha(useAlpha) {}
 
-    Vector4D color() const {
-        return *_color;
+    Vector4D* Color() const {
+        return _color;
     }
 
     bool UseAlpha() const {

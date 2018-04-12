@@ -29,6 +29,10 @@ public:
         }
     }
 
+    std::string Text() const {
+        return _text;
+    }
+
 protected:
     std::string _text;
     std::function<bool()> _condition;

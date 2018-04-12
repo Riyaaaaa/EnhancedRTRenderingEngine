@@ -32,6 +32,10 @@ public:
         return *_col;
     }
 
+    bool IsFitting() const {
+        return _fitWindow;
+    }
+
     const std::vector<UIRowLayout>& ContainWidgets() const {
         return _containWidgets;
     }

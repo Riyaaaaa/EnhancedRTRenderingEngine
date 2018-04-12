@@ -16,6 +16,10 @@ public:
         return _text;
     }
 
+    UIAlign AlignType() const {
+        return _align;
+    }
+
 protected:
     UIAlign _align;
     std::string _text;

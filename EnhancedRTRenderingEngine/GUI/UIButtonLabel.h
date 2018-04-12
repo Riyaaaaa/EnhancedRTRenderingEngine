@@ -15,13 +15,13 @@ public:
         _callback(callback) {}
 
 
-    void CallHandler() {
+    void CallHandler() const {
         if (_callback) {
             _callback();
         }
     }
 
-    std::string Text() {
+    std::string Text() const {
         return _text;
     }
 
