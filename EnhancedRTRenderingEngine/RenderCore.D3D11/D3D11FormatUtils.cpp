@@ -40,7 +40,7 @@ template<>
 DXGI_SAMPLE_DESC CastToD3D11Format<DXGI_SAMPLE_DESC, MSAAQualityType>(MSAAQualityType prop) {
     switch (prop)
     {
-    case MSAAQualityType::RAW_QUALITY:
+    case MSAAQualityType::LOW_QUALITY:
         return DXGI_SAMPLE_DESC{ 1, 0 };
     default:
         return DXGI_SAMPLE_DESC{ 1, 0 };
@@ -257,10 +257,10 @@ template<>
 MSAAQualityType CastToGIFormat<MSAAQualityType, DXGI_SAMPLE_DESC>(DXGI_SAMPLE_DESC prop) {
 
     if (prop.Quality == 1) {
-        return MSAAQualityType::RAW_QUALITY;
+        return MSAAQualityType::LOW_QUALITY;
     }
     
-    return MSAAQualityType::RAW_QUALITY;
+    return MSAAQualityType::LOW_QUALITY;
 }
 
 template<>
