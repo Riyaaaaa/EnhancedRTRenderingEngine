@@ -167,8 +167,7 @@ static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, Nukle
                                     break;
     case UIWidgetType::ComboColor:
         auto combo_color = std::static_pointer_cast<UIComboColor>(widget);
-        nk_color col;
-        col.r = (uint8_t)combo_color->Color().x; col.g = (uint8_t)combo_color->Color().y; col.b = (uint8_t)combo_color->Color().z; col.a = (uint8_t)combo_color->Color().w;
+        nk_color col = nk_rgb_f(combo_color->Color().x, combo_color->Color().y, combo_color->Color().z);
 
         float height, width;
 
