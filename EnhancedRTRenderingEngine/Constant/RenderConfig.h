@@ -27,7 +27,8 @@ enum class RenderingState {
 };
 
 enum MSAAQualityType {
-    RAW_QUALITY
+    LOW_QUALITY,
+    HIGH_QUALITY
 };
 
 enum class TextureFormat {

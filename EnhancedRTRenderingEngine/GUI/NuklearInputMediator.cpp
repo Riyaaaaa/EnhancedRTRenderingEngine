@@ -41,7 +41,7 @@ bool NuklearInputMediator::ProcessInputDown(InputKey key, boost::optional<Index>
         break;
     }
 
-    if (pos && _nuklear->currentWindowRect.Contains(Vector2D(pos->x, pos->y))) {
+    if (pos && _nuklear->HitGUI(*pos)) {
         _swallows = true;
         return true;
     }

@@ -4,6 +4,8 @@
 
 #include "rapidjson/document.h"
 
+#include "Constant/RenderConfig.h"
+
 #include "Structure/Structure.h"
 #include "Structure/Vector.h"
 
@@ -21,7 +23,12 @@ public:
         return _bgcolor;
     }
 
+    MSAAQualityType& GetMSAAQuality() {
+        return _quality;
+    }
+
 protected:
+    MSAAQualityType _quality;
     Vector4D _bgcolor;
 };
 

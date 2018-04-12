@@ -1,10 +1,17 @@
 #include "stdafx.h"
+
+#include <memory>
+#include <cstdint>
+
 #include "HUDCanvasRenderer.h"
 
 #include "Shader/ShaderFactory.h"
 
 #include "nuklear/nuklear.h"
 #include "GraphicsInterface/GICommandUtils.h"
+
+#include "GUI/NuklearFormatUtils.h"
+#include "GUI/UIWidgets.h"
 
 #include "UserData/UserConfig.h"
 
@@ -89,9 +96,6 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
 
     _layout = MakeRef(cmd->CreateInputLayout(layout, _vs.get()));
 
-    ;
-
-
     _nuklear = &nuklear;
 }
 
@@ -99,61 +103,141 @@ HUDCanvasRenderer::~HUDCanvasRenderer()
 {
 }
 
-BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
-    auto* ctx = _nuklear->Context();
+static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklear);
+static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, NuklearWrapper& nuklear);
+static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear);
 
-    auto& color = UserConfig::getInstance()->GetBGColor();
-    struct nk_colorf bg;
-    bg.r = color.x, bg.g = color.y, bg.b = color.z, bg.a = color.w;
+static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, NuklearWrapper& nuklear) {
+    auto* ctx = nuklear.Context();
 
-    // TODO: create layout from HUDCanvas
-    if (nk_begin(nuklear.Context(), "Settings", nk_rect(50, 50, 400, 500),
-        NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
-        NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE))
-    {
-        enum { EASY, HARD };
-        static int op = EASY;
-        static int property = 20;
+    switch (widget->WidgetType()) {
+    case UIWidgetType::ButtonLabel: {
+        auto buttonLabel = std::static_pointer_cast<UIButtonLabel>(widget);
+        if (nk_button_label(ctx, buttonLabel->Text().c_str())) {
+            buttonLabel->CallHandler();
+        }
+            
+    }
+        break;
+    case UIWidgetType::Label: {
+        auto label = std::static_pointer_cast<UILabel>(widget);
+        nk_label(ctx, label->Text().c_str(), CastToNuklearFormat<nk_text_alignment>(label->AlignType()));
+    }
+                              break;
+    case UIWidgetType::IntProperty: {
+        auto int_property = std::static_pointer_cast<UINumericProperty<int>>(widget);
+        nk_property_int(ctx, 
+            int_property->Text().c_str(), 
+            int_property->Min(), 
+            int_property->PropertyRef(), 
+            int_property->Max(), 
+            int_property->Step(), 
+            int_property->PerPixel());
+    }
+                                    break;
+    case UIWidgetType::FloatProperty: {
+        auto float_property = std::static_pointer_cast<UINumericProperty<float>>(widget);
+        nk_property_float(ctx,
+            float_property->Text().c_str(),
+            float_property->Min(),
+            float_property->PropertyRef(),
+            float_property->Max(),
+            float_property->Step(),
+            float_property->PerPixel());
+    }
+                                    break;
+    case UIWidgetType::RadioButton: {
+        auto option_label = std::static_pointer_cast<UIRadioButton>(widget);
+        if (nk_option_label(ctx, option_label->Text().c_str(), option_label->Condition())) {
+            option_label->CallHandler();
+        }
+    }
+                                    break;
+    case UIWidgetType::ColorPicker: {
+        auto color_picker = std::static_pointer_cast<UIColorPicker>(widget);
+        auto* color = color_picker->Color();
 
-        nk_layout_row_static(ctx, 30, 80, 1);
-        if (nk_button_label(ctx, "button"))
-            fprintf(stdout, "button pressed\n");
-        nk_layout_row_dynamic(ctx, 60, 2);
-        if (nk_option_label(ctx, "Low quality", op == EASY)) op = EASY;
-        if (nk_option_label(ctx, "High quality", op == HARD)) op = HARD;
-        nk_layout_row_dynamic(ctx, 50, 1);
-        nk_property_int(ctx, "Compression:", 0, &property, 100, 10, 1);
+        if (color_picker->UseAlpha()) {
+            nk_color_pick(ctx, reinterpret_cast<nk_colorf*>(color), NK_RGBA);
+        }
+        else {
+            nk_color_pick(ctx, reinterpret_cast<nk_colorf*>(color), NK_RGB);
+        }
+    }
+                                    break;
+    case UIWidgetType::ComboColor:
+        auto combo_color = std::static_pointer_cast<UIComboColor>(widget);
+        nk_color col = nk_rgb_f(combo_color->Color().x, combo_color->Color().y, combo_color->Color().z);
 
-        nk_layout_row_dynamic(ctx, 20, 1);
-        nk_label(ctx, "background:", NK_TEXT_LEFT);
-        nk_layout_row_dynamic(ctx, 25, 1);
-        if (nk_combo_begin_color(ctx, nk_rgb_cf(bg), nk_vec2(nk_widget_width(ctx), 400))) {
-            nk_layout_row_dynamic(ctx, 120, 1);
-            bg = nk_color_picker(ctx, bg, NK_RGBA);
-            nk_layout_row_dynamic(ctx, 25, 1);
-            color.x = nk_propertyf(ctx, "#R:", 0, bg.r, 1.0f, 0.01f, 0.005f);
-            color.y = nk_propertyf(ctx, "#G:", 0, bg.g, 1.0f, 0.01f, 0.005f);
-            color.z = nk_propertyf(ctx, "#B:", 0, bg.b, 1.0f, 0.01f, 0.005f);
-            color.w = nk_propertyf(ctx, "#A:", 0, bg.a, 1.0f, 0.01f, 0.005f);
+        float height, width;
+
+        height = combo_color->Size().h;
+        if (combo_color->IsFitting()) {
+            width = nk_widget_width(ctx);
+        }
+        else {
+            width = combo_color->Size().h;
+        }
+
+        if (nk_combo_begin_color(ctx, col, nk_vec2(width, height))) {
+
+            for (auto& row : combo_color->ContainWidgets()) {
+                GenerateNuklearLayout(row, nuklear);
+            }
+
             nk_combo_end(ctx);
         }
     }
-    BoundingBox2D box;
-    auto rect = nk_window_get_bounds(ctx);
-
-    box.pos.x = rect.x;
-    box.pos.y = rect.y;
-    box.size.w = rect.w;
-    box.size.h = rect.h;
-
-    _nuklear->currentWindowRect = box;
-
-    nk_end(ctx);
-
-    return box;
 }
 
-void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
+static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklear) {
+    auto* ctx = nuklear.Context();
+
+    switch (row.Attribute()) {
+    case LayoutAttribute::Dynamic:
+        nk_layout_row_dynamic(ctx, row.Height(), row.Cols());
+        break;
+    case LayoutAttribute::Static:
+        nk_layout_row_static(ctx, row.Height(), row.ItemWidth(), row.Cols());
+        break;
+    }
+
+    for (auto&& widget: row.Widgets()) {
+        GenerateNuklearLayout(widget, nuklear);
+    }
+}
+
+static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
+    for (auto&& window : canvas->Windows()) {
+        if (nk_begin(nuklear.Context(), window.Title().c_str(), nk_rect(50, 50, window.Size().w, window.Size().h),
+            NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
+            NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
+            for (auto&& row : window.Rows()) {
+                GenerateNuklearLayout(row, nuklear);
+            }
+
+            BoundingBox2D box;
+            auto rect = nk_window_get_bounds(nuklear.Context());
+
+            box.pos.x = rect.x;
+            box.pos.y = rect.y;
+            box.size.w = rect.w;
+            box.size.h = rect.h;
+
+            nuklear.AddWindowRects(box);
+        }
+
+        nk_end(nuklear.Context());
+    }
+}
+
+void HUDCanvasRenderer::update(GIImmediateCommands* cmd, HUDCanvas* canvas, NuklearWrapper& nuklear) {
+    auto* ctx = _nuklear->Context();
+    nuklear.ClearWindowRects();
+    GenerateNuklearLayout(canvas, nuklear);
+}
+
+void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear) {
     const Vector4D blend_factor(0.0f, 0.0f, 0.0f, 0.0f);
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);

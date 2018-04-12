@@ -16,8 +16,8 @@ public:
     HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear);
     ~HUDCanvasRenderer();
 
-    BoundingBox2D update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear);
-    void render(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear);
+    void update(GIImmediateCommands* cmd, HUDCanvas* canvas, NuklearWrapper& nuklear);
+    void render(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear);
 
 protected:
     static constexpr unsigned int MAX_VERTEX_BUFFER = 512 * 1024;
