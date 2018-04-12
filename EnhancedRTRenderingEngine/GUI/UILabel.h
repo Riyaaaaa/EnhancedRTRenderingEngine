@@ -7,14 +7,11 @@
 class UILabel : public UIWidget
 {
 public:
-    UILabel(std::string text, UIAlign align) :
+    UILabel(UIAlign align) :
         UIWidget(UIWidgetType::Label), 
-        _text(text),
         _align(align) {}
 
-    const std::string& Text() const {
-        return _text;
-    }
+    virtual std::string Text() const = 0;
 
     UIAlign AlignType() const {
         return _align;
@@ -22,6 +19,34 @@ public:
 
 protected:
     UIAlign _align;
+};
+
+class UIStaticLabel : public UILabel
+{
+public:
+    UIStaticLabel(std::string text, UIAlign align) :
+        UILabel(align),
+        _text(text) {}
+
+    std::string Text() const override {
+        return _text;
+    }
+
+protected:
     std::string _text;
 };
 
+class UIDynamicLabel : public UILabel
+{
+public:
+    UIDynamicLabel(std::function<std::string()> textGenerator, UIAlign align) :
+        UILabel(align),
+        _textGenerator(textGenerator) {}
+
+    std::string Text() const override {
+        return _textGenerator();
+    }
+
+protected:
+    std::function<std::string()> _textGenerator;
+};

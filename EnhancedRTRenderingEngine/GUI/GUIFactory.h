@@ -5,5 +5,6 @@
 namespace GUIFactory
 {
     UIWindow CreateGlobalSettingsWindow();
+    UIWindow CreateApplicationMonitor();
 };
 

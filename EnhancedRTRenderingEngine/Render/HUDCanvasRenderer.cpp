@@ -216,6 +216,8 @@ static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
         for (auto&& row : window.Rows()) {
             GenerateNuklearLayout(row, nuklear);
         }
+
+        nk_end(nuklear.Context());
     }
 }
 
@@ -225,16 +227,14 @@ BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* 
     GenerateNuklearLayout(canvas, nuklear);
 
     BoundingBox2D box;
-    auto rect = nk_window_get_bounds(ctx);
+    /*auto rect = nk_window_get_bounds(ctx);
 
     box.pos.x = rect.x;
     box.pos.y = rect.y;
     box.size.w = rect.w;
     box.size.h = rect.h;
 
-    _nuklear->currentWindowRect = box;
-
-    nk_end(ctx);
+    _nuklear->currentWindowRect = box;*/
 
     return box;
 }

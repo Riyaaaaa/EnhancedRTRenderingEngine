@@ -1,9 +1,10 @@
 #include "stdafx.h"
 
 #include "GUIFactory.h"
-
 #include "UserData/UserConfig.h"
 #include "UIWidgets.h"
+
+#include "WindowsApp.h"
 
 UIWindow GUIFactory::CreateGlobalSettingsWindow() {
     UIWindow window("Settings");
@@ -30,7 +31,7 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
 
     {
         UIRowLayout row(LayoutAttribute::Dynamic, 20);
-        row.AddWidget(std::make_shared<UILabel>("background:", UIAlign::LEFT));
+        row.AddWidget(std::make_shared<UIStaticLabel>("background:", UIAlign::LEFT));
         window.AddRow(row);
     }
 
@@ -58,4 +59,15 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
     return window;
 }
 
+UIWindow GUIFactory::CreateApplicationMonitor() {
+    UIWindow window("Monitor");
+
+    UIRowLayout row(LayoutAttribute::Static, 30, 400);
+    row.AddWidget(std::make_shared<UIDynamicLabel>(
+        []() { return std::to_string(WindowsApp::getInstance()->FPS()) + " fps";  },
+        UIAlign::CENTER));
+    window.AddRow(row);
+
+    return window;
+}
 

@@ -23,11 +23,22 @@ public:
     bool ProcessInput(unsigned int umsg, WPARAM wParam, LPARAM lParam);
     void DispatchInputEvent(InputEvent e, InputKey key, boost::optional<Index> pos);
     void DispathDragEvent(InputKey key, Index Delta, Index pos);
+
+    void SetFPS(double fps) {
+        _fps = fps;
+    }
+
+    double FPS() {
+        return _fps;
+    }
+
 protected:
     HWND _hWnd;
     Size2Dd _windowSize;
     Index oldClickedPos;
     InputKey handleKey;
+
+    double _fps = 0.0f;
 
     std::map<int, std::function<bool(InputKey key, boost::optional<Index>)>, std::greater<int>> pressedKeyListeners;
     std::map<int, std::function<bool(InputKey key, boost::optional<Index>)>, std::greater<int>> releasedKeyListeners;
