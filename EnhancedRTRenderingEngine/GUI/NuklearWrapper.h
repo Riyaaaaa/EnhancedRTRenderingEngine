@@ -3,9 +3,11 @@
 #include <string>
 #include <memory>
 #include <unordered_map>
+#include <vector>
 
 #include "NuklearContexts.h"
 #include "Structure/Structure.h"
+#include "Structure/Aliases.h"
 
 class GIImmediateCommands;
 class GITexture2D;
@@ -36,7 +38,19 @@ public:
     }
 
     void SetFontStyle(std::string key);
-    BoundingBox2D currentWindowRect;
+
+    bool HitGUI(Index pos);
+
+    void ClearWindowRects() {
+        _windowRects.clear();
+    }
+    void AddWindowRects(BoundingBox2D box) {
+        _windowRects.push_back(box);
+    }
+
+protected:
+
+    std::vector<BoundingBox2D> _windowRects;
 
     NuklearContexts _contexts;
 

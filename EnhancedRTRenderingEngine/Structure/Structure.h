@@ -62,7 +62,8 @@ struct BoundingBox2D {
     Vector2D pos;
     Size2D size;
 
-    bool Contains(Vector2D p) const {
+    template<class T>
+    bool Contains(_Vector2D<T> p) const {
         return p.x >= pos.x && p.x <= pos.x + size.w &&
             p.y >= pos.y && p.y <= pos.y + size.h;
     }

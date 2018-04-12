@@ -62,3 +62,13 @@ void NuklearWrapper::SetFontStyle(std::string key) {
         nk_style_set_font(_contexts.context, &_fontHandles.at(key)->handle);
     }
 }
+
+bool NuklearWrapper::HitGUI(Index pos) {
+    for (auto&& rect : _windowRects) {
+        if (rect.Contains(pos)) {
+            return true;
+        }
+    }
+
+    return false;
+}

@@ -217,29 +217,27 @@ static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
             GenerateNuklearLayout(row, nuklear);
         }
 
+        BoundingBox2D box;
+        auto rect = nk_window_get_bounds(nuklear.Context());
+
+        box.pos.x = rect.x;
+        box.pos.y = rect.y;
+        box.size.w = rect.w;
+        box.size.h = rect.h;
+
+        nuklear.AddWindowRects(box);
+
         nk_end(nuklear.Context());
     }
 }
 
-BoundingBox2D HUDCanvasRenderer::update(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
+void HUDCanvasRenderer::update(GIImmediateCommands* cmd, HUDCanvas* canvas, NuklearWrapper& nuklear) {
     auto* ctx = _nuklear->Context();
-
+    nuklear.ClearWindowRects();
     GenerateNuklearLayout(canvas, nuklear);
-
-    BoundingBox2D box;
-    /*auto rect = nk_window_get_bounds(ctx);
-
-    box.pos.x = rect.x;
-    box.pos.y = rect.y;
-    box.size.w = rect.w;
-    box.size.h = rect.h;
-
-    _nuklear->currentWindowRect = box;*/
-
-    return box;
 }
 
-void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, HUDCanvas* canvas, NuklearWrapper& nuklear) {
+void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear) {
     const Vector4D blend_factor(0.0f, 0.0f, 0.0f, 0.0f);
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
