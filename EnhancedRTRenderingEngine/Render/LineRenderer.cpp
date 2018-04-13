@@ -47,10 +47,16 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     lineMesh->SetPrimitiveType(VertexPrimitiveType::LINELIST);
 
     MeshObject<LineVertex> mesh(lineMesh);
-    DrawMesh element(&mesh);
-    ObjectBuffer* buffer = new ObjectBuffer;
-    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
-    element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
+    DrawMesh element(cmd, &mesh);
+
+    ObjectBuffer buffer;
+    buffer.World = XMMatrixTranspose(mesh.GetMatrix());
+
+    desc.byteWidth = sizeof(buffer);
+    desc.stride = sizeof(float);
+    auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
+    element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
+
     DrawElement face(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
     face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
     face.startIndex = 0;

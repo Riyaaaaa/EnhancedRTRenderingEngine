@@ -13,6 +13,17 @@
 
 using namespace DirectX;
 
+D3D11BasePassRenderer::D3D11BasePassRenderer(GIImmediateCommands* cmd) {
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(ConstantBuffer);
+    constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+    desc.byteWidth = sizeof(MaterialBuffer);
+    materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc));
+    desc.byteWidth = sizeof(ObjectBuffer);
+    objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+}
+
 void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
     Scene* scene = _scene->GetSourceScene();
 
@@ -23,15 +34,10 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
 
-    BufferDesc desc;
-    desc.stride = sizeof(float);
-    desc.byteWidth = sizeof(ConstantBuffer);
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
-    desc.byteWidth = sizeof(MaterialBuffer);
-    auto hpMaterialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc));
+    cmd->UpdateSubresource(constantBuffer.get(), &hConstantBuffer, sizeof(hConstantBuffer));
 
-    cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
-    cmd->PSSetConstantBuffers(0, hpConstantBuffer.get());
+    cmd->VSSetConstantBuffers(0, constantBuffer.get());
+    cmd->PSSetConstantBuffers(0, constantBuffer.get());
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {
@@ -44,13 +50,18 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
         cmd->PSSetSamplers(1, _scene->GetPointShadow(0)->GetSampler().get());
     }
 
+
+    ObjectBuffer buffer;
     for (auto && object : scene->GetViewObjects()) {
         auto& mesh = object.GetMesh();
-        DrawMesh element(&object);
-        ObjectBuffer* buffer = new ObjectBuffer;
-        buffer->World = XMMatrixTranspose(object.GetMatrix());
-        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
+        DrawMesh element(cmd, &object);
+
+        buffer.World = XMMatrixTranspose(object.GetMatrix());
+        buffer.NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+
+        cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
+
+        element.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
 
         if (object.HasReflectionSource()) {
             auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
@@ -61,10 +72,7 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
         int index = 0;
         for (auto && drawface : mesh->GetDrawFacesMap()) {
             auto& material = object.GetMaterials()[drawface.materialIdx];
-            DrawElement face(material);
-            face.faceNumVerts = drawface.faceNumVerts;
-            face.startIndex = index;
-
+            
             TextureParam param;
             param.type = material.type;
             GITextureProxy texture = GITextureProxyEntity::Create();
@@ -77,11 +85,17 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
                 texture->Initialize(cmd, param, material.cubeTexture.textures);
             }
 
-            face.RegisterShaderResource(texture, 10);
+            MaterialBuffer mbuf{ material.metallic, material.roughness };
+            cmd->UpdateSubresource(materialBuffer.get(), &mbuf, sizeof(mbuf));
 
-            MaterialBuffer buf{ material.metallic, material.roughness };
-            face.RegisterConstantBuffer(&buf, 1, ShaderType::PS);
+            Shader ps(material.shadingType, material.pShader);
+            ps.constantBuffers.emplace_back(materialBuffer, 1);
+            ps.textureResources.emplace_back(texture, 10);
             
+            DrawElement face(ps, Shader(ShadingType::Vertex, material.vShader));
+            face.faceNumVerts = drawface.faceNumVerts;
+            face.startIndex = index;
+
             element.AddDrawElement(face);
             index += drawface.faceNumVerts;
         }

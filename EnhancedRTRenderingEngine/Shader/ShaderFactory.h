@@ -5,6 +5,8 @@
 
 #include "Constant/GraphicConstants.h"
 
+#include "GraphicsInterface/GITextureProxy.h"
+
 struct Shader : public RawBinary {
     Shader() = default;
     Shader(ShadingType t, RawBinary data) : 
@@ -12,6 +14,9 @@ struct Shader : public RawBinary {
         type(t){}
 
     ShadingType type = ShadingType::None;
+
+    std::vector<std::pair<GITextureProxy, unsigned int>> textureResources;
+    std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> constantBuffers;
 };
 
 namespace ShaderFactory

@@ -16,6 +16,9 @@
 class ForwardRenderer
 {
 public:
+    ForwardRenderer(GIImmediateCommands* cmd) :
+        bassPassRenderer(cmd),
+        depthRenderer(cmd) {}
     void render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene);
 
     RenderScene& GetSceneInfo() { return _scene; }

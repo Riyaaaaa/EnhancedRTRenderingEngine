@@ -25,43 +25,8 @@ public:
         _gshader(gs)
     {}
 
-    DrawElement(const Material& material) :
-        _shadingType(material.shadingType),
-        _pshader(material.shadingType, material.pShader),
-        _vshader(ShadingType::Vertex, material.vShader)
-    {}
-
-    template<class BufferType>
-    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId, ShaderType shaderType) {
-        ResourceType resType;
-
-        switch (shaderType) {
-        case ShaderType::PS:
-            resType = ResourceType::PSConstantBuffer;
-            break;
-        case ShaderType::VS:
-            resType = ResourceType::VSConstantBuffer;
-            break;
-        case ShaderType::GS:
-            resType = ResourceType::GSConstantBuffer;
-            break;
-        }
-
-        RegisterShaderResource(GIRawResource(RawBinary(ptr, sizeof(BufferType)), resType, sizeof(float)), regsiterId);
-    }
-
-    void RegisterShaderResource(const GITextureProxy& tex, unsigned int regsiterId);
-
     ShadingType GetShadingType() const {
         return _shadingType;
-    }
-
-    const std::vector<std::pair<GITextureProxy, unsigned int>>& GetTextureResources() const {
-        return textureResources;
-    }
-
-    const std::vector<std::pair<GIRawResource, unsigned int>>& GetRawResources() const {
-        return rawResources;
     }
 
     unsigned int faceNumVerts;
@@ -80,12 +45,6 @@ public:
     }
 
 protected:
-    void RegisterShaderResource(GIRawResource res, unsigned int registerId);
-
-    // Shader Resources
-    std::vector<std::pair<GITextureProxy, unsigned int>> textureResources;
-    std::vector<std::pair<GIRawResource, unsigned int>> rawResources;
-
     Shader _pshader;
     Shader _vshader;
     Shader _gshader;
@@ -96,25 +55,37 @@ protected:
 class DrawMesh {
 public:
     template<class VertType>
-    DrawMesh(MeshObject<VertType>* element) {
+    DrawMesh(GIImmediateCommands* cmd, MeshObject<VertType>* element) {
         _vertexLayout = GenerateVertexLayout<VertType>();
-        auto& vertexList = element->GetMesh()->GetVertexList();
-        shaderResources.emplace_back(GIRawResource(
-            RawBinary((void*)&(vertexList[0]), sizeof(VertType) * vertexList.size()),
-            ResourceType::VertexList, sizeof(VertType)), -1);
+
+        {
+            auto& vertexList = element->GetMesh()->GetVertexList();
+            BufferDesc bufferDesc;
+            bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * vertexList.size());
+            bufferDesc.usage = ResourceUsage::Default;
+            bufferDesc.accessFlag = ResourceAccessFlag::None;
+            bufferDesc.stride = sizeof(VertType);
+
+            auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&vertexList[0]));
+            meshSharedResource.emplace_back(buffer, -1);
+        }
 
         if (element->GetMesh()->HasIndexList()) {
             auto& indexList = element->GetMesh()->GetIndexList();
-            shaderResources.emplace_back(
-                GIRawResource(RawBinary((void*)&(indexList[0]), sizeof(uint16_t) * indexList.size()),
-                ResourceType::IndexList, sizeof(uint16_t)), -1);
+            BufferDesc bufferDesc;
+            bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(uint16_t) * indexList.size());
+            bufferDesc.usage = ResourceUsage::Default;
+            bufferDesc.accessFlag = ResourceAccessFlag::None;
+            bufferDesc.stride = sizeof(uint16_t);
+
+            auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::IndexList, bufferDesc, (void*)&indexList[0]));
+            meshSharedResource.emplace_back(buffer, -1);
         }
-        
+
         _primitiveType = element->GetMesh()->GetPrimitiveType();
     }
 
-    template<class BufferType>
-    void RegisterConstantBuffer(BufferType* ptr, unsigned int regsiterId, ShaderType shaderType) {
+    void RegisterConstantBuffer(const std::shared_ptr<GIBuffer>& buffer, unsigned int regsiterId, ShaderType shaderType) {
         ResourceType resType;
 
         switch (shaderType) {
@@ -128,8 +99,9 @@ public:
             resType = ResourceType::GSConstantBuffer;
             break;
         }
-        shaderResources.emplace_back(GIRawResource(RawBinary(ptr, sizeof(BufferType)), resType, sizeof(float)), regsiterId);
-        _dataHandles.emplace_back(ptr);
+
+        buffer->type = resType;
+        meshSharedResource.emplace_back(buffer, regsiterId);
     }
 
     VertexPrimitiveType GetPrimitiveType() const { 
@@ -140,8 +112,8 @@ public:
         return _vertexLayout;
     }
 
-    const std::vector<std::pair<GIRawResource, unsigned int>>& GetShaderResources() const {
-        return shaderResources;
+    const std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>>& GetShaderResources() const {
+        return meshSharedResource;
     }
 
     void AddDrawElement(const DrawElement& face) {
@@ -161,8 +133,8 @@ private:
     VertexPrimitiveType _primitiveType;
 
     std::vector<VertexLayout> _vertexLayout;
-    std::vector<std::shared_ptr<void>> _dataHandles;
-    std::vector<std::pair<GIRawResource, unsigned int>> shaderResources;
+    std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> meshSharedResource;
+
     std::unordered_multimap<ShadingType, DrawElement> _drawLinks;
 };
 

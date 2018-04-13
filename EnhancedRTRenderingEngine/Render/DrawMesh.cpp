@@ -3,31 +3,15 @@
 
 #include "GraphicsInterface/GIImmediateCommands.h"
 
-void DrawElement::RegisterShaderResource(const GITextureProxy& tex, unsigned int registerId) {
-    textureResources.push_back(std::make_pair(tex, registerId));
-}
-
-void DrawElement::RegisterShaderResource(GIRawResource res, unsigned int registerId) {
-    rawResources.push_back(std::make_pair(res, registerId));
-}
-
 void DrawMesh::Draw(GIImmediateCommands* cmd) {
     bool useIndexList = false;
 
-    for (auto&& psResource : GetShaderResources()) {
-        BufferDesc bufferDesc;
-
-        bufferDesc.byteWidth = static_cast<unsigned int>(psResource.first._resource.size());
-        bufferDesc.usage = ResourceUsage::Default;
-        bufferDesc.accessFlag = ResourceAccessFlag::None;
-        bufferDesc.stride = psResource.first._structureByteStride;
-
-        auto buffer = MakeRef(cmd->CreateBuffer(psResource.first._type, bufferDesc, (void*)psResource.first._resource.get()));
-
-        switch (psResource.first._type) {
+    for (auto&& sharedResource : GetShaderResources()) {
+        auto& buffer = sharedResource.first;
+        switch (buffer->type) {
         case ResourceType::VertexList: {
             UINT hOffsets = 0;
-            cmd->IASetVertexBuffer(buffer.get(), psResource.first._structureByteStride, hOffsets);
+            cmd->IASetVertexBuffer(buffer.get(), buffer->structureByteStride, hOffsets);
             break;
         }
         case ResourceType::IndexList:
@@ -35,10 +19,10 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
             useIndexList = true;
             break;
         case ResourceType::VSConstantBuffer:
-            cmd->VSSetConstantBuffers(psResource.second, buffer.get());
+            cmd->VSSetConstantBuffers(sharedResource.second, buffer.get());
             break;
         case ResourceType::PSConstantBuffer:
-            cmd->PSSetConstantBuffers(psResource.second, buffer.get());
+            cmd->PSSetConstantBuffers(sharedResource.second, buffer.get());
             break;
         case ResourceType::GSConstantBuffer:
             //cmd->GSSetConstantBuffers(psResource.second, buffer.get());
@@ -58,12 +42,29 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
         for (auto it = range.first; it != range.second; it++) {
             auto& shader = it->second;
+
             auto vshader = MakeRef(cmd->CreateVertexShader(shader.VS()));
             cmd->VSSetShader(vshader.get());
+
+            for (auto && cbuffer : shader.VS().constantBuffers) {
+                cmd->VSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
+            }
+
 
             if (shader.PS().isValid()) {
                 auto pshader = MakeRef(cmd->CreatePixelShader(shader.PS()));
                 cmd->PSSetShader(pshader.get());
+
+                for (auto&& texRes : shader.PS().textureResources) {
+                    if (texRes.first->IsAvalable()) {
+                        cmd->PSSetShaderResources(texRes.second, texRes.first->GetSubResourceView().get());
+                        cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
+                    }
+                }
+
+                for (auto && cbuffer : shader.PS().constantBuffers) {
+                    cmd->PSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
+                }
             }
 
             if (shader.GS().isValid()) {
@@ -73,28 +74,6 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
 
             auto inputLayout = MakeRef(cmd->CreateInputLayout(GetVertexLayout(), vshader.get()));
             cmd->IASetInputLayout(inputLayout.get());
-
-            TextureParam param;
-            param.format = TextureFormat::RGBA8_UNORM;
-            param.bindFlag = TextureBindTarget::SHADER_RESOURCE;
-
-            for (auto&& texRes : shader.GetTextureResources()) {
-                if (texRes.first->IsAvalable()) {
-                    cmd->PSSetShaderResources(texRes.second, texRes.first->GetSubResourceView().get());
-                    cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
-                }
-            }
-
-            for (auto && rawRes : shader.GetRawResources()) {
-                BufferDesc bufferDesc;
-                bufferDesc.byteWidth = static_cast<unsigned int>(rawRes.first._resource.size());
-                bufferDesc.usage = ResourceUsage::Default;
-                bufferDesc.accessFlag = ResourceAccessFlag::None;
-                bufferDesc.stride = rawRes.first._structureByteStride;
-
-                auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, bufferDesc, (void*)rawRes.first._resource.get()));
-                cmd->PSSetConstantBuffers(rawRes.second, buffer.get());
-            }
 
             if (useIndexList) {
                 cmd->DrawIndexed(shader.faceNumVerts, shader.startIndex, 0);

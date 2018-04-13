@@ -28,12 +28,17 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
     cmd->VSSetConstantBuffers(0, buffer.get());
 
+    desc.byteWidth = sizeof(ObjectBuffer);
+    desc.stride = sizeof(float);
+    auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+
     for (auto && object : meshes) {
-        DrawMesh element(&object);
-        ObjectBuffer* buffer = new ObjectBuffer;
-        buffer->World = XMMatrixTranspose(object.GetMatrix());
-        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
+        DrawMesh element(cmd, &object);
+        ObjectBuffer buffer;
+        buffer.World = XMMatrixTranspose(object.GetMatrix());
+        buffer.NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
+        element.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
         DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
 
         face.startIndex = 0;
