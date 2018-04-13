@@ -11,6 +11,15 @@
 
 using namespace DirectX;
 
+D3D11DepthRenderer::D3D11DepthRenderer(GIImmediateCommands* cmd) {
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(TransformBufferParam);
+    transformBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+    desc.byteWidth = sizeof(ObjectBuffer);
+    objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+}
+
 void D3D11DepthRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene)
 {
     //todo: support multi lights;
@@ -18,15 +27,9 @@ void D3D11DepthRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Re
     RenderPointLightShadowMap(cmd, view, scene);
 }
 
-void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
-    auto* scene = _scene->GetSourceScene();
-
+void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* renderScene) {
+    auto* scene = renderScene->GetSourceScene();
     auto& dLights = scene->GetDirectionalLights();
-
-    BufferDesc desc;
-    desc.stride = sizeof(float);
-    desc.byteWidth = sizeof(TransformBufferParam);
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
     for (int i = 0; i < static_cast<int>(dLights.size()); i++) {
         auto& dLight = dLights[i];
@@ -45,41 +48,33 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
         hConstantBuffer.View = XMMatrixTranspose(dLight.GetViewProjection());
         hConstantBuffer.Projection = XMMatrixTranspose(dLight.GetPerspectiveProjection());
 
-        cmd->UpdateSubresource(hpConstantBuffer.get(), &hConstantBuffer, 0);
-        cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
+        cmd->UpdateSubresource(transformBuffer.get(), &hConstantBuffer, 0);
+        cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
         for (auto && object : scene->GetViewObjects()) {
-            DrawMesh element(&object);
-            ObjectBuffer* buffer = new ObjectBuffer;
-            buffer->World = XMMatrixTranspose(object.GetMatrix());
-            buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-            element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
-            DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
-
-            face.startIndex = 0;
+            auto& mesh = renderScene->GetStaticDrawMeshes()[object.GetID()];
+           
+            unsigned int faceNumVerts = 0;
             if (object.GetMesh()->HasIndexList()) {
-                face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+                faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
             }
             else {
-                face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+                faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
             }
-            element.AddDrawElement(face);
+
+            DrawElement element(&mesh, faceNumVerts, 0);
+            element.SetShaders(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
             element.Draw(cmd);
         }
 
-        _scene->GetDirectionalShadow(i) = MakeRef(cmd->CreateTextureProxy(rtv->rtvTexture, SamplerParam()));
+        renderScene->GetDirectionalShadow(i) = MakeRef(cmd->CreateTextureProxy(rtv->rtvTexture, SamplerParam()));
     }
 }
 
-void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
-    auto* scene = _scene->GetSourceScene();
-
-    BufferDesc desc;
-    desc.stride = sizeof(float);
-    desc.byteWidth = sizeof(TransformBufferParam);
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
-
+void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* renderScene) {
+    auto* scene = renderScene->GetSourceScene();
     auto& pLights = scene->GetPointLights();
+
     for (int i = 0; i < static_cast<int>(pLights.size()); i++) {
         auto& pLight = scene->GetPointLights()[i];
 
@@ -108,25 +103,22 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             hConstantBuffer.View = XMMatrixTranspose(pLight.GetViewMatrix(static_cast<CUBE_DIRECTION>(j)));
             hConstantBuffer.Projection = XMMatrixTranspose(pLight.GetShadowPerspectiveMatrix());
 
-            cmd->UpdateSubresource(hpConstantBuffer.get(), &hConstantBuffer, 0);
-            cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
+            cmd->UpdateSubresource(transformBuffer.get(), &hConstantBuffer, 0);
+            cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
             for (auto && object : scene->GetViewObjects()) {
-                DrawMesh element(&object);
-                ObjectBuffer* buffer = new ObjectBuffer;
-                buffer->World = XMMatrixTranspose(object.GetMatrix());
-                buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-                element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
-                DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+                auto& mesh = renderScene->GetStaticDrawMeshes()[object.GetID()];
 
-                face.startIndex = 0;
+                unsigned int faceNumVerts = 0;
                 if (object.GetMesh()->HasIndexList()) {
-                    face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+                    faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
                 }
                 else {
-                    face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+                    faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
                 }
-                element.AddDrawElement(face);
+
+                DrawElement element(&mesh, faceNumVerts, 0);
+                element.SetShaders(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
                 element.Draw(cmd);
             }
         }
@@ -154,7 +146,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             cmd->CopyTexture2D(texCube.get(), x, texArrayDesc.mipLevels, filtered.get());
         }
 
-        _scene->GetPointShadow(i) = MakeRef(cmd->CreateTextureProxy(texCube, SamplerParam()));
+        renderScene->GetPointShadow(i) = MakeRef(cmd->CreateTextureProxy(texCube, SamplerParam()));
 
         pLight.SetDirty(false);
     }

@@ -13,8 +13,21 @@
 
 using namespace DirectX;
 
-void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
-    Scene* scene = _scene->GetSourceScene();
+D3D11BasePassRenderer::D3D11BasePassRenderer(GIImmediateCommands* cmd) {
+    BufferDesc desc;
+    desc.stride = sizeof(float);
+    desc.byteWidth = sizeof(MaterialBuffer);
+    materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc));
+    desc.byteWidth = sizeof(ObjectBuffer);
+    objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+    desc.byteWidth = sizeof(ConstantBuffer);
+    desc.usage = ResourceUsage::Dynamic;
+    desc.accessFlag = ResourceAccessFlag::W;
+    constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+}
+
+void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* renderScene) {
+    Scene* scene = renderScene->GetSourceScene();
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
 
@@ -23,70 +36,26 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
 
-    BufferDesc desc;
-    desc.stride = sizeof(float);
-    desc.byteWidth = sizeof(ConstantBuffer);
-    auto hpConstantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
-    desc.byteWidth = sizeof(MaterialBuffer);
-    auto hpMaterialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc));
+    auto mapped = cmd->MapBuffer(constantBuffer.get(), 0, MapType::WRITE_DISCARD);
+    memcpy(mapped.pData, &hConstantBuffer, sizeof(hConstantBuffer));
+    cmd->UnmapBuffer(constantBuffer.get(), 0);
 
-    cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
-    cmd->PSSetConstantBuffers(0, hpConstantBuffer.get());
+    cmd->VSSetConstantBuffers(0, constantBuffer.get());
+    cmd->PSSetConstantBuffers(0, constantBuffer.get());
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {
-        cmd->PSSetShaderResources(0, _scene->GetDirectionalShadow(0)->GetSubResourceView().get());
-        cmd->PSSetSamplers(0, _scene->GetDirectionalShadow(0)->GetSampler().get());
+        cmd->PSSetShaderResources(0, renderScene->GetDirectionalShadow(0)->GetSubResourceView().get());
+        cmd->PSSetSamplers(0, renderScene->GetDirectionalShadow(0)->GetSampler().get());
     }
     
     if (hConstantBuffer.numPointLights > 0) {
-        cmd->PSSetShaderResources(1, _scene->GetPointShadow(0)->GetSubResourceView().get());
-        cmd->PSSetSamplers(1, _scene->GetPointShadow(0)->GetSampler().get());
+        cmd->PSSetShaderResources(1, renderScene->GetPointShadow(0)->GetSubResourceView().get());
+        cmd->PSSetSamplers(1, renderScene->GetPointShadow(0)->GetSampler().get());
     }
 
-    for (auto && object : scene->GetViewObjects()) {
-        auto& mesh = object.GetMesh();
-        DrawMesh element(&object);
-        ObjectBuffer* buffer = new ObjectBuffer;
-        buffer->World = XMMatrixTranspose(object.GetMatrix());
-        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
-
-        if (object.HasReflectionSource()) {
-            auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
-            cmd->PSSetShaderResources(2, tex->GetSubResourceView().get());
-            cmd->PSSetSamplers(2, tex->GetSampler().get());
-        }
-
-        int index = 0;
-        for (auto && drawface : mesh->GetDrawFacesMap()) {
-            auto& material = object.GetMaterials()[drawface.materialIdx];
-            DrawElement face(material);
-            face.faceNumVerts = drawface.faceNumVerts;
-            face.startIndex = index;
-
-            TextureParam param;
-            param.type = material.type;
-            GITextureProxy texture = GITextureProxyEntity::Create();
-            if (material.type == TextureType::Texture2D) {
-                param.arraySize = 1;
-                texture->Initialize(cmd, param, material.texture);
-            }
-            else if (material.type == TextureType::TextureCube) {
-                param.arraySize = 6;
-                texture->Initialize(cmd, param, material.cubeTexture.textures);
-            }
-
-            face.RegisterShaderResource(texture, 10);
-
-            MaterialBuffer buf{ material.metallic, material.roughness };
-            face.RegisterConstantBuffer(&buf, 1, ShaderType::PS);
-            
-            element.AddDrawElement(face);
-            index += drawface.faceNumVerts;
-        }
-
-        element.Draw(cmd);
+    for (auto && drawface : renderScene->GetDrawList()) {
+        drawface.Draw(cmd);
     }
     
     cmd->PSSetSamplers(0, nullptr);

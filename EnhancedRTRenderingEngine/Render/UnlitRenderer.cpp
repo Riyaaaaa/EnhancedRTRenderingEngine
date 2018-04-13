@@ -28,22 +28,28 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &hConstantBuffer));
     cmd->VSSetConstantBuffers(0, buffer.get());
 
-    for (auto && object : meshes) {
-        DrawMesh element(&object);
-        ObjectBuffer* buffer = new ObjectBuffer;
-        buffer->World = XMMatrixTranspose(object.GetMatrix());
-        buffer->NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-        element.RegisterConstantBuffer(buffer, 1, ShaderType::VS);
-        DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
+    desc.byteWidth = sizeof(ObjectBuffer);
+    desc.stride = sizeof(float);
+    auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
-        face.startIndex = 0;
+    for (auto && object : meshes) {
+        DrawMesh mesh(cmd, &object);
+        ObjectBuffer buffer;
+        buffer.World = XMMatrixTranspose(object.GetMatrix());
+        buffer.NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
+        mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
+
+        unsigned int faceNumVerts = 0;
         if (object.GetMesh()->HasIndexList()) {
-            face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+            faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
         }
         else {
-            face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+            faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
         }
-        element.AddDrawElement(face);
+
+        DrawElement element(&mesh, faceNumVerts, 0);
+        element.SetShaders(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
         element.Draw(cmd);
     }
 }

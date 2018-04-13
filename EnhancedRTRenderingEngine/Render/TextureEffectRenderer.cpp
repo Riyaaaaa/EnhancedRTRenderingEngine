@@ -39,16 +39,22 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size2D(1.0f, 1.0f));
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    DrawMesh element(&mesh);
-    ObjectBuffer* buffer = new ObjectBuffer;
-    buffer->World = XMMatrixTranspose(mesh.GetMatrix());
-    element.RegisterConstantBuffer(buffer, 0, ShaderType::VS);
-    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
-    face.startIndex = 0;
-    face.RegisterShaderResource(src, 0);
-    element.AddDrawElement(face);
-    element.Draw(cmd);
+    DrawMesh element(cmd, &mesh);
+    ObjectBuffer buffer;
+    buffer.World = XMMatrixTranspose(mesh.GetMatrix());
+
+    BufferDesc desc;
+    desc.byteWidth = sizeof(buffer);
+    desc.stride = sizeof(float);
+    auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
+    element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
+
+    auto ps = Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect));
+    ps.textureResources.emplace_back(src, 0);
+
+    DrawElement face(&element, mesh.GetMesh()->GetVertexCount(), 0);
+    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
+    face.Draw(cmd);
 
     return dstTex;
 }

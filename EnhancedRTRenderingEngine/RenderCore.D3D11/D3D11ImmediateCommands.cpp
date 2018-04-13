@@ -257,6 +257,8 @@ GIBuffer* D3D11ImmediateCommands::CreateBuffer(ResourceType type, BufferDesc des
     }
 
     _device->CreateBuffer(&bufferDesc, resPtr, buffer->resource.ToCreator());
+    buffer->structureByteStride = desc.stride;
+    buffer->type = type;
     return buffer;
 }
 
