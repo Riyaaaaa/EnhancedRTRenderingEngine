@@ -24,8 +24,8 @@ D3D11BasePassRenderer::D3D11BasePassRenderer(GIImmediateCommands* cmd) {
     objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 }
 
-void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* _scene) {
-    Scene* scene = _scene->GetSourceScene();
+void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* renderScene) {
+    Scene* scene = renderScene->GetSourceScene();
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
 
@@ -41,30 +41,25 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
     // todo: support multi lights
     if (hConstantBuffer.numDirecitonalLights > 0) {
-        cmd->PSSetShaderResources(0, _scene->GetDirectionalShadow(0)->GetSubResourceView().get());
-        cmd->PSSetSamplers(0, _scene->GetDirectionalShadow(0)->GetSampler().get());
+        cmd->PSSetShaderResources(0, renderScene->GetDirectionalShadow(0)->GetSubResourceView().get());
+        cmd->PSSetSamplers(0, renderScene->GetDirectionalShadow(0)->GetSampler().get());
     }
     
     if (hConstantBuffer.numPointLights > 0) {
-        cmd->PSSetShaderResources(1, _scene->GetPointShadow(0)->GetSubResourceView().get());
-        cmd->PSSetSamplers(1, _scene->GetPointShadow(0)->GetSampler().get());
+        cmd->PSSetShaderResources(1, renderScene->GetPointShadow(0)->GetSubResourceView().get());
+        cmd->PSSetSamplers(1, renderScene->GetPointShadow(0)->GetSampler().get());
     }
 
 
     ObjectBuffer buffer;
     for (auto && object : scene->GetViewObjects()) {
         auto& mesh = object.GetMesh();
-        DrawMesh element(cmd, &object);
+        auto& element = renderScene->GetStaticDrawMeshes()[object.GetID()];
 
-        buffer.World = XMMatrixTranspose(object.GetMatrix());
-        buffer.NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
-
-        cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
-
-        element.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
+        element.ClearDrawElement();
 
         if (object.HasReflectionSource()) {
-            auto& tex = _scene->GetEnviromentMap(object.GetReflectionSourceId());
+            auto& tex = renderScene->GetEnviromentMap(object.GetReflectionSourceId());
             cmd->PSSetShaderResources(2, tex->GetSubResourceView().get());
             cmd->PSSetSamplers(2, tex->GetSampler().get());
         }

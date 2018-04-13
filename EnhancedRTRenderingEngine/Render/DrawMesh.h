@@ -54,6 +54,7 @@ protected:
 
 class DrawMesh {
 public:
+    DrawMesh() = default;
     template<class VertType>
     DrawMesh(GIImmediateCommands* cmd, MeshObject<VertType>* element) {
         _vertexLayout = GenerateVertexLayout<VertType>();
@@ -114,6 +115,10 @@ public:
 
     const std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>>& GetShaderResources() const {
         return meshSharedResource;
+    }
+
+    void ClearDrawElement() {
+        _drawLinks.clear();
     }
 
     void AddDrawElement(const DrawElement& face) {
