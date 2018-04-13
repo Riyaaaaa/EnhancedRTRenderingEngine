@@ -50,52 +50,8 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
         cmd->PSSetSamplers(1, renderScene->GetPointShadow(0)->GetSampler().get());
     }
 
-
-    ObjectBuffer buffer;
-    for (auto && object : scene->GetViewObjects()) {
-        auto& mesh = object.GetMesh();
-        auto& element = renderScene->GetStaticDrawMeshes()[object.GetID()];
-
-        element.ClearDrawElement();
-
-        if (object.HasReflectionSource()) {
-            auto& tex = renderScene->GetEnviromentMap(object.GetReflectionSourceId());
-            cmd->PSSetShaderResources(2, tex->GetSubResourceView().get());
-            cmd->PSSetSamplers(2, tex->GetSampler().get());
-        }
-
-        int index = 0;
-        for (auto && drawface : mesh->GetDrawFacesMap()) {
-            auto& material = object.GetMaterials()[drawface.materialIdx];
-            
-            TextureParam param;
-            param.type = material.type;
-            GITextureProxy texture = GITextureProxyEntity::Create();
-            if (material.type == TextureType::Texture2D) {
-                param.arraySize = 1;
-                texture->Initialize(cmd, param, material.texture);
-            }
-            else if (material.type == TextureType::TextureCube) {
-                param.arraySize = 6;
-                texture->Initialize(cmd, param, material.cubeTexture.textures);
-            }
-
-            MaterialBuffer mbuf{ material.metallic, material.roughness };
-            cmd->UpdateSubresource(materialBuffer.get(), &mbuf, sizeof(mbuf));
-
-            Shader ps(material.shadingType, material.pShader);
-            ps.constantBuffers.emplace_back(materialBuffer, 1);
-            ps.textureResources.emplace_back(texture, 10);
-            
-            DrawElement face(ps, Shader(ShadingType::Vertex, material.vShader));
-            face.faceNumVerts = drawface.faceNumVerts;
-            face.startIndex = index;
-
-            element.AddDrawElement(face);
-            index += drawface.faceNumVerts;
-        }
-
-        element.Draw(cmd);
+    for (auto && drawface : renderScene->GetDrawList()) {
+        drawface.Draw(cmd);
     }
     
     cmd->PSSetSamplers(0, nullptr);

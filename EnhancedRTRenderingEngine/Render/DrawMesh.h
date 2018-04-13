@@ -15,22 +15,25 @@
 
 #include "GraphicsInterface/GIRawResource.h"
 
+class DrawMesh;
+
 class DrawElement
 {
 public:
-    DrawElement(Shader ps, Shader vs, Shader gs = Shader(ShadingType::Geometry, RawBinary())) :
-        _shadingType(ps.type),
-        _pshader(ps),
-        _vshader(vs),
-        _gshader(gs)
-    {}
+    DrawElement(DrawMesh* parent, unsigned int faceNumVerts, unsigned int startIndex) :
+        _parentMesh(parent),
+        _faceNumVerts(faceNumVerts),
+        _startIndex(startIndex) {}
+
+    void SetShaders(const Shader& ps, const Shader& vs, const Shader& gs = Shader()) {
+        _pshader = ps;
+        _vshader = vs;
+        _gshader = gs;
+    }
 
     ShadingType GetShadingType() const {
         return _shadingType;
     }
-
-    unsigned int faceNumVerts;
-    unsigned int startIndex;
 
     Shader PS() const {
         return _pshader;
@@ -44,12 +47,19 @@ public:
         return _gshader;
     }
 
+    void Draw(GIImmediateCommands* cmd);
+
 protected:
+    unsigned int _faceNumVerts;
+    unsigned int _startIndex;
+
     Shader _pshader;
     Shader _vshader;
     Shader _gshader;
 
     ShadingType _shadingType;
+
+    DrawMesh* _parentMesh;
 };
 
 class DrawMesh {
@@ -105,6 +115,10 @@ public:
         meshSharedResource.emplace_back(buffer, regsiterId);
     }
 
+    void RegisterTexture(const GITextureProxy& texture, unsigned int registerId) {
+        meshSharedTexture.emplace_back(texture, registerId);
+    }
+
     VertexPrimitiveType GetPrimitiveType() const { 
         return _primitiveType; 
     }
@@ -117,19 +131,9 @@ public:
         return meshSharedResource;
     }
 
-    void ClearDrawElement() {
-        _drawLinks.clear();
+    const std::vector<std::pair<GITextureProxy, unsigned int>>& GetTextureResources() const {
+        return meshSharedTexture;
     }
-
-    void AddDrawElement(const DrawElement& face) {
-        _drawLinks.insert(std::make_pair(face.GetShadingType(), face));
-    }
-
-    const std::unordered_multimap<ShadingType, DrawElement>& GetDrawLinks() const {
-        return _drawLinks;
-    }
-
-    void Draw(GIImmediateCommands* cmd);
 
 private:
     template<class VertType>
@@ -139,8 +143,7 @@ private:
 
     std::vector<VertexLayout> _vertexLayout;
     std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> meshSharedResource;
-
-    std::unordered_multimap<ShadingType, DrawElement> _drawLinks;
+    std::vector<std::pair<GITextureProxy, unsigned int>> meshSharedTexture;
 };
 
 

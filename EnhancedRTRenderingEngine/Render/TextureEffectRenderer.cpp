@@ -52,11 +52,9 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     auto ps = Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect));
     ps.textureResources.emplace_back(src, 0);
 
-    DrawElement face(ps, ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = mesh.GetMesh()->GetVertexCount();
-    face.startIndex = 0;
-    element.AddDrawElement(face);
-    element.Draw(cmd);
+    DrawElement face(&element, mesh.GetMesh()->GetVertexCount(), 0);
+    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
+    face.Draw(cmd);
 
     return dstTex;
 }

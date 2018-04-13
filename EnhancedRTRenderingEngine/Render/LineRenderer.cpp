@@ -57,11 +57,9 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
     auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
     element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
 
-    DrawElement face(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
-    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
-    face.startIndex = 0;
-    element.AddDrawElement(face);
-    element.Draw(cmd);
+    DrawElement face(&element, static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount()), 0);
+    face.SetShaders(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
+    face.Draw(cmd);
 
     cmd->PSSetShader(nullptr);
     cmd->GSSetShader(nullptr);

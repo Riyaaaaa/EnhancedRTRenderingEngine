@@ -33,22 +33,23 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
     for (auto && object : meshes) {
-        DrawMesh element(cmd, &object);
+        DrawMesh mesh(cmd, &object);
         ObjectBuffer buffer;
         buffer.World = XMMatrixTranspose(object.GetMatrix());
         buffer.NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
         cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
-        element.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
-        DrawElement face(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
+        mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
 
-        face.startIndex = 0;
+        unsigned int faceNumVerts = 0;
         if (object.GetMesh()->HasIndexList()) {
-            face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+            faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
         }
         else {
-            face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+            faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
         }
-        element.AddDrawElement(face);
+
+        DrawElement element(&mesh, faceNumVerts, 0);
+        element.SetShaders(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
         element.Draw(cmd);
     }
 }

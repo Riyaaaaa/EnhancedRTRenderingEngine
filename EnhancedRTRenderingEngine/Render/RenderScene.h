@@ -26,12 +26,16 @@ public:
     std::unordered_map<std::size_t, DrawMesh>& GetStaticDrawMeshes() {
         return _staticDrawMeshes;
     }
+    std::vector<DrawElement>& GetDrawList() {
+        return _drawList;
+    }
 protected:
     Scene * _scene;
     std::vector<GITextureProxy> _directionalShadows;
     std::vector<GITextureProxy> _pointShadows;
     std::unordered_map<std::size_t, GITextureProxy> _enviromentMaps;
 
+    std::vector<DrawElement> _drawList;
     std::unordered_map<std::size_t, DrawMesh> _staticDrawMeshes;
 };
 

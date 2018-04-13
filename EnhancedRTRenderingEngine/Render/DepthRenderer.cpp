@@ -51,20 +51,19 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
         cmd->UpdateSubresource(transformBuffer.get(), &hConstantBuffer, 0);
         cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
-        ObjectBuffer buffer;
         for (auto && object : scene->GetViewObjects()) {
-            auto& element = renderScene->GetStaticDrawMeshes()[object.GetID()];
-            element.ClearDrawElement();
-            DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
-
-            face.startIndex = 0;
+            auto& mesh = renderScene->GetStaticDrawMeshes()[object.GetID()];
+           
+            unsigned int faceNumVerts = 0;
             if (object.GetMesh()->HasIndexList()) {
-                face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+                faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
             }
             else {
-                face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+                faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
             }
-            element.AddDrawElement(face);
+
+            DrawElement element(&mesh, faceNumVerts, 0);
+            element.SetShaders(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
             element.Draw(cmd);
         }
 
@@ -107,20 +106,19 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             cmd->UpdateSubresource(transformBuffer.get(), &hConstantBuffer, 0);
             cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
-            ObjectBuffer buffer;
             for (auto && object : scene->GetViewObjects()) {
-                auto& element = renderScene->GetStaticDrawMeshes()[object.GetID()];
-                element.ClearDrawElement();
-                DrawElement face(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
+                auto& mesh = renderScene->GetStaticDrawMeshes()[object.GetID()];
 
-                face.startIndex = 0;
+                unsigned int faceNumVerts = 0;
                 if (object.GetMesh()->HasIndexList()) {
-                    face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+                    faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
                 }
                 else {
-                    face.faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+                    faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
                 }
-                element.AddDrawElement(face);
+
+                DrawElement element(&mesh, faceNumVerts, 0);
+                element.SetShaders(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
                 element.Draw(cmd);
             }
         }

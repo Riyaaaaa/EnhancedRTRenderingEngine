@@ -25,12 +25,10 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     DrawMesh element(cmd, &mesh);
     auto ps = ShaderFactory::MinTextureColor();
     ps.textureResources.emplace_back(textureProxy, 10);
-    DrawElement face(ps, ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
-    face.startIndex = 0;
 
-    element.AddDrawElement(face);
-    element.Draw(cmd);
+    DrawElement face(&element, static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount()), 0);
+    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
+    face.Draw(cmd);
 }
 
 void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size2D size, const GITextureProxy& texture, int index)
@@ -75,10 +73,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
         ps.textureResources.emplace_back(texture, 0);
     }
 
-    DrawElement face(ps, ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
-    face.startIndex = 0;
-
-    element.AddDrawElement(face);
-    element.Draw(cmd);
+    DrawElement face(&element, mesh.GetMesh()->GetVertexCount(), 0);
+    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
+    face.Draw(cmd);
 }

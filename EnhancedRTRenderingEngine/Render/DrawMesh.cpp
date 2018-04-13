@@ -3,10 +3,10 @@
 
 #include "GraphicsInterface/GIImmediateCommands.h"
 
-void DrawMesh::Draw(GIImmediateCommands* cmd) {
+void DrawElement::Draw(GIImmediateCommands* cmd) {
     bool useIndexList = false;
 
-    for (auto&& sharedResource : GetShaderResources()) {
+    for (auto&& sharedResource : _parentMesh->GetShaderResources()) {
         auto& buffer = sharedResource.first;
         switch (buffer->type) {
         case ResourceType::VertexList: {
@@ -30,58 +30,49 @@ void DrawMesh::Draw(GIImmediateCommands* cmd) {
         }
     }
 
-    cmd->IASetPrimitiveTopology(GetPrimitiveType());
+    for (auto&& texture : _parentMesh->GetTextureResources()) {
+        cmd->PSSetShaderResources(texture.second, texture.first->GetSubResourceView().get());
+        cmd->PSSetSamplers(texture.second, texture.first->GetSampler().get());
+    }
 
-    auto& drawLinks = GetDrawLinks();
-    for (ShadingType type : { ShadingType::BasePass, ShadingType::Detph, ShadingType::Unlit }) {
-        auto range = drawLinks.equal_range(type);
+    cmd->IASetPrimitiveTopology(_parentMesh->GetPrimitiveType());
 
-        if (range.first == range.second) {
-            continue;
-        }
+    auto vshader = MakeRef(cmd->CreateVertexShader(VS()));
+    cmd->VSSetShader(vshader.get());
 
-        for (auto it = range.first; it != range.second; it++) {
-            auto& shader = it->second;
+    for (auto && cbuffer : VS().constantBuffers) {
+        cmd->VSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
+    }
 
-            auto vshader = MakeRef(cmd->CreateVertexShader(shader.VS()));
-            cmd->VSSetShader(vshader.get());
+    if (PS().isValid()) {
+        auto pshader = MakeRef(cmd->CreatePixelShader(PS()));
+        cmd->PSSetShader(pshader.get());
 
-            for (auto && cbuffer : shader.VS().constantBuffers) {
-                cmd->VSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
-            }
-
-
-            if (shader.PS().isValid()) {
-                auto pshader = MakeRef(cmd->CreatePixelShader(shader.PS()));
-                cmd->PSSetShader(pshader.get());
-
-                for (auto&& texRes : shader.PS().textureResources) {
-                    if (texRes.first->IsAvalable()) {
-                        cmd->PSSetShaderResources(texRes.second, texRes.first->GetSubResourceView().get());
-                        cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
-                    }
-                }
-
-                for (auto && cbuffer : shader.PS().constantBuffers) {
-                    cmd->PSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
-                }
-            }
-
-            if (shader.GS().isValid()) {
-                auto gshader = MakeRef(cmd->CreateGeometryShader(shader.GS()));
-                cmd->GSSetShader(gshader.get());
-            }
-
-            auto inputLayout = MakeRef(cmd->CreateInputLayout(GetVertexLayout(), vshader.get()));
-            cmd->IASetInputLayout(inputLayout.get());
-
-            if (useIndexList) {
-                cmd->DrawIndexed(shader.faceNumVerts, shader.startIndex, 0);
-            }
-            else {
-                cmd->Draw(shader.faceNumVerts, shader.startIndex);
+        for (auto&& texRes : PS().textureResources) {
+            if (texRes.first->IsAvalable()) {
+                cmd->PSSetShaderResources(texRes.second, texRes.first->GetSubResourceView().get());
+                cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
             }
         }
+
+        for (auto && cbuffer : PS().constantBuffers) {
+            cmd->PSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
+        }
+    }
+
+    if (GS().isValid()) {
+        auto gshader = MakeRef(cmd->CreateGeometryShader(GS()));
+        cmd->GSSetShader(gshader.get());
+    }
+
+    auto inputLayout = MakeRef(cmd->CreateInputLayout(_parentMesh->GetVertexLayout(), vshader.get()));
+    cmd->IASetInputLayout(inputLayout.get());
+
+    if (useIndexList) {
+        cmd->DrawIndexed(_faceNumVerts, _startIndex, 0);
+    }
+    else {
+        cmd->Draw(_faceNumVerts, _startIndex);
     }
 }
 

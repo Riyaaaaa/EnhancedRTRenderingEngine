@@ -48,9 +48,7 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
     element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
 
-    DrawElement face(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
-    face.faceNumVerts = static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount());
-    face.startIndex = 0;
-    element.AddDrawElement(face);
-    element.Draw(cmd);
+    DrawElement face(&element, static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount()), 0);
+    face.SetShaders(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
+    face.Draw(cmd);
 }
