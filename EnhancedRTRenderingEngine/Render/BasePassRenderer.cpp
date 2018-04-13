@@ -16,12 +16,14 @@ using namespace DirectX;
 D3D11BasePassRenderer::D3D11BasePassRenderer(GIImmediateCommands* cmd) {
     BufferDesc desc;
     desc.stride = sizeof(float);
-    desc.byteWidth = sizeof(ConstantBuffer);
-    constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
     desc.byteWidth = sizeof(MaterialBuffer);
     materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc));
     desc.byteWidth = sizeof(ObjectBuffer);
     objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
+    desc.byteWidth = sizeof(ConstantBuffer);
+    desc.usage = ResourceUsage::Dynamic;
+    desc.accessFlag = ResourceAccessFlag::W;
+    constantBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 }
 
 void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* renderScene) {
@@ -34,7 +36,9 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
 
-    cmd->UpdateSubresource(constantBuffer.get(), &hConstantBuffer, sizeof(hConstantBuffer));
+    auto mapped = cmd->MapBuffer(constantBuffer.get(), 0, MapType::WRITE_DISCARD);
+    memcpy(mapped.pData, &hConstantBuffer, sizeof(hConstantBuffer));
+    cmd->UnmapBuffer(constantBuffer.get(), 0);
 
     cmd->VSSetConstantBuffers(0, constantBuffer.get());
     cmd->PSSetConstantBuffers(0, constantBuffer.get());
