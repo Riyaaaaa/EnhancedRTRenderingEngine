@@ -46,12 +46,18 @@ public:
     virtual unsigned int GetVertexNums() override;
     virtual std::vector<Hit> IntersectPositions(Ray ray) override;
 
+    bool IsPhysicalObject() {
+        return _isPhysicallyObject;
+    }
+
 protected:
     virtual void DirtyWorldMatrix() override;
 
     MeshObject() = default;
+
     bool AABBDirty = true;
     bool _hasReflectionSource = false;
+    bool _isPhysicallyObject = true;
 
     std::vector<DirectX::XMVECTOR> _vertexTransformedCache;
 
