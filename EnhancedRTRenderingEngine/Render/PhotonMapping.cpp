@@ -10,12 +10,12 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
     for (auto&& pLight : pLights) {
         auto pos = pLight.GetPoint();
 
-        for (int i = 0; i < 10; i++) {
+        for (int i = 0; i < 100; i++) {
             auto sita = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 2 * D3DX_PI});
             auto phi = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 2 * D3DX_PI});
 
             Ray ray(pos, Vector3D(std::sinf(sita) * std::cosf(phi),
-                std::sinf(sita) * std::sinf(sita),
+                std::sinf(sita) * std::sinf(phi),
                 std::cosf(sita)));
 
             auto result = RayTrace(factory, ray, 2);
