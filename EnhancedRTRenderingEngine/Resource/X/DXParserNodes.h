@@ -225,7 +225,7 @@ struct DXRootParser : ParserBase<MeshParser<TagDXRootParser>> {
             XTemplateGrammar<std::string::const_iterator> parser;
             while (true) {
                 DXModel::XTemplate xtemplate;
-                bool r = qi::parse(itr, end, parser, xtemplate);
+                bool r = qi::phrase_parse(itr, end, parser, qi::space, xtemplate);
                 if (r) {
                     model->templates.push_back(xtemplate);
                 }

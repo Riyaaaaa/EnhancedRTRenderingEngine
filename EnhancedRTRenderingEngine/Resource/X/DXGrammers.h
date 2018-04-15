@@ -22,7 +22,6 @@ struct FileFormatSymbol : public qi::symbols<char, DXModel::FileFormat> {
 template<typename Iterator>
 struct XHeaderGrammar : public qi::grammar<Iterator, DXModel::XHeader()> {
     XHeaderGrammar() : XHeaderGrammar::base_type(expr) {
-        //auto file_format_rules = ascii::string("txt") | ascii::string("bin") | ascii::string("tzip") | ascii::string("bzip");
         expr = +(qi::char_ - qi::lit(' '))
             >> qi::lit(' ') >> +(qi::char_ - (format | qi::lit(' ')))
             >> format >> qi::lit(' ')
@@ -35,23 +34,22 @@ struct XHeaderGrammar : public qi::grammar<Iterator, DXModel::XHeader()> {
 };
 
 template <typename Iterator>
-struct XTemplateGrammar : public qi::grammar<Iterator, DXModel::XTemplate()> {
+struct XTemplateGrammar : public qi::grammar<Iterator, DXModel::XTemplate(), qi::space_type> {
     XTemplateGrammar() : XTemplateGrammar::base_type(expr) {
-        // TODO: Refactor by qi::lexeme
-        expr = qi::omit[*qi::space] >> qi::lit("template") >> *qi::lit(' ') >> +(qi::char_ - (qi::lit('{') | qi::space)) >> qi::omit[*qi::space] >> qi::lit('{') >> qi::omit[*qi::space]
+        expr = qi::no_skip[qi::lit("template") >> +qi::lit(' ') >> +(qi::char_ - (qi::lit('{') | qi::space)) >> qi::omit[*qi::space] >> qi::lit('{')]
             // PARSE UID
-            >> qi::lit('<') >> *qi::lit(' ') >> +(qi::char_ - (qi::lit('>') | qi::space)) >> *qi::lit(' ') >> qi::lit('>') >> qi::omit[*qi::space]
+            >> qi::lit('<') >> +(qi::char_ - qi::lit('>')) >> qi::lit('>')
             // PARSE PROPERTIES
             >> +prop >> qi::omit[*(qi::char_ - qi::lit('}'))] >> qi::lit('}');
 
         // PROPERTY RULE
-        prop = &qi::alpha >> -qi::lit("array") >> *qi::lit(' ') >> +(qi::char_ - qi::lit(' ')) >> +qi::lit(' ') >> +(
-            qi::char_ - (qi::space | qi::lit(';') | qi::lit('['))
-            ) >> *qi::lit(' ') >> ((qi::lit('[') >> qi::int_ >> qi::lit(']')) | qi::attr(1)) >> qi::omit[*(qi::char_ - qi::lit(';'))] >> qi::lit(';') >> qi::omit[*qi::space];
+        prop = &qi::alpha >> -qi::lit("array") >> qi::lexeme[+(qi::char_ - qi::lit(' '))] >> +(
+            qi::char_ - (qi::lit(';') | qi::lit('['))
+            ) >> ((qi::lit('[') >> qi::int_ >> qi::lit(']')) | qi::attr(1)) >> qi::omit[*(qi::char_ - qi::lit(';'))] >> qi::lit(';');
     }
 
-    qi::rule<Iterator, DXModel::XTemplate()> expr;
-    qi::rule<Iterator, DXModel::XProperty()> prop;
+    qi::rule<Iterator, DXModel::XTemplate(), qi::space_type> expr;
+    qi::rule<Iterator, DXModel::XProperty(), qi::space_type> prop;
 };
 
 template <typename Iterator>
