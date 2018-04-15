@@ -1,12 +1,13 @@
 #include "stdafx.h"
 #include "ForwardRenderer.h"
 
+#include "UserData/UserConfig.h"
 #include "WindowsApp.h"
 
 void ForwardRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene) {
     _scene.Refresh(cmd, scene);
 
-    Vector4D ClearColor { 0.7f, 0.7f, 0.7f, 1.0f };
+    Vector4D ClearColor = UserConfig::getInstance()->GetBGColor();
     cmd->ClearRenderTargetView(view->GetOMResource()->GetMainRTV().get(), ClearColor);
 
     view->SetRasterizerState(cmd, RasterizerState::Default);
