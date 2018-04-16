@@ -3,13 +3,13 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
-class Triangle : public MeshBase<Vertex3D>
+class Triangle : public Mesh<Vertex3D>
 {
 public:
     Triangle();
 };
 
-class TrianglePMD : public MeshBase<PMDVertex>
+class TrianglePMD : public Mesh<PMDVertex>
 {
 public:
     TrianglePMD();

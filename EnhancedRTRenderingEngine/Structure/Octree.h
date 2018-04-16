@@ -5,11 +5,11 @@
 struct OctreeBox;
 
 struct OctreeNode {
-    OctreeNode(IMeshObject* _object) :
+    OctreeNode(MeshObjectBase* _object) :
         object(_object),
         belongs(nullptr)
     {}
-    IMeshObject* object;
+    MeshObjectBase* object;
     OctreeBox* belongs;
 };
 

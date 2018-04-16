@@ -7,6 +7,19 @@
 
 using namespace DirectX;
 
+void MeshObjectBase::FindPrecisionReflectionSource(const std::vector<CubeReflectionCapture*>& captures) {
+    unsigned int precision = INT_MAX;
+
+    _hasReflectionSource = false;
+    for (auto&& capture : captures) {
+        if (capture->Contains(_transform.location) && capture->PrecisionSize() < precision) {
+            precision = capture->PrecisionSize();
+            _reflectionSourceId = capture->GetID();
+            _hasReflectionSource = true;
+        }
+    }
+}
+
 template<class VertType>
 AABB MeshObject<VertType>::GetAABB() {
     std::vector<Vector3D> _vertices(_mesh->GetVertexList().size());
@@ -88,8 +101,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
     return intersects;
 }
 
-template<class VertType>
-void MeshObject<VertType>::DirtyWorldMatrix() {
+void MeshObjectBase::DirtyWorldMatrix() {
     SceneObject::DirtyWorldMatrix();
     AABBDirty = true;
 }

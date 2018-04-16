@@ -18,7 +18,7 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
                 std::sinf(sita) * std::sinf(phi),
                 std::cosf(sita)));
 
-            auto result = RayTrace(factory, ray, 2);
+            auto result = RayTrace(factory, ray, 1);
 
             for (auto && seg : result) {
                 rayPaths.push_back(Line(seg, Color3B{ 255, 0, 0 }, 0.1f));

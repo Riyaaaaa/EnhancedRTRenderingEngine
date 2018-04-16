@@ -48,6 +48,51 @@ std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray, 
     return rayRoutes;
 }
 
+std::vector<Segment> RayTraceIf(SpaceOctree::OctreeFactoryBase* factory, Ray ray, std::function<bool(const Material&)> hit_program) {
+    std::vector<Segment> rayRoutes;
+
+    Material mat;
+    do {
+        auto clist = GetColliderMortonList(factory, ray);
+        bool hitted = false;
+        Hit hit;
+        hit.distance = FLT_MAX;
+        for (auto && idx : clist) {
+            auto box = factory->GetOctreeBox(idx).get();
+
+            auto it = box->nodes.begin();
+            while (it != box->nodes.end()) {
+                auto& node = *it;
+                it++;
+
+                std::vector<Hit> ret = node->object->IntersectPositions(ray);
+
+                if (ret.empty()) {
+                    continue;
+                }
+
+                Hit nearest = *std::min_element(ret.begin(), ret.end(), [](const Hit& lhs, const Hit& rhs) { return lhs.distance < rhs.distance; });
+
+                if (hit.distance > nearest.distance) {
+                    hit = nearest;
+                    mat = node->object->GetMaterials()[nearest.materialIdx];
+                    hitted = true;
+                }
+            }
+        }
+
+        if (!hitted) {
+            break;
+        }
+        rayRoutes.push_back(Segment(ray.pos, hit.pos));
+        ray.dir = hit.nextDir;
+        ray.pos = hit.pos;
+    } while (hit_program(mat));
+
+    rayRoutes.push_back(Segment(ray.pos, ray.dir * 100));
+    return rayRoutes;
+}
+
 std::set<uint32_t> GetColliderMortonList(SpaceOctree::OctreeFactoryBase* factory, Ray ray) {
     auto size = factory->GetMinBoxSize();
     auto rayForward = Vector3D(ray.dir.x * size.w, ray.dir.y * size.h, ray.dir.z * size.d);

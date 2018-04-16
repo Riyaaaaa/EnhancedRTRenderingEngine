@@ -10,21 +10,11 @@ struct Face {
     unsigned int materialIdx;
 };
 
-template<class VertType>
-class MeshBase
-{
+class MeshBase {
 public:
-    typedef VertType Type;
-
-    MeshBase() : _materialNum(1), _vertexCount(0), _primitiveType(VertexPrimitiveType::TRIANGLELIST){};
+    MeshBase() : _materialNum(1), _vertexCount(0), _primitiveType(VertexPrimitiveType::TRIANGLELIST) {};
     virtual ~MeshBase() {};
 
-    void AddVertex(const VertType& vert) {
-        _vertexList.push_back(vert);
-        _vertexCount++;
-    }
-
-    const std::vector<VertType>& GetVertexList() const { return _vertexList; }
     const std::vector<uint16_t>& GetIndexList() const { return _indexList; }
 
     unsigned int GetVertexCount() const { return _vertexCount; }
@@ -40,10 +30,25 @@ protected:
     int _materialNum;
     // face index / material index
     std::vector<Face> _drawFacesMap;
-    std::vector<VertType> _vertexList;
     std::vector<uint16_t> _indexList;
     unsigned int _vertexCount;
 
     VertexPrimitiveType _primitiveType;
+};
+
+template<class VertType>
+class Mesh : public MeshBase {
+public:
+    using MeshBase::MeshBase;
+    typedef VertType Type;
+    virtual ~Mesh() {};
+
+    void AddVertex(const VertType& vert) {
+        _vertexList.push_back(vert);
+        _vertexCount++;
+    }
+    const std::vector<VertType>& GetVertexList() const { return _vertexList; }
+
+    std::vector<VertType> _vertexList;
 };
 

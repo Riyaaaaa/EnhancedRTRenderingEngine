@@ -29,7 +29,7 @@ namespace SpaceOctree {
         virtual const std::unique_ptr<OctreeBox>& GetOctreeBox(uint32_t index) = 0;
         virtual void IterateEnableBox(std::function<void(const std::pair<uint32_t, OctreeBox*>&)> callback) const = 0;
 
-        bool Register(IMeshObject* object)
+        bool Register(MeshObjectBase* object)
         {
             auto aabb = object->GetAABB();
             uint32_t Elem = CalculateMortonNumber(aabb);
