@@ -153,6 +153,11 @@ struct _Vector<T, 3> {
         return *this;
     }
 
+    T& operator[](unsigned int idx) {
+        T* ptr = &x;
+        return *(ptr + idx);
+    }
+
     float Length() const {
         return std::sqrtf(std::powf(x, 2) + std::powf(y, 2) + std::powf(z, 2));
     }

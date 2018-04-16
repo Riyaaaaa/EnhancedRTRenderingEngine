@@ -166,6 +166,7 @@
     <ClInclude Include="Common\Defines.h" />
     <ClInclude Include="Algorithms\CompressTexture.h" />
     <ClInclude Include="Constant\GICommandParameter.h" />
+    <ClInclude Include="Constant\GlobalEnumrations.h" />
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="Constant\PrecomputedConstants.h" />
@@ -177,6 +178,7 @@
     <ClInclude Include="GUI\NuklearInputMediator.h" />
     <ClInclude Include="GUI\UIWidgets.h" />
     <ClInclude Include="GUI\NuklearFormatUtils.h" />
+    <ClInclude Include="Algorithms\KDimensionalTree.h" />
     <ClInclude Include="Render\HUDCanvasRenderer.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11Resources.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11ImmediateCommands.h" />
@@ -207,6 +209,7 @@
     <ClInclude Include="Scene\StaticMeshObject.h" />
     <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
     <ClInclude Include="Structure\Aliases.h" />
+    <ClInclude Include="Structure\KDTree.h" />
     <ClInclude Include="Structure\Octree.h" />
     <ClInclude Include="Structure\Primitive.h" />
     <ClInclude Include="Structure\RaytraceStructures.h" />
@@ -403,6 +406,7 @@
     <ClCompile Include="GUI\NuklearWrapper.cpp" />
     <ClCompile Include="GUI\NuklearInputMediator.cpp" />
     <ClCompile Include="GUI\NuklearFormatUtils.cpp" />
+    <ClCompile Include="Algorithms\KDimensionalTree.cpp" />
     <ClCompile Include="Render\HUDCanvasRenderer.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11Resources.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11ImmediateCommands.cpp" />
