@@ -13,7 +13,8 @@ struct Hit {
     Vector3D pos;
     Vector3D nextDir;
     float distance;
+    unsigned int materialIdx;
     Hit() = default;
-    Hit(const Vector3D& p, const Vector3D& dir, float d) : pos(p), nextDir(dir), distance(d) {}
+    Hit(const Vector3D& p, const Vector3D& dir, float d, unsigned int matIdx) : pos(p), nextDir(dir), distance(d), materialIdx(matIdx) {}
 };
 

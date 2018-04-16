@@ -40,10 +40,6 @@ void Scene::CreateTestScene() {
     
     auto model2 = ResourceLoader::LoadDXModel("sphere");
     auto model = ResourceLoader::LoadDXModel("coin");
-    auto model3 = ResourceLoader::LoadPMDModel("nolicensed3");
-
-    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model3()));
-    viewObjects.back().SetLocation(Vector3D{ 5.0f, 1.0f, -2.0f });
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
     viewObjects.back().SetLocation(Vector3D{ -2.0f, 1.0f, -2.0f });
