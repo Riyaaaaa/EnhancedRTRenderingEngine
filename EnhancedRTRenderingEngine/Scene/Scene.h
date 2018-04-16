@@ -20,7 +20,8 @@ public:
     Scene();
     ~Scene();
 
-    void CreateTestScene();
+    void CreateSkyTestScene();
+    void CreateGITestScene();
 
     bool Dirty() { return lightDirty | meshDirty; }
     bool LightDirty() { return lightDirty; }

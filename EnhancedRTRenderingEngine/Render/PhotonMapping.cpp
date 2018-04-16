@@ -6,6 +6,7 @@
 void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scene) {
 
     auto& pLights = scene->GetPointLights();
+    std::vector<Vector3D> photon_caches;
 
     for (auto&& pLight : pLights) {
         auto pos = pLight.GetPoint();
@@ -18,7 +19,25 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
                 std::sinf(sita) * std::sinf(phi),
                 std::cosf(sita)));
 
-            auto result = RayTrace(factory, ray, 1);
+            bool reach_diffuse_surface = false;;
+
+            auto result = RayTraceIf(factory, ray, [&](const Material& mat, int trace_count) {
+                float rand = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 1.0f});
+                if (rand > mat.metallic) {
+                    reach_diffuse_surface = true;
+                    return false;
+                }
+
+                if (trace_count < 3) {
+                    return true;
+                }
+
+                return false;
+            });
+
+            if (!result.empty() && reach_diffuse_surface) {
+                photon_caches.push_back(result.back().epos);
+            }
 
             for (auto && seg : result) {
                 rayPaths.push_back(Line(seg, Color3B{ 255, 0, 0 }, 0.1f));

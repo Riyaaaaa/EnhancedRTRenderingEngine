@@ -26,7 +26,7 @@ Scene::Scene() {
     
 }
 
-void Scene::CreateTestScene() {
+void Scene::CreateSkyTestScene() {
     auto camera = CameraObject();
     camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 1.0f, 1000.0f);
     cameraObjects.push_back(camera);
@@ -52,7 +52,7 @@ void Scene::CreateTestScene() {
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
     viewObjects.back().SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
-    viewObjects.back().SetScale(Vector3D{ 10.0f, 10.0f, 10.0f });
+    viewObjects.back().SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
 
     viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
     viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
@@ -72,6 +72,37 @@ void Scene::CreateTestScene() {
     pointLights[0].SetPoint(Vector3D{ 2.0, 3.0f, 0.0f });
 
     captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
+    mainCameraIdx = 0;
+
+    meshDirty = true;
+    lightDirty = true;
+}
+
+void Scene::CreateGITestScene() {
+    auto camera = CameraObject();
+    camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 1.0f, 1000.0f);
+    cameraObjects.push_back(camera);
+    _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
+
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.2f, 0.0f });
+    std::vector<Material> materials;
+    materials.emplace_back(std::move(material));
+
+    auto model2 = ResourceLoader::LoadDXModel("sphere");
+    auto model3 = ResourceLoader::LoadDXModel("reversed_box");
+
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model3()));
+    viewObjects.back().SetLocation(Vector3D{ 1.0f, 15.0f, 5.0f });
+    viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
+
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
+    viewObjects.back().SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
+    viewObjects.back().SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
+
+    pointLights.emplace_back(PointLight{});
+    pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+    pointLights[0].SetPoint(Vector3D{ 2.0, 3.0f, 0.0f });
+
     mainCameraIdx = 0;
 
     meshDirty = true;

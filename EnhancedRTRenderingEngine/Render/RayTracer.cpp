@@ -48,10 +48,11 @@ std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray, 
     return rayRoutes;
 }
 
-std::vector<Segment> RayTraceIf(SpaceOctree::OctreeFactoryBase* factory, Ray ray, std::function<bool(const Material&)> hit_program) {
+std::vector<Segment> RayTraceIf(SpaceOctree::OctreeFactoryBase* factory, Ray ray, std::function<bool(const Material&, int)> hit_program) {
     std::vector<Segment> rayRoutes;
 
     Material mat;
+    int trace_count = 0;
     do {
         auto clist = GetColliderMortonList(factory, ray);
         bool hitted = false;
@@ -87,9 +88,9 @@ std::vector<Segment> RayTraceIf(SpaceOctree::OctreeFactoryBase* factory, Ray ray
         rayRoutes.push_back(Segment(ray.pos, hit.pos));
         ray.dir = hit.nextDir;
         ray.pos = hit.pos;
-    } while (hit_program(mat));
+        trace_count++;
+    } while (hit_program(mat, trace_count));
 
-    rayRoutes.push_back(Segment(ray.pos, ray.dir * 100));
     return rayRoutes;
 }
 

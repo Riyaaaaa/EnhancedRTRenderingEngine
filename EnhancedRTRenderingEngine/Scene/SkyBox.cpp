@@ -8,7 +8,7 @@
 
 SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
 {
-    auto box = ResourceLoader::LoadDXModel("SkyBox");
+    auto box = ResourceLoader::LoadDXModel("reversed_box");
     _mesh = std::make_shared<Mesh3DModel>(box());
     int i = 0;
     std::vector<Texture2D> textures(6);
