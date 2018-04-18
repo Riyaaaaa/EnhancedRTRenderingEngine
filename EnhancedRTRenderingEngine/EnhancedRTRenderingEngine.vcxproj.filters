@@ -717,6 +717,9 @@
     <ClInclude Include="Constant\GlobalEnumrations.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Mesh\MeshExpander.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -1086,6 +1089,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Algorithms\KDimensionalTree.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh\MeshExpander.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

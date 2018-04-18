@@ -179,6 +179,7 @@
     <ClInclude Include="GUI\UIWidgets.h" />
     <ClInclude Include="GUI\NuklearFormatUtils.h" />
     <ClInclude Include="Algorithms\KDimensionalTree.h" />
+    <ClInclude Include="Mesh\MeshExpander.h" />
     <ClInclude Include="Render\HUDCanvasRenderer.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11Resources.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11ImmediateCommands.h" />
@@ -407,6 +408,7 @@
     <ClCompile Include="GUI\NuklearInputMediator.cpp" />
     <ClCompile Include="GUI\NuklearFormatUtils.cpp" />
     <ClCompile Include="Algorithms\KDimensionalTree.cpp" />
+    <ClCompile Include="Mesh\MeshExpander.cpp" />
     <ClCompile Include="Render\HUDCanvasRenderer.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11Resources.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11ImmediateCommands.cpp" />

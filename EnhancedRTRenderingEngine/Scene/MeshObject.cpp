@@ -67,9 +67,16 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
             Vector3D v2;
             Vector3D v0;
 
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v0.x)), _vertexTransformedCache[indices[j]]);
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v1.x)), _vertexTransformedCache[indices[j + 1]] - _vertexTransformedCache[indices[j]]);
-            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[indices[j + 2]] - _vertexTransformedCache[indices[j]]);
+            if (indices.empty()) {
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v0.x)), _vertexTransformedCache[j]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v1.x)), _vertexTransformedCache[j + 1] - _vertexTransformedCache[j]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[j + 2] - _vertexTransformedCache[j]);
+            }
+            else {
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v0.x)), _vertexTransformedCache[indices[j]]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v1.x)), _vertexTransformedCache[indices[j + 1]] - _vertexTransformedCache[indices[j]]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[indices[j + 2]] - _vertexTransformedCache[indices[j]]);
+            }
 
             float det = MathUtils::Determinant3x3(v1, v2, -ray.dir);
 
