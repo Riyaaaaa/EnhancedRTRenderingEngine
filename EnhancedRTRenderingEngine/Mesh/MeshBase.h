@@ -4,6 +4,8 @@
 
 #include "Constant/RenderConfig.h"
 
+#include "Structure/Primitive.h"
+
 struct Face {
     unsigned int faceIdx;
     unsigned int faceNumVerts;
@@ -25,6 +27,8 @@ public:
 
     void SetPrimitiveType(VertexPrimitiveType type) { _primitiveType = type; }
     VertexPrimitiveType GetPrimitiveType() const { return _primitiveType; }
+
+    virtual std::vector<Triangle> GetTriangles() = 0;
 
 protected:
     int _materialNum;
@@ -48,6 +52,24 @@ public:
         _vertexCount++;
     }
     const std::vector<VertType>& GetVertexList() const { return _vertexList; }
+
+    std::vector<Triangle> GetTriangles() override {
+        std::vector<Triangle> triangles(GetVertexCount() / 3);
+        for (int i = 0; i < GetVertexCount(); i+=3) {
+            if (HasIndexList()) {
+                triangles[i / 3].v0 = _vertexList[_indexList[i]].pos;
+                triangles[i / 3].v1 = _vertexList[_indexList[i + 1]].pos;
+                triangles[i / 3].v2 = _vertexList[_indexList[i + 2]].pos;
+            }
+            else {
+                triangles[i / 3].v0 = _vertexList[i].pos;
+                triangles[i / 3].v1 = _vertexList[i + 1].pos;
+                triangles[i / 3].v2 = _vertexList[i + 2].pos;
+            }
+        }
+
+        return triangles;
+    }
 
     std::vector<VertType> _vertexList;
 };

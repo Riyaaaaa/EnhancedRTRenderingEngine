@@ -54,7 +54,7 @@ void Scene::CreateSkyTestScene() {
     viewObjects.back().SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
     viewObjects.back().SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
 
-    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
+    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::SquarePMD>());
     viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
     viewObjects.back().SetLocation(Vector3D{ 0.0f, 11.0f, -0.4f });

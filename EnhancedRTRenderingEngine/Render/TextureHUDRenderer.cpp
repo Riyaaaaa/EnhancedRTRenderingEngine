@@ -14,7 +14,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     Size2D viewportSize = Size2D{ size.w / view->GetRenderSize().w, size.h / view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / view->GetRenderSize().w - 0.5f, pos.y / view->GetRenderSize().h - 0.5f } *2.0f;
 
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
+    auto mesh = SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(viewportSize);
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
@@ -36,7 +36,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     Size2D viewportSize = Size2D{ size.w / view->GetRenderSize().w, size.h / view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / view->GetRenderSize().w - 0.5f, pos.y / view->GetRenderSize().h - 0.5f } *2.0f;
 
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(viewportSize);
+    auto mesh = SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(viewportSize);
     mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());

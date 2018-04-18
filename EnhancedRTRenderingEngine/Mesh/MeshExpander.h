@@ -2,6 +2,7 @@
 
 #include "Structure/Vector.h"
 #include "Structure/Structure.h"
+#include "Structure/Primitive.h"
 
 #include "MeshBase.h"
 
