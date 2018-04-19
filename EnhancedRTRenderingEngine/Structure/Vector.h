@@ -2,12 +2,12 @@
 
 #include <cmath>
 
-template <class T, std::size_t dim>
+template <class T, unsigned int dim>
 struct _Matrix;
 
 using Matrix = _Matrix<float, 4>;
 
-template <class T, std::size_t dim>
+template <class T, unsigned int  dim>
 struct _Vector {
     float operator[](unsigned int idx) const {
         return _elems[idx];
@@ -19,7 +19,7 @@ private:
     T _elems[dim];
 };
 
-template<std::size_t dim>
+template<unsigned int dim>
 using Vector = _Vector<float, dim>;
 
 template<class T>
@@ -158,6 +158,11 @@ struct _Vector<T, 3> {
         return *(ptr + idx);
     }
 
+    const T& operator[](unsigned int idx) const {
+        const T* ptr = &x;
+        return *(ptr + idx);
+    }
+
     float Length() const {
         return std::sqrtf(std::powf(x, 2) + std::powf(y, 2) + std::powf(z, 2));
     }
@@ -234,7 +239,7 @@ using Vector4D = _Vector<float, 4>;
 template<class T>
 using _Vector4D = _Vector<T, 4>;
 
-template <class T, std::size_t dim>
+template <class T, unsigned int dim>
 struct _Matrix {
     const _Vector<T, dim>& operator[](unsigned int idx) const {
         return _elems[idx];

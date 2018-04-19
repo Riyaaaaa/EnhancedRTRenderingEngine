@@ -453,12 +453,6 @@
     <ClInclude Include="Render\SpaceOctreeVisualizer.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="Render\PhotonMapping.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
-    <ClInclude Include="Render\RayTracer.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="Structure\Primitive.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -723,6 +717,18 @@
     <ClInclude Include="Mesh\StaticLightBuildData.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Scene\Lighting\CollectionPhotonVolume.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\LightMapBaker.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\RayTracer.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="Lighting\PhotonMapping.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="stdafx.cpp">
@@ -852,12 +858,6 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Algorithms\SpaceSplits.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\PhotonMapping.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
-    <ClCompile Include="Render\RayTracer.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="GraphicsInterface\GIRenderView.cpp">
@@ -1098,6 +1098,18 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Mesh\StaticLightBuildData.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\Lighting\CollectionPhotonVolume.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lighting\LightMapBaker.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lighting\RayTracer.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="Lighting\PhotonMapping.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

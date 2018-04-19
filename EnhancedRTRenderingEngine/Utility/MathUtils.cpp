@@ -30,3 +30,7 @@ float MathUtils::Determinant3x3(const Vector3D& a1, const Vector3D& a2, const Ve
 Vector3D MathUtils::Reflect(const Vector3D& v, const Vector3D& nor) {
     return v + nor * 2 * Dot(-v, nor);
 }
+
+float MathUtils::DistanceSq(const Vector3D& v1, const Vector3D& v2) {
+    return std::pow((v2.x - v1.x), 2) + std::pow((v2.y - v1.y), 2) + std::pow((v2.z - v1.z), 2);
+}

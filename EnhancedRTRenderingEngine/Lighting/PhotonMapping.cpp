@@ -2,6 +2,7 @@
 #include "PhotonMapping.h"
 #include "Common/Common.h"
 #include "SpiralLibrary/Random/Random.hpp"
+#include "Mesh/MeshExpander.h"
 
 void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scene) {
 

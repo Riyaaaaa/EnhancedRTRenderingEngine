@@ -19,6 +19,10 @@ public:
         return _map[y * _size + x];
     }
 
+    ExpandedTexel& operator()(unsigned int idx) {
+        return _map[idx];
+    }
+
 protected:
     unsigned int _size;
     std::vector<ExpandedTexel> _map;

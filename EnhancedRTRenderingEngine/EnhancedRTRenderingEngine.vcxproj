@@ -163,6 +163,8 @@
   <ItemGroup>
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
+    <ClInclude Include="Lighting\LightMapBaker.h" />
+    <ClInclude Include="Scene\Lighting\CollectionPhotonVolume.h" />
     <ClInclude Include="Common\Defines.h" />
     <ClInclude Include="Algorithms\CompressTexture.h" />
     <ClInclude Include="Constant\GICommandParameter.h" />
@@ -195,8 +197,8 @@
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
     <ClInclude Include="Render\DrawMesh.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
-    <ClInclude Include="Render\RayTracer.h" />
-    <ClInclude Include="Render\PhotonMapping.h" />
+    <ClInclude Include="Lighting\RayTracer.h" />
+    <ClInclude Include="Lighting\PhotonMapping.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITextureProxy.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
@@ -402,6 +404,8 @@
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="Algorithms\CompressTexture.cpp" />
+    <ClCompile Include="Lighting\LightMapBaker.cpp" />
+    <ClCompile Include="Scene\Lighting\CollectionPhotonVolume.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
     <ClCompile Include="GUI\GUIFactory.cpp" />
     <ClCompile Include="GUI\HUDCanvas.cpp" />
@@ -424,8 +428,8 @@
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
     <ClCompile Include="Render\DrawMesh.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
-    <ClCompile Include="Render\RayTracer.cpp" />
-    <ClCompile Include="Render\PhotonMapping.cpp" />
+    <ClCompile Include="Lighting\RayTracer.cpp" />
+    <ClCompile Include="Lighting\PhotonMapping.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="Render\TextureHUDRenderer.cpp" />
