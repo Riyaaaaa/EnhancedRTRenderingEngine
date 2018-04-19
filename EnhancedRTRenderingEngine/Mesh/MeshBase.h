@@ -51,6 +51,16 @@ public:
         _vertexList.push_back(vert);
         _vertexCount++;
     }
+
+    VertType& GetVertex(unsigned int idx) {
+        if (HasIndexList()) {
+            return _vertexList[_indexList[idx]];
+        }
+        else {
+            return _vertexList[idx];
+        }
+    }
+
     const std::vector<VertType>& GetVertexList() const { return _vertexList; }
 
     std::vector<Triangle> GetTriangles() override {

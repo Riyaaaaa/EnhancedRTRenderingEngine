@@ -5,25 +5,7 @@
 #include "Structure/Primitive.h"
 
 #include "MeshBase.h"
-
-struct ExpandedTexel {
-    Vector4D worldPosition;
-};
-
-class ExpandMap {
-public:
-    ExpandMap(unsigned int size) : 
-        _size(size), 
-        _map(size * size) {}
-
-    ExpandedTexel& operator()(unsigned int x, unsigned int y) {
-        return _map[y * _size + x];
-    }
-
-protected:
-    unsigned int _size;
-    std::vector<ExpandedTexel> _map;
-};
+#include "StaticLightBuildData.h"
 
 class MeshExpander
 {

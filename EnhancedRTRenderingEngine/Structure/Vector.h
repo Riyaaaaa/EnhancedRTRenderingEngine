@@ -187,6 +187,20 @@ struct _Vector<T, 4> {
         return *(ptr + idx);
     }
 
+    template<class U>
+    _Vector operator+(const _Vector<U, 4> &v) const {
+        return _Vector{
+            static_cast<T>(this->x + v.x),
+            static_cast<T>(this->y + v.y),
+            static_cast<T>(this->z + v.z),
+            static_cast<T>(this->w + v.w)
+        };
+    }
+
+    _Vector operator*(float s) const {
+        return _Vector(this->x * s, this->y * s, this->z * s, this->w * s);
+    }
+
     _Vector operator*(const Matrix& mat) {
         _Vector ret(0,0,0,0);
 

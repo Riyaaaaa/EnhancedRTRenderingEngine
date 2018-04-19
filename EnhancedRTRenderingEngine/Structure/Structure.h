@@ -132,6 +132,14 @@ struct PMDVertex {
     Vector4D col;
 };
 
+struct LightVertex {
+    Vector3D pos;    //x-y-z
+    Vector2D tex;    //x-y
+    Vector3D normal;
+    Vector4D col;
+    Vector2D lightTex;
+};
+
 struct Transform {
     Vector3D location;
     Vector3D rotation;

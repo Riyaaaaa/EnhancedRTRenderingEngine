@@ -4,6 +4,7 @@
 
 namespace MathUtils
 {
+    float Dot(const Vector2D& v1, const Vector2D& v2);
     float Dot(const Vector3D& v1, const Vector3D& v2);
     Vector3D Cross(const Vector3D& v1, const Vector3D& v2);
     Vector3D Normalize(const Vector3D& v);

@@ -209,6 +209,7 @@
     <ClInclude Include="Shader\ShaderFactory.h" />
     <ClInclude Include="Scene\StaticMeshObject.h" />
     <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
+    <ClInclude Include="Mesh\StaticLightBuildData.h" />
     <ClInclude Include="Structure\Aliases.h" />
     <ClInclude Include="Structure\KDTree.h" />
     <ClInclude Include="Structure\Octree.h" />
@@ -435,6 +436,7 @@
     <ClCompile Include="Shader\ShaderFactory.cpp" />
     <ClCompile Include="Scene\StaticMeshObject.cpp" />
     <ClCompile Include="Render\SpaceOctreeVisualizer.cpp" />
+    <ClCompile Include="Mesh\StaticLightBuildData.cpp" />
     <ClCompile Include="ThirdParty\src\nuklear\nuklear_buffer.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
