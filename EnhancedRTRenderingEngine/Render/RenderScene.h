@@ -2,6 +2,7 @@
 
 #include <unordered_map>
 
+#include "Algorithms/SpaceOctree.h"
 #include "GraphicsInterface/GITextureProxy.h"
 #include "Scene/Scene.h"
 
@@ -11,6 +12,8 @@ class RenderScene
 {
 public:
     ~RenderScene();
+
+    void Preprocess(GIImmediateCommands* cmd);
 
     void Refresh(GIImmediateCommands* cmd, Scene* scene);
     Scene* GetSourceScene() { return _scene; }
@@ -37,5 +40,9 @@ protected:
 
     std::vector<DrawElement> _drawList;
     std::unordered_map<std::size_t, DrawMesh> _staticDrawMeshes;
+
+public: // fixme
+    std::unique_ptr<SpaceOctree::HashedOctreeFactory> _staticMeshesOctree;
+    GITextureProxy _lightMap;
 };
 

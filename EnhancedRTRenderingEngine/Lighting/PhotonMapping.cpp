@@ -48,4 +48,5 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
     }
 
     kdtree.build(photon_caches);
+    photons = photon_caches;
 }

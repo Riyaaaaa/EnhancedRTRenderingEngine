@@ -33,7 +33,7 @@ public:
     DirectX::XMMATRIX GetPerspectiveProjection();
     DirectX::XMMATRIX GetViewProjection();
 
-    std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
+    std::vector<MeshObject<VertType>*>& GetViewObjects() { return viewObjects; }
     std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
 
     std::vector<PointLight>& GetPointLights() { return pointLights; }
@@ -62,7 +62,7 @@ private:
 
     AABB _precomputedAABB;
 
-    std::vector<MeshObject<VertType>> viewObjects;
+    std::vector<MeshObject<VertType>*> viewObjects;
     std::vector<CameraObject> cameraObjects;
     std::vector<CubeReflectionCapture*> captureObjects;
     std::vector<DirectionalLight> directionalLights;

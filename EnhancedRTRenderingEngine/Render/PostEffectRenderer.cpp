@@ -37,18 +37,18 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };
     auto mesh = SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(Size2D(1.0f, 1.0f));
-    mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
+    mesh->SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    DrawMesh element(cmd, &mesh);
+    DrawMesh element(cmd, mesh);
     ObjectBuffer buffer;
-    buffer.World = XMMatrixTranspose(mesh.GetMatrix());
+    buffer.World = XMMatrixTranspose(mesh->GetMatrix());
 
     desc.byteWidth = sizeof(buffer);
     desc.stride = sizeof(float);
     auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
     element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
 
-    DrawElement face(&element, static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount()), 0);
+    DrawElement face(&element, static_cast<unsigned int>(mesh->GetMesh()->GetVertexCount()), 0);
     face.SetShaders(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
     face.Draw(cmd);
 }

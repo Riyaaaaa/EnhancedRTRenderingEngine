@@ -36,18 +36,18 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
     return hConstantBuffer;
 }
 
-MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const PMDModel& model) {
+MeshObject<typename Mesh3DModel::Type>* SceneUtils::CreateMesh3DModelObject(const PMDModel& model) {
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
-    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D);
-    mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
+    MeshObject<typename Mesh3DModel::Type>* mesh = new MeshObject<typename Mesh3DModel::Type>(mesh3D);
+    mesh->SetMaterial(mesh3D->CreatePMDDefaultMaterials());
     
     return mesh;
 }
 
-MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
+MeshObject<typename Mesh3DModel::Type>* SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
-    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D);
-    mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
+    MeshObject<typename Mesh3DModel::Type>* mesh = new MeshObject<typename Mesh3DModel::Type>(mesh3D);
+    mesh->SetMaterial(mesh3D->CreatePMDDefaultMaterials());
 
     return mesh;
 }

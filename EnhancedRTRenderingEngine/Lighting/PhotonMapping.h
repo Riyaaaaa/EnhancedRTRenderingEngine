@@ -11,6 +11,7 @@ public:
     void Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scene);
 
     std::vector<Line> rayPaths;
+    std::vector<Vector3D> photons; //todo: change photon class
     KDimensionalTree kdtree;
 };
 

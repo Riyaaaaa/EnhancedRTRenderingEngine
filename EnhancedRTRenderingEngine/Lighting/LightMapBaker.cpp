@@ -6,7 +6,7 @@
 #include "Structure/TextureBuffer.h"
 #include "Utility/MathUtils.h"
 
-void LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshBase*>& bake_target, const KDimensionalTree& photonKdTree, const std::vector<Vector3D>& photons) {
+GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshBase*>& bake_target, const KDimensionalTree& photonKdTree, const std::vector<Vector3D>& photons) {
     unsigned int mesh_nums = bake_target.size();
     unsigned int laid_nums = LIGHT_MAP_SIZE * LIGHT_MAP_SIZE / (mesh_nums * mesh_nums);
 
@@ -52,5 +52,7 @@ void LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshBase*>&
     TextureParam param;
     param.width = LIGHT_MAP_SIZE;
     param.height = LIGHT_MAP_SIZE;
-    lightMap = MakeRef(cmd->CreateTextureProxy(param, Texture2D(LIGHT_MAP_SIZE, LIGHT_MAP_SIZE, 4, buf.Get(), buf.Size())));
+    GITextureProxy lightMap = MakeRef(cmd->CreateTextureProxy(param, Texture2D(LIGHT_MAP_SIZE, LIGHT_MAP_SIZE, 4, buf.Get(), buf.Size())));
+
+    return lightMap;
 }

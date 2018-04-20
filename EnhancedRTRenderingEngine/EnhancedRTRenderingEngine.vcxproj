@@ -164,6 +164,7 @@
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
     <ClInclude Include="Lighting\LightMapBaker.h" />
+    <ClInclude Include="Lighting\PrecomputeLightingSystem.h" />
     <ClInclude Include="Scene\Lighting\CollectionPhotonVolume.h" />
     <ClInclude Include="Common\Defines.h" />
     <ClInclude Include="Algorithms\CompressTexture.h" />
@@ -406,6 +407,7 @@
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="Algorithms\CompressTexture.cpp" />
     <ClCompile Include="Lighting\LightMapBaker.cpp" />
+    <ClCompile Include="Lighting\PrecomputeLightingSystem.cpp" />
     <ClCompile Include="Scene\Lighting\CollectionPhotonVolume.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
     <ClCompile Include="GUI\GUIFactory.cpp" />
