@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "RayTracer.h"
+#include "Lighting/RayTracer.h"
 
 #include "Structure/Primitive.h"
 #include "Constant/PrecomputedConstants.h"

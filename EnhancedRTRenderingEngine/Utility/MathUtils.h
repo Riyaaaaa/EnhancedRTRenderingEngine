@@ -13,6 +13,7 @@ namespace MathUtils
         for (std::size_t i = 0; i < Dim; i++) {
             dot += v1[i] * v2[i];
         }
+        return dot;
     }
 
     Vector3D Cross(const Vector3D& v1, const Vector3D& v2);

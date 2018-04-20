@@ -23,15 +23,25 @@ public:
         return _map[idx];
     }
 
+    void AddTriangle(_Vector2D<unsigned int> v0, _Vector2D<unsigned int> v1, _Vector2D<unsigned int> v2) {
+        _triangleBaseIndices.push_back(v0);
+        _triangleBaseIndices.push_back(v1);
+        _triangleBaseIndices.push_back(v2);
+    }
+
+    const std::vector<_Vector2D<unsigned int>>& TriangleBaseIndices() const {
+        return _triangleBaseIndices;
+    }
+
 protected:
     unsigned int _size;
+    std::vector<_Vector2D<unsigned int>> _triangleBaseIndices;
     std::vector<ExpandedTexel> _map;
 };
 
-class StaticLightBuildData
+struct StaticLightBuildData
 {
 public:
-    ExpandMap _mappedMeshMap;
-    std::vector<LightVertex> _lightVerts;
+    std::vector<Vector2D> lightMapUVs;
 };
 

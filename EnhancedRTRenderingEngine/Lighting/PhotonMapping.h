@@ -1,6 +1,6 @@
 #pragma once
 
-#include "RayTracer.h"
+#include "Lighting/RayTracer.h"
 
 #include "Algorithms/KDimensionalTree.h"
 #include "Scene/Scene.h"

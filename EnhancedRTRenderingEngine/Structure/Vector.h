@@ -98,6 +98,16 @@ struct _Vector<T, 2> {
         this->y /= s;
         return *this;
     }
+
+    T& operator[](unsigned int idx) {
+        T* ptr = &x;
+        return *(ptr + idx);
+    }
+
+    const T& operator[](unsigned int idx) const {
+        const T* ptr = &x;
+        return *(ptr + idx);
+    }
 };
 
 using Vector2D = _Vector<float, 2>;
@@ -226,6 +236,16 @@ struct _Vector<T, 4> {
         }
 
         return ret;
+    }
+
+    template<unsigned int Dim>
+    _Vector<T, Dim> Slice() {
+        static_assert(Dim < 4, "Sliced dimension is invalid value");
+        _Vector<T, Dim> v;
+        for (unsigned int i = 0; i < Dim; i++) {
+            v[i] = (*this)[i];
+        }
+        return v;
     }
 
     constexpr _Vector(T x, T y, T z, T w = 1) : x(x), y(y), z(z), w(w) {}

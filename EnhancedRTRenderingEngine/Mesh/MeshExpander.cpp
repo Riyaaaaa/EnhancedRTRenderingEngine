@@ -71,6 +71,7 @@ ExpandMap MeshExpander::Build(MeshBase* mesh) {
         };
 
         RasterizeTriangle(map, mappedVertPositions, tri, i);
+        map.AddTriangle(mappedVertPositions[0], mappedVertPositions[1], mappedVertPositions[2]);
     }
 
     return map;

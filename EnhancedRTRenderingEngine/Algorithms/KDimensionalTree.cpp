@@ -22,7 +22,7 @@ std::vector<std::pair<KDNode*, float>> KDimensionalTree::FindNeighborNNodes(Vect
 
 int KDimensionalTree::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, std::vector<std::pair<KDNode*, float>>& nodes) const {
     if (!node) {
-        return;
+        return 0;
     }
 
     int add_nums = 0;

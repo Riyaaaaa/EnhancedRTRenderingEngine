@@ -20,7 +20,7 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
                 std::sinf(sita) * std::sinf(phi),
                 std::cosf(sita)));
 
-            bool reach_diffuse_surface = false;;
+            bool reach_diffuse_surface = false;
 
             auto result = RayTraceIf(factory, ray, [&](const Material& mat, int trace_count) {
                 float rand = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 1.0f});
