@@ -10,7 +10,7 @@
 class LightMapBaker
 {
 public:
-    static constexpr unsigned int LIGHT_MAP_SIZE = 2048;
+    static constexpr unsigned int LIGHT_MAP_SIZE = 256;
     GITextureProxy Bake(GIImmediateCommands* cmd,
         const std::vector<MeshBase*>& bake_target, 
         const KDimensionalTree& photonKdTree,

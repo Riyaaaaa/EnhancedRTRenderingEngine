@@ -16,12 +16,12 @@ MeshExpander::MeshExpander(unsigned int size, unsigned int margin) :
 
 }
 
-static void RasterizeTriangle(ExpandMap& map, const std::array<_Vector2D<unsigned int>, 3>& rasterPositions, Triangle& tri, int idx) {
-    float a = (rasterPositions[2].y - rasterPositions[1].y) / (rasterPositions[2].x - rasterPositions[1].x);
-    float b = rasterPositions[0].y - a * rasterPositions[0].x;
+static void RasterizeTriangle(ExpandMap& map, const std::array<_Vector2D<long>, 3>& rasterPositions, Triangle& tri, int idx) {
+    float a = (rasterPositions[2].y - rasterPositions[1].y) / (float)(rasterPositions[2].x - rasterPositions[1].x);
+    float b = rasterPositions[1].y - a * rasterPositions[1].x;
 
-    _Vector2D<unsigned int> ac = rasterPositions[2] - rasterPositions[0];
-    _Vector2D<unsigned int> ab = rasterPositions[1] - rasterPositions[0];
+    _Vector2D<long> ac = rasterPositions[2] - rasterPositions[0];
+    _Vector2D<long> ab = rasterPositions[1] - rasterPositions[0];
 
     Vector4D v2v0 = tri.v2 - tri.v0;
     Vector4D v1v0 = tri.v1 - tri.v0;
@@ -31,10 +31,10 @@ static void RasterizeTriangle(ExpandMap& map, const std::array<_Vector2D<unsigne
     float dot11 = Dot(ab, ab);
     float invDenom = 1 / (dot00 * dot11 - dot01 * dot01);
 
-    for (unsigned int y = rasterPositions[0].y; y < rasterPositions[2].y; y++) {
-        for (unsigned int x = rasterPositions[0].x; x < (y - b) / a; x++) {
+    for (long y = rasterPositions[0].y; y < rasterPositions[2].y; y++) {
+        for (long x = rasterPositions[0].x; x < (y - b) / a; x++) {
             
-            _Vector2D<unsigned int> ap = _Vector2D<unsigned int>(x, y) - rasterPositions[0];
+            _Vector2D<long> ap = _Vector2D<long>(x, y) - rasterPositions[0];
             float dot02 = Dot(ac, ap);
             float dot12 = Dot(ab, ap);
 
@@ -52,23 +52,39 @@ ExpandMap MeshExpander::Build(MeshBase* mesh) {
 
     auto triangles = mesh->GetTriangles();
 
-    auto bake_triangle_size = _expandSize * _expandSize / (triangles.size() / 2) - _margin;
+    auto bake_triangle_size = _expandSize / (int)(std::sqrtf((triangles.size() / 2)) + 1) - _margin;
 
     unsigned int offsetX = 0;
-    unsigned int offsetY = 0;
+    unsigned int offsetY = _margin;
 
     float _expandSizef = (float)_expandSize;
 
     for (unsigned int i = 0; i < triangles.size(); i++) {
         auto& tri = triangles[i];
-        offsetX += _margin;
-        offsetY += _margin;
+        
+        std::array<_Vector2D<long>, 3> mappedVertPositions;
+        
+        if (i % 2 == 0) {
+            offsetX += _margin;
+            mappedVertPositions = std::array<_Vector2D<long>, 3> {
+                _Vector2D<long>(offsetX, offsetY),
+                    _Vector2D<long>((offsetX + bake_triangle_size), offsetY),
+                    _Vector2D<long>(offsetX, (offsetY + bake_triangle_size))
+            };
+        }
+        else {
+            mappedVertPositions = std::array<_Vector2D<long>, 3> {
+                _Vector2D<long>(offsetX, (offsetY + bake_triangle_size)),
+                    _Vector2D<long>((offsetX + bake_triangle_size), (offsetY + +bake_triangle_size)),
+                    _Vector2D<long>((offsetX + bake_triangle_size), offsetY)
+            };
 
-        std::array<_Vector2D<unsigned int>, 3> mappedVertPositions = {
-            _Vector2D<unsigned int>(offsetX / _expandSizef, offsetY / _expandSizef) ,
-            _Vector2D<unsigned int>((offsetX + bake_triangle_size) / _expandSizef, offsetY / _expandSizef),
-            _Vector2D<unsigned int>(offsetX / _expandSizef, (offsetY + bake_triangle_size) / _expandSizef)
-        };
+            offsetX += bake_triangle_size;
+            if (offsetX >= _expandSize) {
+                offsetX = 0;
+                offsetY += bake_triangle_size + _margin;
+            }
+        }
 
         RasterizeTriangle(map, mappedVertPositions, tri, i);
         map.AddTriangle(mappedVertPositions[0], mappedVertPositions[1], mappedVertPositions[2]);

@@ -108,6 +108,14 @@ struct _Vector<T, 2> {
         const T* ptr = &x;
         return *(ptr + idx);
     }
+
+    template<class U>
+    operator _Vector<U, 2>() {
+        return _Vector<U, 2>(
+            static_cast<U>(x),
+            static_cast<U>(y)
+            );
+    }
 };
 
 using Vector2D = _Vector<float, 2>;

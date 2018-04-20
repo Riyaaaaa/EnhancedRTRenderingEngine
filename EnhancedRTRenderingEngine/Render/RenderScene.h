@@ -11,11 +11,12 @@
 class RenderScene
 {
 public:
+    RenderScene(Scene* scene) : _scene(scene) {}
     ~RenderScene();
 
     void Preprocess(GIImmediateCommands* cmd);
 
-    void Refresh(GIImmediateCommands* cmd, Scene* scene);
+    void Refresh(GIImmediateCommands* cmd);
     Scene* GetSourceScene() { return _scene; }
     GITextureProxy& GetDirectionalShadow(int index) {
         return _directionalShadows[index];

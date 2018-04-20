@@ -12,25 +12,23 @@ RenderScene::~RenderScene()
 void RenderScene::Preprocess(GIImmediateCommands* cmd) {
 }
 
-void RenderScene::Refresh(GIImmediateCommands* cmd, Scene* scene) {
-    _scene = scene;
-
-    if (scene->Dirty()) {
-        if (scene->LightDirty()) {
+void RenderScene::Refresh(GIImmediateCommands* cmd) {
+    if (_scene->Dirty()) {
+        if (_scene->LightDirty()) {
             _directionalShadows.clear();
             _pointShadows.clear();
 
-            _directionalShadows.resize(scene->GetDirectionalLights().size());
-            _pointShadows.resize(scene->GetPointLights().size());
+            _directionalShadows.resize(_scene->GetDirectionalLights().size());
+            _pointShadows.resize(_scene->GetPointLights().size());
 
-            for (auto && pLight : scene->GetPointLights()) {
+            for (auto && pLight : _scene->GetPointLights()) {
                 pLight.SetDirty(true);
             }
-            scene->SetLightDirty(false);
+            _scene->SetLightDirty(false);
         }
         
-        if (scene->MeshDirty()) {
-            for (auto && reflectionCapture : scene->GetReflectionCaptures()) {
+        if (_scene->MeshDirty()) {
+            for (auto && reflectionCapture : _scene->GetReflectionCaptures()) {
                 if (_enviromentMaps.find(reflectionCapture->GetID()) == _enviromentMaps.end()) {
                     _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), std::make_shared<GITextureProxyEntity>()));
                 }
@@ -40,9 +38,9 @@ void RenderScene::Refresh(GIImmediateCommands* cmd, Scene* scene) {
 
             _staticDrawMeshes.clear();
             _drawList.clear();
-            for (auto && viewObject : scene->GetViewObjects()) {
+            for (auto && viewObject : _scene->GetViewObjects()) {
                 auto& mesh = viewObject->GetMesh();
-                viewObject->FindPrecisionReflectionSource(scene->GetReflectionCaptures());
+                viewObject->FindPrecisionReflectionSource(_scene->GetReflectionCaptures());
 
                 DrawMesh draw_mesh(cmd, viewObject);
                 ObjectBuffer buffer;
@@ -98,7 +96,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd, Scene* scene) {
                 }
             }
 
-            scene->SetMeshDirty(false);
+            _scene->SetMeshDirty(false);
         }
     }
 }
