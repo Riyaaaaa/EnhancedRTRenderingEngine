@@ -27,4 +27,5 @@ void PrecomputeLightingSystem::Compute(GIImmediateCommands* cmd, RenderScene* sc
     auto lightMap = baker.Bake(cmd, meshes, pm.kdtree, pm.photons);
     scene->_lightMap = lightMap;
     scene->_staticMeshesOctree = std::move(staticMeshesOctree);
+    scene->rayPaths = pm.rayPaths;
 }

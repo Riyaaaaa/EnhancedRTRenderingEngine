@@ -45,5 +45,8 @@ protected:
 public: // fixme
     std::unique_ptr<SpaceOctree::HashedOctreeFactory> _staticMeshesOctree;
     GITextureProxy _lightMap;
+
+    // debug info
+    std::vector<Line> rayPaths;
 };
 
