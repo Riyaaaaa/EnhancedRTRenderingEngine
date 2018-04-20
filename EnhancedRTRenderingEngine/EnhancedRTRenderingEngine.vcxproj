@@ -217,6 +217,7 @@
     <ClInclude Include="Structure\Octree.h" />
     <ClInclude Include="Structure\Primitive.h" />
     <ClInclude Include="Structure\RaytraceStructures.h" />
+    <ClInclude Include="Structure\TextureBuffer.h" />
     <ClInclude Include="Structure\Voxel.h" />
     <ClInclude Include="ThirdParty\include\nuklear\nuklear.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\allocators.h" />
