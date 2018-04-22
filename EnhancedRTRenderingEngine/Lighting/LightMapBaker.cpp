@@ -22,13 +22,21 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
         _Vector2D<unsigned int> base_coord(i % LIGHT_MAP_SIZE, i / LIGHT_MAP_SIZE);
 
         for (unsigned int idx = 0; idx < local_map_size * local_map_size; idx++) {
-            auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10); // sampling 10 photons;
+            float raddiance;
 
-            float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
-            float A = D3DX_PI * r * r;
-            float raddiance = sampledPhotons.size() / A;
+            if (expanded(idx).belongsTriangleIdx != -1) {
+                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10); // sampling 10 photons;
 
-            raddiance *= 100;
+                float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
+                float A = D3DX_PI * r * r;
+                raddiance = sampledPhotons.size() / A;
+
+                raddiance *= 100;
+            }
+            else {
+                raddiance = 0;
+            }
+            
 
             _Vector2D<unsigned int> local_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
 
