@@ -216,6 +216,7 @@
     <ClInclude Include="Structure\Aliases.h" />
     <ClInclude Include="Structure\KDTree.h" />
     <ClInclude Include="Structure\Octree.h" />
+    <ClInclude Include="Structure\Photon.h" />
     <ClInclude Include="Structure\Primitive.h" />
     <ClInclude Include="Structure\RaytraceStructures.h" />
     <ClInclude Include="Structure\TextureBuffer.h" />

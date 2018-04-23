@@ -164,6 +164,10 @@ struct _Vector<T, 3> {
         return _Vector{ this->x * s, this->y * s, this->z * s };
     }
 
+    _Vector operator/(float s) const {
+        return _Vector(this->x / s, this->y / s, this->z / s);
+    }
+
     _Vector& operator+=(const _Vector& v) {
         this->x = this->x + v.x;
         this->y = this->y + v.y;
@@ -222,6 +226,10 @@ struct _Vector<T, 4> {
 
     _Vector operator*(float s) const {
         return _Vector(this->x * s, this->y * s, this->z * s, this->w * s);
+    }
+
+    _Vector operator/(float s) const {
+        return _Vector(this->x / s, this->y / s, this->z / s, this->w / s);
     }
 
     _Vector operator*(const Matrix& mat) {

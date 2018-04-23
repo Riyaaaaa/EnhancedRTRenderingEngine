@@ -7,12 +7,16 @@
 void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scene) {
 
     auto& pLights = scene->GetPointLights();
-    std::vector<Vector3D> photon_caches;
+    std::vector<Photon> photon_caches;
 
     for (auto&& pLight : pLights) {
         auto pos = pLight.GetPoint();
+        auto intensity = pLight.Intensity();
 
-        for (int i = 0; i < 100; i++) {
+        constexpr int nEmitPhotons = 10;
+        float flux = intensity * 4 * D3DX_PI / nEmitPhotons;
+
+        for (int i = 0; i < nEmitPhotons; i++) {
             auto sita = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 2 * D3DX_PI});
             auto phi = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 2 * D3DX_PI});
 
@@ -37,14 +41,15 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
             });
 
             if (!result.empty() && reach_diffuse_surface) {
-                photon_caches.push_back(result.back().epos);
+                photon_caches.push_back(Photon(result.back().epos,
+                    Vector3D(flux, flux, flux),
+                    result.back().epos - result.back().bpos));
             }
 
             for (auto && seg : result) {
                 rayPaths.push_back(Line(seg, Color3B{ 255, 0, 0 }, 0.1f));
             }
         }
-        
     }
 
     kdtree.build(photon_caches);

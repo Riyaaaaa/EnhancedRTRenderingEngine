@@ -15,6 +15,10 @@ public:
     void SetAttenuation(const Vector3D& att) { _attenuation = att; }
     const Vector3D& GetAttenuation() { return _attenuation; }
 
+    float Intensity() const {
+        return _intensity;
+    }
+
     ResourceHandle<Texture2D> GetShadowTexture(CUBE_DIRECTION dir) { return _shodowTextures[dir]; }
     Size2D GetShadowResolution() { return _shadowResolution; }
 
@@ -28,6 +32,7 @@ public:
 protected:
     Vector3D _point;
     Vector3D _attenuation;
+    float _intensity;
 
     bool _isDirtyMatrix;
     bool _isDirtyShadow;

@@ -3,16 +3,17 @@
 #include <algorithm>
 
 #include "KDimensionalTree.h"
-
 #include "Utility/MathUtils.h"
 
-KDNode* KDimensionalTree::build(const std::vector<Vector3D>& points) {
+template<class T>
+KDNode* KDimensionalTree<T>::build(const std::vector<T>& points) {
     _points = points;
     _root = std::unique_ptr<KDNode>(_build(0, _points.size(), 0));
     return _root.get();
 }
 
-std::vector<std::pair<KDNode*, float>> KDimensionalTree::FindNeighborNNodes(Vector3D p, int num) const {
+template<class T>
+std::vector<std::pair<KDNode*, float>> KDimensionalTree<T>::FindNeighborNNodes(Vector3D p, int num) const {
     std::vector<std::pair<KDNode*, float>> nodes;
     nodes.reserve(num);
     _FindNeighborNNodes(p, num, _root.get(), nodes);
@@ -20,13 +21,14 @@ std::vector<std::pair<KDNode*, float>> KDimensionalTree::FindNeighborNNodes(Vect
     return nodes;
 }
 
-int KDimensionalTree::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, std::vector<std::pair<KDNode*, float>>& nodes) const {
+template<class T>
+int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, std::vector<std::pair<KDNode*, float>>& nodes) const {
     if (!node) {
         return 0;
     }
 
     int add_nums = 0;
-    auto& point = _points[node->index];
+    auto& point = _points[node->index].pos;
     float d = MathUtils::DistanceSq(p, point);
 
     if (num > nodes.size()) {
@@ -48,7 +50,7 @@ int KDimensionalTree::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* no
         nodes.pop_back();
     }
 
-    float axis_d = p[static_cast<int>(node->axis)] - _points[node->index][static_cast<int>(node->axis)];
+    float axis_d = p[static_cast<int>(node->axis)] - _points[node->index].pos[static_cast<int>(node->axis)];
 
     add_nums += _FindNeighborNNodes(p, num, axis_d <= 0.0f ? node->left.get() : node->right.get(), nodes);
 
@@ -59,7 +61,8 @@ int KDimensionalTree::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* no
     return add_nums;
 }
 
-KDNode* KDimensionalTree::_build(unsigned int idx, unsigned int nPoints, int depth) {
+template<class T>
+KDNode* KDimensionalTree<T>::_build(unsigned int idx, unsigned int nPoints, int depth) {
     if (nPoints <= 0) {
         return nullptr;
     }
@@ -73,7 +76,7 @@ KDNode* KDimensionalTree::_build(unsigned int idx, unsigned int nPoints, int dep
     const int mid = (nPoints - 1) / 2;
 
     std::nth_element(index_sequence.begin(), index_sequence.begin() + mid, index_sequence.end(), [this, axis](int lhs, int rhs) {
-        return _points[lhs][axis] < _points[rhs][axis];
+        return _points[lhs].pos[axis] < _points[rhs].pos[axis];
     });
 
     KDNode* node = new KDNode;
@@ -85,3 +88,7 @@ KDNode* KDimensionalTree::_build(unsigned int idx, unsigned int nPoints, int dep
 
     return node;
 }
+
+#include "Structure/Photon.h"
+
+template KDimensionalTree<Photon>;
