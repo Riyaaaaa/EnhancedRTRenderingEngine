@@ -6,7 +6,7 @@
 #include "Structure/Structure.h"
 #include "Material/Material.h"
 
-class Mesh3DModel : public Mesh<PMDVertex>
+class Mesh3DModel : public Mesh<MainVertex>
 {
 public:
     Mesh3DModel(const PMDModel& model);

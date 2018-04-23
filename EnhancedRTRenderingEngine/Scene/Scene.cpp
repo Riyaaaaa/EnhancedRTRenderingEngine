@@ -65,7 +65,7 @@ void Scene::CreateSkyTestScene() {
 
     directionalLights.emplace_back(Vector3D{ 0.0, -1.0f, 0.1f });
 
-    StaticMeshObject<PMDVertex>(std::make_shared<Mesh3DModel>(model()), Transform());
+    StaticMeshObject<MainVertex>(std::make_shared<Mesh3DModel>(model()), Transform());
 
     pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });

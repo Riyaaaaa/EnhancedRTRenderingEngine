@@ -113,7 +113,7 @@ void MeshObjectBase::DirtyWorldMatrix() {
     AABBDirty = true;
 }
 
-template MeshObject<PMDVertex>;
+template MeshObject<MainVertex>;
 template MeshObject<TexVertex>;
 template MeshObject<Vertex3D>;
 template MeshObject<LineVertex>;

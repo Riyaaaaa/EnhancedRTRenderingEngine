@@ -42,6 +42,6 @@ protected:
 struct StaticLightBuildData
 {
 public:
-    std::vector<Vector2D> lightMapUVs;
+    std::vector<MainVertex> lightVertices;
 };
 

@@ -34,7 +34,13 @@ public:
     std::size_t GetReflectionSourceId() { return _reflectionSourceId; }
 
     bool HasLightMap() const { return _hasLightMap; }
-    void SetLightMap(const StaticLightBuildData& map) { _lightMapData = map; }
+    virtual void SetLightMap(const StaticLightBuildData& map) { 
+        _hasLightMap = true;
+        _lightMapData = map; 
+    }
+    const StaticLightBuildData& GetLightBuildData() const {
+        return _lightMapData;
+    }
 
     bool IsPhysicalObject() {
         return _isPhysicallyObject;

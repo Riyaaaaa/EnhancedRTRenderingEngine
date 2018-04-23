@@ -12,7 +12,7 @@ namespace PrimitiveMesh {
         Square(Size2D size);
     };
 
-    class SquarePMD : public Mesh<PMDVertex>
+    class SquarePMD : public Mesh<MainVertex>
     {
     public:
         SquarePMD();

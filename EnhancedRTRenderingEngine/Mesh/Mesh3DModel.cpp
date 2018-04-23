@@ -10,7 +10,7 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
     _vertexList.resize(model.vert_count);
 
     for (std::size_t i = 0; i < model.vert_count; i++) {
-        _vertexList[i] = PMDVertex{ {model.vertex[i].pos[0], model.vertex[i].pos[1], model.vertex[i].pos[2]}, {model.vertex[i].uv[0], model.vertex[i].uv[1]},{ model.vertex[i].normal_vec[0], model.vertex[i].normal_vec[1], model.vertex[i].normal_vec[2] } };
+        _vertexList[i] = MainVertex{ {model.vertex[i].pos[0], model.vertex[i].pos[1], model.vertex[i].pos[2]}, {model.vertex[i].uv[0], model.vertex[i].uv[1]},{ model.vertex[i].normal_vec[0], model.vertex[i].normal_vec[1], model.vertex[i].normal_vec[2] } };
     }
 
     _indexList.resize(model.face_vert_count);
@@ -50,7 +50,7 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
 
     // Vertex data into one bundle
     for (std::size_t  i = 0; i < mesh.nVertices; i++) {
-        _vertexList[i] = PMDVertex{
+        _vertexList[i] = MainVertex{
             Vector3D{ mesh.vertices[i].x, mesh.vertices[i].y, mesh.vertices[i].z },
             Vector2D{ mesh.meshTextureCoords.textureCoords[i].x, mesh.meshTextureCoords.textureCoords[i].y },
             Vector3D{ 0.0f, 0.0f, 0.0f },

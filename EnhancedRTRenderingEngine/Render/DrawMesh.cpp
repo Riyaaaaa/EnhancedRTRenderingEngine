@@ -14,6 +14,11 @@ void DrawElement::Draw(GIImmediateCommands* cmd) {
             cmd->IASetVertexBuffer(buffer.get(), buffer->structureByteStride, hOffsets);
             break;
         }
+        case ResourceType::LightVertexList: {
+            UINT hOffsets = 0;
+            cmd->IASetVertexBuffer(buffer.get(), buffer->structureByteStride, hOffsets);
+            break;
+        }
         case ResourceType::IndexList:
             cmd->IASetIndexBuffer(buffer.get(), DXGI_FORMAT_R16_UINT);
             useIndexList = true;
@@ -92,8 +97,15 @@ std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<TexVertex>() {
 }
 
 template<>
-std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<PMDVertex>() {
-    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB, 0, 0, 0  }, { "TEXCOORD", VertexProperty::FloatRG, 0, 0, 12 }, { "NORMAL", VertexProperty::FloatRGB, 0,0,20 }, { "COLOR", VertexProperty::FloatRGBA,0,0,32 } };
+std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<MainVertex>() {
+    std::vector<VertexLayout> layout;
+    unsigned int offset = 0;
+    layout.emplace_back("POSITION", VertexProperty::FloatRGB, 0, 0, static_cast<unsigned int>(offsetof(MainVertex, pos)));
+    layout.emplace_back("COLOR", VertexProperty::FloatRGBA, 0, 0, static_cast<unsigned int>(offsetof(MainVertex, col)));
+    layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 0, 0, static_cast<unsigned int>(offsetof(MainVertex, tex)));
+    layout.emplace_back("NORMAL", VertexProperty::FloatRGB, 0, 0, static_cast<unsigned int>(offsetof(MainVertex, normal)));
+    layout.emplace_back("TEXCOORD", VertexProperty::FloatRG, 1, 0, static_cast<unsigned int>(offsetof(MainVertex, lightUV)));
+    return layout;
 }
 
 template<>

@@ -6,7 +6,7 @@
 #include "Structure/TextureBuffer.h"
 #include "Utility/MathUtils.h"
 
-GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshObjectBase*>& bake_targets, const KDimensionalTree<Photon>& photonKdTree, const std::vector<Photon>& photons) {
+GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshObject<MainVertex>*>& bake_targets, const KDimensionalTree<Photon>& photonKdTree, const std::vector<Photon>& photons) {
     unsigned int mesh_nums = bake_targets.size();
     unsigned int local_map_size = LIGHT_MAP_SIZE / mesh_nums;
     unsigned int laid_nums = LIGHT_MAP_SIZE * LIGHT_MAP_SIZE / (local_map_size * local_map_size);
@@ -14,19 +14,23 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
     TextureBuffer buf(LIGHT_MAP_SIZE, LIGHT_MAP_SIZE);
     
     for (unsigned int i = 0; i < mesh_nums; i++) {
-        MeshBase* bake_target = bake_targets[i]->GetMeshBase();
+        auto* bake_target = bake_targets[i]->GetMesh().get();
         StaticLightBuildData light_build_data;
-        light_build_data.lightMapUVs.resize(bake_target->GetVertexCount());
         
         MeshExpander expander(local_map_size, 1);
         ExpandMap expanded = expander.Build(bake_target);
+
+        unsigned int nIndices = expanded.TriangleBaseIndices().size();
+        light_build_data.lightVertices.resize(nIndices);
 
         _Vector2D<unsigned int> base_coord(i % LIGHT_MAP_SIZE, i / LIGHT_MAP_SIZE);
 
         for (unsigned int idx = 0; idx < local_map_size * local_map_size; idx++) {
             Vector3D raddiance;
             Vector3D accumulated_flux(0.0f, 0.0f, 0.0f);
-            if (expanded(idx).belongsTriangleIdx != -1) {
+            _Vector2D<unsigned int> local_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
+            float triangle_idx = expanded(idx).belongsTriangleIdx;
+            if (triangle_idx != -1) {
                 auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10); // sampling 10 photons;
 
                 float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
@@ -48,18 +52,6 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             else {
                 raddiance = Vector3D(0.0f, 0.0f, 0.0f);;
             }
-            
-
-            _Vector2D<unsigned int> local_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
-            
-            float triangle_idx = expanded(idx).belongsTriangleIdx;
-
-            for (int vert_idx = 0; vert_idx < 3; vert_idx++) {
-                auto indices = expanded.TriangleBaseIndices()[triangle_idx * 3 + vert_idx];
-                light_build_data.lightMapUVs[triangle_idx * 3 + vert_idx] = Vector2D(indices.x / (float)LIGHT_MAP_SIZE, indices.y / (float)LIGHT_MAP_SIZE);
-            }
-            
-            bake_targets[i]->SetLightMap(light_build_data);
 
             //TODO: photons transfer RGB colors
             buf(local_coord.x, local_coord.y, 0) = raddiance.x * 255;
@@ -68,8 +60,6 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             buf(local_coord.x, local_coord.y, 3) = 255;
         }
 
-        unsigned int nIndices = expanded.TriangleBaseIndices().size();
-        light_build_data.lightMapUVs.resize(nIndices);
         for (unsigned int idx = 0; idx < nIndices; idx++) {
             auto local_pos = expanded.TriangleBaseIndices()[idx];
             auto global_pos = _Vector2D<unsigned int>(
@@ -77,8 +67,12 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
                 (i / laid_nums) * local_map_size + local_pos.y);
 
             Vector2D uv(global_pos.x / (float)LIGHT_MAP_SIZE, global_pos.y / (float)LIGHT_MAP_SIZE);
-            light_build_data.lightMapUVs[idx] = uv;
+            MainVertex src_indices = bake_target->GetVertex(idx);
+            src_indices.lightUV = Vector2D(global_pos.x / (float)LIGHT_MAP_SIZE, global_pos.y / (float)LIGHT_MAP_SIZE);
+            light_build_data.lightVertices[idx] = src_indices;
         }
+
+        bake_targets[i]->SetLightMap(light_build_data);
     }
 
     TextureParam param;

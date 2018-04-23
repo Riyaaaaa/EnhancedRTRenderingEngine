@@ -125,19 +125,12 @@ struct LineVertex {
     float thickess;
 };
 
-struct PMDVertex {
+struct MainVertex {
     Vector3D pos;    //x-y-z
     Vector2D tex;    //x-y
     Vector3D normal;
     Vector4D col;
-};
-
-struct LightVertex {
-    Vector3D pos;    //x-y-z
-    Vector2D tex;    //x-y
-    Vector3D normal;
-    Vector4D col;
-    Vector2D lightTex;
+    Vector2D lightUV;
 };
 
 struct Transform {
@@ -185,6 +178,7 @@ struct MaterialBuffer
 {
     float metallic;
     float roughness;
+    float useLightMap = -1.0f; // if negative value, don't use light map 
 };
 
 template <class T, std::size_t Align = 16, bool = std::is_class<T>::value>

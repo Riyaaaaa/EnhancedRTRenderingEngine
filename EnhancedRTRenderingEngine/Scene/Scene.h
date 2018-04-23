@@ -15,7 +15,7 @@
 class Scene
 {
 public:
-    typedef PMDVertex VertType;
+    typedef MainVertex VertType;
 
     Scene();
     ~Scene();

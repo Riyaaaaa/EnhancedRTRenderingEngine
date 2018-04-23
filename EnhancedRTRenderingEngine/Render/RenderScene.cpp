@@ -10,6 +10,8 @@ RenderScene::~RenderScene()
 }
 
 void RenderScene::Preprocess(GIImmediateCommands* cmd) {
+    cmd->PSSetShaderResources(3, _lightMap->GetSubResourceView().get());
+    cmd->PSSetSamplers(3, _lightMap->GetSampler().get());
 }
 
 void RenderScene::Refresh(GIImmediateCommands* cmd) {
@@ -78,6 +80,9 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     }
 
                     MaterialBuffer mbuf{ material.metallic, material.roughness };
+                    if (viewObject->HasLightMap()) {
+                        mbuf.useLightMap = 1.0f;
+                    }
                     desc.byteWidth = sizeof(mbuf);
                     desc.stride = sizeof(float);
                     auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));

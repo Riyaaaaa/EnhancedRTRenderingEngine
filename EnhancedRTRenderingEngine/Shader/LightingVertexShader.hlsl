@@ -5,6 +5,7 @@ struct vertexIn
 {
     float3 pos : POSITION0;
     float2 tex : TEXCOORD0;
+    float2 lightUV : TEXCOORD1;
     float3 nor : NORMAL0;
     float4 col : COLOR0;
 };
@@ -16,6 +17,7 @@ struct vertexOut
     float4 norw : NORMAL0;
     float4 col : COLOR0;
     float2 tex : TEXCOORD0;
+    float2 lightUV : TEXCOORD1;
     float4 shadowCoord : SHADOW_COORD;
 };
 
@@ -65,6 +67,7 @@ vertexOut main(vertexIn IN)
     OUT.col = IN.col;
     OUT.tex = IN.tex;
     OUT.shadowCoord = mul(mul(OUT.posw, DirectionalLightView[0]), DirectionalLightProjection[0]);
+    OUT.lightUV = IN.lightUV;
 
     return OUT;
 }

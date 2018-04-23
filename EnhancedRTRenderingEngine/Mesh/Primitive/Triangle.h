@@ -11,7 +11,7 @@ namespace PrimitiveMesh {
         Triangle();
     };
 
-    class TrianglePMD : public Mesh<PMDVertex>
+    class TrianglePMD : public Mesh<MainVertex>
     {
     public:
         TrianglePMD();

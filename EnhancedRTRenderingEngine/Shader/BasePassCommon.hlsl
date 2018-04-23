@@ -11,6 +11,7 @@ struct pixcelIn
     float4 norw : NORMAL0;
     float4 col : COLOR0;
     float2 tex : TEXCOORD0;
+    float2 lightUV : TEXCOORD1;
     float4 shadowCoord : SHADOW_COORD;
 };
 
@@ -21,6 +22,9 @@ SamplerState PShadowSampler : register(s1);
 
 TextureCube EnviromentMap : register(t2);
 SamplerState EnviromentSampler : register(s2);
+
+Texture2D LightMap : register(t3);
+SamplerState LightSampler : register(s3);
 
 struct PointLightParam
 {
@@ -52,6 +56,7 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer MaterialBuffer : register(b1)
 {
     MaterialParameters materialParameters;
+    float UseLightMap;
 }
 
 float3 PointLighting(float3 diffuseColor, float distance, float3 attenuation) {

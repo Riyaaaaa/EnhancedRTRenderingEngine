@@ -17,10 +17,10 @@ namespace PrimitiveMesh {
 
     TrianglePMD::TrianglePMD()
     {
-        _vertexList = std::vector<PMDVertex>{
-            PMDVertex{ Vector3D{ +0.0f, +0.5f, +0.5f },Vector2D{ 0.0f, 1.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) },
-            PMDVertex{ Vector3D{ +0.5f, -0.5f, +0.5f },Vector2D{ 0.0f, 0.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) },
-            PMDVertex{ Vector3D{ -0.5f, -0.5f, +0.5f },Vector2D{ 1.0f, 0.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) }
+        _vertexList = std::vector<MainVertex>{
+            MainVertex{ Vector3D{ +0.0f, +0.5f, +0.5f },Vector2D{ 0.0f, 1.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) },
+            MainVertex{ Vector3D{ +0.5f, -0.5f, +0.5f },Vector2D{ 0.0f, 0.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) },
+            MainVertex{ Vector3D{ -0.5f, -0.5f, +0.5f },Vector2D{ 1.0f, 0.0f }, Vector3D{ 0.0f, 0.0f, -1.0f }, Vector4D(0.5f, 0.5f, 0.5f) }
         };
 
         _vertexCount = static_cast<unsigned int>(_vertexList.size());

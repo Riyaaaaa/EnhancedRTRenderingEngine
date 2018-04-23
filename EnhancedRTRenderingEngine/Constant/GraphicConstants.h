@@ -5,6 +5,7 @@ enum class ResourceType {
     TextureCube,
     IndexList,
     VertexList,
+    LightVertexList,
     PSConstantBuffer,
     VSConstantBuffer,
     GSConstantBuffer
