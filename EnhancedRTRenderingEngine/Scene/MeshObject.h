@@ -8,6 +8,7 @@
 #include "Scene/Enviroment/CubeReflectionCapture.h"
 
 #include "Structure/RaytraceStructures.h"
+#include "Mesh/StaticLightBuildData.h"
 
 #include <memory>
 
@@ -17,6 +18,7 @@ public:
     virtual Vector3D GetVertexPosition(unsigned int idx) = 0;
     virtual unsigned int GetVertexNums() = 0;
     virtual std::vector<Hit> IntersectPositions(Ray ray) = 0;
+    virtual MeshBase* GetMeshBase() = 0;
 
     void SetMaterial(const std::vector<Material>& materials) {
         _materials = materials;
@@ -31,6 +33,9 @@ public:
     bool HasReflectionSource() { return _hasReflectionSource; }
     std::size_t GetReflectionSourceId() { return _reflectionSourceId; }
 
+    bool HasLightMap() const { return _hasLightMap; }
+    void SetLightMap(const StaticLightBuildData& map) { _lightMapData = map; }
+
     bool IsPhysicalObject() {
         return _isPhysicallyObject;
     }
@@ -41,12 +46,14 @@ protected:
     MeshObjectBase() = default;
 
     bool AABBDirty = true;
+    bool _hasLightMap = false;
     bool _hasReflectionSource = false;
     bool _isPhysicallyObject = true;
 
     std::vector<DirectX::XMVECTOR> _vertexTransformedCache;
 
     std::size_t _reflectionSourceId;
+    StaticLightBuildData _lightMapData;
     std::vector<Material> _materials;
 };
 
@@ -57,6 +64,7 @@ public:
     MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) : _mesh(mesh) {}
 
     const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return _mesh; }
+    MeshBase* GetMeshBase() { return _mesh.get(); }
 
     virtual AABB GetAABB() override;
     virtual Vector3D GetVertexPosition(unsigned int idx) override;
