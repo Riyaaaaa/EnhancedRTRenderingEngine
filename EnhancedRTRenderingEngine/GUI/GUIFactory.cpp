@@ -11,8 +11,10 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
     auto* config = UserConfig::getInstance();
 
     {
-        UIRowLayout row(LayoutAttribute::Static, 30, 80);
-        row.AddWidget(std::make_shared<UIButtonLabel>("button", []() {}));
+        UIRowLayout row(LayoutAttribute::Dynamic, 30);
+        row.AddWidget(std::make_shared<UIButtonLabel>("visible ray", [config]() {
+            config->SwitchDisplayRayPaths();
+        }));
         window.AddRow(row);
     }
     

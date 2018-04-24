@@ -27,6 +27,8 @@ UserConfig::UserConfig()
         LoadAllConfigFromDocument(&doc);
         fclose(fp);
     }
+
+    _isDisplayRayPaths = true;
 }
 
 void UserConfig::Flush() {

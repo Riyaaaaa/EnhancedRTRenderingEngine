@@ -27,7 +27,16 @@ public:
         return _quality;
     }
 
+    bool IsDisplayRayPaths() const {
+        return _isDisplayRayPaths;
+    }
+
+    void SwitchDisplayRayPaths() {
+        _isDisplayRayPaths = !_isDisplayRayPaths;
+    }
+
 protected:
+    bool _isDisplayRayPaths;
     MSAAQualityType _quality;
     Vector4D _bgcolor;
 };

@@ -35,7 +35,7 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
-                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 100, 1.0f); // sampling 10 photons;
+                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10, 1.0f); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
                     float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
                     float A = D3DX_PI * 1.0f * 1.0f; // FIXME: Use sampling limit radius or farthest photon distance as a radius??
