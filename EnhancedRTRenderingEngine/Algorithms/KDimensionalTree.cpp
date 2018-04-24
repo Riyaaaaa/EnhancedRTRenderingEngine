@@ -8,7 +8,16 @@
 template<class T>
 KDNode* KDimensionalTree<T>::build(const std::vector<T>& points) {
     _points = points;
-    _root = std::unique_ptr<KDNode>(_build(0, _points.size(), 0));
+
+    unsigned int nPoints = _points.size();
+
+    std::vector<unsigned int> index_sequence(nPoints);
+    for (int i = 0; i < nPoints; i++) {
+        index_sequence[i] = i;
+    }
+
+    _root = std::unique_ptr<KDNode>(_build(nPoints, 0, index_sequence.begin()));
+
     return _root.get();
 }
 
@@ -64,29 +73,24 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
 }
 
 template<class T>
-KDNode* KDimensionalTree<T>::_build(unsigned int idx, unsigned int nPoints, int depth) {
+KDNode* KDimensionalTree<T>::_build(unsigned int nPoints, int depth, std::vector<unsigned int>::iterator indices) {
     if (nPoints <= 0) {
         return nullptr;
-    }
-
-    std::vector<unsigned int> index_sequence(nPoints);
-    for (int i = idx; i < nPoints + idx; i++) {
-        index_sequence[i - idx] = i;
     }
 
     const int axis = depth % 3;
     const int mid = (nPoints - 1) / 2;
 
-    std::nth_element(index_sequence.begin(), index_sequence.begin() + mid, index_sequence.end(), [this, axis](int lhs, int rhs) {
+    std::nth_element(indices, indices + mid, indices + nPoints, [this, axis](int lhs, int rhs) {
         return _points[lhs].pos[axis] < _points[rhs].pos[axis];
     });
 
     KDNode* node = new KDNode;
-    node->index = index_sequence[mid];
+    node->index = indices[mid];
     node->axis = static_cast<Axis>(axis);
 
-    node->left = std::shared_ptr<KDNode>(_build(idx, mid, depth + 1));
-    node->right = std::shared_ptr<KDNode>(_build(idx + mid + 1, nPoints - mid - 1, depth + 1));
+    node->left = std::shared_ptr<KDNode>(_build(mid, depth + 1, indices));
+    node->right = std::shared_ptr<KDNode>(_build(nPoints - mid - 1, depth + 1, indices + mid + 1));
 
     return node;
 }
