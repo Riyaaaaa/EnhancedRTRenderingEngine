@@ -14,7 +14,7 @@ namespace PrimitiveMesh {
         };
 
         _vertexCount = static_cast<unsigned int>(_vertexList.size());
-        _elements.push_back(Face{ 0, _vertexCount, 0 });
+        _elements.push_back(ElementDesc{ 0, _vertexCount, 0 });
     }
 
 

@@ -34,7 +34,7 @@ Mesh3DModel::Mesh3DModel(const PMDModel& model)
             _vertexList[idx].col.w = model.materials[i].alpha;
         }
 
-        _elements[i] = Face{ static_cast<unsigned int>(i), 
+        _elements[i] = ElementDesc{ static_cast<unsigned int>(i), 
             static_cast<unsigned int>(model.materials[i].face_vert_count), 
             static_cast<unsigned int>(i) };
         _materialTextures[i] = model.materials[i].texture_file_name;
@@ -79,15 +79,15 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
         unsigned int primitiveVerts = static_cast<unsigned int>(mesh.faces[i].size());
         if (primitiveVerts == 4) {
             // TRIANGLE STRIP DRAW
-            _elements[i] = Face{ static_cast<unsigned int>(i), 6 , static_cast<unsigned int>(mesh.meshMaterialList.faceIndexes[i]) };
+            _elements[i] = ElementDesc{ static_cast<unsigned int>(i), 6 , static_cast<unsigned int>(mesh.meshMaterialList.faceIndexes[i]) };
         }
         else {
-            _elements[i] = Face{ static_cast<unsigned int>(i), primitiveVerts , static_cast<unsigned int>(mesh.meshMaterialList.faceIndexes[i]) };
+            _elements[i] = ElementDesc{ static_cast<unsigned int>(i), primitiveVerts , static_cast<unsigned int>(mesh.meshMaterialList.faceIndexes[i]) };
         }
         
     }
 
-    std::sort(_elements.begin(), _elements.end(), [](const Face& lhs, const Face& rhs) {
+    std::sort(_elements.begin(), _elements.end(), [](const ElementDesc& lhs, const ElementDesc& rhs) {
         return lhs.materialIdx != rhs.materialIdx ? lhs.materialIdx < rhs.materialIdx : lhs.faceIdx < rhs.faceIdx;
     });
 
@@ -128,18 +128,18 @@ Mesh3DModel::Mesh3DModel(const DXModel& model) {
 
     int oldMatIdx = -1;
     unsigned int indexCount = 0;
-    std::vector<Face> dist;
+    std::vector<ElementDesc> dist;
     for (int i = 0; i < _elements.size(); i++) {
         if (oldMatIdx != _elements[i].materialIdx) {
             if (oldMatIdx != -1) {
-                dist.push_back(Face{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
+                dist.push_back(ElementDesc{ 0, indexCount, static_cast<std::size_t>(oldMatIdx) });
             }
             oldMatIdx = static_cast<int>(_elements[i].materialIdx);
             indexCount = 0;
         }
         indexCount += _elements[i].faceNumVerts;
     }
-    dist.push_back(Face{ 0, indexCount, static_cast<unsigned int>(oldMatIdx) });
+    dist.push_back(ElementDesc{ 0, indexCount, static_cast<unsigned int>(oldMatIdx) });
     _elements.swap(dist);
 
     _vertexCount = static_cast<unsigned int>(_indexList.size());
