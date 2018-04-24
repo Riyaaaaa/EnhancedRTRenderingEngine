@@ -74,7 +74,7 @@ public:
     DrawMesh(GIImmediateCommands* cmd, MeshObject<VertType>* element) {
         _vertexLayout = GenerateVertexLayout<VertType>();
 
-        if (element->HasLightMap()) {
+        {
             auto& vertexList = element->GetMesh()->GetVertexList();
             BufferDesc bufferDesc;
             bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * vertexList.size());
@@ -84,18 +84,6 @@ public:
 
             auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&vertexList[0]));
             buffer->type = ResourceType::LightVertexList;
-            meshSharedResource.emplace_back(buffer, -1);
-        }
-
-        {
-            auto& light_build_data = element->GetLightBuildData();
-            BufferDesc bufferDesc;
-            bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * light_build_data.lightVertices.size());
-            bufferDesc.usage = ResourceUsage::Default;
-            bufferDesc.accessFlag = ResourceAccessFlag::None;
-            bufferDesc.stride = sizeof(VertType);
-
-            auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&light_build_data.lightVertices[0]));
             meshSharedResource.emplace_back(buffer, -1);
         }
 
@@ -165,6 +153,4 @@ private:
     std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> meshSharedResource;
     std::vector<std::pair<GITextureProxy, unsigned int>> meshSharedTexture;
 };
-
-
 

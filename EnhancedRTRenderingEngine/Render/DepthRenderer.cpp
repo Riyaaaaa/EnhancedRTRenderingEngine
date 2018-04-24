@@ -110,10 +110,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
                 auto& mesh = renderScene->GetStaticDrawMeshes()[object->GetID()];
 
                 unsigned int faceNumVerts = 0;
-                if (object->HasLightMap()) {
-                    faceNumVerts = static_cast<unsigned int>(object->GetLightBuildData().lightVertices.size());
-                }
-                else if (object->GetMesh()->HasIndexList()) {
+                if (object->GetMesh()->HasIndexList()) {
                     faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
                 }
                 else {
