@@ -41,6 +41,7 @@ protected:
 
     std::vector<DrawElement> _drawList;
     std::unordered_map<std::size_t, DrawMesh> _staticDrawMeshes;
+    std::unordered_map<std::size_t, DrawMesh> _bakedLightMeshes;
 
 public: // fixme
     std::unique_ptr<SpaceOctree::HashedOctreeFactory> _staticMeshesOctree;

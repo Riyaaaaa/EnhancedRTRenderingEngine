@@ -97,6 +97,11 @@ std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<TexVertex>() {
 }
 
 template<>
+std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<LineVertex>() {
+    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB, 0, 0, 0  }, { "COLOR", VertexProperty::FloatRGBA, 0, 0, 12 }, { "THICKNESS", VertexProperty::FloatR, 0, 0, 28 } };
+}
+
+template<>
 std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<MainVertex>() {
     std::vector<VertexLayout> layout;
     unsigned int offset = 0;
@@ -108,8 +113,20 @@ std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<MainVertex>() {
     return layout;
 }
 
-template<>
-std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<LineVertex>() {
-    return std::vector<VertexLayout>{ { "POSITION", VertexProperty::FloatRGB, 0, 0, 0  }, { "COLOR", VertexProperty::FloatRGBA, 0, 0, 12 }, { "THICKNESS", VertexProperty::FloatR, 0, 0, 28 } };
+DrawMesh::DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData) {
+    typedef std::remove_cv_t<std::remove_reference_t<decltype(staticLightBuildData->lightVertices[0])>> VertType;
+    _vertexLayout = GenerateVertexLayout<VertType>();
+
+    BufferDesc bufferDesc;
+    bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * staticLightBuildData->lightVertices.size());
+    bufferDesc.usage = ResourceUsage::Default;
+    bufferDesc.accessFlag = ResourceAccessFlag::None;
+    bufferDesc.stride = sizeof(VertType);
+
+    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&staticLightBuildData->lightVertices[0]));
+    buffer->type = ResourceType::LightVertexList;
+    meshSharedResource.emplace_back(buffer, -1);
+
+    _primitiveType = VertexPrimitiveType::TRIANGLELIST;
 }
 

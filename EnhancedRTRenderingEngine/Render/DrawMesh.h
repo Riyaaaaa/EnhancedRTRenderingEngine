@@ -2,10 +2,12 @@
 
 #include <unordered_map>
 
+#include "Constant/GICommandParameter.h"
 #include "Constant/GraphicConstants.h"
 
 #include "Scene/MeshObject.h"
 
+#include "Mesh/StaticLightBuildData.h"
 #include "Material/Material.h"
 
 #include "Resource/Texture2D.h"
@@ -13,7 +15,10 @@
 
 #include "Shader/ShaderFactory.h"
 
+#include "Structure/Structure.h"
+
 #include "GraphicsInterface/GIRawResource.h"
+#include "GraphicsInterface/GIImmediateCommands.h"
 
 class DrawMesh;
 
@@ -108,6 +113,8 @@ public:
 
         _primitiveType = element->GetMesh()->GetPrimitiveType();
     }
+
+    DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData);
 
     void RegisterConstantBuffer(const std::shared_ptr<GIBuffer>& buffer, unsigned int regsiterId, ShaderType shaderType) {
         ResourceType resType;
