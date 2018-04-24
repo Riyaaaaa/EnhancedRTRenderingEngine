@@ -20,7 +20,7 @@ namespace PrimitiveMesh {
         };
 
         _vertexCount = static_cast<unsigned int>(_indexList.size());
-        _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
+        _elements.push_back(Face{ 0, _vertexCount, 0 });
     }
 
     template<>
@@ -40,7 +40,7 @@ namespace PrimitiveMesh {
         };
 
         _vertexCount = static_cast<unsigned int>(_indexList.size());
-        _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
+        _elements.push_back(Face{ 0, _vertexCount, 0 });
 
     }
 
@@ -57,7 +57,7 @@ namespace PrimitiveMesh {
         };
 
         _vertexCount = static_cast<unsigned int>(_indexList.size());
-        _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
+        _elements.push_back(Face{ 0, _vertexCount, 0 });
     }
 
 }

@@ -64,7 +64,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                 _staticDrawMeshes[viewObject->GetID()] = draw_mesh;
 
                 int index = 0;
-                for (auto && drawface : mesh->GetDrawFacesMap()) {
+                for (auto && drawface : mesh->GetDrawElementMap()) {
                     auto& material = viewObject->GetMaterials()[drawface.materialIdx];
 
                     TextureParam param;

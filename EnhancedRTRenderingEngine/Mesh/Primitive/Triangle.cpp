@@ -12,7 +12,7 @@ namespace PrimitiveMesh {
         };
 
         _vertexCount = static_cast<unsigned int>(_vertexList.size());
-        _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
+        _elements.push_back(Face{ 0, _vertexCount, 0 });
     }
 
     TrianglePMD::TrianglePMD()
@@ -24,7 +24,7 @@ namespace PrimitiveMesh {
         };
 
         _vertexCount = static_cast<unsigned int>(_vertexList.size());
-        _drawFacesMap.push_back(Face{ 0, _vertexCount, 0 });
+        _elements.push_back(Face{ 0, _vertexCount, 0 });
     }
 
 }

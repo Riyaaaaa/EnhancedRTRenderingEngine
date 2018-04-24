@@ -59,7 +59,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
         return intersects;
     }
 
-    auto& face_map = _mesh->GetDrawFacesMap();
+    auto& face_map = _mesh->GetDrawElementMap();
     unsigned int start_idx = 0;
     for (unsigned int i = 0; i < face_map.size(); i++) {
         for (int j = start_idx; j < face_map[i].faceIdx + face_map[i].faceNumVerts; j += 3) {
