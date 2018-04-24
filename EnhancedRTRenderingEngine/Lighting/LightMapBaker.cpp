@@ -9,10 +9,14 @@
 GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshObject<MainVertex>*>& bake_targets, const KDimensionalTree<Photon>& photonKdTree, const std::vector<Photon>& photons) {
     unsigned int mesh_nums = bake_targets.size();
     unsigned int local_map_size = LIGHT_MAP_SIZE / mesh_nums;
-    unsigned int laid_nums = LIGHT_MAP_SIZE * LIGHT_MAP_SIZE / (local_map_size * local_map_size);
+
+    // Now implement, square light maps, therefore x==y
+    unsigned int laid_nums_x = LIGHT_MAP_SIZE / local_map_size;
+    //unsigned int laid_nums_y = LIGHT_MAP_SIZE / local_map_size;
 
     TextureBuffer buf(LIGHT_MAP_SIZE, LIGHT_MAP_SIZE);
-    
+    buf.FillColor(Vector4D(0.0f, 0.0f, 0.0f, 0.0f));
+
     for (unsigned int i = 0; i < mesh_nums; i++) {
         auto* bake_target = bake_targets[i]->GetMesh().get();
         StaticLightBuildData light_build_data;
@@ -23,12 +27,12 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
         unsigned int nIndices = expanded.TriangleBaseIndices().size();
         light_build_data.lightVertices.resize(nIndices);
 
-        _Vector2D<unsigned int> base_coord(i % LIGHT_MAP_SIZE, i / LIGHT_MAP_SIZE);
+        _Vector2D<unsigned int> base_coord(i % laid_nums_x * local_map_size, i / laid_nums_x * local_map_size);
 
         for (unsigned int idx = 0; idx < local_map_size * local_map_size; idx++) {
             Vector3D raddiance;
             Vector3D accumulated_flux(0.0f, 0.0f, 0.0f);
-            _Vector2D<unsigned int> local_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
+            _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
                 auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10); // sampling 10 photons;
@@ -54,17 +58,17 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             }
 
             //TODO: photons transfer RGB colors
-            buf(local_coord.x, local_coord.y, 0) = raddiance.x * 255;
-            buf(local_coord.x, local_coord.y, 1) = raddiance.y * 255;
-            buf(local_coord.x, local_coord.y, 2) = raddiance.z * 255;
-            buf(local_coord.x, local_coord.y, 3) = 255;
+            buf(global_coord.x, global_coord.y, 0) = raddiance.x * 255;
+            buf(global_coord.x, global_coord.y, 1) = raddiance.y * 255;
+            buf(global_coord.x, global_coord.y, 2) = raddiance.z * 255;
+            buf(global_coord.x, global_coord.y, 3) = 255;
         }
 
         for (unsigned int idx = 0; idx < nIndices; idx++) {
             auto local_pos = expanded.TriangleBaseIndices()[idx];
             auto global_pos = _Vector2D<unsigned int>(
-                (i % laid_nums) * local_map_size + local_pos.x,
-                (i / laid_nums) * local_map_size + local_pos.y);
+                (i % laid_nums_x) * local_map_size + local_pos.x,
+                (i / laid_nums_x) * local_map_size + local_pos.y);
 
             Vector2D uv(global_pos.x / (float)LIGHT_MAP_SIZE, global_pos.y / (float)LIGHT_MAP_SIZE);
             MainVertex src_indices = bake_target->GetVertex(idx);

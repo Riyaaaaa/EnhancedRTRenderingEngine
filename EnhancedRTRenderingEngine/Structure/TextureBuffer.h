@@ -20,6 +20,17 @@ public:
         return buf[y * width * channel + x * channel + col_offset];
     }
 
+    template<unsigned int Dim>
+    void FillColor(_Vector<float, Dim> color) {
+        for (unsigned int y = 0; y < height; y++) {
+            for (unsigned int x = 0; x < width; x++) {
+                for (unsigned int c = 0; c < channel; c++) {
+                    (*this)(x, y, c) = color[c];
+                }
+            }
+        }
+    }
+
 protected:
     unsigned int width, height, channel;
     unsigned char* buf;
