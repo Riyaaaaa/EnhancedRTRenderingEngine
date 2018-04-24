@@ -72,6 +72,8 @@ public:
     const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return _mesh; }
     MeshBase* GetMeshBase() { return _mesh.get(); }
 
+    std::vector<Triangle> GetTransformedTriangles();
+
     virtual AABB GetAABB() override;
     virtual Vector3D GetVertexPosition(unsigned int idx) override;
     virtual unsigned int GetVertexNums() override;

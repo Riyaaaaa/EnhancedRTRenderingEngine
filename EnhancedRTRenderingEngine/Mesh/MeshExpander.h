@@ -12,7 +12,7 @@ class MeshExpander
 public:
     MeshExpander(unsigned int size, unsigned int margin = 1);
 
-    ExpandMap Build(MeshBase* mesh);
+    ExpandMap Build(const std::vector<Triangle>& mesh_data);
 
 protected:
     unsigned int  _expandSize, _margin;

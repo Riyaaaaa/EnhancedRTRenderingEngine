@@ -18,11 +18,11 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
     buf.FillColor(Vector4D(0.0f, 0.0f, 0.0f, 0.0f));
 
     for (unsigned int i = 0; i < mesh_nums; i++) {
-        auto* bake_target = bake_targets[i]->GetMesh().get();
+        auto* bake_target = bake_targets[i];
         StaticLightBuildData light_build_data;
         
         MeshExpander expander(local_map_size, 1);
-        ExpandMap expanded = expander.Build(bake_target);
+        ExpandMap expanded = expander.Build(bake_target->GetTransformedTriangles());
 
         unsigned int nIndices = expanded.TriangleBaseIndices().size();
         light_build_data.lightVertices.resize(nIndices);
@@ -35,10 +35,11 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
-                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 100, 10.0f); // sampling 10 photons;
+                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 100, 1.0f); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
                     float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
-                    float A = D3DX_PI * r * r;
+                    float A = D3DX_PI * 1.0f * 1.0f; // FIXME: Use sampling limit radius or farthest photon distance as a radius??
+                    //float A = D3DX_PI * r * r;
                     const float k = 1.1f;
 
                     for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
@@ -66,7 +67,7 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
                 (i / laid_nums_x) * local_map_size + local_pos.y);
 
             Vector2D uv(global_pos.x / (float)LIGHT_MAP_SIZE, global_pos.y / (float)LIGHT_MAP_SIZE);
-            MainVertex src_indices = bake_target->GetVertex(idx);
+            MainVertex src_indices = bake_target->GetMesh()->GetVertex(idx);
             src_indices.lightUV = Vector2D(global_pos.x / (float)LIGHT_MAP_SIZE, global_pos.y / (float)LIGHT_MAP_SIZE);
             light_build_data.lightVertices[idx] = src_indices;
         }

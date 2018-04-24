@@ -16,7 +16,7 @@ MeshExpander::MeshExpander(unsigned int size, unsigned int margin) :
 
 }
 
-static void RasterizeTriangle01(ExpandMap& map, const std::array<_Vector2D<long>, 3>& rasterPositions, Triangle& tri, int idx) {
+static void RasterizeTriangle01(ExpandMap& map, const std::array<_Vector2D<long>, 3>& rasterPositions, const Triangle& tri, int idx) {
     float a = (rasterPositions[2].y - rasterPositions[1].y) / (float)(rasterPositions[2].x - rasterPositions[1].x);
     float b = rasterPositions[1].y - a * rasterPositions[1].x;
 
@@ -41,13 +41,13 @@ static void RasterizeTriangle01(ExpandMap& map, const std::array<_Vector2D<long>
             float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
             float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
-            map(x, y).worldPosition = v2v0 * u + v1v0 * v;
+            map(x, y).worldPosition = Vector4D(tri.v0) + v2v0 * u + v1v0 * v;
             map(x, y).belongsTriangleIdx = idx;
         }
     }
 }
 
-static void RasterizeTriangle02(ExpandMap& map, const std::array<_Vector2D<long>, 3>& rasterPositions, Triangle& tri, int idx) {
+static void RasterizeTriangle02(ExpandMap& map, const std::array<_Vector2D<long>, 3>& rasterPositions, const Triangle& tri, int idx) {
     float a = (rasterPositions[1].y - rasterPositions[0].y) / (float)(rasterPositions[1].x - rasterPositions[0].x);
     float b = rasterPositions[0].y - a * rasterPositions[0].x;
 
@@ -71,26 +71,24 @@ static void RasterizeTriangle02(ExpandMap& map, const std::array<_Vector2D<long>
             float u = (dot11 * dot02 - dot01 * dot12) * invDenom;
             float v = (dot00 * dot12 - dot01 * dot02) * invDenom;
 
-            map(x, y).worldPosition = v2v0 * u + v1v0 * v;
+            map(x, y).worldPosition = Vector4D(tri.v0) + v2v0 * u + v1v0 * v;
             map(x, y).belongsTriangleIdx = idx;
         }
     }
 }
 
-ExpandMap MeshExpander::Build(MeshBase* mesh) {
+ExpandMap MeshExpander::Build(const std::vector<Triangle>& mesh_data) {
     ExpandMap map(_expandSize);
 
-    auto triangles = mesh->GetTriangles();
-
-    auto bake_triangle_size = _expandSize / (int)(std::sqrtf((triangles.size() / 2)) + 1) - _margin;
+    auto bake_triangle_size = _expandSize / (int)(std::sqrtf((mesh_data.size() / 2)) + 1) - _margin;
 
     unsigned int offsetX = 0;
     unsigned int offsetY = _margin;
 
     float _expandSizef = (float)_expandSize;
 
-    for (unsigned int i = 0; i < triangles.size(); i++) {
-        auto& tri = triangles[i];
+    for (unsigned int i = 0; i < mesh_data.size(); i++) {
+        auto& tri = mesh_data[i];
         
         std::array<_Vector2D<long>, 3> mappedVertPositions;
         

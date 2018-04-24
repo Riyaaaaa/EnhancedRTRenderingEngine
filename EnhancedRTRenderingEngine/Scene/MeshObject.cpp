@@ -108,6 +108,26 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
     return intersects;
 }
 
+template<class VertType>
+std::vector<Triangle> MeshObject<VertType>::GetTransformedTriangles() {
+    std::vector<Triangle> triangles(_mesh->GetVertexCount() / 3);
+    auto& index_list = _mesh->GetIndexList();
+    for (int i = 0; i < _mesh->GetVertexCount(); i += 3) {
+        if (_mesh->HasIndexList()) {
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v0.x)), _vertexTransformedCache[index_list[i]]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v1.x)), _vertexTransformedCache[index_list[i + 1]]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[index_list[i + 2]]);
+        }
+        else {
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v0.x)), _vertexTransformedCache[i]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v1.x)), _vertexTransformedCache[i + 1]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[i + 2]);
+        }
+    }
+
+    return triangles;
+}
+
 void MeshObjectBase::DirtyWorldMatrix() {
     SceneObject::DirtyWorldMatrix();
     AABBDirty = true;
