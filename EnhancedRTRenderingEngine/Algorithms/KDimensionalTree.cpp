@@ -13,16 +13,16 @@ KDNode* KDimensionalTree<T>::build(const std::vector<T>& points) {
 }
 
 template<class T>
-std::vector<std::pair<KDNode*, float>> KDimensionalTree<T>::FindNeighborNNodes(Vector3D p, int num) const {
+std::vector<std::pair<KDNode*, float>> KDimensionalTree<T>::FindNeighborNNodes(Vector3D p, int num, float limit_radius) const {
     std::vector<std::pair<KDNode*, float>> nodes;
     nodes.reserve(num);
-    _FindNeighborNNodes(p, num, _root.get(), nodes);
+    _FindNeighborNNodes(p, num, _root.get(), limit_radius * limit_radius, nodes);
 
     return nodes;
 }
 
 template<class T>
-int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, std::vector<std::pair<KDNode*, float>>& nodes) const {
+int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, float limit_radius_sq, std::vector<std::pair<KDNode*, float>>& nodes) const {
     if (!node) {
         return 0;
     }
@@ -30,32 +30,34 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
     int add_nums = 0;
     auto& point = _points[node->index].pos;
     float d = MathUtils::DistanceSq(p, point);
-
-    if (num > nodes.size()) {
-        auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
-            return node.second < d;
-        });
-        nodes.insert(it, std::make_pair(node, d));
-        add_nums = 1;
-    }
-    else {
-        auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
-            return node.second < d;
-        });
-
-        if (it != nodes.end()) {
+    
+    if (d <= limit_radius_sq) {
+        if (num > nodes.size()) {
+            auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
+                return node.second < d;
+            });
             nodes.insert(it, std::make_pair(node, d));
+            add_nums = 1;
         }
+        else {
+            auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
+                return node.second < d;
+            });
 
-        nodes.pop_back();
+            if (it != nodes.end()) {
+                nodes.insert(it, std::make_pair(node, d));
+            }
+
+            nodes.pop_back();
+        }
     }
-
+    
     float axis_d = p[static_cast<int>(node->axis)] - _points[node->index].pos[static_cast<int>(node->axis)];
 
-    add_nums += _FindNeighborNNodes(p, num, axis_d <= 0.0f ? node->left.get() : node->right.get(), nodes);
+    add_nums += _FindNeighborNNodes(p, num, axis_d <= 0.0f ? node->left.get() : node->right.get(), limit_radius_sq, nodes);
 
-    if (fabs(axis_d) < nodes[0].second) {
-        add_nums += _FindNeighborNNodes(p, num, axis_d <= 0.0f ? node->right.get() : node->left.get(), nodes);
+    if (fabs(axis_d) < limit_radius_sq) {
+        add_nums += _FindNeighborNNodes(p, num, axis_d <= 0.0f ? node->right.get() : node->left.get(), limit_radius_sq, nodes);
     }
 
     return add_nums;

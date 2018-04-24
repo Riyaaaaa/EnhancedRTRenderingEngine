@@ -30,31 +30,26 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
         _Vector2D<unsigned int> base_coord(i % laid_nums_x * local_map_size, i / laid_nums_x * local_map_size);
 
         for (unsigned int idx = 0; idx < local_map_size * local_map_size; idx++) {
-            Vector3D raddiance;
+            Vector3D raddiance = Vector3D(0.0f, 0.0f, 0.0f);
             Vector3D accumulated_flux(0.0f, 0.0f, 0.0f);
             _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
-                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10); // sampling 10 photons;
+                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 100, 10.0f); // sampling 10 photons;
+                if (!sampledPhotons.empty()) {
+                    float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
+                    float A = D3DX_PI * r * r;
+                    const float k = 1.1f;
 
-                float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
-                float A = D3DX_PI * r * r;
-                const float k = 1.1f;
-
-                for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
-                    const float w = 1.0 - std::sqrtf(sampledPhotons[photon_idx].second) / (k * r);
-                    accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI; // 
+                    for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
+                        const float w = 1.0 - std::sqrtf(sampledPhotons[photon_idx].second) / (k * r);
+                        accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI; // 
+                    }
+                    accumulated_flux = accumulated_flux / (1.0f - 2.0f / (3.0f / k));
+                    if (r > 0.0f) {
+                        raddiance = accumulated_flux / A;
+                    }
                 }
-                accumulated_flux = accumulated_flux / (1.0f - 2.0f / (3.0f / k));
-                if (r > 0.0f) {
-                    raddiance = accumulated_flux / A;
-                }
-                else {
-                    raddiance = Vector3D(0.0f, 0.0f, 0.0f);
-                }
-            }
-            else {
-                raddiance = Vector3D(0.0f, 0.0f, 0.0f);;
             }
 
             //TODO: photons transfer RGB colors
