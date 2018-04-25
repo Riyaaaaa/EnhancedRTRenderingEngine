@@ -12,8 +12,8 @@ void PrecomputeLightingSystem::Compute(GIImmediateCommands* cmd, RenderScene* sc
             staticMeshesOctree->Register(object);
         }
     }
-
-    PhotonMapping pm;
+    scene->_staticMeshesOctree = std::move(staticMeshesOctree);
+    /*PhotonMapping pm;
     pm.Compute(staticMeshesOctree.get(), scene->GetSourceScene());
 
     LightMapBaker baker;
@@ -22,7 +22,7 @@ void PrecomputeLightingSystem::Compute(GIImmediateCommands* cmd, RenderScene* sc
     auto lightMap = baker.Bake(cmd, src_mesh_objects, pm.kdtree, pm.photons);
     scene->_lightMap = lightMap;
     scene->_staticMeshesOctree = std::move(staticMeshesOctree);
-    scene->rayPaths = pm.rayPaths;
+    scene->rayPaths = pm.rayPaths;*/
 
 
 }
