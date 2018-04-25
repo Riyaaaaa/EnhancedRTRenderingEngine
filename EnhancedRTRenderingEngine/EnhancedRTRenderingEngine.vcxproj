@@ -110,7 +110,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_VARARGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_VARARGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>

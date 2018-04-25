@@ -38,15 +38,17 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
                 auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10, 1.0f); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
                     float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
-                    float A = D3DX_PI * 1.0f * 1.0f; // FIXME: Use sampling limit radius or farthest photon distance as a radius??
-                    //float A = D3DX_PI * r * r;
+                    //float A = D3DX_PI * 3.0f * 3.0f; // FIXME: Use sampling limit radius or farthest photon distance as a radius??
+                    float A = D3DX_PI * r * r;
                     const float k = 1.1f;
 
                     for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
                         const float w = 1.0 - std::sqrtf(sampledPhotons[photon_idx].second) / (k * r);
+
                         accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI; // 
                     }
                     accumulated_flux = accumulated_flux / (1.0f - 2.0f / (3.0f / k));
+                    
                     if (r > 0.0f) {
                         raddiance = accumulated_flux / A;
                     }
@@ -54,9 +56,9 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             }
 
             //TODO: photons transfer RGB colors
-            buf(global_coord.x, global_coord.y, 0) = raddiance.x * 255;
-            buf(global_coord.x, global_coord.y, 1) = raddiance.y * 255;
-            buf(global_coord.x, global_coord.y, 2) = raddiance.z * 255;
+            buf(global_coord.x, global_coord.y, 0) = std::min(255, (int)(raddiance.x));
+            buf(global_coord.x, global_coord.y, 1) = std::min(255, (int)(raddiance.y));
+            buf(global_coord.x, global_coord.y, 2) = std::min(255, (int)(raddiance.z));
             buf(global_coord.x, global_coord.y, 3) = 255;
         }
 

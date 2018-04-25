@@ -43,14 +43,14 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
     if (d <= limit_radius_sq) {
         if (num > nodes.size()) {
             auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
-                return node.second < d;
+                return node.second > d;
             });
             nodes.insert(it, std::make_pair(node, d));
             add_nums = 1;
         }
         else {
             auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
-                return node.second < d;
+                return node.second > d;
             });
 
             if (it != nodes.end()) {
