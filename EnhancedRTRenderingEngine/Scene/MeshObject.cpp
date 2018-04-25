@@ -90,7 +90,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
                 continue;
             }
             float v = MathUtils::Determinant3x3(v1, p, -ray.dir) / det;
-            if (v < 0 || v > 1) {
+            if (v < 0 || u + v > 1) {
                 continue;
             }
             float t = MathUtils::Determinant3x3(v1, v2, p) / det;
