@@ -45,7 +45,9 @@ float4 ps_main(pixcelIn IN) : SV_Target
         }
     }
 
-    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f, materialParameters.roughness * materialParameters.roughness) * materialParameters.metallic;
+    if (UseEnviromentMap > EPSILON) {
+        specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f, materialParameters.roughness * materialParameters.roughness) * materialParameters.metallic;
+    }
     float3 col = saturate(diffuse + specular);
 
     if (UseLightMap > EPSILON) {

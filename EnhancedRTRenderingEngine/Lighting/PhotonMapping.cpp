@@ -5,7 +5,10 @@
 #include "Mesh/MeshExpander.h"
 
 void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scene) {
+    EmmitPhotons(factory, scene);
+}
 
+void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene* scene) {
     auto& pLights = scene->GetPointLights();
     std::vector<Photon> photon_caches;
 
@@ -37,6 +40,10 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
                     return true;
                 }
 
+                if (mat.metallic < 1.0f) {
+                    // If surface is not perfect specular, cache photon
+                    reach_diffuse_surface = true;
+                }
                 return false;
             });
 
@@ -53,5 +60,5 @@ void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scen
     }
 
     kdtree.build(photon_caches);
-    photons = photon_caches;
+    photons.swap(photon_caches);
 }

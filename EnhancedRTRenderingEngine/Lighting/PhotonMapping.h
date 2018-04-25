@@ -14,5 +14,9 @@ public:
     std::vector<Line> rayPaths;
     std::vector<Photon> photons;
     KDimensionalTree<Photon> kdtree;
+
+protected:
+    void EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene* scene);
+    void FinalGathering(SpaceOctree::OctreeFactoryBase* factory, Scene* scene);
 };
 

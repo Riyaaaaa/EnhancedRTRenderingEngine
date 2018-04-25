@@ -95,6 +95,9 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     if (viewObject->HasLightMap()) {
                         mbuf.useLightMap = 1.0f;
                     }
+                    if (viewObject->HasReflectionSource()) {
+                        mbuf.useEnviromentMap = 1.0f;
+                    }
                     desc.byteWidth = sizeof(mbuf);
                     desc.stride = sizeof(float);
                     auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));

@@ -57,6 +57,7 @@ cbuffer MaterialBuffer : register(b1)
 {
     MaterialParameters materialParameters;
     float UseLightMap;
+    float UseEnviromentMap;
 }
 
 float3 PointLighting(float3 diffuseColor, float distance, float3 attenuation) {

@@ -179,6 +179,7 @@ struct MaterialBuffer
     float metallic;
     float roughness;
     float useLightMap = -1.0f; // if negative value, don't use light map 
+    float useEnviromentMap = -1.0f; // if negative value, don't use enviroment map for reflection 
 };
 
 template <class T, std::size_t Align = 16, bool = std::is_class<T>::value>
