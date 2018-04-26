@@ -32,6 +32,19 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
     }
 
     {
+        UIRowLayout row(LayoutAttribute::Dynamic, 60);
+        row.AddWidget(std::make_shared<UIRadioButton>("Lighting",
+            [=]() { return config->RasterizerType() == RasterizerState::Default; },
+            [=]() { config->RasterizerType() = RasterizerState::Default; }
+        ));
+        row.AddWidget(std::make_shared<UIRadioButton>("Wireframe",
+            [=]() { return config->RasterizerType() == RasterizerState::WireFrame; },
+            [=]() { config->RasterizerType() = RasterizerState::WireFrame; }
+        ));
+        window.AddRow(row);
+    }
+
+    {
         UIRowLayout row(LayoutAttribute::Dynamic, 20);
         row.AddWidget(std::make_shared<UIStaticLabel>("background:", UIAlign::LEFT));
         window.AddRow(row);

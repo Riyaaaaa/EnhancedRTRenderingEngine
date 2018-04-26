@@ -29,6 +29,7 @@ UserConfig::UserConfig()
     }
 
     _isDisplayRayPaths = true;
+    _rasterizerType = RasterizerState::Default;
 }
 
 void UserConfig::Flush() {

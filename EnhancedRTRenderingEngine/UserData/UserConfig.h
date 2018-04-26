@@ -27,6 +27,10 @@ public:
         return _quality;
     }
 
+    RasterizerState& RasterizerType() {
+        return _rasterizerType;
+    }
+
     bool IsDisplayRayPaths() const {
         return _isDisplayRayPaths;
     }
@@ -37,6 +41,7 @@ public:
 
 protected:
     bool _isDisplayRayPaths;
+    RasterizerState _rasterizerType;
     MSAAQualityType _quality;
     Vector4D _bgcolor;
 };
