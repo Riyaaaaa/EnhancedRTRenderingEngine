@@ -23,5 +23,7 @@ public:
     RawBinary vShader, pShader;
     Texture2D texture;
     TextureCube cubeTexture;
+
+    static Material Default;
 };
 

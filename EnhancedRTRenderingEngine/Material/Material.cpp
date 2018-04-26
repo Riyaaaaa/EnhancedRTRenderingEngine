@@ -28,3 +28,5 @@ Material::Material(const MaterialParameters& param, const Texture2D& tex) :
 Material::~Material()
 {
 }
+
+Material Material::Default = Material(MaterialParameters{ "LightingVertexShader", "LightingPSMain", "", 0.0f, 0.0f });

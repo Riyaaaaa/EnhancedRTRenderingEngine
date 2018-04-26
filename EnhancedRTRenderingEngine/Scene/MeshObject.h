@@ -67,7 +67,9 @@ template<class VertType>
 class MeshObject : public MeshObjectBase
 {
 public:
-    MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) : _mesh(mesh) {}
+    MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) : _mesh(mesh) {
+        _materials.resize(_mesh->ElementSize(), Material::Default);
+    }
 
     const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return _mesh; }
     MeshBase* GetMeshBase() { return _mesh.get(); }
