@@ -44,7 +44,7 @@ std::vector<Segment> RayTrace(SpaceOctree::OctreeFactoryBase* factory, Ray ray, 
         ray.pos = hit.pos;
     }
 
-    rayRoutes.push_back(Segment(ray.pos, ray.dir * 100));
+    rayRoutes.push_back(Segment(ray.pos, ray.pos + ray.dir * 100));
     return rayRoutes;
 }
 
