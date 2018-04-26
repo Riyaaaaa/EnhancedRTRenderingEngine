@@ -55,7 +55,12 @@ int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
     return SpaceNum;
 }
 
-_Vector3D<uint8_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& pos) {
+_Vector3D<uint8_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& pos_) {
+    Vector3D pos;
+    pos.x = std::max(_rootAABB.bpos.x, std::min(pos_.x, _rootAABB.epos.x - 1e-5f));
+    pos.y = std::max(_rootAABB.bpos.y, std::min(pos_.y, _rootAABB.epos.y - 1e-5f));
+    pos.z = std::max(_rootAABB.bpos.z, std::min(pos_.z, _rootAABB.epos.z - 1e-5f));
+
     return _Vector3D<uint8_t>(
         static_cast<uint8_t>((pos.x - _rootAABB.bpos.x) / _minBoxSize.w),
         static_cast<uint8_t>((pos.y - _rootAABB.bpos.y) / _minBoxSize.h),
