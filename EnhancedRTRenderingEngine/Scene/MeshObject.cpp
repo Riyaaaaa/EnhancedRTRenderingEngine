@@ -62,7 +62,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
     auto& face_map = _mesh->GetDrawElementMap();
     unsigned int start_idx = 0;
     for (unsigned int i = 0; i < face_map.size(); i++) {
-        for (int j = start_idx; j < face_map[i].faceIdx + face_map[i].faceNumVerts; j += 3) {
+        for (int j = start_idx; j < start_idx + face_map[i].faceNumVerts; j += 3) {
             Vector3D v1;
             Vector3D v2;
             Vector3D v0;
@@ -90,7 +90,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
                 continue;
             }
             float v = MathUtils::Determinant3x3(v1, p, -ray.dir) / det;
-            if (v < 0 || u + v > 1) {
+            if (v < 0 || u + v > 1.0) {
                 continue;
             }
             float t = MathUtils::Determinant3x3(v1, v2, p) / det;
@@ -102,7 +102,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
             auto normal = MathUtils::Normalize(MathUtils::Cross(v1, v2));
             intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Reflect(toPoint, normal), toPoint.Length(), face_map[i].materialIdx));
         }
-        start_idx += face_map[i].faceIdx + face_map[i].faceNumVerts;
+        start_idx += face_map[i].faceNumVerts;
     }
 
     return intersects;
