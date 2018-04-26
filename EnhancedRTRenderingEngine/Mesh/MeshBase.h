@@ -22,7 +22,7 @@ public:
     unsigned int GetVertexCount() const { return _vertexCount; }
     bool HasIndexList() const { return !_indexList.empty(); }
     int GetMaterialNum() const { return _materialNum; }
-    std::size_t GetDrawTargetNum() const { return _elements.size(); }
+    std::size_t ElementSize() const { return _elements.size(); }
     const std::vector<ElementDesc>& GetDrawElementMap() const { return _elements; }
 
     void SetPrimitiveType(VertexPrimitiveType type) { _primitiveType = type; }
