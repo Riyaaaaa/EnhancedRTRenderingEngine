@@ -255,7 +255,7 @@ struct _Vector<T, 4> {
     }
 
     template<unsigned int Dim>
-    _Vector<T, Dim> Slice() {
+    _Vector<T, Dim> Slice() const {
         static_assert(Dim < 4, "Sliced dimension is invalid value");
         _Vector<T, Dim> v;
         for (unsigned int i = 0; i < Dim; i++) {

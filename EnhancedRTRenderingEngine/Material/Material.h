@@ -17,6 +17,7 @@ public:
     Material(const MaterialParameters& param, const Texture2D& texture);
 
     float roughness, metallic;
+    Vector3D baseColor;
     Vector3D specular;
     ShadingType shadingType = ShadingType::BasePass;
     TextureType type = TextureType::None;

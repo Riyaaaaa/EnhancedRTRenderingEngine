@@ -1160,6 +1160,7 @@
     <FxCompile Include="Shader\TextureVertexShader.hlsl" />
     <FxCompile Include="Shader\HUD\HUDVertexShader.hlsl" />
     <FxCompile Include="Shader\HUD\HUDPixelShader.hlsl" />
+    <FxCompile Include="Shader\LightingPSBaseColor.hlsl" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

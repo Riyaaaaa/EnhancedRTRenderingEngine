@@ -91,7 +91,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                         texture->Initialize(cmd, param, material.cubeTexture.textures);
                     }
 
-                    MaterialBuffer mbuf{ material.metallic, material.roughness };
+                    MaterialBuffer mbuf{ material.baseColor, material.metallic, material.roughness };
                     if (viewObject->HasLightMap()) {
                         mbuf.useLightMap = 1.0f;
                     }

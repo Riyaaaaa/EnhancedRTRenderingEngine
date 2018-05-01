@@ -47,7 +47,16 @@ MeshObject<typename Mesh3DModel::Type>* SceneUtils::CreateMesh3DModelObject(cons
 MeshObject<typename Mesh3DModel::Type>* SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
     MeshObject<typename Mesh3DModel::Type>* mesh = new MeshObject<typename Mesh3DModel::Type>(mesh3D);
-    mesh->SetMaterial(mesh3D->CreatePMDDefaultMaterials());
+
+    std::vector<Material> materials(model.mesh.meshMaterialList.nMaterials, Material::Default);
+    auto& material_data = model.mesh.meshMaterialList;
+
+    for (int i = 0; i < material_data.nMaterials; i++) {
+        materials[i].baseColor = material_data.materials[i].faceColor.Slice<3>();
+        materials[i].specular = material_data.materials[i].specularColor;
+    }
+
+    mesh->SetMaterial(materials);
 
     return mesh;
 }

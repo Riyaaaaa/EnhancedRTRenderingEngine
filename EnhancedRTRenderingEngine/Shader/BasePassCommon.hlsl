@@ -34,6 +34,7 @@ struct PointLightParam
 
 struct MaterialParameters
 {
+    float3 BaseColor;
     float metallic;
     float roughness;
 };

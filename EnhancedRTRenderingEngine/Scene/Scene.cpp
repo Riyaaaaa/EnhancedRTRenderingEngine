@@ -32,7 +32,7 @@ void Scene::CreateSkyTestScene() {
     cameraObjects.push_back(camera);
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.2f, 0.0f });
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", Vector3D(), 0.2f, 0.0f });
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
@@ -84,12 +84,12 @@ void Scene::CreateGITestScene() {
     cameraObjects.push_back(camera);
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.2f, 0.0f });
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", Vector3D(), 0.2f, 0.0f });
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
     auto model2 = ResourceLoader::LoadDXModel("sphere");
-    auto model3 = ResourceLoader::LoadDXModel("reversed_box");
+    auto model3 = ResourceLoader::LoadDXModel("cornell_box");
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model3()));
     viewObjects.back()->SetLocation(Vector3D{ 1.0f, 15.0f, 5.0f });

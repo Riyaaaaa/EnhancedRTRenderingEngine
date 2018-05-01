@@ -176,6 +176,7 @@ struct ObjectBuffer
 __declspec(align(16))
 struct MaterialBuffer
 {
+    Vector3D baseColor;
     float metallic;
     float roughness;
     float useLightMap = -1.0f; // if negative value, don't use light map 
