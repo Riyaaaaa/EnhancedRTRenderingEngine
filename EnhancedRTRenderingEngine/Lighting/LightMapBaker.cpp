@@ -6,6 +6,8 @@
 #include "Structure/TextureBuffer.h"
 #include "Utility/MathUtils.h"
 
+#include "Common/Defines.h"
+
 GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<MeshObject<MainVertex>*>& bake_targets, const KDimensionalTree<Photon>& photonKdTree, const std::vector<Photon>& photons) {
     unsigned int mesh_nums = bake_targets.size();
     unsigned int local_map_size = LIGHT_MAP_SIZE / mesh_nums;
@@ -29,13 +31,18 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
 
         _Vector2D<unsigned int> base_coord(i % laid_nums_x * local_map_size, i / laid_nums_x * local_map_size);
 
+#ifdef SUPPORT_MULTI_PROCESS_OMP
+#pragma omp parallel for
+        for (int idx = 0; idx < static_cast<int>(local_map_size * local_map_size); idx++) {
+#elif
         for (unsigned int idx = 0; idx < local_map_size * local_map_size; idx++) {
+#endif
             Vector3D raddiance = Vector3D(0.0f, 0.0f, 0.0f);
             Vector3D accumulated_flux(0.0f, 0.0f, 0.0f);
             _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
-                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10, 1.0f); // sampling 10 photons;
+                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10, 3.0f); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
                     float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
                     //float A = D3DX_PI * 3.0f * 3.0f; // FIXME: Use sampling limit radius or farthest photon distance as a radius??

@@ -4,6 +4,14 @@
 #include "SpiralLibrary/Random/Random.hpp"
 #include "Mesh/MeshExpander.h"
 
+#include "Common/Defines.h"
+
+#ifdef SUPPORT_MULTI_PROCESS_OMP
+#include <omp.h>
+#endif
+
+using namespace libspiral;
+
 void PhotonMapping::Compute(SpaceOctree::OctreeFactoryBase* factory, Scene* scene) {
     EmmitPhotons(factory, scene);
 }
@@ -18,10 +26,12 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
 
         constexpr int nEmitPhotons = 500;
         float flux = intensity * 4 * D3DX_PI / nEmitPhotons;
-
+#ifdef SUPPORT_MULTI_PROCESS_OMP
+#pragma omp parallel for
+#endif
         for (int i = 0; i < nEmitPhotons; i++) {
-            auto sita = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 2 * D3DX_PI});
-            auto phi = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 2 * D3DX_PI});
+            auto sita = Random<>::getValue(Range<float>{0.0f, 2 * D3DX_PI});
+            auto phi = Random<>::getValue(Range<float>{0.0f, 2 * D3DX_PI});
 
             Ray ray(pos, Vector3D(std::sinf(sita) * std::cosf(phi),
                 std::sinf(sita) * std::sinf(phi),
@@ -30,7 +40,7 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
             bool reach_diffuse_surface = false;
 
             auto result = RayTraceIf(factory, ray, [&](const Material& mat, int trace_count) {
-                float rand = libspiral::Random<>::getValue(libspiral::Range<float>{0.0f, 1.0f});
+                float rand = Random<>::getValue(Range<float>{0.0f, 1.0f});
                 if (rand > mat.metallic) {
                     reach_diffuse_surface = true;
                     return false;

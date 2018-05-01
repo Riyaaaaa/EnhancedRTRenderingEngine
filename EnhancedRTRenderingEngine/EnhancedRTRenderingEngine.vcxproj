@@ -114,6 +114,7 @@
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
