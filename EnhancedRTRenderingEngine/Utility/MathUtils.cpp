@@ -11,6 +11,10 @@ float MathUtils::Dot(const Vector3D& v1, const Vector3D& v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
+Vector3D MathUtils::Multiply(const Vector3D& v1, const Vector3D& v2) {
+    return Vector3D(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
+}
+
 Vector3D MathUtils::Cross(const Vector3D& v1, const Vector3D& v2) {
     return Vector3D{v1.y * v2.z - v1.z * v2.y,
                     v1.z * v2.x - v1.x * v2.z,

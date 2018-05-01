@@ -31,4 +31,4 @@ Material::~Material()
 {
 }
 
-Material Material::Default = Material(MaterialParameters{ "LightingVertexShader", "LightingPSBaseColor", "", Vector3D(0.8f, 0.8f, 0.8f), 0.0f, 0.0f });
+Material Material::Default = Material(MaterialParameters{ "LightingVertexShader", "LightingPSBaseColor", "", Vector3D(0.8f, 0.8f, 0.8f), 0.0f, 0.5f });

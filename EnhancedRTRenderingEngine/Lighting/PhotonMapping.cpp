@@ -3,6 +3,7 @@
 #include "Common/Common.h"
 #include "SpiralLibrary/Random/Random.hpp"
 #include "Mesh/MeshExpander.h"
+#include "Utility/MathUtils.h"
 
 #include "Common/Defines.h"
 
@@ -24,8 +25,9 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
         auto pos = pLight.GetPoint();
         auto intensity = pLight.Intensity();
 
-        constexpr int nEmitPhotons = 500;
-        float flux = intensity * 4 * D3DX_PI / nEmitPhotons;
+        constexpr int nEmitPhotons = 10000;
+        float flux_ = intensity * 4 * D3DX_PI / nEmitPhotons;
+        Vector3D flux(flux_, flux_, flux_);
 #ifdef SUPPORT_MULTI_PROCESS_OMP
 #pragma omp parallel for
 #endif
@@ -41,12 +43,16 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
 
             auto result = RayTraceIf(factory, ray, [&](const Material& mat, int trace_count) {
                 float rand = Random<>::getValue(Range<float>{0.0f, 1.0f});
-                if (rand > mat.metallic) {
+                // todo: support texture surface
+                float prob = (mat.baseColor.x + mat.baseColor.y + mat.baseColor.z) / 3.0f;
+                if (rand > prob) {
                     reach_diffuse_surface = true;
                     return false;
                 }
 
                 if (trace_count < 3) {
+                    // todo: support texture surface
+                    flux = MathUtils::Multiply(flux, mat.baseColor) / prob;
                     return true;
                 }
 
@@ -54,12 +60,13 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
                     // If surface is not perfect specular, cache photon
                     reach_diffuse_surface = true;
                 }
+
                 return false;
             });
 
             if (!result.empty() && reach_diffuse_surface) {
                 photon_caches.push_back(Photon(result.back().epos,
-                    Vector3D(flux, flux, flux),
+                    flux,
                     result.back().epos - result.back().bpos));
             }
 
