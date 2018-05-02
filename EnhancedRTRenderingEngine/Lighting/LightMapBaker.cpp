@@ -49,12 +49,16 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
                     float A = D3DX_PI * r * r;
                     const float k = 1.1f;
 
-                    for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
-                        const float w = 1.0 - std::sqrtf(sampledPhotons[photon_idx].second) / (k * r);
+                    //for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
+                    //    const float w = 1.0 - std::sqrtf(sampledPhotons[photon_idx].second) / (k * r);
 
-                        accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI; // 
+                    //    accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI; // 
+                    //}
+                    //accumulated_flux = accumulated_flux / (1.0f - 2.0f / (3.0f / k));
+
+                    for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
+                        accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power / D3DX_PI; // 
                     }
-                    accumulated_flux = accumulated_flux / (1.0f - 2.0f / (3.0f / k));
                     
                     if (r > 0.0f) {
                         raddiance = accumulated_flux / A;
