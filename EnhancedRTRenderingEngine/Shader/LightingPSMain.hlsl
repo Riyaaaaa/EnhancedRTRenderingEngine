@@ -51,7 +51,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 col = saturate(diffuse + specular);
 
     if (UseLightMap > EPSILON) {
-        col += LightMap.Sample(LightSampler, IN.lightUV);
+        col += diffuseColor * LightMap.Sample(LightSampler, IN.lightUV);
     }
 
     return float4(col, 1.0f);
