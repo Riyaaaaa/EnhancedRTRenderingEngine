@@ -50,7 +50,7 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
 
     auto ps = Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect));
-    ps.textureResources.emplace_back(src, 0);
+    ps.textureResources[UnlitMainTexture] = src;
 
     DrawElement face(&element, mesh->GetMesh()->GetVertexCount(), 0);
     face.SetShaders(ps, ShaderFactory::TextureVertexShader());

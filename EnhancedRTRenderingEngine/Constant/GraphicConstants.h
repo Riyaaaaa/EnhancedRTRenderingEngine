@@ -26,3 +26,10 @@ enum class ShadingType {
     Geometry
 };
 
+enum PSRegisterSlots {
+    BasePassMaterialBuffer = 1,
+    BasePassMainTexture = 10,
+    MinTextureColorMainTexture = 0,
+    UnlitMainTexture = 0
+};
+

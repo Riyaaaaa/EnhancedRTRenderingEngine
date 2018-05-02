@@ -1,5 +1,7 @@
 #pragma once
 
+#include <unordered_map>
+
 #include "Resource/RawBinary.h"
 #include "Resource/ResourceLoader.h"
 
@@ -15,8 +17,8 @@ struct Shader : public RawBinary {
 
     ShadingType type = ShadingType::None;
 
-    std::vector<std::pair<GITextureProxy, unsigned int>> textureResources;
-    std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> constantBuffers;
+    std::unordered_map<unsigned int, GITextureProxy> textureResources;
+    std::unordered_map<unsigned int, std::shared_ptr<GIBuffer>> constantBuffers;
 };
 
 namespace ShaderFactory

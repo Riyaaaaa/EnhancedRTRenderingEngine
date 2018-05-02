@@ -95,8 +95,16 @@ void D3D11ImmediateCommands::SetViewport(const ViewportCfg& cfg) {
     _deviceContext->RSSetViewports(1, &d3d11_cfg);
 }
 
-void D3D11ImmediateCommands::UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) {
-    _deviceContext->UpdateSubresource(CastRes<D3D11Buffer>(buffer).Get(), 0, nullptr, srcData, srcRowPitch, 0);
+void D3D11ImmediateCommands::UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch, boost::optional<ResourceRegion> region) {
+    D3D11_BOX box{0};
+    D3D11_BOX* box_ptr = nullptr;
+    if (region) {
+        box.left = region->left;
+        box.right = region->right;
+        box_ptr = &box;
+    }
+
+    _deviceContext->UpdateSubresource(CastRes<D3D11Buffer>(buffer).Get(), 0, box_ptr, srcData, srcRowPitch, 0);
 }
 
 void D3D11ImmediateCommands::CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src) {

@@ -52,3 +52,8 @@ struct ScissorRect {
     long bottom;
 };
 
+struct ResourceRegion {
+    unsigned int left;
+    unsigned int right;
+};
+

@@ -222,6 +222,7 @@
     <ClInclude Include="Structure\RaytraceStructures.h" />
     <ClInclude Include="Structure\TextureBuffer.h" />
     <ClInclude Include="Structure\Voxel.h" />
+    <ClInclude Include="System\Observer.h" />
     <ClInclude Include="ThirdParty\include\nuklear\nuklear.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\allocators.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\cursorstreamwrapper.h" />
@@ -277,6 +278,7 @@
     <ClInclude Include="GUI\UINumericProperty.h" />
     <ClInclude Include="GUI\UIComboColor.h" />
     <ClInclude Include="GUI\UIColorPicker.h" />
+    <ClInclude Include="UserData\SettingsEvent.h" />
     <ClInclude Include="UserData\UserConfig.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
     <ClInclude Include="Utility\MathUtils.h" />

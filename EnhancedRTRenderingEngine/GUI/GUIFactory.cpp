@@ -11,9 +11,21 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
     auto* config = UserConfig::getInstance();
 
     {
+        UIRowLayout row(LayoutAttribute::Dynamic, 20);
+        row.AddWidget(std::make_shared<UIStaticLabel>("visibles", UIAlign::LEFT));
+        window.AddRow(row);
+    }
+
+    {
         UIRowLayout row(LayoutAttribute::Dynamic, 30);
-        row.AddWidget(std::make_shared<UIButtonLabel>("visible ray", [config]() {
+        row.AddWidget(std::make_shared<UIButtonLabel>("rays", [config]() {
             config->SwitchDisplayRayPaths();
+        }));
+        row.AddWidget(std::make_shared<UIButtonLabel>("indirect lights", [config]() {
+            config->SwitchVisbleIndirectLights();
+        }));
+        row.AddWidget(std::make_shared<UIButtonLabel>("reflections", [config]() {
+            config->SwitchVisibleReflections();
         }));
         window.AddRow(row);
     }

@@ -9,8 +9,12 @@
 #include "Structure/Structure.h"
 #include "Structure/Vector.h"
 
+#include "System/Observer.h"
 
-class UserConfig : public libspiral::SingletonBase<UserConfig>
+#include "SettingsEvent.h"
+
+
+class UserConfig : public libspiral::SingletonBase<UserConfig>, public ERTRESystem::Subject<UserConfigEvent>
 {
 public:
     UserConfig();
@@ -35,12 +39,32 @@ public:
         return _isDisplayRayPaths;
     }
 
+    bool VisibleIndirectLights() const {
+        return _visibleIndirectLights;
+    }
+
+    bool VisibleReflections() const {
+        return _visibleReflections;
+    }
+
     void SwitchDisplayRayPaths() {
-        _isDisplayRayPaths = !_isDisplayRayPaths;
+        _isDisplayRayPaths = !_isDisplayRayPaths;        
+    }
+
+    void SwitchVisbleIndirectLights() {
+        _visibleIndirectLights = !_visibleIndirectLights;
+        Notify(UserConfigEvent::ChangedLightMapSetting);
+    }
+
+    void SwitchVisibleReflections() {
+        _visibleReflections = !_visibleReflections;
+        Notify(UserConfigEvent::ChangedReflectionSetting);
     }
 
 protected:
     bool _isDisplayRayPaths;
+    bool _visibleIndirectLights;
+    bool _visibleReflections;
     RasterizerState _rasterizerType;
     MSAAQualityType _quality;
     Vector4D _bgcolor;

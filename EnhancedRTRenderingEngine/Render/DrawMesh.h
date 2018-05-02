@@ -52,6 +52,10 @@ public:
         return _gshader;
     }
 
+    DrawMesh* ParentMesh() const {
+        return _parentMesh;
+    }
+
     void Draw(GIImmediateCommands* cmd);
 
 protected:

@@ -24,7 +24,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
 
     DrawMesh element(cmd, mesh);
     auto ps = ShaderFactory::MinTextureColor();
-    ps.textureResources.emplace_back(textureProxy, 10);
+    ps.textureResources[BasePassMainTexture] = textureProxy;
 
     DrawElement face(&element, static_cast<unsigned int>(mesh->GetMesh()->GetVertexCount()), 0);
     face.SetShaders(ps, ShaderFactory::TextureVertexShader());
@@ -67,10 +67,10 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
         cmd->CopyTexture2DFromArray(faceTextureSrc.get(), texture->GetTexture().get(), index, param.mipLevels);
 
         auto faceTexture = MakeRef(cmd->CreateTextureProxy(faceTextureSrc, SamplerParam()));
-        ps.textureResources.emplace_back(faceTexture, 0);
+        ps.textureResources[MinTextureColorMainTexture] = faceTexture;
     }
     else {
-        ps.textureResources.emplace_back(texture, 0);
+        ps.textureResources[MinTextureColorMainTexture] = texture;
     }
 
     DrawElement face(&element, mesh->GetMesh()->GetVertexCount(), 0);

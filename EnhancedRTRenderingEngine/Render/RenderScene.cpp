@@ -5,8 +5,33 @@
 
 #include "GraphicsInterface/GIImmediateCommands.h"
 
+#include "UserData/UserConfig.h"
+
 RenderScene::~RenderScene()
 {
+}
+
+void  RenderScene::Notify(UserConfigEvent e) {
+    switch (e) {
+    case UserConfigEvent::ChangedLightMapSetting:
+        _refreshTasks.push([this](GIImmediateCommands* cmd) {
+            for (auto && draw_element : _drawList) {
+                draw_element.ParentMesh();
+                auto buffer = draw_element.PS().constantBuffers.at(BasePassMaterialBuffer);
+
+                float use_light_map = -1.0f;
+                if (UserConfig::getInstance()->VisibleIndirectLights()) {
+                    use_light_map = 1.0f;
+                }
+
+                ResourceRegion region;
+                region.left = offsetof(MaterialBuffer, useLightMap);
+                region.right = region.left + sizeof(use_light_map);
+                cmd->UpdateSubresource(buffer.get(), &use_light_map, sizeof(use_light_map), region);
+            }
+        });   
+        break;
+    }
 }
 
 void RenderScene::Preprocess(GIImmediateCommands* cmd) {
@@ -15,6 +40,11 @@ void RenderScene::Preprocess(GIImmediateCommands* cmd) {
 }
 
 void RenderScene::Refresh(GIImmediateCommands* cmd) {
+    while (_refreshTasks.empty()) {
+        _refreshTasks.front()(cmd);
+        _refreshTasks.pop();
+    }
+
     if (_scene->Dirty()) {
         if (_scene->LightDirty()) {
             _directionalShadows.clear();
@@ -101,11 +131,10 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     desc.byteWidth = sizeof(mbuf);
                     desc.stride = sizeof(float);
                     auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));
-                    cmd->UpdateSubresource(materialBuffer.get(), &mbuf, sizeof(mbuf));
 
                     Shader ps(material.shadingType, material.pShader);
-                    ps.constantBuffers.emplace_back(materialBuffer, 1);
-                    ps.textureResources.emplace_back(texture, 10);
+                    ps.constantBuffers[BasePassMaterialBuffer] = materialBuffer;
+                    ps.textureResources[BasePassMainTexture] = texture;
 
                     DrawMesh* parent;
                     if (viewObject->HasLightMap()) {

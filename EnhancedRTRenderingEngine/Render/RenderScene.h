@@ -1,18 +1,26 @@
 #pragma once
 
 #include <unordered_map>
+#include <queue>
 
 #include "Algorithms/SpaceOctree.h"
 #include "GraphicsInterface/GITextureProxy.h"
 #include "Scene/Scene.h"
 
+#include "System/Observer.h"
+
+#include "UserData/SettingsEvent.h"
+
 #include "DrawMesh.h"
 
-class RenderScene
+
+class RenderScene : public ERTRESystem::Observer<UserConfigEvent>
 {
 public:
     RenderScene(Scene* scene) : _scene(scene) {}
     ~RenderScene();
+
+    void Notify(UserConfigEvent e) override;
 
     void Preprocess(GIImmediateCommands* cmd);
 
@@ -42,6 +50,8 @@ protected:
     std::vector<DrawElement> _drawList;
     std::unordered_map<std::size_t, DrawMesh> _staticDrawMeshes;
     std::unordered_map<std::size_t, DrawMesh> _bakedLightMeshes;
+
+    std::queue<std::function<void(GIImmediateCommands*)>> _refreshTasks;
 
 public: // fixme
     std::unique_ptr<SpaceOctree::HashedOctreeFactory> _staticMeshesOctree;

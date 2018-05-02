@@ -46,7 +46,7 @@ void DrawElement::Draw(GIImmediateCommands* cmd) {
     cmd->VSSetShader(vshader.get());
 
     for (auto && cbuffer : VS().constantBuffers) {
-        cmd->VSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
+        cmd->VSSetConstantBuffers(cbuffer.first, cbuffer.second.get());
     }
 
     if (PS().isValid()) {
@@ -54,14 +54,14 @@ void DrawElement::Draw(GIImmediateCommands* cmd) {
         cmd->PSSetShader(pshader.get());
 
         for (auto&& texRes : PS().textureResources) {
-            if (texRes.first->IsAvalable()) {
-                cmd->PSSetShaderResources(texRes.second, texRes.first->GetSubResourceView().get());
-                cmd->PSSetSamplers(texRes.second, texRes.first->GetSampler().get());
+            if (texRes.second->IsAvalable()) {
+                cmd->PSSetShaderResources(texRes.first, texRes.second->GetSubResourceView().get());
+                cmd->PSSetSamplers(texRes.first, texRes.second->GetSampler().get());
             }
         }
 
         for (auto && cbuffer : PS().constantBuffers) {
-            cmd->PSSetConstantBuffers(cbuffer.second, cbuffer.first.get());
+            cmd->PSSetConstantBuffers(cbuffer.first, cbuffer.second.get());
         }
     }
 
