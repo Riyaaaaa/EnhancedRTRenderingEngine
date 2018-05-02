@@ -100,7 +100,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
 
             auto toPoint = ray.dir * t;
             auto normal = MathUtils::Normalize(MathUtils::Cross(v1, v2));
-            intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Reflect(toPoint, normal), toPoint.Length(), face_map[i].materialIdx));
+            intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Reflect(toPoint, normal), ray.dir, toPoint.Length(), face_map[i].materialIdx));
         }
         start_idx += face_map[i].faceNumVerts;
     }

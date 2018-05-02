@@ -44,11 +44,15 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
 
             Vector3D now_flux = flux;
 
-            auto result = RayTraceIf(factory, ray, [&](const Material& mat, int trace_count) {
+            auto result = RayTraceIf(factory, ray, [&](const Material& mat, const Hit& hit, int trace_count) {
+                photon_caches.push_back(Photon(hit.pos,
+                    now_flux,
+                    hit.incident));
+
                 float rand = Random<>::getValue(Range<float>{0.0f, 1.0f});
                 // todo: support texture surface
                 float prob = (mat.baseColor.x + mat.baseColor.y + mat.baseColor.z) / 3.0f;
-                if (rand > prob && trace_count > 1) {
+                if (rand > prob) {
                     reach_diffuse_surface = true;
                     return false;
                 }
@@ -66,12 +70,6 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
 
                 return false;
             });
-
-            if (!result.empty() && reach_diffuse_surface) {
-                photon_caches.push_back(Photon(result.back().epos,
-                    now_flux,
-                    result.back().epos - result.back().bpos));
-            }
 
             for (auto && seg : result) {
                 rayPaths.push_back(Line(seg, Color3B{ 255, 0, 0 }, 0.1f));
