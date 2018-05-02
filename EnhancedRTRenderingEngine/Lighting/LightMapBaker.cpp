@@ -42,22 +42,34 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
-                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), 10, 3.0f); // sampling 10 photons;
+                constexpr unsigned int nSamples = 10;
+                constexpr float sample_radius = 3.0f;
+                auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), nSamples, sample_radius); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
                     float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
-                    //float A = D3DX_PI * 3.0f * 3.0f; // FIXME: Use sampling limit radius or farthest photon distance as a radius??
-                    float A = D3DX_PI * r * r;
+
+                    float A;
+                    if (nSamples == sampledPhotons.size()) {
+                        A = D3DX_PI * r * r;
+                    }
+                    else {
+                        // If enough photons do not gather, divide by search area
+                        // FIXME: Use sampling limit radius or farthest photon distance as a radius??
+                        A = D3DX_PI * sample_radius * sample_radius; 
+                    }
+                    
                     const float k = 1.1f;
 
+                    // TODO: When use cone filter, it triggers fatal artifacts...
                     //for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
                     //    const float w = 1.0 - std::sqrtf(sampledPhotons[photon_idx].second) / (k * r);
 
-                    //    accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI; // 
+                    //    accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power * w / D3DX_PI;
                     //}
                     //accumulated_flux = accumulated_flux / (1.0f - 2.0f / (3.0f / k));
 
                     for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
-                        accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power / D3DX_PI; // 
+                        accumulated_flux += photons[sampledPhotons[photon_idx].first->index].power / D3DX_PI; 
                     }
                     
                     if (r > 0.0f) {
