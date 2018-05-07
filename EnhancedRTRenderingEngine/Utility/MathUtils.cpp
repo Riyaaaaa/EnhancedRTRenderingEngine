@@ -11,6 +11,14 @@ float MathUtils::Dot(const Vector3D& v1, const Vector3D& v2) {
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
 }
 
+Vector3D MathUtils::CalcNormal(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2) {
+    return MathUtils::Normalize(MathUtils::Cross(v1 - v0, v2 - v1));
+}
+
+Vector3D MathUtils::CalcNormal(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2, const Vector3D& v3) {
+    return MathUtils::Normalize(MathUtils::Cross(v0 - v2, v1 - v3));
+}
+
 Vector3D MathUtils::Multiply(const Vector3D& v1, const Vector3D& v2) {
     return Vector3D(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z);
 }

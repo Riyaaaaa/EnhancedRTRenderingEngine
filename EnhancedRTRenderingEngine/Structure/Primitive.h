@@ -19,4 +19,5 @@ struct Line {
 
 struct Triangle {
     Vector3D v0, v1, v2;
+    Vector3D normal;
 };

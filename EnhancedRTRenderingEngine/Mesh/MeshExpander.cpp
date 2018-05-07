@@ -78,14 +78,14 @@ static void RasterizeTriangle02(ExpandMap& map, const std::array<_Vector2D<long>
 }
 
 ExpandMap MeshExpander::Build(const std::vector<Triangle>& mesh_data) {
-    ExpandMap map(_expandSize);
-
     auto bake_triangle_size = _expandSize / (int)(std::sqrtf((mesh_data.size() / 2)) + 1) - _margin;
 
     unsigned int offsetX = 0;
     unsigned int offsetY = _margin;
 
     float _expandSizef = (float)_expandSize;
+
+    ExpandMap map(_expandSize, mesh_data.size());
 
     for (unsigned int i = 0; i < mesh_data.size(); i++) {
         auto& tri = mesh_data[i];
@@ -116,6 +116,7 @@ ExpandMap MeshExpander::Build(const std::vector<Triangle>& mesh_data) {
         }
  
         map.AddTriangle(mappedVertPositions[0], mappedVertPositions[1], mappedVertPositions[2]);
+        map.SetNormal(tri.normal, i);
     }
 
     return map;

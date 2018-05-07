@@ -100,7 +100,7 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
 
             auto toPoint = ray.dir * t;
             auto normal = MathUtils::Normalize(MathUtils::Cross(v1, v2));
-            intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Reflect(toPoint, normal), ray.dir, toPoint.Length(), face_map[i].materialIdx));
+            intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Normalize(MathUtils::Reflect(toPoint, normal)), ray.dir, toPoint.Length(), face_map[i].materialIdx));
         }
         start_idx += face_map[i].faceNumVerts;
     }
@@ -123,6 +123,8 @@ std::vector<Triangle> MeshObject<VertType>::GetTransformedTriangles() {
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v1.x)), _vertexTransformedCache[i + 1]);
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[i + 2]);
         }
+
+        triangles[i / 3].normal = MathUtils::CalcNormal(triangles[i / 3].v0, triangles[i / 3].v1, triangles[i / 3].v2);
     }
 
     return triangles;

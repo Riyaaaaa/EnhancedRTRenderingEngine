@@ -16,6 +16,9 @@ namespace MathUtils
         return dot;
     }
 
+    Vector3D CalcNormal(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2);
+    Vector3D CalcNormal(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2, const Vector3D& v3);
+
     Vector3D Multiply(const Vector3D& v1, const Vector3D& v2);
     Vector3D Cross(const Vector3D& v1, const Vector3D& v2);
     Vector3D Normalize(const Vector3D& v);
