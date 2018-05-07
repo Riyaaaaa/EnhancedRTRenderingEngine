@@ -55,9 +55,8 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
 
             if (it != nodes.end()) {
                 nodes.insert(it, std::make_pair(node, d));
+                nodes.pop_back();
             }
-
-            nodes.pop_back();
         }
     }
     
@@ -66,7 +65,7 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
     add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->left.get() : node->right.get(), limit_radius_sq, nodes);
 
     float axis_d_sq = axis_d * axis_d;
-    if (num < nodes.size()) {
+    if (num <= nodes.size()) {
         if (axis_d_sq < nodes.back().second) {
             add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->right.get() : node->left.get(), limit_radius_sq, nodes);
         }
