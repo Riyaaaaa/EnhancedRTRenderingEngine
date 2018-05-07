@@ -25,7 +25,10 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
         auto pos = pLight.GetPoint();
         auto intensity = pLight.Intensity();
 
-        constexpr int nEmitPhotons = 100;
+        constexpr int nEmitPhotons = 10000;
+        constexpr int MAX_BOUNCES = 3;
+        rayPaths.reserve(nEmitPhotons * MAX_BOUNCES);
+        photon_caches.reserve(nEmitPhotons * MAX_BOUNCES);
 
         float flux_ = intensity * 4 * D3DX_PI / nEmitPhotons;
         Vector3D flux(flux_, flux_, flux_);
@@ -57,7 +60,7 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
                     return false;
                 }
 
-                if (trace_count < 3) {
+                if (trace_count < MAX_BOUNCES) {
                     // todo: support texture surface
                     now_flux = MathUtils::Multiply(now_flux, mat.baseColor) / prob;
                     return true;
