@@ -71,7 +71,6 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
                     for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
                         auto& photon = photons[sampledPhotons[photon_idx].first->index];
                         float cos = MathUtils::Dot(expanded.GetNormal(triangle_idx), -photon.incident);
-                        assert(cos <= 1.0f);
                         accumulated_flux += photon.power * cos / D3DX_PI;
                     }
                     

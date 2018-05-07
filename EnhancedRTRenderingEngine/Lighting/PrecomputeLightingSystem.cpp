@@ -1,4 +1,8 @@
 #include "stdafx.h"
+
+#include <boost/timer.hpp>
+
+#include "Common/Common.h"
 #include "PrecomputeLightingSystem.h"
 #include "Lighting/PhotonMapping.h"
 #include "Lighting/LightMapBaker.h"
@@ -13,13 +17,21 @@ void PrecomputeLightingSystem::Compute(GIImmediateCommands* cmd, RenderScene* sc
         }
     }
 
+    boost::timer timer;
+
     PhotonMapping pm;
     pm.Compute(staticMeshesOctree.get(), scene->GetSourceScene());
+
+    ERTREDebug(L"emit photons elapsed time: %lfs\n", timer.elapsed());
+
+    timer.restart();
 
     LightMapBaker baker;
     auto& src_mesh_objects = scene->GetSourceScene()->GetViewObjects();
 
     auto lightMap = baker.Bake(cmd, src_mesh_objects, pm.kdtree, pm.photons);
+    ERTREDebug(L"bake texture elapsed time: %lfs\n", timer.elapsed());
+
     scene->_lightMap = lightMap;
     scene->_staticMeshesOctree = std::move(staticMeshesOctree);
     scene->rayPaths = pm.rayPaths;
