@@ -1,6 +1,6 @@
 #include "BasePassCommon.hlsl"
 
-#define USE_VSM 1
+#define USE_VSM 0
 
 float4 ps_main(pixcelIn IN) : SV_Target
 {

@@ -15,20 +15,7 @@ void  RenderScene::Notify(UserConfigEvent e) {
     switch (e) {
     case UserConfigEvent::ChangedLightMapSetting:
         _refreshTasks.push([this](GIImmediateCommands* cmd) {
-            for (auto && draw_element : _drawList) {
-                draw_element.ParentMesh();
-                auto buffer = draw_element.PS().constantBuffers.at(BasePassMaterialBuffer);
-
-                float use_light_map = -1.0f;
-                if (UserConfig::getInstance()->VisibleIndirectLights()) {
-                    use_light_map = 1.0f;
-                }
-
-                ResourceRegion region;
-                region.left = offsetof(MaterialBuffer, useLightMap);
-                region.right = region.left + sizeof(use_light_map);
-                cmd->UpdateSubresource(buffer.get(), &use_light_map, sizeof(use_light_map), region);
-            }
+            _scene->SetMeshDirty(true);
         });   
         break;
     }
@@ -40,7 +27,7 @@ void RenderScene::Preprocess(GIImmediateCommands* cmd) {
 }
 
 void RenderScene::Refresh(GIImmediateCommands* cmd) {
-    while (_refreshTasks.empty()) {
+    while (!_refreshTasks.empty()) {
         _refreshTasks.front()(cmd);
         _refreshTasks.pop();
     }
@@ -122,7 +109,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     }
 
                     MaterialBuffer mbuf{ material.baseColor, material.metallic, material.roughness };
-                    if (viewObject->HasLightMap()) {
+                    if (viewObject->HasLightMap() && UserConfig::getInstance()->VisibleIndirectLights()) {
                         mbuf.useLightMap = 1.0f;
                     }
                     if (viewObject->HasReflectionSource()) {
@@ -130,6 +117,8 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     }
                     desc.byteWidth = sizeof(mbuf);
                     desc.stride = sizeof(float);
+                    desc.usage = ResourceUsage::Dynamic;
+                    desc.accessFlag = ResourceAccessFlag::W;
                     auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));
 
                     Shader ps(material.shadingType, material.pShader);

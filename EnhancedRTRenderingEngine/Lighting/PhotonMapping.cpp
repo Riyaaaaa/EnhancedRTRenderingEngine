@@ -25,7 +25,7 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
         auto pos = pLight.GetPoint();
         auto intensity = pLight.Intensity();
 
-        constexpr int nEmitPhotons = 1000;
+        constexpr int nEmitPhotons = 100;
 
         float flux_ = intensity * 4 * D3DX_PI / nEmitPhotons;
         Vector3D flux(flux_, flux_, flux_);
