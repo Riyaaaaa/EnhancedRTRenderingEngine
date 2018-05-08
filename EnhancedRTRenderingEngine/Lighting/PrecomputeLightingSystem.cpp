@@ -9,7 +9,7 @@
 
 void PrecomputeLightingSystem::Compute(GIImmediateCommands* cmd, RenderScene* scene) {
     //TODO: Caluculate Scene Voxel Size
-    auto staticMeshesOctree = std::make_unique<SpaceOctree::HashedOctreeFactory>(AABB(Vector3D(-16, -16, -16), Vector3D(16, 16, 16)), 8);
+    auto staticMeshesOctree = std::make_unique<SpaceOctree::HashedOctreeFactory>(scene->GetSourceScene()->GetSceneAABB() * 1.2f, 8);
 
     for (auto && object : scene->GetSourceScene()->GetViewObjects()) {
         if (object->IsPhysicalObject()) {

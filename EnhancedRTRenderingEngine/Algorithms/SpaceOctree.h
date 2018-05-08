@@ -19,7 +19,8 @@ namespace SpaceOctree {
         OctreeFactoryBase(AABB RootAABB, int splitLevel);
 
         AABB CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const;
-        _Vector3D<uint8_t> CalculateGridCoordinate(const Vector3D& pos);
+        _Vector3D<int16_t> CalculateGridCoordinate(const Vector3D& pos);
+        _Vector3D<int16_t> CalculateGridCoordinate(const Vector3D& pos, int split_level);
         int CalculateMortonNumber(const AABB& aabb);
         int CalculateMortonNumber(const Vector3D& pos, int splitLevel);
         int CalculateIndexFromPoint(const Vector3D& pos);

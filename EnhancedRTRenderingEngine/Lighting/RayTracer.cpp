@@ -95,53 +95,61 @@ std::vector<Segment> RayTraceIf(SpaceOctree::OctreeFactoryBase* factory, Ray ray
 }
 
 std::set<uint32_t> GetColliderMortonList(SpaceOctree::OctreeFactoryBase* factory, Ray ray) {
-    auto size = factory->GetMinBoxSize();
-    auto rayForward = Vector3D(ray.dir.x * size.w, ray.dir.y * size.h, ray.dir.z * size.d);
+    auto min_size = factory->GetMinBoxSize();
     auto rootAABB = factory->GetRootAABB();
     
     _Vector3D<int16_t> grid = factory->CalculateGridCoordinate(ray.pos);
-    _Vector3D<int8_t> gridForward = _Vector3D<int8_t>(
+    _Vector3D<int16_t> gridForward = _Vector3D<int16_t>(
         ray.dir.x >= 0.0f ? 1 : -1,
         ray.dir.y >= 0.0f ? 1 : -1,
         ray.dir.z >= 0.0f ? 1 : -1
         );
 
-    Vector3D pos = Vector3D(grid.x * size.w, grid.y * size.h, grid.z * size.h) + rootAABB.bpos;
-    _Vector3D<int16_t> nextGrid = grid;
+    Vector3D pos = Vector3D(grid.x * min_size.w, grid.y * min_size.h, grid.z * min_size.h) + rootAABB.bpos;
+    Vector3D next_pos = pos;
     std::set<uint32_t> colliderList;
 
-    while (rootAABB.Contains(pos)) {
+    while (true) {
         uint32_t number = SpaceOctree::Get3DMortonOrder(grid);
 
+        int exists_max_split_level = 0;
         for (int i = 0; i <= factory->GetSplitLevel(); i++) {
-            uint32_t idx = static_cast<uint32_t>((number >> i * 3) + PrecomputedConstants::PowNumbers<8, 8>::Get(factory->GetSplitLevel() - i) / 7);
+            int split_level = factory->GetSplitLevel() - i;
+            uint32_t idx = static_cast<uint32_t>((number >> i * 3) + PrecomputedConstants::PowNumbers<8, 8>::Get(split_level) / 7);
             if (factory->BoxExists(idx)) {
                 colliderList.insert(idx);
+                exists_max_split_level = std::max(exists_max_split_level, split_level);
             }
         }
 
-        nextGrid = grid + gridForward;
-        Vector3D nextpos = Vector3D(nextGrid.x * size.w, nextGrid.y * size.h, nextGrid.z * size.h) + rootAABB.bpos;
+        exists_max_split_level = std::min(exists_max_split_level + 1, factory->GetSplitLevel());
+        auto next_grid = gridForward + factory->CalculateGridCoordinate(pos, exists_max_split_level);
+        auto size = rootAABB.size() / static_cast<float>(1 << exists_max_split_level);
+        next_pos = Vector3D(next_grid.x * size.w, next_grid.y * size.h, next_grid.z * size.h) + rootAABB.bpos;
 
-        float ax = ray.dir.x != 0.0f ? std::abs((nextpos.x - pos.x) / rayForward.x) : FLT_MAX;
-        float ay = ray.dir.y != 0.0f ? std::abs((nextpos.y - pos.y) / rayForward.y) : FLT_MAX;
-        float az = ray.dir.z != 0.0f ? std::abs((nextpos.z - pos.z) / rayForward.z) : FLT_MAX;
+        if (!rootAABB.Contains(next_pos)) {
+            break;
+        }
+
+        float ax = ray.dir.x != 0.0f ? std::abs((next_pos.x - pos.x) / ray.dir.x) : FLT_MAX;
+        float ay = ray.dir.y != 0.0f ? std::abs((next_pos.y - pos.y) / ray.dir.y) : FLT_MAX;
+        float az = ray.dir.z != 0.0f ? std::abs((next_pos.z - pos.z) / ray.dir.z) : FLT_MAX;
 
         if (ax < ay && ax < az) {
-            pos += rayForward * ax;
-            grid.x += gridForward.x;
+            pos += ray.dir * ax;
+            grid.x = next_grid.x;
         }
         else if (ay < ax && ay < az) {
-            pos += rayForward * ay;
-            grid.y += gridForward.y;
+            pos += ray.dir * ay;
+            grid.y = next_grid.y;
         }
         else if (az < ax && az < ay) {
-            pos += rayForward * az;
-            grid.z += gridForward.z;
+            pos += ray.dir * az;
+            grid.z = next_grid.z;
         }
         else {
-            pos += rayForward;
-            grid += gridForward;
+            pos += Vector3D(ray.dir.x * ax, ray.dir.y * ay, ray.dir.z * az);
+            grid = next_grid;
         }
     }
 

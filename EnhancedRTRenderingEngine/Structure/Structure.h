@@ -82,6 +82,9 @@ struct AABB {
     {}
     Vector3D bpos;
     Vector3D epos;
+    AABB operator*(float s) {
+        return AABB(bpos * s, epos * s);
+    }
     Size3D size() const {
         auto diff = epos - bpos;
         return Size3D(diff.x, diff.y, diff.z);

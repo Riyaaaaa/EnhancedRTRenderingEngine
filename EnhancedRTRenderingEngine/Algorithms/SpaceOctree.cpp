@@ -55,16 +55,30 @@ int OctreeFactoryBase::CalculateMortonNumber(const AABB& aabb) {
     return SpaceNum;
 }
 
-_Vector3D<uint8_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& pos_) {
+_Vector3D<int16_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& pos_) {
     Vector3D pos;
-    pos.x = std::max(_rootAABB.bpos.x, std::min(pos_.x, _rootAABB.epos.x - 1e-5f));
-    pos.y = std::max(_rootAABB.bpos.y, std::min(pos_.y, _rootAABB.epos.y - 1e-5f));
-    pos.z = std::max(_rootAABB.bpos.z, std::min(pos_.z, _rootAABB.epos.z - 1e-5f));
+    pos.x = std::max(_rootAABB.bpos.x, std::min(pos_.x, _rootAABB.epos.x));
+    pos.y = std::max(_rootAABB.bpos.y, std::min(pos_.y, _rootAABB.epos.y));
+    pos.z = std::max(_rootAABB.bpos.z, std::min(pos_.z, _rootAABB.epos.z));
 
-    return _Vector3D<uint8_t>(
-        static_cast<uint8_t>((pos.x - _rootAABB.bpos.x) / _minBoxSize.w),
-        static_cast<uint8_t>((pos.y - _rootAABB.bpos.y) / _minBoxSize.h),
-        static_cast<uint8_t>((pos.z - _rootAABB.bpos.z) / _minBoxSize.d));
+    return _Vector3D<int16_t>(
+        static_cast<int16_t>((pos.x - _rootAABB.bpos.x) / _minBoxSize.w),
+        static_cast<int16_t>((pos.y - _rootAABB.bpos.y) / _minBoxSize.h),
+        static_cast<int16_t>((pos.z - _rootAABB.bpos.z) / _minBoxSize.d));
+}
+
+_Vector3D<int16_t> OctreeFactoryBase::CalculateGridCoordinate(const Vector3D& pos_, int split_level) {
+    Vector3D pos;
+    pos.x = std::max(_rootAABB.bpos.x, std::min(pos_.x, _rootAABB.epos.x));
+    pos.y = std::max(_rootAABB.bpos.y, std::min(pos_.y, _rootAABB.epos.y));
+    pos.z = std::max(_rootAABB.bpos.z, std::min(pos_.z, _rootAABB.epos.z));
+
+    auto box_size = _rootAABB.size() / (1 << split_level);
+
+    return _Vector3D<int16_t>(
+        static_cast<int16_t>((pos.x - _rootAABB.bpos.x) / box_size.w),
+        static_cast<int16_t>((pos.y - _rootAABB.bpos.y) / box_size.h),
+        static_cast<int16_t>((pos.z - _rootAABB.bpos.z) / box_size.d));
 }
 
 int OctreeFactoryBase::CalculateMortonNumber(const Vector3D& pos, int splitLevel) {

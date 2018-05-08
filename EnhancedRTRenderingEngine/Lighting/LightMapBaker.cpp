@@ -34,7 +34,7 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
 #ifdef SUPPORT_MULTI_PROCESS_OMP
 #pragma omp parallel for
         for (int idx = 0; idx < static_cast<int>(local_map_size * local_map_size); idx++) {
-#elif
+#else
         for (unsigned int idx = 0; idx < local_map_size * local_map_size; idx++) {
 #endif
             Vector3D raddiance = Vector3D(0.0f, 0.0f, 0.0f);

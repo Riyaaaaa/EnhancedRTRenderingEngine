@@ -160,11 +160,11 @@ struct _Vector<T, 3> {
         return _Vector{ -this->x, -this->y, -this->z };
     }
 
-    _Vector operator*(float s) const {
+    _Vector operator*(T s) const {
         return _Vector{ this->x * s, this->y * s, this->z * s };
     }
 
-    _Vector operator/(float s) const {
+    _Vector operator/(T s) const {
         return _Vector(this->x / s, this->y / s, this->z / s);
     }
 
