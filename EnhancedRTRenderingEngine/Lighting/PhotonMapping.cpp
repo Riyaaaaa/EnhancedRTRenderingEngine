@@ -25,7 +25,7 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
         auto pos = pLight.GetPoint();
         auto intensity = pLight.Intensity();
 
-        constexpr int nEmitPhotons = 100;
+        constexpr int nEmitPhotons = 10000;
         constexpr int MAX_BOUNCES = 3;
         rayPaths.reserve(nEmitPhotons * MAX_BOUNCES);
         photon_caches.reserve(nEmitPhotons * MAX_BOUNCES);

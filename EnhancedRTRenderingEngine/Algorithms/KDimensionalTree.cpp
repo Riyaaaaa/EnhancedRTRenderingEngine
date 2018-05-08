@@ -60,20 +60,15 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
         }
     }
     
+    float next_limit_radius_sq = num <= nodes.size() ? nodes.back().second : limit_radius_sq;
     float axis_d = p[static_cast<int>(node->axis)] - _points[node->index].pos[static_cast<int>(node->axis)];
 
-    add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->left.get() : node->right.get(), limit_radius_sq, nodes);
+    add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->left.get() : node->right.get(), next_limit_radius_sq, nodes);
 
     float axis_d_sq = axis_d * axis_d;
-    if (num <= nodes.size()) {
-        if (axis_d_sq < nodes.back().second) {
-            add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->right.get() : node->left.get(), limit_radius_sq, nodes);
-        }
-    }
-    else {
-        if (axis_d_sq < limit_radius_sq) {
-            add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->right.get() : node->left.get(), limit_radius_sq, nodes);
-        }
+    
+    if (axis_d_sq < next_limit_radius_sq) {
+        add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->right.get() : node->left.get(), next_limit_radius_sq, nodes);
     }
 
     return add_nums;
