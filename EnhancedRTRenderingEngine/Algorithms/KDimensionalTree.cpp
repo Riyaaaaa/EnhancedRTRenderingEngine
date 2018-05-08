@@ -38,7 +38,7 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
 
     int add_nums = 0;
     auto& point = _points[node->index].pos;
-    float d = MathUtils::DistanceSq(p, point);
+    float d = Math::DistanceSq(p, point);
     
     if (d <= limit_radius_sq) {
         if (num > nodes.size()) {

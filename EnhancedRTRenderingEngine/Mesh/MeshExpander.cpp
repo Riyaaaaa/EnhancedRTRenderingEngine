@@ -8,7 +8,7 @@
 
 #include "Utility/MathUtils.h"
 
-using namespace MathUtils;
+using namespace Math;
 
 MeshExpander::MeshExpander(unsigned int size, unsigned int margin) :
     _expandSize(size),

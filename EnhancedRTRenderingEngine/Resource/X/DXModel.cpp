@@ -15,8 +15,8 @@ void DXModel::CalcVertexNormals() {
         Vector3D& v2 = mesh.vertices[mesh.faces[i][2]];
 
         if (mesh.faces[i].size() == 3) {
-            //mesh.meshNormals.faceNormals[i] = MathUtils::Cross(v1 - v2):
-            Vector3D normal = MathUtils::CalcNormal(v0, v1, v2);
+            //mesh.meshNormals.faceNormals[i] = Math::Cross(v1 - v2):
+            Vector3D normal = Math::CalcNormal(v0, v1, v2);
 
             mesh.meshNormals.normals[i] = normal;
             mesh.meshNormals.faceNormals[i].faceVertexIndices[0] = i;
@@ -25,7 +25,7 @@ void DXModel::CalcVertexNormals() {
         }
         else if (mesh.faces[i].size() == 4) {
             Vector3D& v3 = mesh.vertices[mesh.faces[i][3]];
-            Vector3D normal = MathUtils::CalcNormal(v0, v1, v2, v3);
+            Vector3D normal = Math::CalcNormal(v0, v1, v2, v3);
 
             mesh.meshNormals.normals[i] = normal;
             mesh.meshNormals.faceNormals[i].faceVertexIndices[0] = i;

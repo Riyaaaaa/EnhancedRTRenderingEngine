@@ -2,7 +2,7 @@
 
 #include "Structure/Structure.h"
 
-namespace MathUtils
+namespace Math
 {
     float Dot(const Vector2D& v1, const Vector2D& v2);
     float Dot(const Vector3D& v1, const Vector3D& v2);
@@ -15,6 +15,8 @@ namespace MathUtils
         }
         return dot;
     }
+
+    float Saturate(float v);
 
     Vector3D CalcNormal(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2);
     Vector3D CalcNormal(const Vector3D& v0, const Vector3D& v1, const Vector3D& v2, const Vector3D& v3);

@@ -78,29 +78,29 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
                 XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[indices[j + 2]] - _vertexTransformedCache[indices[j]]);
             }
 
-            float det = MathUtils::Determinant3x3(v1, v2, -ray.dir);
+            float det = Math::Determinant3x3(v1, v2, -ray.dir);
 
             if (det <= 0.0f) {
                 continue;
             }
 
             auto p = ray.pos - v0;
-            float u = MathUtils::Determinant3x3(p, v2, -ray.dir) / det;
+            float u = Math::Determinant3x3(p, v2, -ray.dir) / det;
             if (u < 0 || u > 1) {
                 continue;
             }
-            float v = MathUtils::Determinant3x3(v1, p, -ray.dir) / det;
+            float v = Math::Determinant3x3(v1, p, -ray.dir) / det;
             if (v < 0 || u + v > 1.0) {
                 continue;
             }
-            float t = MathUtils::Determinant3x3(v1, v2, p) / det;
+            float t = Math::Determinant3x3(v1, v2, p) / det;
             if (t < 0) {
                 continue;
             }
 
             auto toPoint = ray.dir * t;
-            auto normal = MathUtils::Normalize(MathUtils::Cross(v1, v2));
-            intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Normalize(MathUtils::Reflect(toPoint, normal)), ray.dir, toPoint.Length(), face_map[i].materialIdx));
+            auto normal = Math::Normalize(Math::Cross(v1, v2));
+            intersects.push_back(Hit(ray.pos + toPoint, Math::Normalize(Math::Reflect(toPoint, normal)), ray.dir, toPoint.Length(), face_map[i].materialIdx));
         }
         start_idx += face_map[i].faceNumVerts;
     }
@@ -124,7 +124,7 @@ std::vector<Triangle> MeshObject<VertType>::GetTransformedTriangles() {
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[i + 2]);
         }
 
-        triangles[i / 3].normal = MathUtils::CalcNormal(triangles[i / 3].v0, triangles[i / 3].v1, triangles[i / 3].v2);
+        triangles[i / 3].normal = Math::CalcNormal(triangles[i / 3].v0, triangles[i / 3].v1, triangles[i / 3].v2);
     }
 
     return triangles;

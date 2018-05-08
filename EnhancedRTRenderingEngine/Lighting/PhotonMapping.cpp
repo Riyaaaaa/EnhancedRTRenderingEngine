@@ -64,7 +64,7 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
 
                 if (trace_count < MAX_BOUNCES + 1) {
                     // todo: support texture surface
-                    now_flux = MathUtils::Multiply(now_flux, mat.baseColor) / prob;
+                    now_flux = Math::Multiply(now_flux, mat.baseColor) / prob;
                     return true;
                 }
 
