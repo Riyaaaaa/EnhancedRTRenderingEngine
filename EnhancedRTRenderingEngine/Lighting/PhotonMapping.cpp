@@ -47,8 +47,9 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
 
             Vector3D now_flux = flux;
 
+            constexpr bool CACHE_DIRECT_LIGHT = true;
             auto result = RayTraceIf(factory, ray, [&](const Material& mat, const Hit& hit, int trace_count) {
-                if (trace_count > 1) {
+                if (CACHE_DIRECT_LIGHT ? true : trace_count > 1) {
                     photon_caches.push_back(Photon(hit.pos,
                         now_flux,
                         hit.incident));

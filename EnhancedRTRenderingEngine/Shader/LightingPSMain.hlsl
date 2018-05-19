@@ -1,6 +1,7 @@
 #include "BasePassCommon.hlsl"
 
 #define USE_VSM 1
+#define ENABLE_SHADING_DIRECT_LIGHT 0
 
 float4 ps_main(pixcelIn IN) : SV_Target
 {
@@ -13,6 +14,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 diffuse = 0.0f;
     float3 specular = 0.0f;
 
+#if ENABLE_SHADING_DIRECT_LIGHT
     // direct lighting
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
@@ -44,6 +46,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
             specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
+#endif
 
     if (UseEnviromentMap > EPSILON) {
         specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f, materialParameters.roughness * materialParameters.roughness) * materialParameters.metallic;

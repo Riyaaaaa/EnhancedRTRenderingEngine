@@ -28,7 +28,7 @@ UserConfig::UserConfig()
         fclose(fp);
     }
 
-    _isDisplayRayPaths = true;
+    _isDisplayRayPaths = false;
     _visibleIndirectLights = true;
     _visibleReflections = true;
     _rasterizerType = RasterizerState::Default;
