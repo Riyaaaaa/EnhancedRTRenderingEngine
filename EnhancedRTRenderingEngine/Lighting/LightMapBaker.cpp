@@ -46,11 +46,10 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
                 constexpr float sample_radius = 3.0f;
                 auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), nSamples, sample_radius); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
-                    float r = std::sqrtf(sampledPhotons.back().second); // kd-tree find method returns array sorted by distance 
-
                     float A;
                     if (nSamples == sampledPhotons.size()) {
-                        A = D3DX_PI * r * r;
+                        float r_sq = sampledPhotons.back().second; // kd-tree find method returns array sorted by distance 
+                        A = D3DX_PI * r_sq;
                     }
                     else {
                         // If enough photons do not gather, divide by search area
@@ -70,20 +69,20 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
 
                     for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
                         auto& photon = photons[sampledPhotons[photon_idx].first->index];
-                        float cos = Math::Saturate(Math::Dot(expanded.GetNormal(triangle_idx), -photon.incident));
-                        accumulated_flux += photon.power * cos / D3DX_PI;
+                        // float cos = Math::Saturate(Math::Dot(expanded.GetNormal(triangle_idx), -photon.incident));
+                        accumulated_flux += photon.power / D3DX_PI;
                     }
                     
-                    if (r > 0.0f) {
+                    if (A > 0.0f) {
                         raddiance = accumulated_flux / A;
                     }
                 }
             }
 
             //TODO: photons transfer RGB colors
-            buf(global_coord.x, global_coord.y, 0) = std::min(255, (int)(raddiance.x));
-            buf(global_coord.x, global_coord.y, 1) = std::min(255, (int)(raddiance.y));
-            buf(global_coord.x, global_coord.y, 2) = std::min(255, (int)(raddiance.z));
+            buf(global_coord.x, global_coord.y, 0) = std::min(255, (int)(raddiance.x) * 255);
+            buf(global_coord.x, global_coord.y, 1) = std::min(255, (int)(raddiance.y) * 255);
+            buf(global_coord.x, global_coord.y, 2) = std::min(255, (int)(raddiance.z) * 255);
             buf(global_coord.x, global_coord.y, 3) = 255;
         }
 

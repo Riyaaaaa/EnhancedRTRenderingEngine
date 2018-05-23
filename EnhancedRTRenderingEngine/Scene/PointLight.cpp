@@ -6,7 +6,7 @@
 using namespace DirectX;
 
 PointLight::PointLight() :
-    _intensity(50000),
+    _intensity(200),
     _isDirtyShadow(true),
     _isDirtyMatrix(true),
     _shadowResolution({1000, 1000})
