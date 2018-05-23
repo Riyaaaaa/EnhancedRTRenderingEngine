@@ -7,6 +7,19 @@
 
 using namespace DirectX;
 
+void MeshObjectBase::FindPrecisionReflectionSource(const std::vector<CubeReflectionCapture*>& captures) {
+    unsigned int precision = INT_MAX;
+
+    _hasReflectionSource = false;
+    for (auto&& capture : captures) {
+        if (capture->Contains(_transform.location) && capture->PrecisionSize() < precision) {
+            precision = capture->PrecisionSize();
+            _reflectionSourceId = capture->GetID();
+            _hasReflectionSource = true;
+        }
+    }
+}
+
 template<class VertType>
 AABB MeshObject<VertType>::GetAABB() {
     std::vector<Vector3D> _vertices(_mesh->GetVertexList().size());
@@ -46,50 +59,83 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
         return intersects;
     }
 
-    for (int i = 0; i < indices.size(); i += 3) {
-        Vector3D v1;
-        Vector3D v2;
-        Vector3D v0;
+    auto& face_map = _mesh->GetDrawElementMap();
+    unsigned int start_idx = 0;
+    for (unsigned int i = 0; i < face_map.size(); i++) {
+        for (int j = start_idx; j < start_idx + face_map[i].faceNumVerts; j += 3) {
+            Vector3D v1;
+            Vector3D v2;
+            Vector3D v0;
 
-        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v0.x)), _vertexTransformedCache[indices[i]]);
-        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v1.x)), _vertexTransformedCache[indices[i + 1]] - _vertexTransformedCache[indices[i]]);
-        XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[indices[i + 2]] - _vertexTransformedCache[indices[i]]);
+            if (indices.empty()) {
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v0.x)), _vertexTransformedCache[j]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v1.x)), _vertexTransformedCache[j + 1] - _vertexTransformedCache[j]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[j + 2] - _vertexTransformedCache[j]);
+            }
+            else {
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v0.x)), _vertexTransformedCache[indices[j]]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v1.x)), _vertexTransformedCache[indices[j + 1]] - _vertexTransformedCache[indices[j]]);
+                XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(v2.x)), _vertexTransformedCache[indices[j + 2]] - _vertexTransformedCache[indices[j]]);
+            }
 
-        float det = MathUtils::Determinant3x3(v1, v2, -ray.dir);
+            float det = Math::Determinant3x3(v1, v2, -ray.dir);
 
-        if (det <= 0.0f) {
-            continue;
+            if (det <= 0.0f) {
+                continue;
+            }
+
+            auto p = ray.pos - v0;
+            float u = Math::Determinant3x3(p, v2, -ray.dir) / det;
+            if (u < 0 || u > 1) {
+                continue;
+            }
+            float v = Math::Determinant3x3(v1, p, -ray.dir) / det;
+            if (v < 0 || u + v > 1.0) {
+                continue;
+            }
+            float t = Math::Determinant3x3(v1, v2, p) / det;
+            if (t < 0) {
+                continue;
+            }
+
+            auto toPoint = ray.dir * t;
+            auto normal = Math::Normalize(Math::Cross(v1, v2));
+            intersects.push_back(Hit(ray.pos + toPoint, Math::Normalize(Math::Reflect(toPoint, normal)), ray.dir, toPoint.Length(), face_map[i].materialIdx));
         }
-
-        auto p = ray.pos - v0;
-        float u = MathUtils::Determinant3x3(p, v2, -ray.dir) / det;
-        if (u < 0 || u > 1) {
-            continue;
-        }
-        float v = MathUtils::Determinant3x3(v1, p, -ray.dir) / det;
-        if (v < 0 || v > 1) {
-            continue;
-        }
-        float t = MathUtils::Determinant3x3(v1, v2, p) / det;
-        if (t < 0) {
-            continue;
-        }
-
-        auto toPoint = ray.dir * t;
-        auto normal = MathUtils::Normalize(MathUtils::Cross(v1, v2));
-        intersects.push_back(Hit(ray.pos + toPoint, MathUtils::Reflect(toPoint, normal), toPoint.Length()));
+        start_idx += face_map[i].faceNumVerts;
     }
 
     return intersects;
 }
 
 template<class VertType>
-void MeshObject<VertType>::DirtyWorldMatrix() {
+std::vector<Triangle> MeshObject<VertType>::GetTransformedTriangles() {
+    std::vector<Triangle> triangles(_mesh->GetVertexCount() / 3);
+    auto& index_list = _mesh->GetIndexList();
+    for (int i = 0; i < _mesh->GetVertexCount(); i += 3) {
+        if (_mesh->HasIndexList()) {
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v0.x)), _vertexTransformedCache[index_list[i]]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v1.x)), _vertexTransformedCache[index_list[i + 1]]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[index_list[i + 2]]);
+        }
+        else {
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v0.x)), _vertexTransformedCache[i]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v1.x)), _vertexTransformedCache[i + 1]);
+            XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[i + 2]);
+        }
+
+        triangles[i / 3].normal = Math::CalcNormal(triangles[i / 3].v0, triangles[i / 3].v1, triangles[i / 3].v2);
+    }
+
+    return triangles;
+}
+
+void MeshObjectBase::DirtyWorldMatrix() {
     SceneObject::DirtyWorldMatrix();
     AABBDirty = true;
 }
 
-template MeshObject<PMDVertex>;
+template MeshObject<MainVertex>;
 template MeshObject<TexVertex>;
 template MeshObject<Vertex3D>;
 template MeshObject<LineVertex>;

@@ -23,3 +23,9 @@ All source code is included in the project.
 - rapidjson [MIT License]
 
 All source code is included in the project.
+
+- OpenMP
+
+If this API is valid, support parallel cpu processing
+
+

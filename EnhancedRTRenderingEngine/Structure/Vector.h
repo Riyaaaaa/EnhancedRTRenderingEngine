@@ -2,12 +2,12 @@
 
 #include <cmath>
 
-template <class T, std::size_t dim>
+template <class T, unsigned int dim>
 struct _Matrix;
 
 using Matrix = _Matrix<float, 4>;
 
-template <class T, std::size_t dim>
+template <class T, unsigned int  dim>
 struct _Vector {
     float operator[](unsigned int idx) const {
         return _elems[idx];
@@ -19,7 +19,7 @@ private:
     T _elems[dim];
 };
 
-template<std::size_t dim>
+template<unsigned int dim>
 using Vector = _Vector<float, dim>;
 
 template<class T>
@@ -98,6 +98,24 @@ struct _Vector<T, 2> {
         this->y /= s;
         return *this;
     }
+
+    T& operator[](unsigned int idx) {
+        T* ptr = &x;
+        return *(ptr + idx);
+    }
+
+    const T& operator[](unsigned int idx) const {
+        const T* ptr = &x;
+        return *(ptr + idx);
+    }
+
+    template<class U>
+    operator _Vector<U, 2>() {
+        return _Vector<U, 2>(
+            static_cast<U>(x),
+            static_cast<U>(y)
+            );
+    }
 };
 
 using Vector2D = _Vector<float, 2>;
@@ -142,8 +160,12 @@ struct _Vector<T, 3> {
         return _Vector{ -this->x, -this->y, -this->z };
     }
 
-    _Vector operator*(float s) const {
+    _Vector operator*(T s) const {
         return _Vector{ this->x * s, this->y * s, this->z * s };
+    }
+
+    _Vector operator/(T s) const {
+        return _Vector(this->x / s, this->y / s, this->z / s);
     }
 
     _Vector& operator+=(const _Vector& v) {
@@ -151,6 +173,16 @@ struct _Vector<T, 3> {
         this->y = this->y + v.y;
         this->z = this->z + v.z;
         return *this;
+    }
+
+    T& operator[](unsigned int idx) {
+        T* ptr = &x;
+        return *(ptr + idx);
+    }
+
+    const T& operator[](unsigned int idx) const {
+        const T* ptr = &x;
+        return *(ptr + idx);
     }
 
     float Length() const {
@@ -182,6 +214,24 @@ struct _Vector<T, 4> {
         return *(ptr + idx);
     }
 
+    template<class U>
+    _Vector operator+(const _Vector<U, 4> &v) const {
+        return _Vector{
+            static_cast<T>(this->x + v.x),
+            static_cast<T>(this->y + v.y),
+            static_cast<T>(this->z + v.z),
+            static_cast<T>(this->w + v.w)
+        };
+    }
+
+    _Vector operator*(float s) const {
+        return _Vector(this->x * s, this->y * s, this->z * s, this->w * s);
+    }
+
+    _Vector operator/(float s) const {
+        return _Vector(this->x / s, this->y / s, this->z / s, this->w / s);
+    }
+
     _Vector operator*(const Matrix& mat) {
         _Vector ret(0,0,0,0);
 
@@ -204,6 +254,16 @@ struct _Vector<T, 4> {
         return ret;
     }
 
+    template<unsigned int Dim>
+    _Vector<T, Dim> Slice() const {
+        static_assert(Dim < 4, "Sliced dimension is invalid value");
+        _Vector<T, Dim> v;
+        for (unsigned int i = 0; i < Dim; i++) {
+            v[i] = (*this)[i];
+        }
+        return v;
+    }
+
     constexpr _Vector(T x, T y, T z, T w = 1) : x(x), y(y), z(z), w(w) {}
     constexpr _Vector(const _Vector<T, 3> vec3) : x(vec3.x), y(vec3.y), z(vec3.z), w(1) {}
     T x, y, z, w;
@@ -215,7 +275,7 @@ using Vector4D = _Vector<float, 4>;
 template<class T>
 using _Vector4D = _Vector<T, 4>;
 
-template <class T, std::size_t dim>
+template <class T, unsigned int dim>
 struct _Matrix {
     const _Vector<T, dim>& operator[](unsigned int idx) const {
         return _elems[idx];

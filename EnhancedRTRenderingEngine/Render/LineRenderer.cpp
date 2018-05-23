@@ -33,7 +33,7 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     cmd->VSSetConstantBuffers(0, hpConstantBuffer.get());
 
-    auto lineMesh = std::make_shared<MeshBase<LineVertex>>();
+    auto lineMesh = std::make_shared<Mesh<LineVertex>>();
     
     for (auto && line : lines) {
         Vector4D color = Vector4D(line.color.r, line.color.g, line.color.b);

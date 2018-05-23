@@ -2,7 +2,7 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
-class Box : public MeshBase<Vertex3D>
+class Box : public Mesh<Vertex3D>
 {
 public:
     explicit Box(float size = 1.0f);

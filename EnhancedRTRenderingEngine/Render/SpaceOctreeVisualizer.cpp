@@ -10,10 +10,16 @@
 using namespace SpaceOctree;
 
 void SpaceOctreeVisualizer::Initialize(const SpaceOctree::OctreeFactoryBase* factory) {
+    if (factory == nullptr) {
+        return;
+    }
     _spaceBoxes = GenerateOcreeBoxMeshes(factory);
 }
 
 void SpaceOctreeVisualizer::RenderOctreeBoxes(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene) {
+    if (_spaceBoxes.empty()){
+        return;
+    }
     view->SetRasterizerState(cmd, RasterizerState::WireFrame);
 
     UnlitRenderer::render(cmd, view, scene->GetMainCamera(), _spaceBoxes);

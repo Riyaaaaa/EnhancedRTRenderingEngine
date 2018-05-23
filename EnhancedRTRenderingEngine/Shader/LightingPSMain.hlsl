@@ -1,6 +1,7 @@
 #include "BasePassCommon.hlsl"
 
 #define USE_VSM 1
+#define ENABLE_SHADING_DIRECT_LIGHT 1
 
 float4 ps_main(pixcelIn IN) : SV_Target
 {
@@ -13,6 +14,7 @@ float4 ps_main(pixcelIn IN) : SV_Target
     float3 diffuse = 0.0f;
     float3 specular = 0.0f;
 
+#if ENABLE_SHADING_DIRECT_LIGHT
     // direct lighting
     int i = 0;
     for (i = 0; i < LIGHT_MAX; i++) {
@@ -37,16 +39,23 @@ float4 ps_main(pixcelIn IN) : SV_Target
         float shadowFactor = IsVisibleFromPointLight(IN.posw.xyz, i);
 #endif
         if (shadowFactor > 0.0f) {
-            float3 dir = PLightParams[i].pos.xyz - IN.posw.xyz;
+            float3 dir = PLightParams[i].PosAndInvAttRadius.xyz - IN.posw.xyz;
             float len = length(dir);
             float irradiance = saturate(dot(IN.norw.xyz, dir / len)) * shadowFactor;
-            diffuse += irradiance * PointLighting(diffuseColor, len, PLightParams[i].att);
+            diffuse += irradiance * PointLighting(diffuseColor, dir, PLightParams[i]);
             specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }
+#endif
 
-    specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f, materialParameters.roughness * materialParameters.roughness) * materialParameters.metallic;
-
+    if (UseEnviromentMap > EPSILON) {
+        specular += ReflectionFrensel(IN.posw, IN.norw, Eye, 0.2f, materialParameters.roughness * materialParameters.roughness) * materialParameters.metallic;
+    }
     float3 col = saturate(diffuse + specular);
+
+    if (UseLightMap > EPSILON) {
+        col += diffuseColor * LightMap.Sample(LightSampler, IN.lightUV);
+    }
+
     return float4(col, 1.0f);
 }

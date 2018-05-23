@@ -19,12 +19,9 @@ public:
     ForwardRenderer(GIImmediateCommands* cmd) :
         bassPassRenderer(cmd),
         depthRenderer(cmd) {}
-    void render(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene);
-
-    RenderScene& GetSceneInfo() { return _scene; }
+    void render(GIImmediateCommands* cmd, GIRenderView* view, RenderScene* scene);
 
 protected:
-    RenderScene _scene;
     D3D11DepthRenderer depthRenderer;
     D3D11BasePassRenderer bassPassRenderer;
 };

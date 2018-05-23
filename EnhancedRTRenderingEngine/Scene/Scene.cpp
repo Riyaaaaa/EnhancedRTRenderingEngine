@@ -26,13 +26,13 @@ Scene::Scene() {
     
 }
 
-void Scene::CreateTestScene() {
+void Scene::CreateSkyTestScene() {
     auto camera = CameraObject();
     camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 1.0f, 1000.0f);
     cameraObjects.push_back(camera);
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", 0.2f, 0.0f });
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", Vector3D(), 0.2f, 0.0f });
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
@@ -40,42 +40,69 @@ void Scene::CreateTestScene() {
     
     auto model2 = ResourceLoader::LoadDXModel("sphere");
     auto model = ResourceLoader::LoadDXModel("coin");
-    auto model3 = ResourceLoader::LoadPMDModel("nolicensed3");
-
-    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model3()));
-    viewObjects.back().SetLocation(Vector3D{ 5.0f, 1.0f, -2.0f });
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ -2.0f, 1.0f, -2.0f });
+    viewObjects.back()->SetLocation(Vector3D{ -2.0f, 1.0f, -2.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ 3.0f, 5.0f, -1.0f });
+    viewObjects.back()->SetLocation(Vector3D{ 3.0f, 5.0f, -1.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ -4.0f, 1.0f, 4.0f });
+    viewObjects.back()->SetLocation(Vector3D{ -4.0f, 1.0f, 4.0f });
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model()));
-    viewObjects.back().SetLocation(Vector3D{ -0.3f, 1.0f, 2.0f });
+    viewObjects.back()->SetLocation(Vector3D{ -0.3f, 1.0f, 2.0f });
 
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
-    viewObjects.back().SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
-    viewObjects.back().SetScale(Vector3D{ 10.0f, 10.0f, 10.0f });
+    viewObjects.back()->SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
+    viewObjects.back()->SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
 
-    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<SquarePMD>());
-    viewObjects.back().SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
-    viewObjects.back().SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
-    viewObjects.back().SetLocation(Vector3D{ 0.0f, 11.0f, -0.4f });
-    viewObjects.back().SetMaterial(materials);
+    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::SquarePMD>());
+    viewObjects.back()->SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
+    viewObjects.back()->SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
+    viewObjects.back()->SetLocation(Vector3D{ 0.0f, 11.0f, -0.4f });
+    viewObjects.back()->SetMaterial(materials);
 
-    auto skybox = SkyBox("Storforsen4");
+    auto skybox = new SkyBox("Storforsen4");
     viewObjects.push_back(skybox);
 
     directionalLights.emplace_back(Vector3D{ 0.0, -1.0f, 0.1f });
 
-    StaticMeshObject<PMDVertex>(std::make_shared<Mesh3DModel>(model()), Transform());
+    StaticMeshObject<MainVertex>(std::make_shared<Mesh3DModel>(model()), Transform());
 
     pointLights.emplace_back(PointLight{});
-    pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+    pointLights[0].SetAttenuationRadius(1000.0f);
     pointLights[0].SetPoint(Vector3D{ 2.0, 3.0f, 0.0f });
 
-    captureObjects.push_back(new StaticCubeReflectionCapture(skybox.GetCubeTextureResource()));
+    captureObjects.push_back(new StaticCubeReflectionCapture(skybox->GetCubeTextureResource()));
+    mainCameraIdx = 0;
+
+    meshDirty = true;
+    lightDirty = true;
+}
+
+void Scene::CreateGITestScene() {
+    auto camera = CameraObject();
+    camera.SetProjParams(D3DXToRadian(45.0f), 16.0f / 9.0f, 1.0f, 1000.0f);
+    cameraObjects.push_back(camera);
+    _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
+
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", Vector3D(), 0.2f, 0.0f });
+    std::vector<Material> materials;
+    materials.emplace_back(std::move(material));
+
+    auto model2 = ResourceLoader::LoadDXModel("sphere");
+    auto model3 = ResourceLoader::LoadDXModel("cornell_box");
+
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model3()));
+    viewObjects.back()->SetLocation(Vector3D{ 1.0f, 15.0f, 5.0f });
+    viewObjects.back()->SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
+
+    viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
+    viewObjects.back()->SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
+    viewObjects.back()->SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
+
+    pointLights.emplace_back(PointLight{});
+    pointLights[0].SetAttenuationRadius(1000.0f);
+    pointLights[0].SetPoint(Vector3D{ 2.0, 3.0f, 0.0f });
+
     mainCameraIdx = 0;
 
     meshDirty = true;
@@ -85,7 +112,7 @@ void Scene::CreateTestScene() {
 AABB Scene::GetSceneAABB() {
     std::vector<AABB> aabbs;
     for (auto && object : viewObjects) {
-        aabbs.push_back(object.GetAABB());
+        aabbs.push_back(object->GetAABB());
     }
 
     _precomputedAABB = SpaceSplits::CalculateOptimizedAABB(aabbs);
@@ -93,6 +120,9 @@ AABB Scene::GetSceneAABB() {
 }
 
 Scene::~Scene() {
+    for (auto && object : viewObjects) {
+        delete object;
+    }
     for (auto && object : captureObjects) {
         delete object;
     }

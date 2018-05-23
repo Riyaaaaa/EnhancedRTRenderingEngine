@@ -52,14 +52,14 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
         cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
         for (auto && object : scene->GetViewObjects()) {
-            auto& mesh = renderScene->GetStaticDrawMeshes()[object.GetID()];
+            auto& mesh = renderScene->GetStaticDrawMeshes()[object->GetID()];
            
             unsigned int faceNumVerts = 0;
-            if (object.GetMesh()->HasIndexList()) {
-                faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+            if (object->GetMesh()->HasIndexList()) {
+                faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
             }
             else {
-                faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+                faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
             }
 
             DrawElement element(&mesh, faceNumVerts, 0);
@@ -107,14 +107,14 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
             for (auto && object : scene->GetViewObjects()) {
-                auto& mesh = renderScene->GetStaticDrawMeshes()[object.GetID()];
+                auto& mesh = renderScene->GetStaticDrawMeshes()[object->GetID()];
 
                 unsigned int faceNumVerts = 0;
-                if (object.GetMesh()->HasIndexList()) {
-                    faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+                if (object->GetMesh()->HasIndexList()) {
+                    faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
                 }
                 else {
-                    faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+                    faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
                 }
 
                 DrawElement element(&mesh, faceNumVerts, 0);

@@ -27,6 +27,11 @@ UserConfig::UserConfig()
         LoadAllConfigFromDocument(&doc);
         fclose(fp);
     }
+
+    _isDisplayRayPaths = false;
+    _visibleIndirectLights = true;
+    _visibleReflections = true;
+    _rasterizerType = RasterizerState::Default;
 }
 
 void UserConfig::Flush() {

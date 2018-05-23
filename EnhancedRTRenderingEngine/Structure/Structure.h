@@ -82,6 +82,9 @@ struct AABB {
     {}
     Vector3D bpos;
     Vector3D epos;
+    AABB operator*(float s) {
+        return AABB(bpos * s, epos * s);
+    }
     Size3D size() const {
         auto diff = epos - bpos;
         return Size3D(diff.x, diff.y, diff.z);
@@ -125,11 +128,12 @@ struct LineVertex {
     float thickess;
 };
 
-struct PMDVertex {
+struct MainVertex {
     Vector3D pos;    //x-y-z
     Vector2D tex;    //x-y
     Vector3D normal;
     Vector4D col;
+    Vector2D lightUV;
 };
 
 struct Transform {
@@ -139,9 +143,10 @@ struct Transform {
 };
 
 struct PointLightParameters {
-    Vector4D pos;
-    // X: constant attenuation factor, Y:  linear attenuation factor, Z: quadratic attenuation factor
-    Vector4D attenuation;
+    // X, Y, Z: World position, W: Inverse square attenuation radius 
+    Vector4D Pos;
+    // X: Intensity; Y, Z, W: Unused
+    Vector4D Intensity;
 };
 
 struct TransformBufferParam
@@ -175,8 +180,11 @@ struct ObjectBuffer
 __declspec(align(16))
 struct MaterialBuffer
 {
+    Vector3D baseColor;
     float metallic;
     float roughness;
+    float useLightMap = -1.0f; // if negative value, don't use light map 
+    float useEnviromentMap = -1.0f; // if negative value, don't use enviroment map for reflection 
 };
 
 template <class T, std::size_t Align = 16, bool = std::is_class<T>::value>

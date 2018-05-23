@@ -3,10 +3,14 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
-class Pentagon : public MeshBase<Vertex3D>
-{
-public:
-    Pentagon();
-    ~Pentagon();
-};
+namespace PrimitiveMesh {
+
+    class Pentagon : public Mesh<Vertex3D>
+    {
+    public:
+        Pentagon();
+        ~Pentagon();
+    };
+
+}
 

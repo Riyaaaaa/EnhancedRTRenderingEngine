@@ -11,8 +11,22 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
     auto* config = UserConfig::getInstance();
 
     {
-        UIRowLayout row(LayoutAttribute::Static, 30, 80);
-        row.AddWidget(std::make_shared<UIButtonLabel>("button", []() {}));
+        UIRowLayout row(LayoutAttribute::Dynamic, 20);
+        row.AddWidget(std::make_shared<UIStaticLabel>("visibles", UIAlign::LEFT));
+        window.AddRow(row);
+    }
+
+    {
+        UIRowLayout row(LayoutAttribute::Dynamic, 30);
+        row.AddWidget(std::make_shared<UIButtonLabel>("rays", [config]() {
+            config->SwitchDisplayRayPaths();
+        }));
+        row.AddWidget(std::make_shared<UIButtonLabel>("indirect lights", [config]() {
+            config->SwitchVisbleIndirectLights();
+        }));
+        row.AddWidget(std::make_shared<UIButtonLabel>("reflections", [config]() {
+            config->SwitchVisibleReflections();
+        }));
         window.AddRow(row);
     }
     
@@ -25,6 +39,19 @@ UIWindow GUIFactory::CreateGlobalSettingsWindow() {
         row.AddWidget(std::make_shared<UIRadioButton>("High Quality",
             [=]() { return config->GetMSAAQuality() == MSAAQualityType::HIGH_QUALITY; },
             [=]() { config->GetMSAAQuality() = MSAAQualityType::HIGH_QUALITY; }
+        ));
+        window.AddRow(row);
+    }
+
+    {
+        UIRowLayout row(LayoutAttribute::Dynamic, 60);
+        row.AddWidget(std::make_shared<UIRadioButton>("Lighting",
+            [=]() { return config->RasterizerType() == RasterizerState::Default; },
+            [=]() { config->RasterizerType() = RasterizerState::Default; }
+        ));
+        row.AddWidget(std::make_shared<UIRadioButton>("Wireframe",
+            [=]() { return config->RasterizerType() == RasterizerState::WireFrame; },
+            [=]() { config->RasterizerType() = RasterizerState::WireFrame; }
         ));
         window.AddRow(row);
     }

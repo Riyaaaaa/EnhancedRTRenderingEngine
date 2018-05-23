@@ -3,15 +3,19 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
-template<class VertType>
-class Square : public MeshBase<VertType>
-{
-public:
-    Square(Size2D size);
-};
+namespace PrimitiveMesh {
 
-class SquarePMD : public MeshBase<PMDVertex>
-{
-public:
-    SquarePMD();
-};
+    template<class VertType>
+    class Square : public Mesh<VertType>
+    {
+    public:
+        Square(Size2D size);
+    };
+
+    class SquarePMD : public Mesh<MainVertex>
+    {
+    public:
+        SquarePMD();
+    };
+
+}

@@ -15,12 +15,13 @@
 class Scene
 {
 public:
-    typedef PMDVertex VertType;
+    typedef MainVertex VertType;
 
     Scene();
     ~Scene();
 
-    void CreateTestScene();
+    void CreateSkyTestScene();
+    void CreateGITestScene();
 
     bool Dirty() { return lightDirty | meshDirty; }
     bool LightDirty() { return lightDirty; }
@@ -32,7 +33,7 @@ public:
     DirectX::XMMATRIX GetPerspectiveProjection();
     DirectX::XMMATRIX GetViewProjection();
 
-    std::vector<MeshObject<VertType>>& GetViewObjects() { return viewObjects; }
+    std::vector<MeshObject<VertType>*>& GetViewObjects() { return viewObjects; }
     std::vector<DirectionalLight>& GetDirectionalLights() { return directionalLights; }
 
     std::vector<PointLight>& GetPointLights() { return pointLights; }
@@ -61,7 +62,7 @@ private:
 
     AABB _precomputedAABB;
 
-    std::vector<MeshObject<VertType>> viewObjects;
+    std::vector<MeshObject<VertType>*> viewObjects;
     std::vector<CameraObject> cameraObjects;
     std::vector<CubeReflectionCapture*> captureObjects;
     std::vector<DirectionalLight> directionalLights;

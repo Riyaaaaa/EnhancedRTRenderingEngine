@@ -19,7 +19,8 @@ namespace SpaceOctree {
         OctreeFactoryBase(AABB RootAABB, int splitLevel);
 
         AABB CalculateOctreeBoxAABBFromMortonNumber(uint32_t number) const;
-        _Vector3D<uint8_t> CalculateGridCoordinate(const Vector3D& pos);
+        _Vector3D<int16_t> CalculateGridCoordinate(const Vector3D& pos);
+        _Vector3D<int16_t> CalculateGridCoordinate(const Vector3D& pos, int split_level);
         int CalculateMortonNumber(const AABB& aabb);
         int CalculateMortonNumber(const Vector3D& pos, int splitLevel);
         int CalculateIndexFromPoint(const Vector3D& pos);
@@ -29,7 +30,7 @@ namespace SpaceOctree {
         virtual const std::unique_ptr<OctreeBox>& GetOctreeBox(uint32_t index) = 0;
         virtual void IterateEnableBox(std::function<void(const std::pair<uint32_t, OctreeBox*>&)> callback) const = 0;
 
-        bool Register(IMeshObject* object)
+        bool Register(MeshObjectBase* object)
         {
             auto aabb = object->GetAABB();
             uint32_t Elem = CalculateMortonNumber(aabb);

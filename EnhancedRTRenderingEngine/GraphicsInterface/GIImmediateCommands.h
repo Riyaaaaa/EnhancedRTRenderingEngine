@@ -1,5 +1,7 @@
 #pragma once
 
+#include <boost/optional.hpp>
+
 #include "Structure/Structure.h"
 
 #include "GIResource.h"
@@ -28,7 +30,7 @@ public:
     virtual GIShaderResourceView* CreateShaderResourceView(GITexture2D* tex) = 0;
     virtual GISamplerState* CreateSamplerState(const SamplerParam& param) = 0;
     
-    virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) = 0;
+    virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch, boost::optional<ResourceRegion> region = boost::none) = 0;
     virtual void CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src) = 0;
     virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels) = 0;
 

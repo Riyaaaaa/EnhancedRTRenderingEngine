@@ -30,24 +30,34 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
         auto& pLight = scene->GetPointLights()[i];
         hConstantBuffer.PointLightProjection[i] = pLight.GetShadowPerspectiveMatrix();
         memcpy(hConstantBuffer.PointLightView[i], pLight.GetViewMatrixes(), sizeof(XMMATRIX) * 6);
-        hConstantBuffer.PointLight[i] = PointLightParameters{ pLight.GetPoint(), pLight.GetAttenuation() };
+        auto& pos = pLight.GetPoint();
+        hConstantBuffer.PointLight[i] = PointLightParameters{ Vector4D(pos.x, pos.y, pos.z, pLight.InvSquareRadius()), Vector4D(pLight.Intensity(), 0.0, 0.0, 0.0) };
     }
 
     return hConstantBuffer;
 }
 
-MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const PMDModel& model) {
+MeshObject<typename Mesh3DModel::Type>* SceneUtils::CreateMesh3DModelObject(const PMDModel& model) {
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
-    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D);
-    mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
+    MeshObject<typename Mesh3DModel::Type>* mesh = new MeshObject<typename Mesh3DModel::Type>(mesh3D);
+    mesh->SetMaterial(mesh3D->CreatePMDDefaultMaterials());
     
     return mesh;
 }
 
-MeshObject<typename Mesh3DModel::Type> SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
+MeshObject<typename Mesh3DModel::Type>* SceneUtils::CreateMesh3DModelObject(const DXModel& model) {
     auto mesh3D = std::make_shared<Mesh3DModel>(model);
-    MeshObject<typename Mesh3DModel::Type> mesh(mesh3D);
-    mesh.SetMaterial(mesh3D->CreatePMDDefaultMaterials());
+    MeshObject<typename Mesh3DModel::Type>* mesh = new MeshObject<typename Mesh3DModel::Type>(mesh3D);
+
+    std::vector<Material> materials(model.mesh.meshMaterialList.nMaterials, Material::Default);
+    auto& material_data = model.mesh.meshMaterialList;
+
+    for (int i = 0; i < material_data.nMaterials; i++) {
+        materials[i].baseColor = material_data.materials[i].faceColor.Slice<3>();
+        materials[i].specular = material_data.materials[i].specularColor;
+    }
+
+    mesh->SetMaterial(materials);
 
     return mesh;
 }

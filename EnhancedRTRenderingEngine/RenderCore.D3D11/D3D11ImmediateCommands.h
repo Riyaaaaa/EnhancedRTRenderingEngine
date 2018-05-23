@@ -30,7 +30,7 @@ public:
     virtual void RSSetState(GIRasterizerState* state) override;
     virtual void RSSetScissorRect(const ScissorRect& rect) override;
 
-    virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch) override;
+    virtual void UpdateSubresource(GIBuffer* buffer, void* srcData, unsigned int srcRowPitch, boost::optional<ResourceRegion> region = boost::none) override;
     virtual void CopyTexture2D(GITexture2D* dst, unsigned int idx, unsigned int mipLevels, GITexture2D* src);
     virtual void CopyTexture2DFromArray(GITexture2D* dst, GITexture2D* src, unsigned int srcIdx, unsigned int srcMipLevels);
 

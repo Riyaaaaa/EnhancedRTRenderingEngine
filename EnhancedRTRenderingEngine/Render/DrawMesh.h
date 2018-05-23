@@ -2,10 +2,12 @@
 
 #include <unordered_map>
 
+#include "Constant/GICommandParameter.h"
 #include "Constant/GraphicConstants.h"
 
 #include "Scene/MeshObject.h"
 
+#include "Mesh/StaticLightBuildData.h"
 #include "Material/Material.h"
 
 #include "Resource/Texture2D.h"
@@ -13,7 +15,10 @@
 
 #include "Shader/ShaderFactory.h"
 
+#include "Structure/Structure.h"
+
 #include "GraphicsInterface/GIRawResource.h"
+#include "GraphicsInterface/GIImmediateCommands.h"
 
 class DrawMesh;
 
@@ -47,6 +52,10 @@ public:
         return _gshader;
     }
 
+    DrawMesh* ParentMesh() const {
+        return _parentMesh;
+    }
+
     void Draw(GIImmediateCommands* cmd);
 
 protected:
@@ -78,6 +87,7 @@ public:
             bufferDesc.stride = sizeof(VertType);
 
             auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&vertexList[0]));
+            buffer->type = ResourceType::LightVertexList;
             meshSharedResource.emplace_back(buffer, -1);
         }
 
@@ -95,6 +105,8 @@ public:
 
         _primitiveType = element->GetMesh()->GetPrimitiveType();
     }
+
+    DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData);
 
     void RegisterConstantBuffer(const std::shared_ptr<GIBuffer>& buffer, unsigned int regsiterId, ShaderType shaderType) {
         ResourceType resType;
@@ -145,6 +157,4 @@ private:
     std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> meshSharedResource;
     std::vector<std::pair<GITextureProxy, unsigned int>> meshSharedTexture;
 };
-
-
 

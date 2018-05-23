@@ -110,10 +110,11 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_VARARGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;BOOST_CONFIG_SUPPRESS_OUTDATED_MESSAGE;NK_INCLUDE_DEFAULT_ALLOCATOR;NK_INCLUDE_FONT_BAKING;NK_INCLUDE_DEFAULT_FONT;NK_INCLUDE_VERTEX_BUFFER_OUTPUT;NK_INCLUDE_FIXED_TYPES;NK_INCLUDE_STANDARD_VARARGS;NOMINMAX;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
+      <OpenMPSupport>true</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,9 +164,13 @@
   <ItemGroup>
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
+    <ClInclude Include="Lighting\LightMapBaker.h" />
+    <ClInclude Include="Lighting\PrecomputeLightingSystem.h" />
+    <ClInclude Include="Scene\Lighting\CollectionPhotonVolume.h" />
     <ClInclude Include="Common\Defines.h" />
     <ClInclude Include="Algorithms\CompressTexture.h" />
     <ClInclude Include="Constant\GICommandParameter.h" />
+    <ClInclude Include="Constant\GlobalEnumrations.h" />
     <ClInclude Include="Constant\GraphicConstants.h" />
     <ClInclude Include="Constant\InputKey.h" />
     <ClInclude Include="Constant\PrecomputedConstants.h" />
@@ -177,6 +182,8 @@
     <ClInclude Include="GUI\NuklearInputMediator.h" />
     <ClInclude Include="GUI\UIWidgets.h" />
     <ClInclude Include="GUI\NuklearFormatUtils.h" />
+    <ClInclude Include="Algorithms\KDimensionalTree.h" />
+    <ClInclude Include="Mesh\MeshExpander.h" />
     <ClInclude Include="Render\HUDCanvasRenderer.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11Resources.h" />
     <ClInclude Include="RenderCore.D3D11\D3D11ImmediateCommands.h" />
@@ -192,8 +199,8 @@
     <ClInclude Include="GraphicsInterface\GIResourceAttribute.h" />
     <ClInclude Include="Render\DrawMesh.h" />
     <ClInclude Include="GraphicsInterface\GIImmediateCommands.h" />
-    <ClInclude Include="Render\RayTracer.h" />
-    <ClInclude Include="Render\PhotonMapping.h" />
+    <ClInclude Include="Lighting\RayTracer.h" />
+    <ClInclude Include="Lighting\PhotonMapping.h" />
     <ClInclude Include="Scene\ERTREObject.h" />
     <ClInclude Include="GraphicsInterface\GITextureProxy.h" />
     <ClInclude Include="Scene\Enviroment\CubeReflectionCapture.h" />
@@ -206,11 +213,16 @@
     <ClInclude Include="Shader\ShaderFactory.h" />
     <ClInclude Include="Scene\StaticMeshObject.h" />
     <ClInclude Include="Render\SpaceOctreeVisualizer.h" />
+    <ClInclude Include="Mesh\StaticLightBuildData.h" />
     <ClInclude Include="Structure\Aliases.h" />
+    <ClInclude Include="Structure\KDTree.h" />
     <ClInclude Include="Structure\Octree.h" />
+    <ClInclude Include="Structure\Photon.h" />
     <ClInclude Include="Structure\Primitive.h" />
     <ClInclude Include="Structure\RaytraceStructures.h" />
+    <ClInclude Include="Structure\TextureBuffer.h" />
     <ClInclude Include="Structure\Voxel.h" />
+    <ClInclude Include="System\Observer.h" />
     <ClInclude Include="ThirdParty\include\nuklear\nuklear.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\allocators.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\cursorstreamwrapper.h" />
@@ -266,6 +278,7 @@
     <ClInclude Include="GUI\UINumericProperty.h" />
     <ClInclude Include="GUI\UIComboColor.h" />
     <ClInclude Include="GUI\UIColorPicker.h" />
+    <ClInclude Include="UserData\SettingsEvent.h" />
     <ClInclude Include="UserData\UserConfig.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
     <ClInclude Include="Utility\MathUtils.h" />
@@ -397,12 +410,17 @@
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="Algorithms\CompressTexture.cpp" />
+    <ClCompile Include="Lighting\LightMapBaker.cpp" />
+    <ClCompile Include="Lighting\PrecomputeLightingSystem.cpp" />
+    <ClCompile Include="Scene\Lighting\CollectionPhotonVolume.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
     <ClCompile Include="GUI\GUIFactory.cpp" />
     <ClCompile Include="GUI\HUDCanvas.cpp" />
     <ClCompile Include="GUI\NuklearWrapper.cpp" />
     <ClCompile Include="GUI\NuklearInputMediator.cpp" />
     <ClCompile Include="GUI\NuklearFormatUtils.cpp" />
+    <ClCompile Include="Algorithms\KDimensionalTree.cpp" />
+    <ClCompile Include="Mesh\MeshExpander.cpp" />
     <ClCompile Include="Render\HUDCanvasRenderer.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11Resources.cpp" />
     <ClCompile Include="RenderCore.D3D11\D3D11ImmediateCommands.cpp" />
@@ -417,8 +435,8 @@
     <ClCompile Include="GraphicsInterface\GIRawResource.cpp" />
     <ClCompile Include="Render\DrawMesh.cpp" />
     <ClCompile Include="GraphicsInterface\GIImmediateCommands.cpp" />
-    <ClCompile Include="Render\RayTracer.cpp" />
-    <ClCompile Include="Render\PhotonMapping.cpp" />
+    <ClCompile Include="Lighting\RayTracer.cpp" />
+    <ClCompile Include="Lighting\PhotonMapping.cpp" />
     <ClCompile Include="Scene\ERTREObject.cpp" />
     <ClCompile Include="Scene\Enviroment\CubeReflectionCapture.cpp" />
     <ClCompile Include="Render\TextureHUDRenderer.cpp" />
@@ -429,6 +447,7 @@
     <ClCompile Include="Shader\ShaderFactory.cpp" />
     <ClCompile Include="Scene\StaticMeshObject.cpp" />
     <ClCompile Include="Render\SpaceOctreeVisualizer.cpp" />
+    <ClCompile Include="Mesh\StaticLightBuildData.cpp" />
     <ClCompile Include="ThirdParty\src\nuklear\nuklear_buffer.c">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
@@ -635,6 +654,14 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
+    <FxCompile Include="Shader\LightingPSBaseColor.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</DisableOptimizations>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.1</ShaderModel>
     </FxCompile>
     <FxCompile Include="Shader\TextureVertexShader.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>

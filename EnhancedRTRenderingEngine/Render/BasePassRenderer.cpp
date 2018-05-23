@@ -8,6 +8,8 @@
 
 #include "GraphicsInterface/GICommandUtils.h"
 
+#include "UserData/UserConfig.h"
+
 #include "WindowsApp.h"
 #include "Common/Common.h"
 
@@ -33,6 +35,8 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, view->GetOMResource()->depthStencilView);
     cmd->ClearDepthStencilView(view->GetOMResource()->depthStencilView.get(), 1.0f, 0);
+
+    view->SetRasterizerState(cmd, UserConfig::getInstance()->RasterizerType());
     
     ConstantBuffer hConstantBuffer = SceneUtils::CreateBasePassConstantBuffer(scene);
 

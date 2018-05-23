@@ -8,7 +8,7 @@
 
 SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
 {
-    auto box = ResourceLoader::LoadDXModel("SkyBox");
+    auto box = ResourceLoader::LoadDXModel("reversed_box");
     _mesh = std::make_shared<Mesh3DModel>(box());
     int i = 0;
     std::vector<Texture2D> textures(6);
@@ -17,7 +17,7 @@ SkyBox::SkyBox(const std::string& skyboxTextureDirectory)
         i++;
     }
 
-    _materials.emplace_back(MaterialParameters{ "LightingVertexShader", "UnlitCubeTexturePixelShader", "", 0.0f, 0.0f });
+    _materials.emplace_back(MaterialParameters{ "LightingVertexShader", "UnlitCubeTexturePixelShader", "", Vector3D(), 0.0f, 0.0f });
     _materials.back().cubeTexture = TextureCube(textures);
     _materials.back().type = TextureType::TextureCube;
     _materials.back().shadingType = ShadingType::Unlit;

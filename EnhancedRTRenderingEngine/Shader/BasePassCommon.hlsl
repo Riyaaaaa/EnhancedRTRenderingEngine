@@ -11,6 +11,7 @@ struct pixcelIn
     float4 norw : NORMAL0;
     float4 col : COLOR0;
     float2 tex : TEXCOORD0;
+    float2 lightUV : TEXCOORD1;
     float4 shadowCoord : SHADOW_COORD;
 };
 
@@ -22,14 +23,18 @@ SamplerState PShadowSampler : register(s1);
 TextureCube EnviromentMap : register(t2);
 SamplerState EnviromentSampler : register(s2);
 
+Texture2D LightMap : register(t3);
+SamplerState LightSampler : register(s3);
+
 struct PointLightParam
 {
-    float4 pos;
-    float4 att;
+    float4 PosAndInvAttRadius;
+    float4 Intensity;
 };
 
 struct MaterialParameters
 {
+    float3 BaseColor;
     float metallic;
     float roughness;
 };
@@ -52,10 +57,20 @@ cbuffer ConstantBuffer : register(b0)
 cbuffer MaterialBuffer : register(b1)
 {
     MaterialParameters materialParameters;
+    float UseLightMap;
+    float UseEnviromentMap;
 }
 
-float3 PointLighting(float3 diffuseColor, float distance, float3 attenuation) {
-    return diffuseColor * saturate(1.0f / (attenuation.x + attenuation.y * distance + attenuation.z * distance * distance));
+float3 PointLighting(float3 diffuseColor, float3 unnormalizedLightVector, in PointLightParam pParam) {
+    float sq_dist = dot(unnormalizedLightVector, unnormalizedLightVector);
+    float att = 1.0f / max(sq_dist, 0.01 * 0.01);
+    float factor = sq_dist * pParam.PosAndInvAttRadius.w;
+    float smooth_fator = saturate(1 - factor * factor);
+
+    att *= smooth_fator * smooth_fator;
+
+
+    return diffuseColor * att * pParam.Intensity.x;
 }
 
 float3 DirectionalLighting(float3 diffuseColor) {
@@ -91,7 +106,7 @@ bool IsVisibleFromDirectionalLight(float4 shadowCoord) {
 }
 
 float GetVariancePointShadowFactor(float3 posw, int index) {
-    float3 pointDir = posw - PLightParams[index].pos;
+    float3 pointDir = posw - PLightParams[index].PosAndInvAttRadius.xyz;
     float3 depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir));
 
     float3 absVec = abs(pointDir);
@@ -109,7 +124,7 @@ float GetVariancePointShadowFactor(float3 posw, int index) {
 }
 
 bool IsVisibleFromPointLight(float3 posw, int index) {
-    float3 pointDir = posw - PLightParams[index].pos;
+    float3 pointDir = posw - PLightParams[index].PosAndInvAttRadius;
     float depth = PointShadowMap.Sample(PShadowSampler, normalize(pointDir)).x;
     float3 absVec = abs(pointDir);
     float z = max(absVec.x, max(absVec.y, absVec.z));

@@ -36,12 +36,12 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     cmd->ClearRenderTargetView(rtv.get(), ClearColor);
 
     Vector2D viewportPos = Vector2D{ 0.0f, 0.0f };
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<Square<TexVertex>>(Size2D(1.0f, 1.0f));
-    mesh.SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
+    auto mesh = SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(Size2D(1.0f, 1.0f));
+    mesh->SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    DrawMesh element(cmd, &mesh);
+    DrawMesh element(cmd, mesh);
     ObjectBuffer buffer;
-    buffer.World = XMMatrixTranspose(mesh.GetMatrix());
+    buffer.World = XMMatrixTranspose(mesh->GetMatrix());
 
     BufferDesc desc;
     desc.byteWidth = sizeof(buffer);
@@ -50,9 +50,9 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
 
     auto ps = Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect));
-    ps.textureResources.emplace_back(src, 0);
+    ps.textureResources[UnlitMainTexture] = src;
 
-    DrawElement face(&element, mesh.GetMesh()->GetVertexCount(), 0);
+    DrawElement face(&element, mesh->GetMesh()->GetVertexCount(), 0);
     face.SetShaders(ps, ShaderFactory::TextureVertexShader());
     face.Draw(cmd);
 

@@ -5,6 +5,7 @@ enum class ResourceType {
     TextureCube,
     IndexList,
     VertexList,
+    LightVertexList,
     PSConstantBuffer,
     VSConstantBuffer,
     GSConstantBuffer
@@ -23,5 +24,12 @@ enum class ShadingType {
     Unlit,
     Vertex,
     Geometry
+};
+
+enum PSRegisterSlots {
+    BasePassMaterialBuffer = 1,
+    BasePassMainTexture = 10,
+    MinTextureColorMainTexture = 0,
+    UnlitMainTexture = 0
 };
 
