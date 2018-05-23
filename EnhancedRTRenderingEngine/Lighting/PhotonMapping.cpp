@@ -25,12 +25,12 @@ void PhotonMapping::EmmitPhotons(SpaceOctree::OctreeFactoryBase* factory, Scene*
         auto pos = pLight.GetPoint();
         auto intensity = pLight.Intensity();
 
-        constexpr int nEmitPhotons = 1000;
+        constexpr int nEmitPhotons = 10000;
         constexpr int MAX_BOUNCES = 3;
         rayPaths.reserve(nEmitPhotons * MAX_BOUNCES);
         photon_caches.reserve(nEmitPhotons * MAX_BOUNCES);
 
-        float flux_ = intensity * 4 * D3DX_PI * 10.0f / nEmitPhotons;
+        float flux_ = intensity * 4 * D3DX_PI * 255 / nEmitPhotons;
         Vector3D flux(flux_, flux_, flux_);
 #ifdef SUPPORT_MULTI_PROCESS_OMP
 #pragma omp parallel for

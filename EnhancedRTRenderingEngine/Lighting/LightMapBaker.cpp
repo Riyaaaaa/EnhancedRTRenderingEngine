@@ -80,9 +80,9 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             }
 
             //TODO: photons transfer RGB colors
-            buf(global_coord.x, global_coord.y, 0) = std::min(255, (int)(raddiance.x) * 255);
-            buf(global_coord.x, global_coord.y, 1) = std::min(255, (int)(raddiance.y) * 255);
-            buf(global_coord.x, global_coord.y, 2) = std::min(255, (int)(raddiance.z) * 255);
+            buf(global_coord.x, global_coord.y, 0) = std::min(255, (int)(raddiance.x));
+            buf(global_coord.x, global_coord.y, 1) = std::min(255, (int)(raddiance.y));
+            buf(global_coord.x, global_coord.y, 2) = std::min(255, (int)(raddiance.z));
             buf(global_coord.x, global_coord.y, 3) = 255;
         }
 
