@@ -22,6 +22,10 @@ void  RenderScene::Notify(UserConfigEvent e) {
 }
 
 void RenderScene::Preprocess(GIImmediateCommands* cmd) {
+    if (!_lightMap) {
+        return;
+    }
+
     cmd->PSSetShaderResources(3, _lightMap->GetSubResourceView().get());
     cmd->PSSetSamplers(3, _lightMap->GetSampler().get());
 }

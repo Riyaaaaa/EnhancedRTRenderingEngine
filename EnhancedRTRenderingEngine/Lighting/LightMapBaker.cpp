@@ -42,7 +42,7 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
             _Vector2D<unsigned int> global_coord = base_coord + _Vector2D<unsigned int>(idx % local_map_size, idx / local_map_size);
             float triangle_idx = expanded(idx).belongsTriangleIdx;
             if (triangle_idx != -1) {
-                constexpr unsigned int nSamples = 10;
+                constexpr unsigned int nSamples = 10.0f;
                 constexpr float sample_radius = 3.0f;
                 auto sampledPhotons = photonKdTree.FindNeighborNNodes(expanded(idx).worldPosition.Slice<3>(), nSamples, sample_radius); // sampling 10 photons;
                 if (!sampledPhotons.empty()) {
@@ -69,8 +69,8 @@ GITextureProxy LightMapBaker::Bake(GIImmediateCommands* cmd, const std::vector<M
 
                     for (std::size_t photon_idx = 0; photon_idx < sampledPhotons.size(); photon_idx++) {
                         auto& photon = photons[sampledPhotons[photon_idx].first->index];
-                        // float cos = Math::Saturate(Math::Dot(expanded.GetNormal(triangle_idx), -photon.incident));
-                        accumulated_flux += photon.power / D3DX_PI;
+                        float cos = Math::Saturate(Math::Dot(expanded.GetNormal(triangle_idx), -photon.incident));
+                        accumulated_flux += photon.power * cos / D3DX_PI;
                     }
                     
                     if (A > 0.0f) {

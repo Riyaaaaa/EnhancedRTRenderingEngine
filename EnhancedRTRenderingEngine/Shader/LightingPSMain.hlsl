@@ -1,7 +1,7 @@
 #include "BasePassCommon.hlsl"
 
 #define USE_VSM 1
-#define ENABLE_SHADING_DIRECT_LIGHT 0
+#define ENABLE_SHADING_DIRECT_LIGHT 1
 
 float4 ps_main(pixcelIn IN) : SV_Target
 {
@@ -39,10 +39,10 @@ float4 ps_main(pixcelIn IN) : SV_Target
         float shadowFactor = IsVisibleFromPointLight(IN.posw.xyz, i);
 #endif
         if (shadowFactor > 0.0f) {
-            float3 dir = PLightParams[i].pos.xyz - IN.posw.xyz;
+            float3 dir = PLightParams[i].PosAndInvAttRadius.xyz - IN.posw.xyz;
             float len = length(dir);
             float irradiance = saturate(dot(IN.norw.xyz, dir / len)) * shadowFactor;
-            diffuse += irradiance * PointLighting(diffuseColor, len, PLightParams[i].att);
+            diffuse += irradiance * PointLighting(diffuseColor, dir, PLightParams[i]);
             specular += irradiance * SpecularBRDF(dir / len, IN.posw, IN.norw, Eye, specularCoef, materialParameters.roughness);
         }
     }

@@ -30,7 +30,8 @@ ConstantBuffer SceneUtils::CreateBasePassConstantBuffer(Scene* scene) {
         auto& pLight = scene->GetPointLights()[i];
         hConstantBuffer.PointLightProjection[i] = pLight.GetShadowPerspectiveMatrix();
         memcpy(hConstantBuffer.PointLightView[i], pLight.GetViewMatrixes(), sizeof(XMMATRIX) * 6);
-        hConstantBuffer.PointLight[i] = PointLightParameters{ pLight.GetPoint(), pLight.GetAttenuation() };
+        auto& pos = pLight.GetPoint();
+        hConstantBuffer.PointLight[i] = PointLightParameters{ Vector4D(pos.x, pos.y, pos.z, pLight.InvSquareRadius()), Vector4D(pLight.Intensity(), 0.0, 0.0, 0.0) };
     }
 
     return hConstantBuffer;

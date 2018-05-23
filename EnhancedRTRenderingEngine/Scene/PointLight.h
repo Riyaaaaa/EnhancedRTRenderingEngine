@@ -12,8 +12,10 @@ public:
     void SetPoint(const Vector3D& pos);
     const Vector3D& GetPoint() { return _point; }
 
-    void SetAttenuation(const Vector3D& att) { _attenuation = att; }
-    const Vector3D& GetAttenuation() { return _attenuation; }
+    void SetAttenuationRadius(float att_rad) { 
+        _invSqrRadius = 1.0f / std::max(att_rad * att_rad, 0.00001f);
+    }
+    float InvSquareRadius() const { return _invSqrRadius; }
 
     float Intensity() const {
         return _intensity;
@@ -31,7 +33,7 @@ public:
     
 protected:
     Vector3D _point;
-    Vector3D _attenuation;
+    float _invSqrRadius;
     float _intensity;
 
     bool _isDirtyMatrix;

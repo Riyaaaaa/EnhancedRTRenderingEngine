@@ -143,9 +143,10 @@ struct Transform {
 };
 
 struct PointLightParameters {
-    Vector4D pos;
-    // X: constant attenuation factor, Y:  linear attenuation factor, Z: quadratic attenuation factor
-    Vector4D attenuation;
+    // X, Y, Z: World position, W: Inverse square attenuation radius 
+    Vector4D Pos;
+    // X: Intensity; Y, Z, W: Unused
+    Vector4D Intensity;
 };
 
 struct TransformBufferParam

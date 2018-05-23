@@ -35,6 +35,4 @@ void PrecomputeLightingSystem::Compute(GIImmediateCommands* cmd, RenderScene* sc
     scene->_lightMap = lightMap;
     scene->_staticMeshesOctree = std::move(staticMeshesOctree);
     scene->rayPaths = pm.rayPaths;
-
-
 }

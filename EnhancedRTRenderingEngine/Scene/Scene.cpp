@@ -68,7 +68,7 @@ void Scene::CreateSkyTestScene() {
     StaticMeshObject<MainVertex>(std::make_shared<Mesh3DModel>(model()), Transform());
 
     pointLights.emplace_back(PointLight{});
-    pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+    pointLights[0].SetAttenuationRadius(1000.0f);
     pointLights[0].SetPoint(Vector3D{ 2.0, 3.0f, 0.0f });
 
     captureObjects.push_back(new StaticCubeReflectionCapture(skybox->GetCubeTextureResource()));
@@ -100,7 +100,7 @@ void Scene::CreateGITestScene() {
     viewObjects.back()->SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
 
     pointLights.emplace_back(PointLight{});
-    pointLights[0].SetAttenuation(Vector3D{ 1.0f, 0.1f, 0.01f });
+    pointLights[0].SetAttenuationRadius(1000.0f);
     pointLights[0].SetPoint(Vector3D{ 2.0, 3.0f, 0.0f });
 
     mainCameraIdx = 0;
