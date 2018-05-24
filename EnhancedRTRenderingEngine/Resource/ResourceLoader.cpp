@@ -2,6 +2,7 @@
 #include "ResourceLoader.h"
 #include "FileManager.h"
 
+#include "Common/Defines.h"
 #include "Common/Common.h"
 #include "WindowsApp.h"
 #include "Utility/StringUtils.h"
@@ -46,6 +47,9 @@ RawBinary ResourceLoader::LoadShader(std::string filename) {
     ifs.open(path, std::ios::in | std::ios::binary);
 
     if (!ifs.is_open()) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return RawBinary();
     }
 
@@ -91,20 +95,35 @@ int ResourceLoader::LoadPNG(std::string filename, Texture2D& outTex) {
 
     png_byte sig_bytes[8];
     if (fread(sig_bytes, sizeof(sig_bytes), 1, fp) != 1) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return NULL;
     }
     if (png_sig_cmp(sig_bytes, 0, sizeof(sig_bytes))) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return NULL;
     }
     Png = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
     if (Png == NULL) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return NULL;
     }
     PngInfo = png_create_info_struct(Png);
     if (PngInfo == NULL) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return NULL;
     }
     if (setjmp(png_jmpbuf(Png))) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return NULL;
     }
 
@@ -121,6 +140,9 @@ int ResourceLoader::LoadPNG(std::string filename, Texture2D& outTex) {
     {
         png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
         fclose(fp);
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return -7;
     }
     png_bytep buf = new png_byte[w * h * d];
@@ -128,6 +150,9 @@ int ResourceLoader::LoadPNG(std::string filename, Texture2D& outTex) {
     {
         png_destroy_read_struct(&Png, &PngInfo, (png_infopp)NULL);
         fclose(fp);
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return -8;
     }
 
@@ -174,13 +199,12 @@ ResourceHandle<DXModel> ResourceLoader::LoadDXModel(std::string filename) {
     auto manager = FileManager::getInstance();
     auto path = manager->MakeAssetPath("3DModel\\" + filename + ".x");
 
-    if (manager->FileExists(path)) {
-        return ResourceHandle<DXModel>();
-    }
-
     ifs.open(path, std::ios::in);
 
     if (!ifs.is_open()) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return ResourceHandle<DXModel>{};
     }
 
@@ -198,13 +222,12 @@ ResourceHandle<PMDModel> ResourceLoader::LoadPMDModel(std::string filename) {
     auto manager = FileManager::getInstance();
     auto path = manager->MakeAssetPath("3DModel\\" + filename + ".pmd");
 
-    if (manager->FileExists(path)) {
-        return ResourceHandle<PMDModel>();
-    }
-
     ifs.open(path, std::ios::in | std::ios::binary);
 
     if (!ifs.is_open()) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return ResourceHandle<PMDModel>{};
     }
 
@@ -238,6 +261,9 @@ int ResourceLoader::LoadBMP(const std::string& filename, Texture2D& outTex) {
     ifs.open(path, std::ios::in | std::ios::binary);
 
     if (!ifs.is_open()) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+		throw std::runtime_error("Can not open file");
+#endif
         return -1;
     }
 
@@ -263,12 +289,18 @@ int ResourceLoader::LoadBMP(const std::string& filename, Texture2D& outTex) {
         ifs.seekg(2, std::fstream::cur);
         ifs.read(reinterpret_cast<char*>(&bit_depth), 2);
         if (bit_depth != 24) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+			throw std::runtime_error("Can not open file");
+#endif
             return -2; // not support bit depth
         }
 
         int comptype, data_size;
         ifs.read(reinterpret_cast<char*>(&comptype), 4);
         if (comptype != 0) {
+#ifdef THROW_EXCEPTION_WHEN_HANDRING_ERROR
+			throw std::runtime_error("Can not open file");
+#endif
             return -2; // not support compression bmp
         }
         ifs.read(reinterpret_cast<char*>(&data_size), 4);
