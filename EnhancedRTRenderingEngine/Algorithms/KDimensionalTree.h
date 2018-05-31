@@ -14,7 +14,7 @@ public:
     std::vector<std::pair<KDNode*, float>> FindNeighborNNodes(Vector3D p, int num, float limit_radius) const;
 
 protected:
-    int _FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, float limit_radius_sq, std::vector<std::pair<KDNode*, float>>& dist) const;
+    void _FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, float limit_radius_sq, std::vector<std::pair<KDNode*, float>>& dist) const;
 
     KDNode * _build(unsigned int nPoints, int depth, std::vector<unsigned int>::iterator indices);
 

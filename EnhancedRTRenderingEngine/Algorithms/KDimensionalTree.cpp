@@ -31,12 +31,11 @@ std::vector<std::pair<KDNode*, float>> KDimensionalTree<T>::FindNeighborNNodes(V
 }
 
 template<class T>
-int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, float limit_radius_sq, std::vector<std::pair<KDNode*, float>>& nodes) const {
+void KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode* node, float limit_radius_sq, std::vector<std::pair<KDNode*, float>>& nodes) const {
     if (!node) {
-        return 0;
+        return;
     }
 
-    int add_nums = 0;
     auto& point = _points[node->index].pos;
     float d = Math::DistanceSq(p, point);
     
@@ -46,7 +45,6 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
                 return node.second > d;
             });
             nodes.insert(it, std::make_pair(node, d));
-            add_nums = 1;
         }
         else {
             auto it = std::find_if(nodes.begin(), nodes.end(), [d](std::pair<KDNode*, float> node) {
@@ -63,15 +61,13 @@ int KDimensionalTree<T>::_FindNeighborNNodes(const Vector3D& p, int num, KDNode*
     float next_limit_radius_sq = num <= nodes.size() ? nodes.back().second : limit_radius_sq;
     float axis_d = p[static_cast<int>(node->axis)] - _points[node->index].pos[static_cast<int>(node->axis)];
 
-    add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->left.get() : node->right.get(), next_limit_radius_sq, nodes);
+    _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->left.get() : node->right.get(), next_limit_radius_sq, nodes);
 
     float axis_d_sq = axis_d * axis_d;
     
     if (axis_d_sq < next_limit_radius_sq) {
-        add_nums += _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->right.get() : node->left.get(), next_limit_radius_sq, nodes);
+       _FindNeighborNNodes(p, num, axis_d < 0.0f ? node->right.get() : node->left.get(), next_limit_radius_sq, nodes);
     }
-
-    return add_nums;
 }
 
 template<class T>
