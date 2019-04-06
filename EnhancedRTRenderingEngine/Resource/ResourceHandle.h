@@ -3,7 +3,7 @@
 #include <utility>
 
 #include "RawBinary.h"
-#include "boost/optional.hpp"
+#include <boost/optional.hpp>
 
 class RefCounter {
 private:

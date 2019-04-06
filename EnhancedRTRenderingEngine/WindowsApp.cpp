@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "Windowsx.h"
 #include "WindowsApp.h"
 #include "Common/Common.h"

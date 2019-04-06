@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "GITextureProxy.h"
 
 #include "GIImmediateCommands.h"

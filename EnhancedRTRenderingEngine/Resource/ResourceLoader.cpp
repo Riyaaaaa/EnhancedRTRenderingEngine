@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "ResourceLoader.h"
 #include "FileManager.h"
 

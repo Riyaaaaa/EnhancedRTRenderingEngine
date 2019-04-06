@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CompressTexture.h"
 
 #include "Structure/Aliases.h"

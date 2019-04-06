@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "TextureCube.h"
 
 using namespace DirectX;

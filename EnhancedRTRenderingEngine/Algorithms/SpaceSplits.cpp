@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "SpaceSplits.h"
 
 AABB SpaceSplits::CalculateOptimizedAABB(const std::vector<Vector3D>& vertices) {

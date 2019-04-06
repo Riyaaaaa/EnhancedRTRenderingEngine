@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "PhotonMapping.h"
 #include "Common/Common.h"
 #include "SpiralLibrary/Random/Random.hpp"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "RenderScene.h"
 
 #include "Constant/RenderConfig.h"

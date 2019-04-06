@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "UnlitRenderer.h"
 #include "DrawMesh.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "GICommandUtils.h"
 
 #include "Utility/TextureUtils.h"

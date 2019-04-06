@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "SkyBox.h"
 
 #include "Mesh/Mesh3DModel.h"

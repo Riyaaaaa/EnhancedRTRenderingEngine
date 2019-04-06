@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "LightMapBaker.h"
 
 #include "Common/Common.h"

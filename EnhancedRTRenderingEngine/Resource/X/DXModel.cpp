@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "Common/Common.h"
 #include "DXModel.h"

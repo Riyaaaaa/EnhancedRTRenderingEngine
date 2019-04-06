@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "NuklearFormatUtils.h"
 
 #include "nuklear/nuklear.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "NuklearWrapper.h"
 
 #include "Resource/Texture2D.h"

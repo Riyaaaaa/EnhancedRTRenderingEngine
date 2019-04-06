@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CameraController.h"
 
 #include "WindowsApp.h"

@@ -16,8 +16,8 @@ typedef char ERTREChar;
 #   define ERTREDebug( str, ... ) \
       { \
         ERTREChar c[256]; \
-        _stprintf_s( c, str, __VA_ARGS__ ); \
-        OutputDebugString( c ); \
+        auto size = swprintf_s( c, 256, str, __VA_ARGS__ ); \
+        wprintf_s(c); \
       }
 #else
 #    define ERTREDebug( str, ... ) // ‹óŽÀ‘•

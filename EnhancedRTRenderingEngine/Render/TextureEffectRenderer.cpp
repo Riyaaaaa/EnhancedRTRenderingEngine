@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "TextureEffectRenderer.h"
 #include "Mesh/Primitive/Square.h"
 

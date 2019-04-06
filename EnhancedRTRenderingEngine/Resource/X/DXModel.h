@@ -45,24 +45,24 @@ public:
     std::vector<XTemplate> templates;
 
     struct MeshTextureCoords {
-        DWORD nTextureCoords;
+        uint32_t nTextureCoords;
         std::vector<Vector2D> textureCoords;
     };
 
     struct MeshFace {
-        DWORD nFaceVertexIndices;
-        std::vector<DWORD> faceVertexIndices;
+        uint32_t nFaceVertexIndices;
+        std::vector<uint32_t> faceVertexIndices;
     };
 
     struct MeshNormals {
-        DWORD nNormals;
+        uint32_t nNormals;
         std::vector<Vector3D> normals;
-        DWORD nFaceNormals;
+        uint32_t nFaceNormals;
         std::vector<MeshFace> faceNormals;
     };
 
     struct MeshVertexColors {
-        DWORD nVertexColors;
+        uint32_t nVertexColors;
         std::vector<Vector4D> vertexColors;
     };
 
@@ -75,16 +75,16 @@ public:
     };
 
     struct MeshMaterialList {
-        DWORD nMaterials;
-        DWORD nFaceIndexes;
-        std::vector<DWORD> faceIndexes;
+        uint32_t nMaterials;
+        uint32_t nFaceIndexes;
+        std::vector<uint32_t> faceIndexes;
         std::vector<DXModel::Material> materials;
     };
 
     struct Mesh {
-        DWORD nVertices;
+        uint32_t nVertices;
         std::vector<Vector3D> vertices;
-        DWORD nFaces;
+        uint32_t nFaces;
         std::vector<std::vector<int>> faces;
 
         // optional data elements

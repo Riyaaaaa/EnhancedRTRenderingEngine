@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "SpaceOctree.h"
 
 #include "Constant/PrecomputedConstants.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "Pentagon.h"
 
 namespace PrimitiveMesh {

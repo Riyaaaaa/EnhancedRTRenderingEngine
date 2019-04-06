@@ -23,32 +23,32 @@
     <ProjectGuid>{3F7EAFD0-A453-4166-9D2C-ED0B58A4F226}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>EnhancedRTRenderingEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0.16299.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v141</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
@@ -77,8 +77,8 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)ThirdParty\include\;$(ProjectDir);$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)ThirdParty\x64\libpng;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(ProjectDir)ThirdParty;$(ProjectDir)ThirdParty/zlib;$(ProjectDir);$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -106,7 +106,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
@@ -114,12 +114,12 @@
       <ConformanceMode>true</ConformanceMode>
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
-      <OpenMPSupport>true</OpenMPSupport>
+      <OpenMPSupport>false</OpenMPSupport>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.env</Command>
@@ -260,7 +260,8 @@
     <ClInclude Include="ThirdParty\include\rapidjson\stream.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\stringbuffer.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\writer.h" />
-    <ClInclude Include="ThirdParty\src\nuklear\nuklear_internal.h" />
+    <ClInclude Include="ThirdParty\nuklear\nuklear.h" />
+    <ClInclude Include="ThirdParty\nuklear\nuklear_internal.h" />
     <ClInclude Include="ThirdParty\x64\libpng\png.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngconf.h" />
     <ClInclude Include="ThirdParty\x64\libpng\pngdebug.h" />
@@ -399,7 +400,6 @@
     <ClInclude Include="SpiralLibrary\Utility\TupleUtils.hpp" />
     <ClInclude Include="SpiralLibrary\Utility\ValueHolder.hpp" />
     <ClInclude Include="Mesh\Primitive\Square.h" />
-    <ClInclude Include="stdafx.h" />
     <ClInclude Include="Structure\Structure.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Resource\Texture2D.h" />
@@ -448,126 +448,46 @@
     <ClCompile Include="Scene\StaticMeshObject.cpp" />
     <ClCompile Include="Render\SpaceOctreeVisualizer.cpp" />
     <ClCompile Include="Mesh\StaticLightBuildData.cpp" />
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_buffer.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_button.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_chart.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_color.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_color_picker.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_combo.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_context.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_contextual.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_draw.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_edit.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_font.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_group.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_image.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_input.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_layout.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_list_view.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_math.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_menu.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_page_element.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_panel.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_pool.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_popup.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_progress.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_property.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_scrollbar.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_selectable.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_slider.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_string.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_style.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_table.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_text.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_text_editor.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_toggle.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_tooltip.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_tree.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_utf8.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_util.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_vertex.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_widget.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="ThirdParty\src\nuklear\nuklear_window.c">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
-    </ClCompile>
+    <ClCompile Include="ThirdParty\nuklear\nuklear_buffer.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_button.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_chart.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_color.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_color_picker.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_combo.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_context.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_contextual.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_draw.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_edit.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_font.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_group.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_image.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_input.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_layout.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_list_view.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_math.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_menu.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_page_element.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_panel.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_pool.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_popup.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_progress.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_property.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_scrollbar.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_selectable.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_slider.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_string.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_style.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_table.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_text.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_text_editor.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_toggle.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_tooltip.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_tree.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_utf8.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_util.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_vertex.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_widget.c" />
+    <ClCompile Include="ThirdParty\nuklear\nuklear_window.c" />
     <ClCompile Include="GUI\UIWindow.cpp" />
     <ClCompile Include="GUI\UIRowLayout.cpp" />
     <ClCompile Include="GUI\UIWidget.cpp" />
@@ -610,12 +530,6 @@
     <ClCompile Include="Scene\Scene.cpp" />
     <ClCompile Include="Scene\SceneObject.cpp" />
     <ClCompile Include="Mesh\Primitive\Square.cpp" />
-    <ClCompile Include="stdafx.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
     <ClCompile Include="Resource\Texture2D.cpp" />
     <ClCompile Include="RenderingContext.cpp" />
     <ClCompile Include="Structure\Vector.cpp" />
@@ -795,12 +709,12 @@
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
-    <Import Project="..\packages\boost.1.66.0.0\build\native\boost.targets" Condition="Exists('..\packages\boost.1.66.0.0\build\native\boost.targets')" />
+    <Import Project="..\packages\boost.1.69.0.0\build\boost.targets" Condition="Exists('..\packages\boost.1.69.0.0\build\boost.targets')" />
   </ImportGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>このプロジェクトは、このコンピューター上にない NuGet パッケージを参照しています。それらのパッケージをダウンロードするには、[NuGet パッケージの復元] を使用します。詳細については、http://go.microsoft.com/fwlink/?LinkID=322105 を参照してください。見つからないファイルは {0} です。</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\boost.1.66.0.0\build\native\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.66.0.0\build\native\boost.targets'))" />
+    <Error Condition="!Exists('..\packages\boost.1.69.0.0\build\boost.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\boost.1.69.0.0\build\boost.targets'))" />
   </Target>
 </Project>

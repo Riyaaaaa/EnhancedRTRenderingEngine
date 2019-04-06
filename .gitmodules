@@ -1,3 +1,9 @@
 [submodule "EnhancedRTRenderingEngine/SpiralLibrary"]
 	path = EnhancedRTRenderingEngine/SpiralLibrary
 	url = https://github.com/Riyaaaaa/SpiralLibrary.git
+[submodule "EnhancedRTRenderingEngine/ThirdParty/libpng"]
+	path = EnhancedRTRenderingEngine/ThirdParty/libpng
+	url = https://github.com/glennrp/libpng
+[submodule "EnhancedRTRenderingEngine/ThirdParty/zlib"]
+	path = EnhancedRTRenderingEngine/ThirdParty/zlib
+	url = https://github.com/madler/zlib

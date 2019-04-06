@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CubeReflectionCapture.h" 
 
 #include "GraphicsInterface/GITextureProxy.h"

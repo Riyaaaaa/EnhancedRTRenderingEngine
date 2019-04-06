@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "GIRawResource.h"
 
 GIRawResource::GIRawResource(const RawBinary& res, ResourceType type, unsigned int stride) :

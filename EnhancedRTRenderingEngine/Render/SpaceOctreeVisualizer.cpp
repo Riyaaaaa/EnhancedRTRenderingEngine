@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "SpaceOctreeVisualizer.h"
 
 #include "Mesh/SimpleModel/Box.h"

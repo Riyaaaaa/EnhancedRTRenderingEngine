@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "DepthRenderer.h"
 #include "TextureEffects.h"
 

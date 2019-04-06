@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "BasePassRenderer.h"
 
 #include "DrawMesh.h"

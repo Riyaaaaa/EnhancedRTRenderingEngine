@@ -1,6 +1,7 @@
 #pragma once
 
 #include <set>
+#include <functional>
 
 #include "Algorithms/SpaceOctree.h"
 

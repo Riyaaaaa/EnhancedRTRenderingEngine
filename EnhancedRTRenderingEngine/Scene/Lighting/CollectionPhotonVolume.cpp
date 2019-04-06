@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CollectionPhotonVolume.h"
 
 bool CollectionPhotonVolume::Contains(Vector3D pos) {

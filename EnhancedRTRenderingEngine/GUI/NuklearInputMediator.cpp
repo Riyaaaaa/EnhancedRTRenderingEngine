@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "NuklearInputMediator.h"
 
 #include "nuklear/nuklear.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "GIRenderView.h"
 
 #include "GICommandUtils.h"

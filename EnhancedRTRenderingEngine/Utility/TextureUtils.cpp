@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "TextureUtils.h"
 
 #include "Algorithms/CompressTexture.h"

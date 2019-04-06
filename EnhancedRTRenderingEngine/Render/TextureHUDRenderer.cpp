@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "TextureHUDRenderer.h"
 #include "DrawMesh.h"
 #include "Shader/ShaderFactory.h"

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 
 #include "StringParser.h"
 #include "Common/Common.h"

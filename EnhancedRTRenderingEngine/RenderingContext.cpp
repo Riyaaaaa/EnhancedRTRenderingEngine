@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "RenderingContext.h"
 
 UINT GetMemoryBlockSize(VertexProperty prop) {

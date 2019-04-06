@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "DrawMesh.h"
 
 #include "GraphicsInterface/GIImmediateCommands.h"

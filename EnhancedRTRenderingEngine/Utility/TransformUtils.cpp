@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "Utility/TransformUtils.h"
 
 using namespace DirectX;

@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "ForwardRenderer.h"
 
 #include "UserData/UserConfig.h"

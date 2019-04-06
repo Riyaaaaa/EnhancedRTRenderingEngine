@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "ERTREObject.h"
 
 #include <boost/lexical_cast.hpp>

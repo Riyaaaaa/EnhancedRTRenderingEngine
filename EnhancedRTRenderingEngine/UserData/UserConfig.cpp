@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "UserConfig.h"
 
 #include <stdio.h>

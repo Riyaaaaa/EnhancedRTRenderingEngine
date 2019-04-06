@@ -1,4 +1,4 @@
-#include "stdafx.h"
+
 #include "CameraObject.h"
 
 using namespace DirectX;
