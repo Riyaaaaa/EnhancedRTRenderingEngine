@@ -98,7 +98,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>zlib.lib;libpng16.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>ECHO $(TargetDir) &gt; $(ProjectDir)ProjectDirPath.env</Command>
@@ -115,6 +115,7 @@
       <ForcedIncludeFiles>
       </ForcedIncludeFiles>
       <OpenMPSupport>false</OpenMPSupport>
+      <DisableSpecificWarnings>4996</DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -260,6 +261,13 @@
     <ClInclude Include="ThirdParty\include\rapidjson\stream.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\stringbuffer.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\writer.h" />
+    <ClInclude Include="ThirdParty\libpng\png.h" />
+    <ClInclude Include="ThirdParty\libpng\pngconf.h" />
+    <ClInclude Include="ThirdParty\libpng\pngdebug.h" />
+    <ClInclude Include="ThirdParty\libpng\pnginfo.h" />
+    <ClInclude Include="ThirdParty\libpng\pnglibconf.h" />
+    <ClInclude Include="ThirdParty\libpng\pngpriv.h" />
+    <ClInclude Include="ThirdParty\libpng\pngstruct.h" />
     <ClInclude Include="ThirdParty\nuklear\nuklear.h" />
     <ClInclude Include="ThirdParty\nuklear\nuklear_internal.h" />
     <ClInclude Include="ThirdParty\x64\libpng\png.h" />
@@ -279,6 +287,17 @@
     <ClInclude Include="GUI\UINumericProperty.h" />
     <ClInclude Include="GUI\UIComboColor.h" />
     <ClInclude Include="GUI\UIColorPicker.h" />
+    <ClInclude Include="ThirdParty\zlib\crc32.h" />
+    <ClInclude Include="ThirdParty\zlib\deflate.h" />
+    <ClInclude Include="ThirdParty\zlib\gzguts.h" />
+    <ClInclude Include="ThirdParty\zlib\inffast.h" />
+    <ClInclude Include="ThirdParty\zlib\inffixed.h" />
+    <ClInclude Include="ThirdParty\zlib\inflate.h" />
+    <ClInclude Include="ThirdParty\zlib\inftrees.h" />
+    <ClInclude Include="ThirdParty\zlib\trees.h" />
+    <ClInclude Include="ThirdParty\zlib\zconf.h" />
+    <ClInclude Include="ThirdParty\zlib\zlib.h" />
+    <ClInclude Include="ThirdParty\zlib\zutil.h" />
     <ClInclude Include="UserData\SettingsEvent.h" />
     <ClInclude Include="UserData\UserConfig.h" />
     <ClInclude Include="Utility\TextureUtils.h" />
@@ -448,6 +467,23 @@
     <ClCompile Include="Scene\StaticMeshObject.cpp" />
     <ClCompile Include="Render\SpaceOctreeVisualizer.cpp" />
     <ClCompile Include="Mesh\StaticLightBuildData.cpp" />
+    <ClCompile Include="ThirdParty\libpng\example.c" />
+    <ClCompile Include="ThirdParty\libpng\png.c" />
+    <ClCompile Include="ThirdParty\libpng\pngerror.c" />
+    <ClCompile Include="ThirdParty\libpng\pngget.c" />
+    <ClCompile Include="ThirdParty\libpng\pngmem.c" />
+    <ClCompile Include="ThirdParty\libpng\pngpread.c" />
+    <ClCompile Include="ThirdParty\libpng\pngread.c" />
+    <ClCompile Include="ThirdParty\libpng\pngrio.c" />
+    <ClCompile Include="ThirdParty\libpng\pngrtran.c" />
+    <ClCompile Include="ThirdParty\libpng\pngrutil.c" />
+    <ClCompile Include="ThirdParty\libpng\pngset.c" />
+    <ClCompile Include="ThirdParty\libpng\pngtest.c" />
+    <ClCompile Include="ThirdParty\libpng\pngtrans.c" />
+    <ClCompile Include="ThirdParty\libpng\pngwio.c" />
+    <ClCompile Include="ThirdParty\libpng\pngwrite.c" />
+    <ClCompile Include="ThirdParty\libpng\pngwtran.c" />
+    <ClCompile Include="ThirdParty\libpng\pngwutil.c" />
     <ClCompile Include="ThirdParty\nuklear\nuklear_buffer.c" />
     <ClCompile Include="ThirdParty\nuklear\nuklear_button.c" />
     <ClCompile Include="ThirdParty\nuklear\nuklear_chart.c" />
@@ -497,6 +533,21 @@
     <ClCompile Include="GUI\UINumericProperty.cpp" />
     <ClCompile Include="GUI\UIComboColor.cpp" />
     <ClCompile Include="GUI\UIColorPicker.cpp" />
+    <ClCompile Include="ThirdParty\zlib\adler32.c" />
+    <ClCompile Include="ThirdParty\zlib\compress.c" />
+    <ClCompile Include="ThirdParty\zlib\crc32.c" />
+    <ClCompile Include="ThirdParty\zlib\deflate.c" />
+    <ClCompile Include="ThirdParty\zlib\gzclose.c" />
+    <ClCompile Include="ThirdParty\zlib\gzlib.c" />
+    <ClCompile Include="ThirdParty\zlib\gzread.c" />
+    <ClCompile Include="ThirdParty\zlib\gzwrite.c" />
+    <ClCompile Include="ThirdParty\zlib\infback.c" />
+    <ClCompile Include="ThirdParty\zlib\inffast.c" />
+    <ClCompile Include="ThirdParty\zlib\inflate.c" />
+    <ClCompile Include="ThirdParty\zlib\inftrees.c" />
+    <ClCompile Include="ThirdParty\zlib\trees.c" />
+    <ClCompile Include="ThirdParty\zlib\uncompr.c" />
+    <ClCompile Include="ThirdParty\zlib\zutil.c" />
     <ClCompile Include="UserData\UserConfig.cpp" />
     <ClCompile Include="Utility\TextureUtils.cpp" />
     <ClCompile Include="Utility\MathUtils.cpp" />
@@ -541,6 +592,10 @@
   <ItemGroup>
     <Image Include="EnhancedRTRenderingEngine.ico" />
     <Image Include="small.ico" />
+    <Image Include="ThirdParty\libpng\pngbar.jpg" />
+    <Image Include="ThirdParty\libpng\pngbar.png" />
+    <Image Include="ThirdParty\libpng\pngnow.png" />
+    <Image Include="ThirdParty\libpng\pngtest.png" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="Shader\DepthVertexShader.hlsl">
@@ -688,11 +743,36 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="ThirdParty\libpng\aclocal.m4" />
+    <None Include="ThirdParty\libpng\ANNOUNCE" />
+    <None Include="ThirdParty\libpng\AUTHORS" />
+    <None Include="ThirdParty\libpng\autogen.sh" />
+    <None Include="ThirdParty\libpng\CHANGES" />
+    <None Include="ThirdParty\libpng\compile" />
+    <None Include="ThirdParty\libpng\config.guess" />
+    <None Include="ThirdParty\libpng\config.h.in" />
+    <None Include="ThirdParty\libpng\config.sub" />
+    <None Include="ThirdParty\libpng\configure" />
+    <None Include="ThirdParty\libpng\configure.ac" />
+    <None Include="ThirdParty\libpng\depcomp" />
+    <None Include="ThirdParty\libpng\INSTALL" />
+    <None Include="ThirdParty\libpng\install-sh" />
+    <None Include="ThirdParty\libpng\libpng-config.in" />
+    <None Include="ThirdParty\libpng\libpng.3" />
+    <None Include="ThirdParty\libpng\libpng.pc.in" />
+    <None Include="ThirdParty\libpng\libpngpf.3" />
+    <None Include="ThirdParty\libpng\LICENSE" />
+    <None Include="ThirdParty\libpng\ltmain.sh" />
+    <None Include="ThirdParty\libpng\Makefile.am" />
+    <None Include="ThirdParty\libpng\Makefile.in" />
+    <None Include="ThirdParty\libpng\missing" />
+    <None Include="ThirdParty\libpng\png.5" />
+    <None Include="ThirdParty\libpng\pngusr.dfa" />
+    <None Include="ThirdParty\libpng\README" />
+    <None Include="ThirdParty\libpng\test-driver" />
+    <None Include="ThirdParty\libpng\TODO" />
+    <None Include="ThirdParty\libpng\TRADEMARK" />
     <None Include="ThirdParty\x64\libpng\LICENSE" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="ThirdParty\x64\libpng\libpng16.lib" />
-    <Library Include="ThirdParty\x64\libpng\zlib.lib" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Asset\Font\Cousine-Regular.ttf" />
@@ -706,6 +786,11 @@
     <Font Include="Asset\Font\Roboto-Bold.ttf" />
     <Font Include="Asset\Font\Roboto-Light.ttf" />
     <Font Include="Asset\Font\Roboto-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ThirdParty\libpng\CMakeLists.txt" />
+    <Text Include="ThirdParty\libpng\config.log" />
+    <Text Include="ThirdParty\libpng\libpng-manual.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

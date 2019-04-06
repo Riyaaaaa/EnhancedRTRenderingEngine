@@ -32,7 +32,7 @@ void Scene::CreateSkyTestScene() {
     cameraObjects.push_back(camera);
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", Vector3D(), 0.2f, 0.0f });
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "test.png", Vector3D(), 0.2f, 0.0f });
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
@@ -84,7 +84,7 @@ void Scene::CreateGITestScene() {
     cameraObjects.push_back(camera);
     _controller = std::make_unique<CameraController>(&cameraObjects[mainCameraIdx]);
 
-    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "kabe.bmp", Vector3D(), 0.2f, 0.0f });
+    Material material(MaterialParameters{ "LightingVertexShader", "LightingPSTextureColor", "test.png", Vector3D(), 0.2f, 0.0f });
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 

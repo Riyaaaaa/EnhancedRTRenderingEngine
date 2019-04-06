@@ -744,6 +744,60 @@
     <ClInclude Include="ThirdParty\nuklear\nuklear_internal.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\png.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\pngconf.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\pngdebug.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\pnginfo.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\pnglibconf.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\pngpriv.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\libpng\pngstruct.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\crc32.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\deflate.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\gzguts.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\inffast.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\inffixed.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\inflate.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\inftrees.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\trees.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\zconf.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\zlib.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="ThirdParty\zlib\zutil.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnhancedRTRenderingEngine.cpp">
@@ -1127,6 +1181,102 @@
     <ClCompile Include="ThirdParty\nuklear\nuklear_window.c">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\example.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\png.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngerror.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngget.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngmem.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngpread.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngread.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngrio.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngrtran.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngrutil.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngset.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngtest.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngtrans.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngwio.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngwrite.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngwtran.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\libpng\pngwutil.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\adler32.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\compress.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\crc32.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\deflate.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\gzclose.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\gzlib.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\gzread.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\gzwrite.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\infback.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\inffast.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\inflate.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\inftrees.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\trees.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\uncompr.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="ThirdParty\zlib\zutil.c">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="EnhancedRTRenderingEngine.rc">
@@ -1138,6 +1288,18 @@
       <Filter>リソース ファイル</Filter>
     </Image>
     <Image Include="EnhancedRTRenderingEngine.ico">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="ThirdParty\libpng\pngbar.jpg">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="ThirdParty\libpng\pngbar.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="ThirdParty\libpng\pngnow.png">
+      <Filter>リソース ファイル</Filter>
+    </Image>
+    <Image Include="ThirdParty\libpng\pngtest.png">
       <Filter>リソース ファイル</Filter>
     </Image>
   </ItemGroup>
@@ -1168,10 +1330,35 @@
   <ItemGroup>
     <None Include="ThirdParty\x64\libpng\LICENSE" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Library Include="ThirdParty\x64\libpng\libpng16.lib" />
-    <Library Include="ThirdParty\x64\libpng\zlib.lib" />
+    <None Include="ThirdParty\libpng\aclocal.m4" />
+    <None Include="ThirdParty\libpng\ANNOUNCE" />
+    <None Include="ThirdParty\libpng\AUTHORS" />
+    <None Include="ThirdParty\libpng\autogen.sh" />
+    <None Include="ThirdParty\libpng\CHANGES" />
+    <None Include="ThirdParty\libpng\compile" />
+    <None Include="ThirdParty\libpng\config.guess" />
+    <None Include="ThirdParty\libpng\config.h.in" />
+    <None Include="ThirdParty\libpng\config.sub" />
+    <None Include="ThirdParty\libpng\configure" />
+    <None Include="ThirdParty\libpng\configure.ac" />
+    <None Include="ThirdParty\libpng\depcomp" />
+    <None Include="ThirdParty\libpng\INSTALL" />
+    <None Include="ThirdParty\libpng\install-sh" />
+    <None Include="ThirdParty\libpng\libpng.3" />
+    <None Include="ThirdParty\libpng\libpng.pc.in" />
+    <None Include="ThirdParty\libpng\libpng-config.in" />
+    <None Include="ThirdParty\libpng\libpngpf.3" />
+    <None Include="ThirdParty\libpng\LICENSE" />
+    <None Include="ThirdParty\libpng\ltmain.sh" />
+    <None Include="ThirdParty\libpng\Makefile.am" />
+    <None Include="ThirdParty\libpng\Makefile.in" />
+    <None Include="ThirdParty\libpng\missing" />
+    <None Include="ThirdParty\libpng\png.5" />
+    <None Include="ThirdParty\libpng\pngusr.dfa" />
+    <None Include="ThirdParty\libpng\README" />
+    <None Include="ThirdParty\libpng\test-driver" />
+    <None Include="ThirdParty\libpng\TODO" />
+    <None Include="ThirdParty\libpng\TRADEMARK" />
   </ItemGroup>
   <ItemGroup>
     <Font Include="Asset\Font\Cousine-Regular.ttf" />
@@ -1185,5 +1372,10 @@
     <Font Include="Asset\Font\Roboto-Bold.ttf" />
     <Font Include="Asset\Font\Roboto-Light.ttf" />
     <Font Include="Asset\Font\Roboto-Regular.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ThirdParty\libpng\CMakeLists.txt" />
+    <Text Include="ThirdParty\libpng\config.log" />
+    <Text Include="ThirdParty\libpng\libpng-manual.txt" />
   </ItemGroup>
 </Project>
