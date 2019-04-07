@@ -23,6 +23,8 @@ public:
     void CreateSkyTestScene();
     void CreateGITestScene();
 
+	void Update();
+
     bool Dirty() { return lightDirty | meshDirty; }
     bool LightDirty() { return lightDirty; }
     bool MeshDirty() { return meshDirty; }

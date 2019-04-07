@@ -20,7 +20,7 @@ private:
 };
 
 template<unsigned int dim>
-using Vector = _Vector<float, dim>;
+using VectorF = _Vector<float, dim>;
 
 template<class T>
 struct _Vector<T, 2> {
@@ -285,6 +285,19 @@ struct _Matrix {
         return _elems[idx];
     }
 
+	T& at(unsigned int idx1, unsigned int idx2) {
+		return _elems[idx1][idx2];
+	}
+
+	const T& at(unsigned int idx1, unsigned int idx2) const {
+		return _elems[idx1][idx2];
+	}
+
 private:
-    _Vector<T, dim> _elems[4];
+    _Vector<T, dim> _elems[dim];
 };
+
+namespace Vector {
+	constexpr Vector3D UP = Vector3D(0.0, 1.0, 0.0);
+	constexpr Vector3D FORWARD = Vector3D(0.0, 0.0, 1.0);
+}

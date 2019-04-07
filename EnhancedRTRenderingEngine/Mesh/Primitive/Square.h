@@ -11,11 +11,4 @@ namespace PrimitiveMesh {
     public:
         Square(Size2D size);
     };
-
-    class SquarePMD : public Mesh<MainVertex>
-    {
-    public:
-        SquarePMD();
-    };
-
 }

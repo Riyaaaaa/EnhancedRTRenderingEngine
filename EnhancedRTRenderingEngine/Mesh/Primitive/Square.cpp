@@ -43,13 +43,15 @@ namespace PrimitiveMesh {
         _elements.push_back(ElementDesc{ 0, _vertexCount, 0 });
 
     }
-
-    SquarePMD::SquarePMD() {
+	template<>
+	Square<MainVertex>::Square(Size2D size) {
+		float w = static_cast<float>(size.w);
+		float h = static_cast<float>(size.h);
         _vertexList = std::vector<MainVertex>{
-            MainVertex{ Vector3D{ -0.75f, -0.75f, +0.5f },Vector2D{ 0.0f, 1.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
-            MainVertex{ Vector3D{ -0.75f, +0.75f, +0.5f },Vector2D{ 0.0f, 0.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
-            MainVertex{ Vector3D{ +0.75f, -0.75f, +0.5f },Vector2D{ 1.0f, 1.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
-            MainVertex{ Vector3D{ +0.75f, +0.75f, +0.5f },Vector2D{ 1.0f, 0.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} }
+            MainVertex{ Vector3D{ -w, -h, 0.5f },Vector2D{ 0.0f, 1.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
+            MainVertex{ Vector3D{ -w, +h, 0.5f },Vector2D{ 0.0f, 0.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
+            MainVertex{ Vector3D{ +w, -h, 0.5f },Vector2D{ 1.0f, 1.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} },
+            MainVertex{ Vector3D{ +w, +h, 0.5f },Vector2D{ 1.0f, 0.0f },Vector3D{ 0.0f, 0.0f, -1.0f },Vector4D{ 0.5f, 0.5f, 0.5f} }
         };
 
         _indexList = std::vector<uint16_t>{

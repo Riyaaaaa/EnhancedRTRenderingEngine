@@ -14,6 +14,10 @@ CameraObject::~CameraObject()
 {
 }
 
+Vector3D CameraObject::Position() {
+	return Vector3D(XMVectorGetByIndex(hEye, 0), XMVectorGetByIndex(hEye, 1), XMVectorGetByIndex(hEye, 2));
+}
+
 void CameraObject::SetProjParams(float fFOV, float fAspect, float fNearPlane, float fFarPlane) {
     m_fFOV = fFOV;
     m_fAspect = fAspect;

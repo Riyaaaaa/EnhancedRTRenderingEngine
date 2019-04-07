@@ -16,6 +16,11 @@ SceneObject::~SceneObject()
 {
 }
 
+void SceneObject::Update(Scene* scene)
+{
+
+}
+
 void SceneObject::SetTransform(Transform trans) {
     _transform = trans;
     DirtyWorldMatrix();

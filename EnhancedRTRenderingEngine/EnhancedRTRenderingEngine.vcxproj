@@ -165,8 +165,11 @@
   <ItemGroup>
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
+    <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Lighting\LightMapBaker.h" />
     <ClInclude Include="Lighting\PrecomputeLightingSystem.h" />
+    <ClInclude Include="Component\LookCameraComponent.h" />
+    <ClInclude Include="Scene\Billboard.h" />
     <ClInclude Include="Scene\Lighting\CollectionPhotonVolume.h" />
     <ClInclude Include="Common\Defines.h" />
     <ClInclude Include="Algorithms\CompressTexture.h" />
@@ -429,8 +432,11 @@
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="Algorithms\CompressTexture.cpp" />
+    <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Lighting\LightMapBaker.cpp" />
     <ClCompile Include="Lighting\PrecomputeLightingSystem.cpp" />
+    <ClCompile Include="Component\LookCameraComponent.cpp" />
+    <ClCompile Include="Scene\Billboard.cpp" />
     <ClCompile Include="Scene\Lighting\CollectionPhotonVolume.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
     <ClCompile Include="GUI\GUIFactory.cpp" />
@@ -467,6 +473,7 @@
     <ClCompile Include="Scene\StaticMeshObject.cpp" />
     <ClCompile Include="Render\SpaceOctreeVisualizer.cpp" />
     <ClCompile Include="Mesh\StaticLightBuildData.cpp" />
+    <ClCompile Include="Structure\Structure.cpp" />
     <ClCompile Include="ThirdParty\libpng\example.c" />
     <ClCompile Include="ThirdParty\libpng\png.c" />
     <ClCompile Include="ThirdParty\libpng\pngerror.c" />

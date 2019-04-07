@@ -137,6 +137,7 @@ struct MainVertex {
 };
 
 struct Transform {
+	void LookAt(const Vector3D& at);
     Vector3D location;
     Vector3D rotation;
     Vector3D scale;

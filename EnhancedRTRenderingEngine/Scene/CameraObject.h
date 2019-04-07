@@ -2,6 +2,8 @@
 
 #include <DirectXMath.h>
 
+#include "Structure/Vector.h"
+
 class CameraObject
 {
 public:
@@ -11,6 +13,8 @@ public:
     DirectX::XMVECTOR hEye;
     DirectX::XMVECTOR hAt;
     DirectX::XMVECTOR hUp;
+
+	Vector3D Position();
 
     void SetProjParams(float fFOV, float fAspect, float fNearPlane, float fFarPlane);
 

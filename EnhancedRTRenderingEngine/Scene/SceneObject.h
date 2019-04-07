@@ -5,11 +5,15 @@
 
 #include <DirectXMath.h>
 
+class Scene;
+
 class SceneObject : public ERTREObject
 {
 public:
     SceneObject();
     ~SceneObject();
+
+	void Update(Scene* scene);
 
     const DirectX::XMMATRIX& GetMatrix();
 
@@ -19,6 +23,8 @@ public:
     void SetScale(Vector3D scale);
 
     Vector3D GetLocation() { return _transform.location; }
+
+	Transform& getTransform() { return _transform; }
 
 protected:
     virtual void DirtyWorldMatrix();

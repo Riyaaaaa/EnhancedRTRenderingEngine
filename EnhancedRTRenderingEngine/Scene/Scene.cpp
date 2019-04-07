@@ -36,8 +36,6 @@ void Scene::CreateSkyTestScene() {
     std::vector<Material> materials;
     materials.emplace_back(std::move(material));
 
-    
-    
     auto model2 = ResourceLoader::LoadDXModel("sphere");
     auto model = ResourceLoader::LoadDXModel("coin");
 
@@ -54,7 +52,7 @@ void Scene::CreateSkyTestScene() {
     viewObjects.back()->SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
     viewObjects.back()->SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
 
-    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::SquarePMD>());
+    viewObjects.push_back(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<MainVertex>>(Size2D(1, 1)));
     viewObjects.back()->SetScale(Vector3D{ 20.0f, 20.0f, 20.0f });
     viewObjects.back()->SetRotation(Vector3D{ D3DX_PI / 2.0f, 0.0f, 0.0f });
     viewObjects.back()->SetLocation(Vector3D{ 0.0f, 11.0f, -0.4f });
@@ -107,6 +105,13 @@ void Scene::CreateGITestScene() {
 
     meshDirty = true;
     lightDirty = true;
+}
+
+void Scene::Update()
+{
+	for (auto&& object : viewObjects) {
+		object->Update(this);
+	}
 }
 
 AABB Scene::GetSceneAABB() {
