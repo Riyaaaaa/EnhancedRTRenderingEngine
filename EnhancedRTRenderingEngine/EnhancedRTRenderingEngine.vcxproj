@@ -169,6 +169,7 @@
     <ClInclude Include="Lighting\LightMapBaker.h" />
     <ClInclude Include="Lighting\PrecomputeLightingSystem.h" />
     <ClInclude Include="Component\LookCameraComponent.h" />
+    <ClInclude Include="Structure\Quaternion.h" />
     <ClInclude Include="Scene\Billboard.h" />
     <ClInclude Include="Scene\Lighting\CollectionPhotonVolume.h" />
     <ClInclude Include="Common\Defines.h" />
@@ -436,6 +437,7 @@
     <ClCompile Include="Lighting\LightMapBaker.cpp" />
     <ClCompile Include="Lighting\PrecomputeLightingSystem.cpp" />
     <ClCompile Include="Component\LookCameraComponent.cpp" />
+    <ClCompile Include="Structure\Quaternion.cpp" />
     <ClCompile Include="Scene\Billboard.cpp" />
     <ClCompile Include="Scene\Lighting\CollectionPhotonVolume.cpp" />
     <ClCompile Include="GraphicsInterface\GITextureProxy.cpp" />
