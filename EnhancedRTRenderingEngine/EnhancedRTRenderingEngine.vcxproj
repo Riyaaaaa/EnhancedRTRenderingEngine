@@ -166,6 +166,7 @@
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
     <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="Constant\MathConstant.h" />
     <ClInclude Include="Lighting\LightMapBaker.h" />
     <ClInclude Include="Lighting\PrecomputeLightingSystem.h" />
     <ClInclude Include="Component\LookCameraComponent.h" />

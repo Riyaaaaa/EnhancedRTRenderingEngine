@@ -810,6 +810,9 @@
     <ClInclude Include="Structure\Quaternion.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="Constant\MathConstant.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="EnhancedRTRenderingEngine.cpp">

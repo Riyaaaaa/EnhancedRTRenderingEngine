@@ -5,6 +5,7 @@
 #include <type_traits>
 
 #include "Vector.h"
+#include "Quaternion.h"
 #include "Constant/RenderConfig.h"
 
 template<class T>
@@ -139,7 +140,7 @@ struct MainVertex {
 struct Transform {
 	void LookAt(const Vector3D& at);
     Vector3D location;
-    Vector3D rotation;
+    Quaternion rotation;
     Vector3D scale;
 };
 
