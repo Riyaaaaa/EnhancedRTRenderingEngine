@@ -21,9 +21,6 @@
     <ClInclude Include="resource.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
-    <ClInclude Include="EnhancedRTRenderingEngine.h">
-      <Filter>ヘッダー ファイル</Filter>
-    </ClInclude>
     <ClInclude Include="SpiralLibrary\Algorithm\AlphaBeta.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
@@ -813,11 +810,14 @@
     <ClInclude Include="Constant\MathConstant.h">
       <Filter>ヘッダー ファイル</Filter>
     </ClInclude>
+    <ClInclude Include="System\AsyncTask.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
+    <ClInclude Include="System\Application.h">
+      <Filter>ヘッダー ファイル</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="EnhancedRTRenderingEngine.cpp">
-      <Filter>ソース ファイル</Filter>
-    </ClCompile>
     <ClCompile Include="Resource\ResourceHandle.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
@@ -1305,6 +1305,9 @@
       <Filter>ソース ファイル</Filter>
     </ClCompile>
     <ClCompile Include="Structure\Quaternion.cpp">
+      <Filter>ソース ファイル</Filter>
+    </ClCompile>
+    <ClCompile Include="System\Application.cpp">
       <Filter>ソース ファイル</Filter>
     </ClCompile>
   </ItemGroup>

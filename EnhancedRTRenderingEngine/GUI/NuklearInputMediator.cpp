@@ -5,7 +5,7 @@
 
 #include "Common/Common.h"
 
-NuklearInputMediator::NuklearInputMediator(NuklearWrapper* nuklear) :
+NuklearInputMediator::NuklearInputMediator(const std::shared_ptr<NuklearWrapper>& nuklear) :
     _nuklear(nuklear)
 {
 }

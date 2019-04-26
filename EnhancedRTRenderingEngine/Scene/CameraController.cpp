@@ -1,7 +1,7 @@
 
 #include "CameraController.h"
 
-#include "WindowsApp.h"
+#include "System/Application.h"
 
 #include <cmath>
 
@@ -10,8 +10,8 @@ using namespace DirectX;
 CameraController::CameraController(CameraObject* camera)
 {
     _camera = camera;
-    WindowsApp::getInstance()->RegisterPressListener(0, std::bind<bool (CameraController::*)(InputKey, boost::optional<Index>)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
-    WindowsApp::getInstance()->RegisterDragListener(0, std::bind<bool (CameraController::*)(Index, Index, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
+    ERTRESystem::Application::getInstance()->RegisterPressListener(0, std::bind<bool (CameraController::*)(InputKey, boost::optional<Index>)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2));
+	ERTRESystem::Application::getInstance()->RegisterDragListener(0, std::bind<bool (CameraController::*)(Index, Index, InputKey)>(&CameraController::ControllCamera, this, std::placeholders::_1, std::placeholders::_2, std::placeholders::_3));
 }
 
 

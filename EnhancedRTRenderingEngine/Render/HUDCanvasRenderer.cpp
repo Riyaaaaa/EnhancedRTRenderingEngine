@@ -35,7 +35,7 @@ SetScreenProjection(int width, int height, Matrix* result)
 }
 
 
-HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear)
+HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, const std::shared_ptr<NuklearWrapper>& nuklear)
 {
     std::vector<VertexLayout> layout;
     unsigned int offset = 0;
@@ -96,19 +96,19 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
 
     _layout = MakeRef(cmd->CreateInputLayout(layout, _vs.get()));
 
-    _nuklear = &nuklear;
+    _nuklear = nuklear;
 }
 
 HUDCanvasRenderer::~HUDCanvasRenderer() 
 {
 }
 
-static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklear);
-static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, NuklearWrapper& nuklear);
-static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear);
+static void GenerateNuklearLayout(const UIRowLayout& row, const std::shared_ptr<NuklearWrapper>& nuklear);
+static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, const std::shared_ptr<NuklearWrapper>& nuklear);
+static void GenerateNuklearLayout(HUDCanvas* canvas, const std::shared_ptr<NuklearWrapper>& nuklear);
 
-static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, NuklearWrapper& nuklear) {
-    auto* ctx = nuklear.Context();
+static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, const std::shared_ptr<NuklearWrapper>& nuklear) {
+    auto* ctx = nuklear->Context();
 
     switch (widget->WidgetType()) {
     case UIWidgetType::ButtonLabel: {
@@ -190,8 +190,8 @@ static void GenerateNuklearLayout(const std::shared_ptr<UIWidget>& widget, Nukle
     }
 }
 
-static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklear) {
-    auto* ctx = nuklear.Context();
+static void GenerateNuklearLayout(const UIRowLayout& row, const std::shared_ptr<NuklearWrapper>& nuklear) {
+    auto* ctx = nuklear->Context();
 
     switch (row.Attribute()) {
     case LayoutAttribute::Dynamic:
@@ -207,9 +207,9 @@ static void GenerateNuklearLayout(const UIRowLayout& row, NuklearWrapper& nuklea
     }
 }
 
-static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
+static void GenerateNuklearLayout(HUDCanvas* canvas, const std::shared_ptr<NuklearWrapper>& nuklear) {
     for (auto&& window : canvas->Windows()) {
-        if (nk_begin(nuklear.Context(), window.Title().c_str(), nk_rect(50, 50, window.Size().w, window.Size().h),
+        if (nk_begin(nuklear->Context(), window.Title().c_str(), nk_rect(50, 50, window.Size().w, window.Size().h),
             NK_WINDOW_BORDER | NK_WINDOW_MOVABLE | NK_WINDOW_SCALABLE |
             NK_WINDOW_MINIMIZABLE | NK_WINDOW_TITLE)) {
             for (auto&& row : window.Rows()) {
@@ -217,27 +217,27 @@ static void GenerateNuklearLayout(HUDCanvas* canvas, NuklearWrapper& nuklear) {
             }
 
             BoundingBox2D box;
-            auto rect = nk_window_get_bounds(nuklear.Context());
+            auto rect = nk_window_get_bounds(nuklear->Context());
 
             box.pos.x = rect.x;
             box.pos.y = rect.y;
             box.size.w = rect.w;
             box.size.h = rect.h;
 
-            nuklear.AddWindowRects(box);
+            nuklear->AddWindowRects(box);
         }
 
-        nk_end(nuklear.Context());
+        nk_end(nuklear->Context());
     }
 }
 
-void HUDCanvasRenderer::update(GIImmediateCommands* cmd, HUDCanvas* canvas, NuklearWrapper& nuklear) {
+void HUDCanvasRenderer::update(GIImmediateCommands* cmd, HUDCanvas* canvas, const std::shared_ptr<NuklearWrapper>& nuklear) {
     auto* ctx = _nuklear->Context();
-    nuklear.ClearWindowRects();
+    nuklear->ClearWindowRects();
     GenerateNuklearLayout(canvas, nuklear);
 }
 
-void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear) {
+void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const std::shared_ptr<NuklearWrapper>& nuklear) {
     const Vector4D blend_factor(0.0f, 0.0f, 0.0f, 0.0f);
 
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
@@ -276,13 +276,13 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Nuk
         config.circle_segment_count = 22;
         config.curve_segment_count = 22;
         config.arc_segment_count = 22;
-        config.null = *nuklear.Nulltexture();
+        config.null = *nuklear->Nulltexture();
 
         {/* setup buffers to load vertices and elements */
             struct nk_buffer vbuf, ibuf;
             nk_buffer_init_fixed(&vbuf, mapped_vertex_buffer.pData, (size_t)MAX_VERTEX_BUFFER);
             nk_buffer_init_fixed(&ibuf, mapped_index_buffer.pData, (size_t)MAX_INDEX_BUFFER);
-            nk_convert(nuklear.Context(), nuklear.Commands(), &vbuf, &ibuf, &config); 
+            nk_convert(nuklear->Context(), nuklear->Commands(), &vbuf, &ibuf, &config); 
 
             /*Vertex2D* vertPtr = (Vertex2D*)vbuf.memory.ptr;
             int count = 0;
@@ -319,7 +319,7 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Nuk
 
     const struct nk_draw_command *nkcmd;
     UINT offset = 0;
-    nk_draw_foreach(nkcmd, nuklear.Context(), nuklear.Commands())
+    nk_draw_foreach(nkcmd, nuklear->Context(), nuklear->Commands())
     {
         ScissorRect scissor;
         GIShaderResourceView *texture_view = (GIShaderResourceView*)nkcmd->texture.ptr;
@@ -335,5 +335,5 @@ void HUDCanvasRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Nuk
         cmd->DrawIndexed((UINT)nkcmd->elem_count, offset, 0);
         offset += nkcmd->elem_count;
     }
-    nk_clear(nuklear.Context());
+    nk_clear(nuklear->Context());
 }

@@ -165,6 +165,7 @@
   <ItemGroup>
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
+    <ClInclude Include="System\Application.h" />
     <ClInclude Include="Component\Component.h" />
     <ClInclude Include="Constant\MathConstant.h" />
     <ClInclude Include="Lighting\LightMapBaker.h" />
@@ -228,6 +229,7 @@
     <ClInclude Include="Structure\RaytraceStructures.h" />
     <ClInclude Include="Structure\TextureBuffer.h" />
     <ClInclude Include="Structure\Voxel.h" />
+    <ClInclude Include="System\AsyncTask.h" />
     <ClInclude Include="System\Observer.h" />
     <ClInclude Include="ThirdParty\include\nuklear\nuklear.h" />
     <ClInclude Include="ThirdParty\include\rapidjson\allocators.h" />
@@ -337,7 +339,6 @@
     <ClInclude Include="Common\Common.h" />
     <ClInclude Include="Constant\RenderConfig.h" />
     <ClInclude Include="Render\BasePassRenderer.h" />
-    <ClInclude Include="EnhancedRTRenderingEngine.h" />
     <ClInclude Include="FileManager.h" />
     <ClInclude Include="Scene\MeshObject.h" />
     <ClInclude Include="Mesh\MeshBase.h" />
@@ -434,6 +435,7 @@
     <ClCompile Include="Algorithms\SpaceOctree.cpp" />
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="Algorithms\CompressTexture.cpp" />
+    <ClCompile Include="System\Application.cpp" />
     <ClCompile Include="Component\Component.cpp" />
     <ClCompile Include="Lighting\LightMapBaker.cpp" />
     <ClCompile Include="Lighting\PrecomputeLightingSystem.cpp" />
@@ -581,7 +583,6 @@
     <ClCompile Include="Scene\CameraObject.cpp" />
     <ClCompile Include="Common\Common.cpp" />
     <ClCompile Include="Render\BasePassRenderer.cpp" />
-    <ClCompile Include="EnhancedRTRenderingEngine.cpp" />
     <ClCompile Include="FileManager.cpp" />
     <ClCompile Include="Scene\MeshObject.cpp" />
     <ClCompile Include="Mesh\MeshBase.cpp" />

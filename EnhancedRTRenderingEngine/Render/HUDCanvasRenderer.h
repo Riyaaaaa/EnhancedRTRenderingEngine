@@ -13,11 +13,11 @@ struct nk_buffer;
 class HUDCanvasRenderer
 {
 public:
-    HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear);
+    HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* view, const std::shared_ptr<NuklearWrapper>& nuklear);
     ~HUDCanvasRenderer();
 
-    void update(GIImmediateCommands* cmd, HUDCanvas* canvas, NuklearWrapper& nuklear);
-    void render(GIImmediateCommands* cmd, GIRenderView* view, NuklearWrapper& nuklear);
+    void update(GIImmediateCommands* cmd, HUDCanvas* canvas, const std::shared_ptr<NuklearWrapper>& nuklear);
+    void render(GIImmediateCommands* cmd, GIRenderView* view, const std::shared_ptr<NuklearWrapper>& nuklear);
 
 protected:
     static constexpr unsigned int MAX_VERTEX_BUFFER = 512 * 1024;
@@ -31,7 +31,7 @@ protected:
     std::shared_ptr<GISamplerState> _samplerState;
     std::shared_ptr<GIInputLayout> _layout;
 
-    NuklearWrapper* _nuklear;
+	std::shared_ptr<NuklearWrapper> _nuklear;
     Matrix _screenProjection;
 };
 

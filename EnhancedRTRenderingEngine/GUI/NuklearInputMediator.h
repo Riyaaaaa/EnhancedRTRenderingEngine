@@ -10,7 +10,7 @@
 class NuklearInputMediator
 {
 public:
-    NuklearInputMediator(NuklearWrapper* nuklear);
+    NuklearInputMediator(const std::shared_ptr<NuklearWrapper>& nuklear);
 
     bool ProcessInputDown(InputKey key, boost::optional<Index> pos);
     bool ProcessInputUp(InputKey key, boost::optional<Index> pos);
@@ -20,7 +20,7 @@ public:
     void EndInput();
 
 protected:
-    NuklearWrapper* _nuklear;
+    std::shared_ptr<NuklearWrapper> _nuklear;
 
     bool _swallows = false;
 };
