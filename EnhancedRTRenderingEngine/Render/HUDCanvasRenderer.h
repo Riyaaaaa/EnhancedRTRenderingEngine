@@ -31,7 +31,6 @@ protected:
     std::shared_ptr<GISamplerState> _samplerState;
     std::shared_ptr<GIInputLayout> _layout;
 
-	std::shared_ptr<NuklearWrapper> _nuklear;
     Matrix _screenProjection;
 };
 

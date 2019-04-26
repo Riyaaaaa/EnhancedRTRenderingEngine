@@ -95,8 +95,6 @@ HUDCanvasRenderer::HUDCanvasRenderer(GIImmediateCommands* cmd, GIRenderView* vie
     }
 
     _layout = MakeRef(cmd->CreateInputLayout(layout, _vs.get()));
-
-    _nuklear = nuklear;
 }
 
 HUDCanvasRenderer::~HUDCanvasRenderer() 
@@ -232,7 +230,6 @@ static void GenerateNuklearLayout(HUDCanvas* canvas, const std::shared_ptr<Nukle
 }
 
 void HUDCanvasRenderer::update(GIImmediateCommands* cmd, HUDCanvas* canvas, const std::shared_ptr<NuklearWrapper>& nuklear) {
-    auto* ctx = _nuklear->Context();
     nuklear->ClearWindowRects();
     GenerateNuklearLayout(canvas, nuklear);
 }

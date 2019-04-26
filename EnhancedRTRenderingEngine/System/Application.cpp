@@ -54,12 +54,12 @@ void Application::Setup(void* runtimeWindowHandle)
 	_scene = std::make_unique<Scene>();
 	_scene->CreateGITestScene();
 
-	_forwardRenderer = std::make_shared<ForwardRenderer>(_cmd.get());
-
 	_nuklear = std::make_shared<NuklearWrapper>(_cmd.get());
 	_nuklearInput = std::make_shared<NuklearInputMediator>(_nuklear);
 	_canvas = std::make_shared<HUDCanvas>();
-	HUDCanvasRenderer HUDRenderer(_cmd.get(), _view.get(), _nuklear);
+
+	_forwardRenderer = std::make_shared<ForwardRenderer>(_cmd.get());
+	_HUDRenderer = std::make_shared<HUDCanvasRenderer>(_cmd.get(), _view.get(), _nuklear);
 
 	_renderScene = std::make_shared<RenderScene>(_scene.get());
 	UserConfig::getInstance()->AddObserver(_renderScene.get());
