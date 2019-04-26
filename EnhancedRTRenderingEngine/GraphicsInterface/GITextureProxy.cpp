@@ -3,6 +3,8 @@
 
 #include "GIImmediateCommands.h"
 
+#include "Utility/TextureUtils.h"
+
 bool GITextureProxyEntity::Initialize(GIImmediateCommands* cmd, TextureParam param, const Texture2D& tex)
 {
     std::vector<Texture2D> v;
@@ -31,4 +33,13 @@ bool GITextureProxyEntity::Initialize(GIImmediateCommands* cmd, std::shared_ptr<
     mSampler = MakeRef(cmd->CreateSamplerState(param));
 
     return true;
+}
+
+GITextureProxyEntity* GITextureProxyEntity::CreateDummyTexture(GIImmediateCommands* cmd)
+{
+	GITextureProxyEntity* ret = new GITextureProxyEntity;
+	auto tex = TextureUtils::CreateUniformTexture(2, 2, Color4B{ 0, 0, 0, 0 });
+	ret->Initialize(cmd, tex.GetParam(), tex);
+	tex.Release();
+	return ret;
 }

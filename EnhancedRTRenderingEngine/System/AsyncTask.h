@@ -2,8 +2,6 @@
 
 #include <thread>
 
-
-
 class AsyncTask {
 
 };

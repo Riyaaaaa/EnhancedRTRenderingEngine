@@ -23,6 +23,7 @@ void  RenderScene::Notify(UserConfigEvent e) {
 
 void RenderScene::Preprocess(GIImmediateCommands* cmd) {
     if (!_lightMap) {
+		cmd->PSSetSamplers(3, MakeRef(cmd->CreateSamplerState(SamplerParam())).get());
         return;
     }
 
@@ -81,11 +82,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                 if (!viewObject->HasLightMap() && viewObject->HasReflectionSource()) {
                     auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
                     draw_mesh.RegisterTexture(tex, 2);
-                }
-
-                _staticDrawMeshes[viewObject->GetID()] = draw_mesh;
-
-                if (viewObject->HasLightMap()) {
+                } else if (viewObject->HasLightMap()) {
                     DrawMesh light_mesh(cmd, &viewObject->GetLightBuildData());
                     light_mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
 
@@ -95,6 +92,8 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     }
                     _bakedLightMeshes[viewObject->GetID()] = light_mesh;
                 }
+
+				_staticDrawMeshes[viewObject->GetID()] = draw_mesh;
 
                 int index = 0;
                 for (auto && drawface : mesh->GetDrawElementMap()) {
@@ -112,7 +111,10 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                         texture->Initialize(cmd, param, material.cubeTexture.textures);
                     }
 
-                    MaterialBuffer mbuf{ material.baseColor, material.metallic, material.roughness };
+                    MaterialBuffer mbuf;
+					mbuf.baseColor = material.baseColor;
+					mbuf.metallic = material.metallic;
+					mbuf.roughness = material.roughness;
                     if (viewObject->HasLightMap() && UserConfig::getInstance()->VisibleIndirectLights()) {
                         mbuf.useLightMap = 1.0f;
                     }

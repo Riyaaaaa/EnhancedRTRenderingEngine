@@ -17,6 +17,8 @@ public:
     bool Initialize(GIImmediateCommands* cmd, TextureParam param, const std::vector<Texture2D>& textures);
     bool Initialize(GIImmediateCommands* cmd, std::shared_ptr<GITexture2D> tex, SamplerParam param = SamplerParam());
 
+	static GITextureProxyEntity* CreateDummyTexture(GIImmediateCommands* cmd);
+
     std::shared_ptr<GITexture2D> mTexture;
     std::shared_ptr<GIShaderResourceView> mView;
     std::shared_ptr<GISamplerState> mSampler;
