@@ -14,16 +14,16 @@ RenderScene::~RenderScene()
 void  RenderScene::Notify(UserConfigEvent e) {
     switch (e) {
     case UserConfigEvent::ChangedLightMapSetting:
-        _refreshTasks.push([this](GIImmediateCommands* cmd) {
+        _refreshTasks.push([this](GIImmediateCommands * cmd) {
             _scene->SetMeshDirty(true);
-        });   
+            });
         break;
     }
 }
 
 void RenderScene::Preprocess(GIImmediateCommands* cmd) {
     if (!_lightMap) {
-		cmd->PSSetSamplers(3, MakeRef(cmd->CreateSamplerState(SamplerParam())).get());
+        cmd->PSSetSamplers(3, MakeRef(cmd->CreateSamplerState(SamplerParam())).get());
         return;
     }
 
@@ -45,14 +45,14 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
             _directionalShadows.resize(_scene->GetDirectionalLights().size());
             _pointShadows.resize(_scene->GetPointLights().size());
 
-            for (auto && pLight : _scene->GetPointLights()) {
+            for (auto&& pLight : _scene->GetPointLights()) {
                 pLight.SetDirty(true);
             }
             _scene->SetLightDirty(false);
         }
-        
+
         if (_scene->MeshDirty()) {
-            for (auto && reflectionCapture : _scene->GetReflectionCaptures()) {
+            for (auto&& reflectionCapture : _scene->GetReflectionCaptures()) {
                 if (_enviromentMaps.find(reflectionCapture->GetID()) == _enviromentMaps.end()) {
                     _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), std::make_shared<GITextureProxyEntity>()));
                 }
@@ -62,7 +62,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
 
             _staticDrawMeshes.clear();
             _drawList.clear();
-            for (auto && viewObject : _scene->GetViewObjects()) {
+            for (auto&& viewObject : _scene->GetViewObjects()) {
                 auto& mesh = viewObject->GetMesh();
                 viewObject->FindPrecisionReflectionSource(_scene->GetReflectionCaptures());
 
@@ -82,7 +82,8 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                 if (!viewObject->HasLightMap() && viewObject->HasReflectionSource()) {
                     auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
                     draw_mesh.RegisterTexture(tex, 2);
-                } else if (viewObject->HasLightMap()) {
+                }
+                else if (viewObject->HasLightMap()) {
                     DrawMesh light_mesh(cmd, &viewObject->GetLightBuildData());
                     light_mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
 
@@ -93,10 +94,10 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     _bakedLightMeshes[viewObject->GetID()] = light_mesh;
                 }
 
-				_staticDrawMeshes[viewObject->GetID()] = draw_mesh;
+                _staticDrawMeshes[viewObject->GetID()] = draw_mesh;
 
                 int index = 0;
-                for (auto && drawface : mesh->GetDrawElementMap()) {
+                for (auto&& drawface : mesh->GetDrawElementMap()) {
                     auto& material = viewObject->GetMaterials()[drawface.materialIdx];
 
                     TextureParam param;
@@ -112,9 +113,9 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     }
 
                     MaterialBuffer mbuf;
-					mbuf.baseColor = material.baseColor;
-					mbuf.metallic = material.metallic;
-					mbuf.roughness = material.roughness;
+                    mbuf.baseColor = material.baseColor;
+                    mbuf.metallic = material.metallic;
+                    mbuf.roughness = material.roughness;
                     if (viewObject->HasLightMap() && UserConfig::getInstance()->VisibleIndirectLights()) {
                         mbuf.useLightMap = 1.0f;
                     }
@@ -138,7 +139,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                     else {
                         parent = &_staticDrawMeshes[viewObject->GetID()];
                     }
-                    
+
                     DrawElement face(parent, drawface.faceNumVerts, index);
                     face.SetShaders(ps, Shader(ShadingType::Vertex, material.vShader));
                     _drawList.push_back(face);
