@@ -1,9 +1,13 @@
 #pragma once
 
 #include "ERTREObject.h"
-#include "Structure/Structure.h"
 
+#include <memory>
+#include <vector>
 #include <DirectXMath.h>
+
+#include "Component/ObjectComponent.h"
+#include "Structure/Structure.h"
 
 class Scene;
 
@@ -11,7 +15,7 @@ class SceneObject : public ERTREObject
 {
 public:
     SceneObject();
-    ~SceneObject();
+    virtual ~SceneObject();
 
 	void Update(Scene* scene);
 
@@ -33,5 +37,7 @@ protected:
     DirectX::XMMATRIX matrix;
     Transform _transform;
     AABB _aabb;
+
+    std::vector<std::unique_ptr<ObjectComponent>> _components;
 };
 

@@ -12,13 +12,13 @@ SceneObject::SceneObject()
 }
 
 
-SceneObject::~SceneObject()
-{
-}
+SceneObject::~SceneObject() = default;
 
 void SceneObject::Update(Scene* scene)
 {
-
+    for (auto& component : _components) {
+        component->Update(scene, this);
+    }
 }
 
 void SceneObject::SetTransform(Transform trans) {

@@ -11,7 +11,7 @@
 using namespace DirectX;
 
 template<class VertType>
-void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<VertType>>& meshes) {
+void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<std::unique_ptr<MeshObject<VertType>>>& meshes) {
     
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
 
@@ -33,19 +33,19 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
     for (auto && object : meshes) {
-        DrawMesh mesh(cmd, &object);
+        DrawMesh mesh(cmd, object.get());
         ObjectBuffer buffer;
-        buffer.World = XMMatrixTranspose(object.GetMatrix());
-        buffer.NormalWorld = XMMatrixInverse(nullptr, object.GetMatrix());
+        buffer.World = XMMatrixTranspose(object->GetMatrix());
+        buffer.NormalWorld = XMMatrixInverse(nullptr, object->GetMatrix());
         cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
         mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
 
         unsigned int faceNumVerts = 0;
-        if (object.GetMesh()->HasIndexList()) {
-            faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetIndexList().size());
+        if (object->GetMesh()->HasIndexList()) {
+            faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
         }
         else {
-            faceNumVerts = static_cast<unsigned int>(object.GetMesh()->GetVertexList().size());
+            faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
         }
 
         DrawElement element(&mesh, faceNumVerts, 0);
@@ -54,4 +54,4 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     }
 }
 
-template void UnlitRenderer::render<Vertex3D>(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<MeshObject<Vertex3D>>& meshes);
+template void UnlitRenderer::render<Vertex3D>(GIImmediateCommands* cmd, GIRenderView* view, const CameraObject& camera, std::vector<std::unique_ptr<MeshObject<Vertex3D>>>& meshes);

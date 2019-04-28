@@ -166,7 +166,7 @@
     <ClInclude Include="Algorithms\SpaceOctree.h" />
     <ClInclude Include="Algorithms\SpaceSplits.h" />
     <ClInclude Include="System\Application.h" />
-    <ClInclude Include="Component\Component.h" />
+    <ClInclude Include="Component\ObjectComponent.h" />
     <ClInclude Include="Constant\MathConstant.h" />
     <ClInclude Include="Lighting\LightMapBaker.h" />
     <ClInclude Include="Lighting\PrecomputeLightingSystem.h" />
@@ -436,7 +436,7 @@
     <ClCompile Include="Algorithms\SpaceSplits.cpp" />
     <ClCompile Include="Algorithms\CompressTexture.cpp" />
     <ClCompile Include="System\Application.cpp" />
-    <ClCompile Include="Component\Component.cpp" />
+    <ClCompile Include="Component\ObjectComponent.cpp" />
     <ClCompile Include="Lighting\LightMapBaker.cpp" />
     <ClCompile Include="Lighting\PrecomputeLightingSystem.cpp" />
     <ClCompile Include="Component\LookCameraComponent.cpp" />

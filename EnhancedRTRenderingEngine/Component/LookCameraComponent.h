@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Component.h"
+#include "ObjectComponent.h"
 
-class LookCameraComponent : public Component
+class LookCameraComponent : public ObjectComponent
 {
 public:
 	virtual void Update(Scene* scene, SceneObject* object) override;

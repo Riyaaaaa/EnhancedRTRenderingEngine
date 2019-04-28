@@ -1,5 +1,6 @@
 #include "Billboard.h"
 
+#include "Component/LookCameraComponent.h"
 #include "Mesh/Primitive/Primitives.h"
 #include "Resource/ResourceLoader.h"
 
@@ -19,4 +20,7 @@ Billboard::Billboard(const std::string& textureName)
 
 	_transform.location = Vector3D(0.0f, 0.0f, 0.0f);
 	_transform.scale = Vector3D(1.0f, 1.0f, 1.0f);
+    _transform.rotation = Quaternion{};
+
+    _components.push_back(std::make_unique<LookCameraComponent>());
 }

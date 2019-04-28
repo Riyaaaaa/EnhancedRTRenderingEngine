@@ -14,8 +14,8 @@ public:
     void Initialize(const SpaceOctree::OctreeFactoryBase* factory);
     void RenderOctreeBoxes(GIImmediateCommands* cmd, GIRenderView* view, Scene* scene);
 protected:
-    static std::vector<MeshObject<Vertex3D>> GenerateOcreeBoxMeshes(const SpaceOctree::OctreeFactoryBase* factory);
+    static std::vector<std::unique_ptr<MeshObject<Vertex3D>>> GenerateOcreeBoxMeshes(const SpaceOctree::OctreeFactoryBase* factory);
 
-    std::vector<MeshObject<Vertex3D>> _spaceBoxes;
+    std::vector<std::unique_ptr<MeshObject<Vertex3D>>> _spaceBoxes;
 };
 

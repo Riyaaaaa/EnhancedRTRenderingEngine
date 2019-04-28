@@ -27,14 +27,14 @@ void SpaceOctreeVisualizer::RenderOctreeBoxes(GIImmediateCommands* cmd, GIRender
     view->SetRasterizerState(cmd, RasterizerState::Default);
 }
 
-std::vector<MeshObject<Vertex3D>> SpaceOctreeVisualizer::GenerateOcreeBoxMeshes
+std::vector<std::unique_ptr<MeshObject<Vertex3D>>> SpaceOctreeVisualizer::GenerateOcreeBoxMeshes
 (const SpaceOctree::OctreeFactoryBase* factory) {
-    std::vector<MeshObject<Vertex3D>> spaceBoxes;
+    std::vector<std::unique_ptr<MeshObject<Vertex3D>>> spaceBoxes;
 
     factory->IterateEnableBox([&](const std::pair<uint32_t, OctreeBox*>& pair) {
         AABB aabb = factory->CalculateOctreeBoxAABBFromMortonNumber(pair.first);
-        spaceBoxes.push_back(MeshObject<Vertex3D>(std::make_shared<Box>(aabb.size() / 2.0f)));
-        spaceBoxes.back().SetLocation(aabb.Center());
+        spaceBoxes.push_back(std::make_unique<MeshObject<Vertex3D>>(std::make_shared<Box>(aabb.size() / 2.0f)));
+        spaceBoxes.back()->SetLocation(aabb.Center());
     });
 
     return spaceBoxes;
