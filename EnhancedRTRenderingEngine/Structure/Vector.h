@@ -5,7 +5,7 @@
 template <class T, unsigned int dim>
 struct _Matrix;
 
-using Matrix = _Matrix<float, 4>;
+using Matrix4 = _Matrix<float, 4>;
 
 template <class T, unsigned int  dim>
 struct _Vector {
@@ -232,7 +232,7 @@ struct _Vector<T, 4> {
         return _Vector(this->x / s, this->y / s, this->z / s, this->w / s);
     }
 
-    _Vector operator*(const Matrix& mat) {
+    _Vector operator*(const Matrix4& mat) {
         _Vector ret(0,0,0,0);
 
         for (int i = 0; i < 4; i++) {
@@ -277,14 +277,6 @@ using _Vector4D = _Vector<T, 4>;
 
 template <class T, unsigned int dim>
 struct _Matrix {
-    const _Vector<T, dim>& operator[](unsigned int idx) const {
-        return _elems[idx];
-    }
-
-    _Vector<T, dim>& operator[](unsigned int idx) {
-        return _elems[idx];
-    }
-
 	T& at(unsigned int idx1, unsigned int idx2) {
 		return _elems[idx1][idx2];
 	}
@@ -292,6 +284,25 @@ struct _Matrix {
 	const T& at(unsigned int idx1, unsigned int idx2) const {
 		return _elems[idx1][idx2];
 	}
+
+    T& operator()(unsigned int idx1, unsigned int idx2) {
+        return at(idx1, idx2);
+    }
+
+    const T& operator()(unsigned int idx1, unsigned int idx2) const {
+        return at(idx1, idx2);
+    }
+
+    void LookAt(const _Vector<T, dim - 1>& eye, const _Vector<T, dim - 1>& target, const _Vector<T, dim - 1>& up);
+
+private:
+    const _Vector<T, dim>& operator[](unsigned int idx) const {
+        return _elems[idx];
+    }
+
+    _Vector<T, dim>& operator[](unsigned int idx) {
+        return _elems[idx];
+    }
 
 private:
     _Vector<T, dim> _elems[dim];

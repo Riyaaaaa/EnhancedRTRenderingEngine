@@ -18,7 +18,7 @@
 #include "Common/Common.h"
 
 static void
-SetScreenProjection(int width, int height, Matrix* result)
+SetScreenProjection(int width, int height, Matrix4* result)
 {
     const float L = 0.0f;
     const float R = (float)width;
@@ -27,9 +27,9 @@ SetScreenProjection(int width, int height, Matrix* result)
     float matrix[4][4] =
     {
         { 2.0f / (R - L),              0.0f, 0.0f, 0.0f },
-    { 0.0f,    2.0f / (T - B), 0.0f, 0.0f },
-    { 0.0f,              0.0f, 0.5f, 0.0f },
-    { (R + L) / (L - R), (T + B) / (B - T), 0.5f, 1.0f },
+        { 0.0f,    2.0f / (T - B), 0.0f, 0.0f },
+        { 0.0f,              0.0f, 0.5f, 0.0f },
+        { (R + L) / (L - R), (T + B) / (B - T), 0.5f, 1.0f },
     };
     memcpy(result, matrix, sizeof(matrix));
 }
