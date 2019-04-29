@@ -33,3 +33,7 @@ enum PSRegisterSlots {
     UnlitMainTexture = 0
 };
 
+enum VSRegisterSlots {
+    BasePassObjectBuffer = 1
+};
+

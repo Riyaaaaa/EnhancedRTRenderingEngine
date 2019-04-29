@@ -86,6 +86,9 @@ void Application::Setup(void* runtimeWindowHandle)
 void Application::Update(float dt)
 {
     auto config = UserConfig::getInstance();
+
+    _scene->Update();
+
     _renderScene->Refresh(_cmd.get());
     _forwardRenderer->render(_cmd.get(), _view.get(), _renderScene.get());
 

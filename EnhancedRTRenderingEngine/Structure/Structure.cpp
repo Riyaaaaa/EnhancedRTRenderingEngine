@@ -5,7 +5,7 @@
 #include "Utility/MathUtils.h"
 
 void Transform::LookAt(const Vector3D& other) {
-    Matrix4 m;
+    Matrix4 m = Matrix4::IDENTITY();
     m.LookAt(location, other, Vector::UP);
 
     float elem[4];
@@ -22,24 +22,28 @@ void Transform::LookAt(const Vector3D& other) {
     switch (biggestIdx)
     {
     case 0:
+        rotation.x = v;
         rotation.y = (m(1, 0) + m(0, 1)) * mult;
         rotation.z = (m(0, 2) + m(2, 0)) * mult;
         rotation.w = (m(2, 1) - m(1, 2)) * mult;
         break;
     case 1:
         rotation.x = (m(1, 0) + m(0, 1)) * mult;
+        rotation.y = v;
         rotation.z = (m(2, 1) + m(1, 2)) * mult;
         rotation.w = (m(0, 2) - m(2, 0)) * mult;
         break;
     case 2:
         rotation.x = (m(0, 2) + m(2, 0)) * mult;
         rotation.y = (m(2, 1) + m(1, 2)) * mult;
+        rotation.z = v;
         rotation.w = (m(1, 0) - m(0, 1)) * mult;
         break;
     case 3:
         rotation.x = (m(2, 1) + m(1, 2)) * mult;
         rotation.y = (m(0, 2) + m(2, 0)) * mult;
         rotation.z = (m(1, 0) + m(0, 1)) * mult;
+        rotation.w = v;
         break;
     }
 }

@@ -46,6 +46,10 @@ public:
         return _isPhysicallyObject;
     }
 
+    bool IsStatic() {
+        return true;
+    }
+
 protected:
     virtual void DirtyWorldMatrix() override;
 

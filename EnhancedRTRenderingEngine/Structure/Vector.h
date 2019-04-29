@@ -175,12 +175,12 @@ struct _Vector<T, 3> {
         return *this;
     }
 
-    T& operator[](unsigned int idx) {
+    constexpr T& operator[](unsigned int idx) {
         T* ptr = &x;
         return *(ptr + idx);
     }
 
-    const T& operator[](unsigned int idx) const {
+    constexpr const T& operator[](unsigned int idx) const {
         const T* ptr = &x;
         return *(ptr + idx);
     }
@@ -277,23 +277,33 @@ using _Vector4D = _Vector<T, 4>;
 
 template <class T, unsigned int dim>
 struct _Matrix {
-	T& at(unsigned int idx1, unsigned int idx2) {
-		return _elems[idx1][idx2];
+    constexpr T& at(unsigned int idx1, unsigned int idx2) {
+		return _elems[idx2][idx1];
 	}
 
-	const T& at(unsigned int idx1, unsigned int idx2) const {
-		return _elems[idx1][idx2];
+    constexpr const T& at(unsigned int idx1, unsigned int idx2) const {
+		return _elems[idx2][idx1];
 	}
 
-    T& operator()(unsigned int idx1, unsigned int idx2) {
+    constexpr T& operator()(unsigned int idx1, unsigned int idx2) {
         return at(idx1, idx2);
     }
 
-    const T& operator()(unsigned int idx1, unsigned int idx2) const {
+    constexpr const T& operator()(unsigned int idx1, unsigned int idx2) const {
         return at(idx1, idx2);
     }
 
     void LookAt(const _Vector<T, dim - 1>& eye, const _Vector<T, dim - 1>& target, const _Vector<T, dim - 1>& up);
+
+    static constexpr _Matrix IDENTITY() {
+        _Matrix m;
+        for (unsigned int i = 0; i < dim; i++) {
+            for (unsigned int j = 0; j < dim; j++) {
+                m.at(j, i) = 1;
+            }
+        }
+        return m;
+    }
 
 private:
     const _Vector<T, dim>& operator[](unsigned int idx) const {

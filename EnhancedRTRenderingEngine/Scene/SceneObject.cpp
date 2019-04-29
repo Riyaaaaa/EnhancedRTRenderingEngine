@@ -55,3 +55,9 @@ const XMMATRIX& SceneObject::GetMatrix() {
     }
     return matrix;
 }
+
+void SceneObject::LookAt(const Vector3D& target)
+{
+    _transform.LookAt(target);
+    DirtyWorldMatrix();
+}

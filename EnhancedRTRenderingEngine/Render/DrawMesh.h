@@ -121,6 +121,8 @@ public:
         case ShaderType::GS:
             resType = ResourceType::GSConstantBuffer;
             break;
+        default:
+            return;
         }
 
         buffer->type = resType;

@@ -68,16 +68,13 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
 
                 DrawMesh draw_mesh(cmd, viewObject);
 
-                ObjectBuffer buffer;
-                buffer.World = XMMatrixTranspose(viewObject->GetMatrix());
-                buffer.NormalWorld = XMMatrixInverse(nullptr, viewObject->GetMatrix());
-
                 BufferDesc desc;
-                desc.byteWidth = sizeof(buffer);
+                desc.usage = ResourceUsage::Dynamic;
+                desc.byteWidth = sizeof(ObjectBuffer);
                 desc.stride = sizeof(float);
 
-                auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
-                draw_mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
+                auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, nullptr));
+                draw_mesh.RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
 
                 if (!viewObject->HasLightMap() && viewObject->HasReflectionSource()) {
                     auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
@@ -85,7 +82,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                 }
                 else if (viewObject->HasLightMap()) {
                     DrawMesh light_mesh(cmd, &viewObject->GetLightBuildData());
-                    light_mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
+                    light_mesh.RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
 
                     if (viewObject->HasReflectionSource()) {
                         auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
@@ -150,5 +147,13 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
 
             _scene->SetMeshDirty(false);
         }
+    }
+}
+
+void RenderScene::Setup(GIImmediateCommands* cmd) {
+    for (auto&& viewObject : _scene->GetViewObjects()) {
+        ObjectBuffer buffer;
+        buffer.World = XMMatrixTranspose(viewObject->GetMatrix());
+        buffer.NormalWorld = XMMatrixInverse(nullptr, viewObject->GetMatrix());
     }
 }

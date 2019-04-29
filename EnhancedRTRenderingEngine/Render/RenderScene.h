@@ -42,6 +42,7 @@ public:
         return _drawList;
     }
 protected:
+    void Setup(GIImmediateCommands* cmd);
     Scene * _scene;
     std::vector<GITextureProxy> _directionalShadows;
     std::vector<GITextureProxy> _pointShadows;

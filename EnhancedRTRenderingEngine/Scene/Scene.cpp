@@ -15,6 +15,7 @@
 #include "StaticMeshObject.h"
 #include "Scene/SkyBox.h"
 #include "Scene/Enviroment/StaticCubeReflectionCapture.h"
+#include "Scene/Billboard.h"
 
 #include "Material/Material.h"
 
@@ -96,6 +97,9 @@ void Scene::CreateGITestScene() {
     viewObjects.push_back(SceneUtils::CreateMesh3DModelObject(model2()));
     viewObjects.back()->SetLocation(Vector3D{ 5.0f, 10.0f, 5.0f });
     viewObjects.back()->SetScale(Vector3D{ 30.0f, 30.0f, 30.0f });
+
+    viewObjects.push_back(new Billboard("test.png"));
+    viewObjects.back()->SetLocation(Vector3D{ 5.0f, 3.0f, 5.0f });
 
     pointLights.emplace_back(PointLight{});
     pointLights[0].SetAttenuationRadius(1000.0f);

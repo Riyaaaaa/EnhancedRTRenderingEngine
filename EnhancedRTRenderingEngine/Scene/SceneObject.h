@@ -28,7 +28,7 @@ public:
 
     Vector3D GetLocation() { return _transform.location; }
 
-	Transform& getTransform() { return _transform; }
+    void LookAt(const Vector3D& target);
 
 protected:
     virtual void DirtyWorldMatrix();
