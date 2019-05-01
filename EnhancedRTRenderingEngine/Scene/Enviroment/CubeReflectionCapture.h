@@ -14,6 +14,8 @@ public:
     virtual bool Contains(Vector3D pos);
     virtual unsigned int PrecisionSize() { return box.w; }
 
+    virtual bool Dirty() { return dirty; }
+
 protected:
     bool dirty;
     Size3Dd box;

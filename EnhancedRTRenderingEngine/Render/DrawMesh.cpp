@@ -113,7 +113,16 @@ std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<MainVertex>() {
     return layout;
 }
 
-DrawMesh::DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData) {
+DrawMesh::DrawMesh(GIImmediateCommands* cmd) {
+    BufferDesc desc;
+    desc.usage = ResourceUsage::Dynamic;
+    desc.byteWidth = sizeof(ObjectBuffer);
+    desc.stride = sizeof(float);
+    auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, nullptr));
+    RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
+}
+
+DrawMesh::DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData) : DrawMesh(cmd) {
     typedef std::remove_cv_t<std::remove_reference_t<decltype(staticLightBuildData->lightVertices[0])>> VertType;
     _vertexLayout = GenerateVertexLayout<VertType>();
 
@@ -130,3 +139,62 @@ DrawMesh::DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticL
     _primitiveType = VertexPrimitiveType::TRIANGLELIST;
 }
 
+void DrawMesh::ExtractDrawElements(GIImmediateCommands* cmd, 
+    const std::vector<ElementDesc>& elementDescs, 
+    const std::vector<Material>& materials,
+    const DrawPlan& plan) {
+    int index = 0;
+    for (auto&& drawface : elementDescs) {
+        auto& material = materials[drawface.materialIdx];
+        Shader ps(material.shadingType, material.pShader);
+
+        switch (material.shadingType) {
+        case ShadingType::BasePass: {
+            TextureParam param;
+            param.type = material.type;
+            GITextureProxy texture = GITextureProxyEntity::Create();
+            if (material.type == TextureType::Texture2D) {
+                param.arraySize = 1;
+                texture->Initialize(cmd, param, material.texture);
+            }
+            else if (material.type == TextureType::TextureCube) {
+                param.arraySize = 6;
+                texture->Initialize(cmd, param, material.cubeTexture.textures);
+            }
+
+            MaterialBuffer mbuf;
+            mbuf.baseColor = material.baseColor;
+            mbuf.metallic = material.metallic;
+            mbuf.roughness = material.roughness;
+            if (plan.useLightMap) {
+                mbuf.useLightMap = 1.0f;
+            }
+            if (plan.useEnviromentMap) {
+                mbuf.useEnviromentMap = 1.0f;
+            }
+            BufferDesc desc;
+            desc.byteWidth = sizeof(mbuf);
+            desc.stride = sizeof(float);
+            desc.usage = ResourceUsage::Dynamic;
+            desc.accessFlag = ResourceAccessFlag::W;
+            auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));
+            ps.constantBuffers[BasePassMaterialBuffer] = materialBuffer;
+            ps.textureResources[BasePassMainTexture] = texture;
+        }
+                                    break;
+        }
+
+        DrawElement face(this, drawface.faceNumVerts, index);
+        face.SetShaders(ps, Shader(ShadingType::Vertex, material.vShader), Shader(ShadingType::Geometry, material.gShader));
+        _elements.push_back(face);
+
+        index += drawface.faceNumVerts;
+    }
+}
+
+void DrawMesh::Draw(GIImmediateCommands* cmd)
+{
+    for (auto&& element : _elements) {
+        element.Draw(cmd);
+    }
+}

@@ -22,6 +22,11 @@
 
 class DrawMesh;
 
+struct DrawPlan {
+    bool useLightMap = false;
+    bool useEnviromentMap = false;
+};
+
 class DrawElement
 {
 public:
@@ -73,13 +78,13 @@ protected:
 
 class DrawMesh {
 public:
-    DrawMesh() = default;
+    explicit DrawMesh(GIImmediateCommands* cmd);
     template<class VertType>
-    DrawMesh(GIImmediateCommands* cmd, MeshObject<VertType>* element) {
+    DrawMesh(GIImmediateCommands* cmd, std::shared_ptr<Mesh<VertType>> mesh) : DrawMesh(cmd) {
         _vertexLayout = GenerateVertexLayout<VertType>();
 
         {
-            auto& vertexList = element->GetMesh()->GetVertexList();
+            auto& vertexList = mesh->GetVertexList();
             BufferDesc bufferDesc;
             bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * vertexList.size());
             bufferDesc.usage = ResourceUsage::Default;
@@ -91,8 +96,8 @@ public:
             meshSharedResource.emplace_back(buffer, -1);
         }
 
-        if (element->GetMesh()->HasIndexList()) {
-            auto& indexList = element->GetMesh()->GetIndexList();
+        if (mesh->HasIndexList()) {
+            auto& indexList = mesh->GetIndexList();
             BufferDesc bufferDesc;
             bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(uint16_t) * indexList.size());
             bufferDesc.usage = ResourceUsage::Default;
@@ -103,7 +108,7 @@ public:
             meshSharedResource.emplace_back(buffer, -1);
         }
 
-        _primitiveType = element->GetMesh()->GetPrimitiveType();
+        _primitiveType = mesh->GetPrimitiveType();
     }
 
     DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData);
@@ -149,11 +154,20 @@ public:
         return meshSharedTexture;
     }
 
+    void ExtractDrawElements(GIImmediateCommands* cmd,
+        const std::vector<ElementDesc>& elementDescs,
+        const std::vector<Material>& materials,
+        const DrawPlan& plan = {});
+
+    void Draw(GIImmediateCommands* cmd);
+
 private:
     template<class VertType>
     std::vector<VertexLayout> GenerateVertexLayout();
 
     VertexPrimitiveType _primitiveType;
+
+    std::vector<DrawElement> _elements;
 
     std::vector<VertexLayout> _vertexLayout;
     std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> meshSharedResource;

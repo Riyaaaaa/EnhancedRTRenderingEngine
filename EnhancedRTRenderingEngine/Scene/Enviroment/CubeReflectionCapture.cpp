@@ -18,6 +18,8 @@ void CubeReflectionCapture::SetupTexture(GIImmediateCommands* cmd, GITextureProx
     param.type = TextureType::Texture2DArray;
     param.format = TextureFormat::RGBA8_UNORM;
     tex->Initialize(cmd, param);
+
+    dirty = false;
 }
 
 bool CubeReflectionCapture::Contains(Vector3D pos) {

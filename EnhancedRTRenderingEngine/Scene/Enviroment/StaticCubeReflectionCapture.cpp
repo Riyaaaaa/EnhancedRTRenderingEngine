@@ -22,4 +22,6 @@ void StaticCubeReflectionCapture::SetupTexture(GIImmediateCommands* cmd, GITextu
     
     auto mipmaps = TextureUtils::CreateMipmaps(reflectionSource, 0);
     tex->Initialize(cmd, param, mipmaps);
+
+    dirty = false;
 }

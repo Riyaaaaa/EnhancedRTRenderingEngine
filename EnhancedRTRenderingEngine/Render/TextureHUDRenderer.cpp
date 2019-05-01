@@ -22,7 +22,7 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
 
     auto textureProxy = MakeRef(cmd->CreateTextureProxy(TextureParam(), texture));
 
-    DrawMesh element(cmd, mesh);
+    DrawMesh element(cmd, mesh->GetMesh());
     auto ps = ShaderFactory::MinTextureColor();
     ps.textureResources[BasePassMainTexture] = textureProxy;
 
@@ -36,22 +36,14 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     Size2D viewportSize = Size2D{ size.w / view->GetRenderSize().w, size.h / view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / view->GetRenderSize().w - 0.5f, pos.y / view->GetRenderSize().h - 0.5f } *2.0f;
 
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(viewportSize);
+    auto mesh = MakeRef(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(viewportSize));
     mesh->SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
-    DrawMesh element(cmd, mesh);
-
-    ObjectBuffer buffer;
-    buffer.World = XMMatrixTranspose(mesh->GetMatrix());
-
-    BufferDesc desc;
-    desc.byteWidth = sizeof(buffer);
-    desc.stride = sizeof(float);
-    auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
-    element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
+    DrawMesh element(cmd, mesh->GetMesh());
+    Material material;
 
     auto ps = ShaderFactory::MinTextureColor();
 
@@ -73,7 +65,14 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
         ps.textureResources[MinTextureColorMainTexture] = texture;
     }
 
-    DrawElement face(&element, mesh->GetMesh()->GetVertexCount(), 0);
-    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
-    face.Draw(cmd);
+    material.shadingType = ShadingType::Unlit;
+    material.pShader = ps;
+    material.vShader = ShaderFactory::TextureVertexShader();
+
+    ElementDesc desc;
+    desc.faceIdx = 0;
+    desc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
+
+    element.ExtractDrawElements(cmd, { desc }, { material });
+    element.Draw(cmd);
 }

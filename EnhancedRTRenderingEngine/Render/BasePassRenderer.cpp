@@ -58,9 +58,7 @@ void D3D11BasePassRenderer::render(GIImmediateCommands* cmd, GIRenderView* view,
         cmd->PSSetSamplers(1, renderScene->GetPointShadow(0)->GetSampler().get());
     }
 
-    for (auto && drawface : renderScene->GetDrawList()) {
-        drawface.Draw(cmd);
-    }
+    renderScene->RenderByBasePass(cmd);
     
     cmd->PSSetSamplers(0, nullptr);
     cmd->PSSetShaderResources(0, nullptr);

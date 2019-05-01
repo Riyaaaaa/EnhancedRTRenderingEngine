@@ -53,6 +53,9 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
 
         if (_scene->MeshDirty()) {
             for (auto&& reflectionCapture : _scene->GetReflectionCaptures()) {
+                if (!reflectionCapture->Dirty()) {
+                    continue;
+                }
                 if (_enviromentMaps.find(reflectionCapture->GetID()) == _enviromentMaps.end()) {
                     _enviromentMaps.insert(std::make_pair(reflectionCapture->GetID(), std::make_shared<GITextureProxyEntity>()));
                 }
@@ -61,88 +64,31 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
             }
 
             _staticDrawMeshes.clear();
-            _drawList.clear();
             for (auto&& viewObject : _scene->GetViewObjects()) {
                 auto& mesh = viewObject->GetMesh();
+
                 viewObject->FindPrecisionReflectionSource(_scene->GetReflectionCaptures());
 
-                DrawMesh draw_mesh(cmd, viewObject);
+                DrawPlan plan;
+                plan.useLightMap = viewObject->HasLightMap() && UserConfig::getInstance()->VisibleIndirectLights();
+                plan.useEnviromentMap = viewObject->HasReflectionSource();
 
-                BufferDesc desc;
-                desc.usage = ResourceUsage::Dynamic;
-                desc.byteWidth = sizeof(ObjectBuffer);
-                desc.stride = sizeof(float);
+                DrawMesh* draw_mesh;
+                draw_mesh->ExtractDrawElements(cmd, viewObject->GetMesh()->GetDrawElementMap(), viewObject->GetMaterials(), plan);
 
-                auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, nullptr));
-                draw_mesh.RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
+                if (viewObject->HasLightMap()) {
+                    draw_mesh = new DrawMesh(cmd, viewObject->GetMesh());
+                }
+                else {
+                    draw_mesh = new DrawMesh(cmd, &viewObject->GetLightBuildData());
+                }
 
-                if (!viewObject->HasLightMap() && viewObject->HasReflectionSource()) {
+                if (viewObject->HasReflectionSource()) {
                     auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
-                    draw_mesh.RegisterTexture(tex, 2);
-                }
-                else if (viewObject->HasLightMap()) {
-                    DrawMesh light_mesh(cmd, &viewObject->GetLightBuildData());
-                    light_mesh.RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
-
-                    if (viewObject->HasReflectionSource()) {
-                        auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
-                        light_mesh.RegisterTexture(tex, 2);
-                    }
-                    _bakedLightMeshes[viewObject->GetID()] = light_mesh;
+                    draw_mesh->RegisterTexture(tex, 2);
                 }
 
-                _staticDrawMeshes[viewObject->GetID()] = draw_mesh;
-
-                int index = 0;
-                for (auto&& drawface : mesh->GetDrawElementMap()) {
-                    auto& material = viewObject->GetMaterials()[drawface.materialIdx];
-
-                    TextureParam param;
-                    param.type = material.type;
-                    GITextureProxy texture = GITextureProxyEntity::Create();
-                    if (material.type == TextureType::Texture2D) {
-                        param.arraySize = 1;
-                        texture->Initialize(cmd, param, material.texture);
-                    }
-                    else if (material.type == TextureType::TextureCube) {
-                        param.arraySize = 6;
-                        texture->Initialize(cmd, param, material.cubeTexture.textures);
-                    }
-
-                    MaterialBuffer mbuf;
-                    mbuf.baseColor = material.baseColor;
-                    mbuf.metallic = material.metallic;
-                    mbuf.roughness = material.roughness;
-                    if (viewObject->HasLightMap() && UserConfig::getInstance()->VisibleIndirectLights()) {
-                        mbuf.useLightMap = 1.0f;
-                    }
-                    if (viewObject->HasReflectionSource()) {
-                        mbuf.useEnviromentMap = 1.0f;
-                    }
-                    desc.byteWidth = sizeof(mbuf);
-                    desc.stride = sizeof(float);
-                    desc.usage = ResourceUsage::Dynamic;
-                    desc.accessFlag = ResourceAccessFlag::W;
-                    auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));
-
-                    Shader ps(material.shadingType, material.pShader);
-                    ps.constantBuffers[BasePassMaterialBuffer] = materialBuffer;
-                    ps.textureResources[BasePassMainTexture] = texture;
-
-                    DrawMesh* parent;
-                    if (viewObject->HasLightMap()) {
-                        parent = &_bakedLightMeshes[viewObject->GetID()];
-                    }
-                    else {
-                        parent = &_staticDrawMeshes[viewObject->GetID()];
-                    }
-
-                    DrawElement face(parent, drawface.faceNumVerts, index);
-                    face.SetShaders(ps, Shader(ShadingType::Vertex, material.vShader));
-                    _drawList.push_back(face);
-
-                    index += drawface.faceNumVerts;
-                }
+                _staticDrawMeshes[viewObject->GetID()] = std::unique_ptr<DrawMesh>(draw_mesh);
             }
 
             _scene->SetMeshDirty(false);
@@ -155,5 +101,16 @@ void RenderScene::Setup(GIImmediateCommands* cmd) {
         ObjectBuffer buffer;
         buffer.World = XMMatrixTranspose(viewObject->GetMatrix());
         buffer.NormalWorld = XMMatrixInverse(nullptr, viewObject->GetMatrix());
+    }
+}
+
+void RenderScene::RenderByBasePass(GIImmediateCommands* cmd)
+{
+    for (auto&& mesh : _staticDrawMeshes) {
+        mesh.second->Draw(cmd);
+    }
+
+    for (auto&& mesh : _dynamicDrawMeshes) {
+        mesh.second->Draw(cmd);
     }
 }

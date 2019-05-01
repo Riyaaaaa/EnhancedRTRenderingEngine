@@ -14,16 +14,17 @@
 
 class MeshObjectBase : public SceneObject {
 public:
+    MeshObjectBase(const std::shared_ptr<MeshBase>& mesh) : _mesh(mesh) {}
     virtual AABB GetAABB() = 0;
     virtual Vector3D GetVertexPosition(unsigned int idx) = 0;
     virtual unsigned int GetVertexNums() = 0;
     virtual std::vector<Hit> IntersectPositions(Ray ray) = 0;
-    virtual MeshBase* GetMeshBase() = 0;
 
     void SetMaterial(const std::vector<Material>& materials) {
         _materials = materials;
     }
     void SetMaterial(std::vector<Material>&& materials) {
+        // assert(_mesh->GetDrawElementMap().size() == materials.size);
         _materials.swap(materials);
     }
 
@@ -65,18 +66,19 @@ protected:
     std::size_t _reflectionSourceId;
     StaticLightBuildData _lightMapData;
     std::vector<Material> _materials;
+
+    std::shared_ptr<MeshBase> _mesh;
 };
 
 template<class VertType>
 class MeshObject : public MeshObjectBase
 {
 public:
-    MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) : _mesh(mesh) {
+    MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) {
         _materials.resize(_mesh->ElementSize(), Material::Default);
     }
 
-    const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return _mesh; }
-    MeshBase* GetMeshBase() { return _mesh.get(); }
+    const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return std::static_pointer_cast<Mesh<VertType>>(_mesh); }
 
     std::vector<Triangle> GetTransformedTriangles();
 
@@ -87,6 +89,5 @@ public:
 
 protected:
     MeshObject() = default;
-    std::shared_ptr<Mesh<VertType>> _mesh;
 };
 

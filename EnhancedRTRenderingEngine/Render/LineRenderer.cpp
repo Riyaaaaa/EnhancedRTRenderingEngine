@@ -46,20 +46,21 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     lineMesh->SetPrimitiveType(VertexPrimitiveType::LINELIST);
 
-    MeshObject<LineVertex> mesh(lineMesh);
-    DrawMesh element(cmd, &mesh);
+    auto mesh = std::make_shared< MeshObject<LineVertex>>((lineMesh));
+    DrawMesh element(cmd, mesh->GetMesh());
 
-    ObjectBuffer buffer;
-    buffer.World = XMMatrixTranspose(mesh.GetMatrix());
+    Material material;
+    material.shadingType = ShadingType::Unlit;
+    material.pShader = ShaderFactory::MinPixelShader();
+    material.vShader = ShaderFactory::LineVertexShader();
+    material.gShader = ShaderFactory::LineGeometryShader();
 
-    desc.byteWidth = sizeof(buffer);
-    desc.stride = sizeof(float);
-    auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
-    element.RegisterConstantBuffer(hpBuffer, 1, ShaderType::VS);
+    ElementDesc edesc;
+    edesc.faceIdx = 0;
+    edesc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
 
-    DrawElement face(&element, static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount()), 0);
-    face.SetShaders(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
-    face.Draw(cmd);
+    element.ExtractDrawElements(cmd, { edesc }, { material });
+    element.Draw(cmd);
 
     cmd->PSSetShader(nullptr);
     cmd->GSSetShader(nullptr);

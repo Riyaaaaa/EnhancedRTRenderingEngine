@@ -33,24 +33,25 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
     for (auto && object : meshes) {
-        DrawMesh mesh(cmd, object.get());
-        ObjectBuffer buffer;
-        buffer.World = XMMatrixTranspose(object->GetMatrix());
-        buffer.NormalWorld = XMMatrixInverse(nullptr, object->GetMatrix());
-        cmd->UpdateSubresource(objectBuffer.get(), &buffer, sizeof(buffer));
-        mesh.RegisterConstantBuffer(objectBuffer, 1, ShaderType::VS);
+        ElementDesc desc;
+        desc.faceIdx = 0;
 
         unsigned int faceNumVerts = 0;
         if (object->GetMesh()->HasIndexList()) {
-            faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
+            desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
         }
         else {
-            faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
+            desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
         }
 
-        DrawElement element(&mesh, faceNumVerts, 0);
-        element.SetShaders(ShaderFactory::MinPixelColor(), ShaderFactory::MinVertexColor());
-        element.Draw(cmd);
+        DrawMesh mesh(cmd, object->GetMesh());
+        Material material;
+        material.shadingType = ShadingType::Unlit;
+        material.pShader = ShaderFactory::MinPixelColor();
+        material.vShader = ShaderFactory::MinVertexColor();
+
+        mesh->ExtractDrawElements(cmd, { desc }, { material });
+        mesh->Draw(cmd);
     }
 }
 
