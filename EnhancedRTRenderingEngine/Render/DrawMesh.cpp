@@ -118,6 +118,7 @@ DrawMesh::DrawMesh(GIImmediateCommands* cmd) {
     desc.usage = ResourceUsage::Dynamic;
     desc.byteWidth = sizeof(ObjectBuffer);
     desc.stride = sizeof(float);
+    desc.accessFlag = ResourceAccessFlag::W;
     auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, nullptr));
     RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
 }
@@ -195,14 +196,14 @@ void DrawMesh::ExtractDrawElements(GIImmediateCommands* cmd,
     }
 }
 
-void DrawMesh::UpdateObjectBuffer(GIImmediateCommands* cmd, MeshObject<MainVertex>* mesh)
+void DrawMesh::UpdateObjectBuffer(GIImmediateCommands* cmd, const DirectX::XMMATRIX& matrix)
 {
     auto buffer = FindSharedResource(ResourceType::VSConstantBuffer, VSRegisterSlots::BasePassObjectBuffer);
     auto mapped = cmd->MapBuffer(buffer.get(), 0, MapType::WRITE_DISCARD);
 
     ObjectBuffer data;
-    data.World = XMMatrixTranspose(mesh->GetMatrix());
-    data.NormalWorld = XMMatrixInverse(nullptr, mesh->GetMatrix());
+    data.World = DirectX::XMMatrixTranspose(matrix);
+    data.NormalWorld = DirectX::XMMatrixInverse(nullptr, matrix);
     memcpy(mapped.pData, &data, sizeof(data));
 
     cmd->UnmapBuffer(buffer.get(), 0);

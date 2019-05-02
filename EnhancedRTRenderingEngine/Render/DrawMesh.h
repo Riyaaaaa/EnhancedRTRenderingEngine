@@ -109,8 +109,8 @@ public:
                 bufferDesc.stride = sizeof(VertType);
 
                 auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)& vertexList[0]));
-                buffer->type = ResourceType::LightVertexList;
-                meshSharedResource.emplace_back(buffer, -1);
+                buffer->type = ResourceType::VertexList;
+                meshSharedResource.emplace_back(buffer, 0);
             }
 
             if (mesh->HasIndexList()) {
@@ -122,11 +122,13 @@ public:
                 bufferDesc.stride = sizeof(uint16_t);
 
                 auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::IndexList, bufferDesc, (void*)& indexList[0]));
-                meshSharedResource.emplace_back(buffer, -1);
+                meshSharedResource.emplace_back(buffer, 0);
             }
 
             _primitiveType = mesh->GetPrimitiveType();
         }
+
+        UpdateObjectBuffer(cmd, meshObject->GetMatrix());
     }
 
     void RegisterConstantBuffer(const std::shared_ptr<GIBuffer>& buffer, unsigned int regsiterId, ShaderType shaderType) {
@@ -197,7 +199,7 @@ public:
         }
     }
 
-    void UpdateObjectBuffer(GIImmediateCommands* cmd, MeshObject<MainVertex>* mesh);
+    void UpdateObjectBuffer(GIImmediateCommands* cmd, const DirectX::XMMATRIX& matrix);
     void Draw(GIImmediateCommands* cmd);
 
 protected:
