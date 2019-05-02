@@ -39,21 +39,22 @@ std::shared_ptr<GITexture2D> TextureEffectRenderer::Apply(GIImmediateCommands* c
     auto mesh = MakeRef(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(Size2D(1.0f, 1.0f)));
     mesh->SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    DrawMesh element(cmd, mesh->GetMesh());
-
-    auto ps = Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect));
-    ps.textureResources[UnlitMainTexture] = src;
+    DrawMesh element(cmd, mesh.get());
 
     Material material;
     material.shadingType = ShadingType::Unlit;
-    material.pShader = ps;
-    material.vShader = ShaderFactory::TextureVertexShader();
+    material.pShader = ResourceLoader::LoadShader(effect);
+    material.vShader = ResourceLoader::LoadShader("TextureVertexShader");
 
     ElementDesc desc;
+    desc.materialIdx = 0;
     desc.faceIdx = 0;
     desc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
 
     element.ExtractDrawElements(cmd, { desc }, { material });
+
+    element.GetDrawElement(0)->PS().textureResources[UnlitMainTexture] = src;
+
     element.Draw(cmd);
 
 

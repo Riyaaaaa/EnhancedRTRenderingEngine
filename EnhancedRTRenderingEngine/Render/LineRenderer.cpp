@@ -1,4 +1,8 @@
 
+// @see https://gamedev.amazon.com/forums/questions/71621/vs2017-158-stdaligned-storage-error.html
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE 1
+#include <memory>
+
 #include "LineRenderer.h"
 #include "TextureEffects.h"
 
@@ -46,16 +50,17 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     lineMesh->SetPrimitiveType(VertexPrimitiveType::LINELIST);
 
-    auto mesh = std::make_shared< MeshObject<LineVertex>>((lineMesh));
-    DrawMesh element(cmd, mesh->GetMesh());
+    auto mesh = std::make_shared<MeshObject<LineVertex>>(lineMesh);
+    DrawMesh element(cmd, mesh.get());
 
     Material material;
     material.shadingType = ShadingType::Unlit;
-    material.pShader = ShaderFactory::MinPixelShader();
-    material.vShader = ShaderFactory::LineVertexShader();
-    material.gShader = ShaderFactory::LineGeometryShader();
+    material.pShader = ResourceLoader::LoadShader("PixelShader");
+    material.vShader = ResourceLoader::LoadShader("LineVertexShader");
+    material.gShader = ResourceLoader::LoadShader("LineGeometryShader");
 
     ElementDesc edesc;
+    edesc.materialIdx = 0;
     edesc.faceIdx = 0;
     edesc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
 

@@ -63,6 +63,7 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                 reflectionCapture->SetupTexture(cmd, _enviromentMaps.at(reflectionCapture->GetID()));
             }
 
+            _dynamicDrawMeshes.clear();
             _staticDrawMeshes.clear();
             for (auto&& viewObject : _scene->GetViewObjects()) {
                 auto& mesh = viewObject->GetMesh();
@@ -73,22 +74,21 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
                 plan.useLightMap = viewObject->HasLightMap() && UserConfig::getInstance()->VisibleIndirectLights();
                 plan.useEnviromentMap = viewObject->HasReflectionSource();
 
-                DrawMesh* draw_mesh;
-                draw_mesh->ExtractDrawElements(cmd, viewObject->GetMesh()->GetDrawElementMap(), viewObject->GetMaterials(), plan);
-
-                if (viewObject->HasLightMap()) {
-                    draw_mesh = new DrawMesh(cmd, viewObject->GetMesh());
-                }
-                else {
-                    draw_mesh = new DrawMesh(cmd, &viewObject->GetLightBuildData());
-                }
+                DrawMesh* draw_mesh = new DrawMesh(cmd, viewObject);
 
                 if (viewObject->HasReflectionSource()) {
                     auto& tex = GetEnviromentMap(viewObject->GetReflectionSourceId());
                     draw_mesh->RegisterTexture(tex, 2);
                 }
 
-                _staticDrawMeshes[viewObject->GetID()] = std::unique_ptr<DrawMesh>(draw_mesh);
+                draw_mesh->ExtractDrawElements(cmd, viewObject->GetMesh()->GetDrawElementMap(), viewObject->GetMaterials(), plan);
+
+                if (viewObject->GetAttribute() == ObjectAttribute::Static) {
+                    _staticDrawMeshes[viewObject->GetID()] = std::unique_ptr<DrawMesh>(draw_mesh);
+                }
+                else if (viewObject->GetAttribute() == ObjectAttribute::Dynamic) {
+                    _dynamicDrawMeshes[viewObject->GetID()] = std::unique_ptr<DrawMesh>(draw_mesh);
+                }
             }
 
             _scene->SetMeshDirty(false);

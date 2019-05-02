@@ -16,7 +16,7 @@ public:
     void setAttribute(ObjectAttribute att) {
         _attribute = att;
     }
-    ObjectAttribute getAttribute() {
+    ObjectAttribute GetAttribute() {
         return _attribute;
     }
 

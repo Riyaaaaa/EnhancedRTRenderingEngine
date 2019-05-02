@@ -12,7 +12,7 @@ class StaticMeshObject : public MeshObject<VertType>
 public:
     StaticMeshObject(const std::shared_ptr<Mesh<VertType>>& mesh, Transform transform) {
         this->_transform = transform;
-        setAttribute(ObjectAttribute::Static);
+        ERTREObject::setAttribute(ObjectAttribute::Static);
     }
 
 private:

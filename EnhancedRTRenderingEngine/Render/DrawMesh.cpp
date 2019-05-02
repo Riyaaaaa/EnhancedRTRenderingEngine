@@ -122,23 +122,6 @@ DrawMesh::DrawMesh(GIImmediateCommands* cmd) {
     RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
 }
 
-DrawMesh::DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData) : DrawMesh(cmd) {
-    typedef std::remove_cv_t<std::remove_reference_t<decltype(staticLightBuildData->lightVertices[0])>> VertType;
-    _vertexLayout = GenerateVertexLayout<VertType>();
-
-    BufferDesc bufferDesc;
-    bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * staticLightBuildData->lightVertices.size());
-    bufferDesc.usage = ResourceUsage::Default;
-    bufferDesc.accessFlag = ResourceAccessFlag::None;
-    bufferDesc.stride = sizeof(VertType);
-
-    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&staticLightBuildData->lightVertices[0]));
-    buffer->type = ResourceType::LightVertexList;
-    meshSharedResource.emplace_back(buffer, -1);
-
-    _primitiveType = VertexPrimitiveType::TRIANGLELIST;
-}
-
 void DrawMesh::ExtractDrawElements(GIImmediateCommands* cmd, 
     const std::vector<ElementDesc>& elementDescs, 
     const std::vector<Material>& materials,
@@ -182,6 +165,26 @@ void DrawMesh::ExtractDrawElements(GIImmediateCommands* cmd,
             ps.textureResources[BasePassMainTexture] = texture;
         }
                                     break;
+
+        case ShadingType::Detph:
+            break;
+        case ShadingType::Unlit: {
+            TextureParam param;
+            param.type = material.type;
+            GITextureProxy texture = GITextureProxyEntity::Create();
+            if (material.type == TextureType::Texture2D) {
+                param.arraySize = 1;
+                texture->Initialize(cmd, param, material.texture);
+            }
+            else if (material.type == TextureType::TextureCube) {
+                param.arraySize = 6;
+                texture->Initialize(cmd, param, material.cubeTexture.textures);
+            }
+            ps.textureResources[UnlitMainTexture] = texture;
+        }
+            break;
+        default:
+            break;
         }
 
         DrawElement face(this, drawface.faceNumVerts, index);
@@ -190,6 +193,19 @@ void DrawMesh::ExtractDrawElements(GIImmediateCommands* cmd,
 
         index += drawface.faceNumVerts;
     }
+}
+
+void DrawMesh::UpdateObjectBuffer(GIImmediateCommands* cmd, MeshObject<MainVertex>* mesh)
+{
+    auto buffer = FindSharedResource(ResourceType::VSConstantBuffer, VSRegisterSlots::BasePassObjectBuffer);
+    auto mapped = cmd->MapBuffer(buffer.get(), 0, MapType::WRITE_DISCARD);
+
+    ObjectBuffer data;
+    data.World = XMMatrixTranspose(mesh->GetMatrix());
+    data.NormalWorld = XMMatrixInverse(nullptr, mesh->GetMatrix());
+    memcpy(mapped.pData, &data, sizeof(data));
+
+    cmd->UnmapBuffer(buffer.get(), 0);
 }
 
 void DrawMesh::Draw(GIImmediateCommands* cmd)

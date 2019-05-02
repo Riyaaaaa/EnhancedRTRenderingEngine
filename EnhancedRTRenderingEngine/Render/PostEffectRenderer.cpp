@@ -39,14 +39,17 @@ void PostEffectRenderer::Apply(GIImmediateCommands* cmd, GIRenderView* view, con
     auto mesh = MakeRef(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(Size2D(1.0f, 1.0f)));
     mesh->SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
-    DrawMesh element(cmd, mesh->GetMesh());
-    Material material;
+    DrawMesh element(cmd, mesh.get());
 
+    Material material;
     material.shadingType = ShadingType::Unlit;
     material.pShader = ResourceLoader::LoadShader(effect);
-    material.vShader = ShaderFactory::TextureVertexShader();
+    material.vShader = ResourceLoader::LoadShader("TextureVertexShader");
 
-    DrawElement face(&element, static_cast<unsigned int>(mesh->GetMesh()->GetVertexCount()), 0);
-    face.SetShaders(Shader(ShadingType::Unlit, ResourceLoader::LoadShader(effect)), ShaderFactory::TextureVertexShader());
-    face.Draw(cmd);
+    ElementDesc edesc;
+    edesc.materialIdx = 0;
+    edesc.faceIdx = 0;
+    edesc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
+    element.ExtractDrawElements(cmd, { edesc }, { material });
+    element.Draw(cmd);
 }

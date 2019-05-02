@@ -14,7 +14,6 @@
 
 class MeshObjectBase : public SceneObject {
 public:
-    MeshObjectBase(const std::shared_ptr<MeshBase>& mesh) : _mesh(mesh) {}
     virtual AABB GetAABB() = 0;
     virtual Vector3D GetVertexPosition(unsigned int idx) = 0;
     virtual unsigned int GetVertexNums() = 0;
@@ -66,19 +65,17 @@ protected:
     std::size_t _reflectionSourceId;
     StaticLightBuildData _lightMapData;
     std::vector<Material> _materials;
-
-    std::shared_ptr<MeshBase> _mesh;
 };
 
 template<class VertType>
 class MeshObject : public MeshObjectBase
 {
 public:
-    MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) {
+    MeshObject(const std::shared_ptr<Mesh<VertType>>& mesh) : _mesh(mesh) {
         _materials.resize(_mesh->ElementSize(), Material::Default);
     }
 
-    const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return std::static_pointer_cast<Mesh<VertType>>(_mesh); }
+    const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return _mesh; }
 
     std::vector<Triangle> GetTransformedTriangles();
 
@@ -88,6 +85,7 @@ public:
     virtual std::vector<Hit> IntersectPositions(Ray ray) override;
 
 protected:
+    std::shared_ptr<Mesh<VertType>> _mesh;
     MeshObject() = default;
 };
 

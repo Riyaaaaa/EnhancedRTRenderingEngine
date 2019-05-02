@@ -55,6 +55,7 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
             auto mesh = renderScene->GetStaticDrawMesh(object->GetID());
 
             ElementDesc desc;
+            desc.materialIdx = 0;
             desc.faceIdx = 0;
            
             unsigned int faceNumVerts = 0;
@@ -65,11 +66,11 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
                 desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
             }
 
-            DrawMesh drawMesh(cmd, object->GetMesh());
+            DrawMesh drawMesh(cmd, object);
             Material material;
             material.shadingType = ShadingType::Detph;
-            material.pShader = ShaderFactory::RenderShadowMapShader();
-            material.vShader = ShaderFactory::DepthOnlyVertexShader();
+            material.pShader = ResourceLoader::LoadShader("RenderShadowMapShader");
+            material.vShader = ResourceLoader::LoadShader("DepthVertexShader");
 
             drawMesh.ExtractDrawElements(cmd, { desc }, {material});
             drawMesh.Draw(cmd);
@@ -118,6 +119,7 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
                 auto mesh = renderScene->GetStaticDrawMesh(object->GetID());
 
                 ElementDesc desc;
+                desc.materialIdx = 0;
                 desc.faceIdx = 0;
 
                 unsigned int faceNumVerts = 0;
@@ -128,11 +130,11 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
                     desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
                 }
 
-                DrawMesh drawMesh(cmd, object->GetMesh());
+                DrawMesh drawMesh(cmd, object);
                 Material material;
                 material.shadingType = ShadingType::Detph;
-                material.pShader = ShaderFactory::RenderShadowMapShader();
-                material.vShader = ShaderFactory::DepthOnlyVertexShader();
+                material.pShader = ResourceLoader::LoadShader("RenderShadowMapShader");
+                material.vShader = ResourceLoader::LoadShader("DepthVertexShader");
 
                 drawMesh.ExtractDrawElements(cmd, { desc }, { material });
                 drawMesh.Draw(cmd);

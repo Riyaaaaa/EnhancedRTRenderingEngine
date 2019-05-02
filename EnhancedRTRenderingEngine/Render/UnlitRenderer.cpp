@@ -32,8 +32,9 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
     desc.stride = sizeof(float);
     auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc));
 
-    for (auto && object : meshes) {
+    for (auto&& object : meshes) {
         ElementDesc desc;
+        desc.materialIdx = 0;
         desc.faceIdx = 0;
 
         unsigned int faceNumVerts = 0;
@@ -44,14 +45,14 @@ void UnlitRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const C
             desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
         }
 
-        DrawMesh mesh(cmd, object->GetMesh());
+        DrawMesh mesh(cmd, object.get());
         Material material;
         material.shadingType = ShadingType::Unlit;
-        material.pShader = ShaderFactory::MinPixelColor();
-        material.vShader = ShaderFactory::MinVertexColor();
+        material.pShader = ResourceLoader::LoadShader("MinPixelShader");
+        material.vShader = ResourceLoader::LoadShader("VertexShader");
 
-        mesh->ExtractDrawElements(cmd, { desc }, { material });
-        mesh->Draw(cmd);
+        mesh.ExtractDrawElements(cmd, { desc }, { material });
+        mesh.Draw(cmd);
     }
 }
 
