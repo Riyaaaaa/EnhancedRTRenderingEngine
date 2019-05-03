@@ -21,7 +21,7 @@ public:
     Vector3D specular;
     ShadingType shadingType = ShadingType::BasePass;
     TextureType type = TextureType::None;
-    RawBinary vShader, pShader;
+    RawBinary vShader, pShader, gShader;
     Texture2D texture;
     TextureCube cubeTexture;
 

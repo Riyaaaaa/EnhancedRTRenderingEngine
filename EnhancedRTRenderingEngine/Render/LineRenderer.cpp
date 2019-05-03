@@ -1,4 +1,8 @@
 
+// @see https://gamedev.amazon.com/forums/questions/71621/vs2017-158-stdaligned-storage-error.html
+#define _ENABLE_EXTENDED_ALIGNED_STORAGE 1
+#include <memory>
+
 #include "LineRenderer.h"
 #include "TextureEffects.h"
 
@@ -46,20 +50,22 @@ void LineRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, const Ca
 
     lineMesh->SetPrimitiveType(VertexPrimitiveType::LINELIST);
 
-    MeshObject<LineVertex> mesh(lineMesh);
-    DrawMesh element(cmd, &mesh);
+    auto mesh = std::make_shared<MeshObject<LineVertex>>(lineMesh);
+    DrawMesh element(cmd, mesh.get());
 
-    ObjectBuffer buffer;
-    buffer.World = XMMatrixTranspose(mesh.GetMatrix());
+    Material material;
+    material.shadingType = ShadingType::Unlit;
+    material.pShader = ResourceLoader::LoadShader("PixelShader");
+    material.vShader = ResourceLoader::LoadShader("LineVertexShader");
+    material.gShader = ResourceLoader::LoadShader("LineGeometryShader");
 
-    desc.byteWidth = sizeof(buffer);
-    desc.stride = sizeof(float);
-    auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
-    element.RegisterConstantBuffer(hpBuffer, 1, ShaderType::VS);
+    ElementDesc edesc;
+    edesc.materialIdx = 0;
+    edesc.faceIdx = 0;
+    edesc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
 
-    DrawElement face(&element, static_cast<unsigned int>(mesh.GetMesh()->GetVertexCount()), 0);
-    face.SetShaders(ShaderFactory::MinPixelShader(), ShaderFactory::LineVertexShader(), ShaderFactory::LineGeometryShader());
-    face.Draw(cmd);
+    element.ExtractDrawElements(cmd, { edesc }, { material });
+    element.Draw(cmd);
 
     cmd->PSSetShader(nullptr);
     cmd->GSSetShader(nullptr);

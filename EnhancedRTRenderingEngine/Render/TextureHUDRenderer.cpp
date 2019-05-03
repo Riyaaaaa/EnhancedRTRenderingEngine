@@ -20,15 +20,20 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
-    auto textureProxy = MakeRef(cmd->CreateTextureProxy(TextureParam(), texture));
-
     DrawMesh element(cmd, mesh);
-    auto ps = ShaderFactory::MinTextureColor();
-    ps.textureResources[BasePassMainTexture] = textureProxy;
 
-    DrawElement face(&element, static_cast<unsigned int>(mesh->GetMesh()->GetVertexCount()), 0);
-    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
-    face.Draw(cmd);
+    Material material;
+    material.shadingType = ShadingType::Unlit;
+    material.pShader = ResourceLoader::LoadShader("MinTextureColor");
+    material.vShader = ResourceLoader::LoadShader("TextureVertexShader");
+    material.texture = texture;
+
+    ElementDesc desc;
+    desc.materialIdx = 0;
+    desc.faceIdx = 0;
+    desc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
+    element.ExtractDrawElements(cmd, { desc }, {material});
+    element.Draw(cmd);
 }
 
 void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Vector2D pos, Size2D size, const GITextureProxy& texture, int index)
@@ -36,27 +41,27 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
     Size2D viewportSize = Size2D{ size.w / view->GetRenderSize().w, size.h / view->GetRenderSize().h };
     Vector2D viewportPos = Vector2D{ pos.x / view->GetRenderSize().w - 0.5f, pos.y / view->GetRenderSize().h - 0.5f } *2.0f;
 
-    auto mesh = SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(viewportSize);
+    auto mesh = MakeRef(SceneUtils::CreatePrimitiveMeshObject<PrimitiveMesh::Square<TexVertex>>(viewportSize));
     mesh->SetLocation(Vector3D{ viewportPos.x, viewportPos.y, 0.0f });
 
     GICommandUtils::SetViewportSize(cmd, view->GetRenderSize());
     cmd->OMSetRenderTargets(view->GetOMResource()->renderTargets, nullptr);
 
-    DrawMesh element(cmd, mesh);
+    DrawMesh element(cmd, mesh.get());
 
-    ObjectBuffer buffer;
-    buffer.World = XMMatrixTranspose(mesh->GetMatrix());
-
-    BufferDesc desc;
-    desc.byteWidth = sizeof(buffer);
-    desc.stride = sizeof(float);
-    auto hpBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, &buffer));
-    element.RegisterConstantBuffer(hpBuffer, 0, ShaderType::VS);
-
-    auto ps = ShaderFactory::MinTextureColor();
-
+    Material material;
     auto param = texture->GetTexture()->GetTextureParam();
     TextureType type = param.type;
+    material.type = type;
+    material.shadingType = ShadingType::Unlit;
+    material.pShader = ResourceLoader::LoadShader("MinTextureColor");
+    material.vShader = ResourceLoader::LoadShader("TextureVertexShader");
+
+    ElementDesc desc;
+    desc.materialIdx = 0;
+    desc.faceIdx = 0;
+    desc.faceNumVerts = mesh->GetMesh()->GetVertexCount();
+    element.ExtractDrawElements(cmd, { desc }, { material });
 
     if (type == TextureType::TextureCube) {
         param.arraySize = 1;
@@ -67,13 +72,11 @@ void TextureHUDRenderer::render(GIImmediateCommands* cmd, GIRenderView* view, Ve
         cmd->CopyTexture2DFromArray(faceTextureSrc.get(), texture->GetTexture().get(), index, param.mipLevels);
 
         auto faceTexture = MakeRef(cmd->CreateTextureProxy(faceTextureSrc, SamplerParam()));
-        ps.textureResources[MinTextureColorMainTexture] = faceTexture;
+        element.GetDrawElement(0)->PS().textureResources[UnlitMainTexture] = faceTexture;
     }
     else {
-        ps.textureResources[MinTextureColorMainTexture] = texture;
+        element.GetDrawElement(0)->PS().textureResources[UnlitMainTexture] = texture;
     }
 
-    DrawElement face(&element, mesh->GetMesh()->GetVertexCount(), 0);
-    face.SetShaders(ps, ShaderFactory::TextureVertexShader());
-    face.Draw(cmd);
+    element.Draw(cmd);
 }

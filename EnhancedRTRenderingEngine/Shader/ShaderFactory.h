@@ -52,7 +52,7 @@ namespace ShaderFactory
     }
 
     inline Shader LineVertexShader() {
-        return Shader(ShadingType::Unlit, ResourceLoader::LoadShader("LineVertexShader"));
+        return Shader(ShadingType::Vertex, ResourceLoader::LoadShader("LineVertexShader"));
     }
 
     inline Shader LineGeometryShader() {

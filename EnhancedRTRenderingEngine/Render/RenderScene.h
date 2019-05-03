@@ -35,12 +35,12 @@ public:
     GITextureProxy& GetEnviromentMap(std::size_t index) {
         return _enviromentMaps.at(index);
     }
-    std::unordered_map<std::size_t, DrawMesh>& GetStaticDrawMeshes() {
-        return _staticDrawMeshes;
+    DrawMesh* GetStaticDrawMesh(std::size_t objectId) {
+        return _staticDrawMeshes[objectId].get();
     }
-    std::vector<DrawElement>& GetDrawList() {
-        return _drawList;
-    }
+
+    void RenderByBasePass(GIImmediateCommands* cmd);
+
 protected:
     void Setup(GIImmediateCommands* cmd);
     Scene * _scene;
@@ -48,9 +48,9 @@ protected:
     std::vector<GITextureProxy> _pointShadows;
     std::unordered_map<std::size_t, GITextureProxy> _enviromentMaps;
 
-    std::vector<DrawElement> _drawList;
-    std::unordered_map<std::size_t, DrawMesh> _staticDrawMeshes;
-    std::unordered_map<std::size_t, DrawMesh> _bakedLightMeshes;
+    // BasePass caches
+    std::unordered_map<std::size_t, std::unique_ptr<DrawMesh>> _dynamicDrawMeshes;
+    std::unordered_map<std::size_t, std::unique_ptr<DrawMesh>> _staticDrawMeshes;
 
     std::queue<std::function<void(GIImmediateCommands*)>> _refreshTasks;
 

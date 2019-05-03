@@ -22,12 +22,12 @@ void MeshObjectBase::FindPrecisionReflectionSource(const std::vector<CubeReflect
 
 template<class VertType>
 AABB MeshObject<VertType>::GetAABB() {
-    std::vector<Vector3D> _vertices(_mesh->GetVertexList().size());
-    _vertexTransformedCache.resize(_mesh->GetVertexList().size());
+    std::vector<Vector3D> _vertices(GetMesh()->GetVertexList().size());
+    _vertexTransformedCache.resize(GetMesh()->GetVertexList().size());
     if (AABBDirty) {
         auto world = SceneObject::GetMatrix();
-        for (int i = 0; i < _mesh->GetVertexList().size(); i++) {
-            auto& pos = _mesh->GetVertexList()[i].pos;
+        for (int i = 0; i < GetMesh()->GetVertexList().size(); i++) {
+            auto& pos = GetMesh()->GetVertexList()[i].pos;
             auto vector = XMVector3Transform(XMVectorSet(pos.x, pos.y, pos.z, 1.0f), world);
             _vertexTransformedCache[i] = vector;
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(_vertices[i].x)), vector);
@@ -40,26 +40,26 @@ AABB MeshObject<VertType>::GetAABB() {
 
 template<class VertType>
 Vector3D MeshObject<VertType>::GetVertexPosition(unsigned int idx) {
-    return _mesh->GetVertexList()[idx].pos;
+    return GetMesh()->GetVertexList()[idx].pos;
 }
 
 template<class VertType>
 unsigned int MeshObject<VertType>::GetVertexNums() {
-    return _mesh->GetVertexCount();
+    return GetMesh()->GetVertexCount();
 }
 
 template<class VertType>
 std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
     std::vector<Hit> intersects;
-    auto& indices = _mesh->GetIndexList();
-    auto& vertices = _mesh->GetVertexList();
+    auto& indices = GetMesh()->GetIndexList();
+    auto& vertices = GetMesh()->GetVertexList();
 
-    if (_mesh->GetPrimitiveType() != VertexPrimitiveType::TRIANGLELIST) {
+    if (GetMesh()->GetPrimitiveType() != VertexPrimitiveType::TRIANGLELIST) {
         // not support;
         return intersects;
     }
 
-    auto& face_map = _mesh->GetDrawElementMap();
+    auto& face_map = GetMesh()->GetDrawElementMap();
     unsigned int start_idx = 0;
     for (unsigned int i = 0; i < face_map.size(); i++) {
         for (int j = start_idx; j < start_idx + face_map[i].faceNumVerts; j += 3) {
@@ -110,10 +110,10 @@ std::vector<Hit> MeshObject<VertType>::IntersectPositions(Ray ray) {
 
 template<class VertType>
 std::vector<Triangle> MeshObject<VertType>::GetTransformedTriangles() {
-    std::vector<Triangle> triangles(_mesh->GetVertexCount() / 3);
-    auto& index_list = _mesh->GetIndexList();
-    for (int i = 0; i < _mesh->GetVertexCount(); i += 3) {
-        if (_mesh->HasIndexList()) {
+    std::vector<Triangle> triangles(GetMesh()->GetVertexCount() / 3);
+    auto& index_list = GetMesh()->GetIndexList();
+    for (int i = 0; i < GetMesh()->GetVertexCount(); i += 3) {
+        if (GetMesh()->HasIndexList()) {
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v0.x)), _vertexTransformedCache[index_list[i]]);
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v1.x)), _vertexTransformedCache[index_list[i + 1]]);
             XMStoreFloat3(reinterpret_cast<XMFLOAT3*>(&(triangles[i / 3].v2.x)), _vertexTransformedCache[index_list[i + 2]]);

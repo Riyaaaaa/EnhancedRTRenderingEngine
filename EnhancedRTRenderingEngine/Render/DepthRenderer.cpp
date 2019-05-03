@@ -52,19 +52,28 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
         cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
         for (auto && object : scene->GetViewObjects()) {
-            auto& mesh = renderScene->GetStaticDrawMeshes()[object->GetID()];
+            auto mesh = renderScene->GetStaticDrawMesh(object->GetID());
+
+            ElementDesc desc;
+            desc.materialIdx = 0;
+            desc.faceIdx = 0;
            
             unsigned int faceNumVerts = 0;
             if (object->GetMesh()->HasIndexList()) {
-                faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
+                desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
             }
             else {
-                faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
+                desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
             }
 
-            DrawElement element(&mesh, faceNumVerts, 0);
-            element.SetShaders(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
-            element.Draw(cmd);
+            DrawMesh drawMesh(cmd, object);
+            Material material;
+            material.shadingType = ShadingType::Detph;
+            material.pShader = ResourceLoader::LoadShader("RenderShadowMapShader");
+            material.vShader = ResourceLoader::LoadShader("DepthVertexShader");
+
+            drawMesh.ExtractDrawElements(cmd, { desc }, {material});
+            drawMesh.Draw(cmd);
         }
 
         renderScene->GetDirectionalShadow(i) = MakeRef(cmd->CreateTextureProxy(rtv->rtvTexture, SamplerParam()));
@@ -106,20 +115,29 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             cmd->UpdateSubresource(transformBuffer.get(), &hConstantBuffer, 0);
             cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
-            for (auto && object : scene->GetViewObjects()) {
-                auto& mesh = renderScene->GetStaticDrawMeshes()[object->GetID()];
+            for (auto&& object : scene->GetViewObjects()) {
+                auto mesh = renderScene->GetStaticDrawMesh(object->GetID());
+
+                ElementDesc desc;
+                desc.materialIdx = 0;
+                desc.faceIdx = 0;
 
                 unsigned int faceNumVerts = 0;
                 if (object->GetMesh()->HasIndexList()) {
-                    faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
+                    desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetIndexList().size());
                 }
                 else {
-                    faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
+                    desc.faceNumVerts = static_cast<unsigned int>(object->GetMesh()->GetVertexList().size());
                 }
 
-                DrawElement element(&mesh, faceNumVerts, 0);
-                element.SetShaders(ShaderFactory::RenderShadowMapShader(), ShaderFactory::DepthOnlyVertexShader());
-                element.Draw(cmd);
+                DrawMesh drawMesh(cmd, object);
+                Material material;
+                material.shadingType = ShadingType::Detph;
+                material.pShader = ResourceLoader::LoadShader("RenderShadowMapShader");
+                material.vShader = ResourceLoader::LoadShader("DepthVertexShader");
+
+                drawMesh.ExtractDrawElements(cmd, { desc }, { material });
+                drawMesh.Draw(cmd);
             }
         }
 

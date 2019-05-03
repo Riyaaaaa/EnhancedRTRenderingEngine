@@ -18,12 +18,12 @@ public:
     virtual Vector3D GetVertexPosition(unsigned int idx) = 0;
     virtual unsigned int GetVertexNums() = 0;
     virtual std::vector<Hit> IntersectPositions(Ray ray) = 0;
-    virtual MeshBase* GetMeshBase() = 0;
 
     void SetMaterial(const std::vector<Material>& materials) {
         _materials = materials;
     }
     void SetMaterial(std::vector<Material>&& materials) {
+        // assert(_mesh->GetDrawElementMap().size() == materials.size);
         _materials.swap(materials);
     }
 
@@ -76,7 +76,6 @@ public:
     }
 
     const std::shared_ptr<Mesh<VertType>>& GetMesh() const { return _mesh; }
-    MeshBase* GetMeshBase() { return _mesh.get(); }
 
     std::vector<Triangle> GetTransformedTriangles();
 
@@ -86,7 +85,7 @@ public:
     virtual std::vector<Hit> IntersectPositions(Ray ray) override;
 
 protected:
-    MeshObject() = default;
     std::shared_ptr<Mesh<VertType>> _mesh;
+    MeshObject() = default;
 };
 

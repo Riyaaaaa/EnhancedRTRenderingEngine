@@ -113,20 +113,105 @@ std::vector<VertexLayout> DrawMesh::GenerateVertexLayout<MainVertex>() {
     return layout;
 }
 
-DrawMesh::DrawMesh(GIImmediateCommands* cmd, const StaticLightBuildData* staticLightBuildData) {
-    typedef std::remove_cv_t<std::remove_reference_t<decltype(staticLightBuildData->lightVertices[0])>> VertType;
-    _vertexLayout = GenerateVertexLayout<VertType>();
-
-    BufferDesc bufferDesc;
-    bufferDesc.byteWidth = static_cast<unsigned int>(sizeof(VertType) * staticLightBuildData->lightVertices.size());
-    bufferDesc.usage = ResourceUsage::Default;
-    bufferDesc.accessFlag = ResourceAccessFlag::None;
-    bufferDesc.stride = sizeof(VertType);
-
-    auto buffer = MakeRef(cmd->CreateBuffer(ResourceType::VertexList, bufferDesc, (void*)&staticLightBuildData->lightVertices[0]));
-    buffer->type = ResourceType::LightVertexList;
-    meshSharedResource.emplace_back(buffer, -1);
-
-    _primitiveType = VertexPrimitiveType::TRIANGLELIST;
+DrawMesh::DrawMesh(GIImmediateCommands* cmd) {
+    BufferDesc desc;
+    desc.usage = ResourceUsage::Dynamic;
+    desc.byteWidth = sizeof(ObjectBuffer);
+    desc.stride = sizeof(float);
+    desc.accessFlag = ResourceAccessFlag::W;
+    auto objectBuffer = MakeRef(cmd->CreateBuffer(ResourceType::VSConstantBuffer, desc, nullptr));
+    RegisterConstantBuffer(objectBuffer, VSRegisterSlots::BasePassObjectBuffer, ShaderType::VS);
 }
 
+void DrawMesh::ExtractDrawElements(GIImmediateCommands* cmd, 
+    const std::vector<ElementDesc>& elementDescs, 
+    const std::vector<Material>& materials,
+    const DrawPlan& plan) {
+    int index = 0;
+    for (auto&& drawface : elementDescs) {
+        auto& material = materials[drawface.materialIdx];
+        Shader ps(material.shadingType, material.pShader);
+
+        switch (material.shadingType) {
+        case ShadingType::BasePass: {
+            TextureParam param;
+            param.type = material.type;
+            GITextureProxy texture = GITextureProxyEntity::Create();
+            if (material.type == TextureType::Texture2D) {
+                param.arraySize = 1;
+                texture->Initialize(cmd, param, material.texture);
+            }
+            else if (material.type == TextureType::TextureCube) {
+                param.arraySize = 6;
+                texture->Initialize(cmd, param, material.cubeTexture.textures);
+            }
+
+            MaterialBuffer mbuf;
+            mbuf.baseColor = material.baseColor;
+            mbuf.metallic = material.metallic;
+            mbuf.roughness = material.roughness;
+            if (plan.useLightMap) {
+                mbuf.useLightMap = 1.0f;
+            }
+            if (plan.useEnviromentMap) {
+                mbuf.useEnviromentMap = 1.0f;
+            }
+            BufferDesc desc;
+            desc.byteWidth = sizeof(mbuf);
+            desc.stride = sizeof(float);
+            desc.usage = ResourceUsage::Dynamic;
+            desc.accessFlag = ResourceAccessFlag::W;
+            auto materialBuffer = MakeRef(cmd->CreateBuffer(ResourceType::PSConstantBuffer, desc, &mbuf));
+            ps.constantBuffers[BasePassMaterialBuffer] = materialBuffer;
+            ps.textureResources[BasePassMainTexture] = texture;
+        }
+                                    break;
+
+        case ShadingType::Detph:
+            break;
+        case ShadingType::Unlit: {
+            TextureParam param;
+            param.type = material.type;
+            GITextureProxy texture = GITextureProxyEntity::Create();
+            if (material.type == TextureType::Texture2D) {
+                param.arraySize = 1;
+                texture->Initialize(cmd, param, material.texture);
+            }
+            else if (material.type == TextureType::TextureCube) {
+                param.arraySize = 6;
+                texture->Initialize(cmd, param, material.cubeTexture.textures);
+            }
+            ps.textureResources[UnlitMainTexture] = texture;
+        }
+            break;
+        default:
+            break;
+        }
+
+        DrawElement face(this, drawface.faceNumVerts, index);
+        face.SetShaders(ps, Shader(ShadingType::Vertex, material.vShader), Shader(ShadingType::Geometry, material.gShader));
+        _elements.push_back(face);
+
+        index += drawface.faceNumVerts;
+    }
+}
+
+void DrawMesh::UpdateObjectBuffer(GIImmediateCommands* cmd, const DirectX::XMMATRIX& matrix)
+{
+    auto buffer = FindSharedResource(ResourceType::VSConstantBuffer, VSRegisterSlots::BasePassObjectBuffer);
+    auto mapped = cmd->MapBuffer(buffer.get(), 0, MapType::WRITE_DISCARD);
+
+    ObjectBuffer data;
+    data.World = DirectX::XMMatrixTranspose(matrix);
+    data.NormalWorld = DirectX::XMMatrixInverse(nullptr, matrix);
+    memcpy(mapped.pData, &data, sizeof(data));
+
+    cmd->UnmapBuffer(buffer.get(), 0);
+}
+
+void DrawMesh::Draw(GIImmediateCommands* cmd)
+{
+    for (auto&& element : _elements) {
+        element.Draw(cmd);
+    }
+}
