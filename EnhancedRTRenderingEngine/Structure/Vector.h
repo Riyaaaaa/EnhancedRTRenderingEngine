@@ -299,7 +299,7 @@ struct _Matrix {
         _Matrix m;
         for (unsigned int i = 0; i < dim; i++) {
             for (unsigned int j = 0; j < dim; j++) {
-                m.at(j, i) = 1;
+                m.at(j, i) = i == j ? 1 : 0;
             }
         }
         return m;

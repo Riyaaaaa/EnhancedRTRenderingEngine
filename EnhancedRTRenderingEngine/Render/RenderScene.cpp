@@ -92,6 +92,12 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
             }
 
             _scene->SetMeshDirty(false);
+        } 
+    } else {
+        for (auto&& viewObject : _scene->GetViewObjects()) {
+            if (viewObject->GetAttribute() == ObjectAttribute::Dynamic) {
+                _dynamicDrawMeshes[viewObject->GetID()]->UpdateObjectBuffer(cmd, viewObject->GetMatrix());
+            }
         }
     }
 }
