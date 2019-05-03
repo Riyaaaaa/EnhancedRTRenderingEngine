@@ -2,54 +2,8 @@
 #include "Box.h"
 
 
-Box::Box(float size)
+Box::Box(float size) : Box(Size3D(size, size, size))
 {
-    _vertexList = std::vector<Vertex3D>{
-        { { size, size,-size },{ 0.0f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size,-size,-size },{ 0.0f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { -size,-size,-size },{ 0.0f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size, size,-size },{ 0.0f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { -size,-size,-size },{ 0.0f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { -size, size,-size },{ 0.0f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
-
-    { { size, size, size },{ 0.5f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size,-size, size },{ 0.5f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { size,-size,-size },{ 0.5f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size, size, size },{ 0.5f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { size,-size,-size },{ 0.5f,0.0f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size, size,-size },{ 0.5f,0.0f,0.5f,1.0f },{ 1.0f,1.0f } },
-
-    { { -size, size, size },{ 0.0f,0.5f,0.0f,1.0f },{ 0.0f,0.0f } },
-    { { -size,-size, size },{ 0.0f,0.5f,0.0f,1.0f },{ 1.0f,1.0f } },
-    { { size,-size, size },{ 0.0f,0.5f,0.0f,1.0f },{ 0.0f,0.0f } },
-    { { -size, size, size },{ 0.0f,0.5f,0.0f,1.0f },{ 1.0f,1.0f } },
-    { { size,-size, size },{ 0.0f,0.5f,0.0f,1.0f },{ 0.0f,0.0f } },
-    { { size, size, size },{ 0.0f,0.5f,0.0f,1.0f },{ 1.0f,1.0f } },
-
-    { { -size, size,-size },{ 0.5f,0.5f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { -size,-size,-size },{ 0.5f,0.5f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { -size,-size, size },{ 0.5f,0.5f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { -size, size,-size },{ 0.5f,0.5f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { -size,-size, size },{ 0.5f,0.5f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { -size, size, size },{ 0.5f,0.5f,0.5f,1.0f },{ 1.0f,1.0f } },
-
-    { { size, size, size },{ 0.0f,0.5f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size, size,-size },{ 0.0f,0.5f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { -size, size,-size },{ 0.0f,0.5f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { size, size, size },{ 0.0f,0.5f,0.5f,1.0f },{ 1.0f,1.0f } },
-    { { -size, size,-size },{ 0.0f,0.5f,0.5f,1.0f },{ 0.0f,0.0f } },
-    { { -size, size, size },{ 0.0f,0.5f,0.5f,1.0f },{ 1.0f,1.0f } },
-
-    { { size,-size,-size },{ 0.0f,0.0f,0.0f,1.0f },{ 0.0f,0.0f } },
-    { { size,-size, size },{ 0.0f,0.0f,0.0f,1.0f },{ 1.0f,1.0f } },
-    { { -size,-size, size },{ 0.0f,0.0f,0.0f,1.0f },{ 0.0f,0.0f } },
-    { { size,-size,-size },{ 0.0f,0.0f,0.0f,1.0f },{ 1.0f,1.0f } },
-    { { -size,-size, size },{ 0.0f,0.0f,0.0f,1.0f },{ 0.0f,0.0f } },
-    { { -size,-size,-size },{ 0.0f,0.0f,0.0f,1.0f },{ 1.0f,1.0f } },
-    };
-
-    _vertexCount = static_cast<unsigned int>(_vertexList.size());
-    _elements.push_back(ElementDesc{ 0, _vertexCount, 0 });
 }
 
 Box::Box(Size3D size) {

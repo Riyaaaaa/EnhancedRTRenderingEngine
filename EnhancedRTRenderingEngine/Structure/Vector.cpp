@@ -12,4 +12,5 @@ void Matrix4::LookAt(const Vector3D& eye, const Vector3D& target, const Vector3D
     at(0, 0) = x.x; at(0, 1) = y.x; at(0, 2) = z.x;
     at(1, 0) = x.y; at(1, 1) = y.y; at(1, 2) = z.y;
     at(2, 0) = x.z; at(2, 1) = y.z; at(2, 2) = z.z;
+    at(3, 0) = -Math::Dot(x, eye); at(3, 1) = -Math::Dot(y, eye); at(3, 2) = -Math::Dot(z, eye);
 }

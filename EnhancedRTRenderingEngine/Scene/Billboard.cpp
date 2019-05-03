@@ -23,4 +23,6 @@ Billboard::Billboard(const std::string& textureName)
     _transform.rotation = Quaternion{};
 
     _components.push_back(std::make_unique<LookCameraComponent>());
+
+    setAttribute(ObjectAttribute::Dynamic);
 }

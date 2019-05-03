@@ -35,8 +35,23 @@ public:
     GITextureProxy& GetEnviromentMap(std::size_t index) {
         return _enviromentMaps.at(index);
     }
-    DrawMesh* GetStaticDrawMesh(std::size_t objectId) {
-        return _staticDrawMeshes[objectId].get();
+    DrawMesh* GetShadowCastableMesh(std::size_t objectId) {
+        auto staticIt = _staticDrawMeshes.find(objectId);
+        if (staticIt != _staticDrawMeshes.end()) {
+            return staticIt->second.get();
+        }
+        return nullptr;
+    }
+    DrawMesh* GetDrawMesh(std::size_t objectId) {
+        auto staticIt = _staticDrawMeshes.find(objectId);
+        if (staticIt != _staticDrawMeshes.end()) {
+            return staticIt->second.get();
+        }
+        auto dynamicIt = _dynamicDrawMeshes.find(objectId);
+        if (dynamicIt != _dynamicDrawMeshes.end()) {
+            return dynamicIt->second.get();
+        }
+        return nullptr;
     }
 
     void RenderByBasePass(GIImmediateCommands* cmd);

@@ -7,4 +7,6 @@ void LookCameraComponent::Update(Scene* scene, SceneObject* object)
 {
 	auto camera = scene->GetMainCamera();
 	object->LookAt(camera.Position());
+
+    scene->Dirty();
 }

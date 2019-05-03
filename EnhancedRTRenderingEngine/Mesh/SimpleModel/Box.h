@@ -2,6 +2,7 @@
 #include "Mesh/MeshBase.h"
 #include "Structure/Structure.h"
 
+
 class Box : public Mesh<Vertex3D>
 {
 public:

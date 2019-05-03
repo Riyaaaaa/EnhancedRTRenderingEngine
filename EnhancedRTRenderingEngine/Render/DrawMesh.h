@@ -214,4 +214,6 @@ protected:
     std::vector<VertexLayout> _vertexLayout;
     std::vector<std::pair<std::shared_ptr<GIBuffer>, unsigned int>> meshSharedResource;
     std::vector<std::pair<GITextureProxy, unsigned int>> meshSharedTexture;
+
+    std::weak_ptr<MeshObjectBase> _mesh;
 };

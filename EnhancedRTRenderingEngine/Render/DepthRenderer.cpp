@@ -52,7 +52,10 @@ void D3D11DepthRenderer::RenderDirectionalLightShadowMap(GIImmediateCommands* cm
         cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
         for (auto && object : scene->GetViewObjects()) {
-            auto mesh = renderScene->GetStaticDrawMesh(object->GetID());
+            auto mesh = renderScene->GetShadowCastableMesh(object->GetID());
+            if (mesh == nullptr) {
+                continue;
+            }
 
             ElementDesc desc;
             desc.materialIdx = 0;
@@ -116,7 +119,10 @@ void D3D11DepthRenderer::RenderPointLightShadowMap(GIImmediateCommands* cmd, GIR
             cmd->VSSetConstantBuffers(0, transformBuffer.get());
 
             for (auto&& object : scene->GetViewObjects()) {
-                auto mesh = renderScene->GetStaticDrawMesh(object->GetID());
+                auto mesh = renderScene->GetShadowCastableMesh(object->GetID());
+                if (mesh == nullptr) {
+                    continue;
+                }
 
                 ElementDesc desc;
                 desc.materialIdx = 0;
