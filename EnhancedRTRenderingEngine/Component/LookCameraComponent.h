@@ -5,6 +5,7 @@
 class LookCameraComponent : public ObjectComponent
 {
 public:
-	virtual void Update(Scene* scene, SceneObject* object) override;
+    void OnAttached(SceneObject* object) override;
+	void Update(Scene* scene, SceneObject* object) override;
 };
 

@@ -102,14 +102,6 @@ void RenderScene::Refresh(GIImmediateCommands* cmd) {
     }
 }
 
-void RenderScene::Setup(GIImmediateCommands* cmd) {
-    for (auto&& viewObject : _scene->GetViewObjects()) {
-        ObjectBuffer buffer;
-        buffer.World = XMMatrixTranspose(viewObject->GetMatrix());
-        buffer.NormalWorld = XMMatrixInverse(nullptr, viewObject->GetMatrix());
-    }
-}
-
 void RenderScene::RenderByBasePass(GIImmediateCommands* cmd)
 {
     for (auto&& mesh : _staticDrawMeshes) {

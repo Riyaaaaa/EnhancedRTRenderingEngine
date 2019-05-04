@@ -17,9 +17,9 @@ public:
     SceneObject();
     virtual ~SceneObject();
 
-	void Update(Scene* scene);
+	virtual void Update(Scene* scene);
 
-    const DirectX::XMMATRIX& GetMatrix();
+    virtual const DirectX::XMMATRIX& GetMatrix();
 
     void SetTransform(Transform trans);
     void SetRotation(Vector3D rot);
@@ -29,6 +29,13 @@ public:
     Vector3D GetLocation() { return _transform.location; }
 
     void LookAt(const Vector3D& target);
+
+    template<class Component>
+    void AddComponent() {
+        auto component = std::make_unique<Component>();
+        component->OnAttached(this);
+        _components.emplace_back(std::move(component));
+    }
 
 protected:
     virtual void DirtyWorldMatrix();

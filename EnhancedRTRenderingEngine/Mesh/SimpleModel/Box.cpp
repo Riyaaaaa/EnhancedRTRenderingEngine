@@ -1,11 +1,6 @@
 
 #include "Box.h"
 
-
-Box::Box(float size) : Box(Size3D(size, size, size))
-{
-}
-
 Box::Box(Size3D size) {
     float w = static_cast<float>(size.w);
     float h = static_cast<float>(size.h);
@@ -56,9 +51,4 @@ Box::Box(Size3D size) {
 
     _vertexCount = static_cast<unsigned int>(_vertexList.size());
     _elements.push_back(ElementDesc{ 0, _vertexCount, 0 });
-}
-
-
-Box::~Box()
-{
 }
